@@ -65,3 +65,4 @@ h1,h2,h3,h4,.breadcrumb strong{text-transform:capitalize}
 .delete-warning{padding:20px 24px;white-space:pre-line}
 select{text-transform:uppercase}
 .brand-logo{width:43px;height:47px;flex-shrink:0}
+.profile-id-footer{padding:0 24px 20px;text-align:right;overflow-wrap:anywhere}
