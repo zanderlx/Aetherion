@@ -6,6 +6,8 @@
 .horse-edit-body { padding:24px; }
 .horse-edit-body label { display:grid; gap:10px; }
 .horse-edit-body input,.horse-edit-body select { width:100%; box-sizing:border-box; }
+.catch-name-dialog .horse-edit-body > input { margin-top:12px; }
+.catch-name-dialog input.default-horse-name { color:var(--muted); filter:grayscale(1); }
 .horse-edit-body .form-actions { display:flex; flex-wrap:wrap; gap:12px; }
 .horse-notes { margin-top:20px; }
 .horse-notes textarea { width:100%; box-sizing:border-box; height:140px; overflow-y:auto; resize:vertical; }
