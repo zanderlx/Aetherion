@@ -207,13 +207,13 @@ The automated suite checks persistence, deletion, palettes, theme contrast, prof
 
 Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
 
-Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color is last in Traits & Little Details, and Horse ID appears at the profile bottom. Interface font sizes increased by two pixels.
+Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color appears first in Traits & Little Details; Horse ID is tracked internally. Interface font sizes increased by two pixels.
 
 New preview adults receive a random birthday 3–20 years before creation, saved once in ISO date form and displayed as MM-DD-YYYY. The range is provisional for adult preview horses; existing saved birthdays are preserved.
 
 ### Horse names, notes, and details
 
-Catch a horse to choose a name or keep its current name before saving to My Horses. Owned horses have a rename pencil beside their name. Every horse profile has saved notes with scrolling when needed and Save/Cancel controls after changes.
+Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. Owned horses have a rename pencil beside their name. Owned horse profiles have saved notes in place of the personality description, with scrolling when needed and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
 
 Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
