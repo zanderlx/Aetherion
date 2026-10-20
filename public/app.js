@@ -1,6 +1,7 @@
 import { icon, sidebar, groups, escapeHTML as e, number } from './ui.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
 import { profileContent } from './profile.js';
+import { displayBirthday } from './dates.js';
 import { locationsFor, newZoneDraft, randomZone, validateZone } from './zones.js';
 import { zoneEditorPage, zonePreview } from './zone-editor.js';
 import { draftDefinition, validateDefinition } from './definitions.js';
@@ -22,6 +23,10 @@ const profile = $('#profile');
 const confirmation = $('#confirm');
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
 
+const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() => 'horse/profile', save:action, notify, includeChrome:false, getValues:() => {
+  const horse = findHorse(profile.dataset.horseId);
+  return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:displayBirthday(horse.birthday),personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
+}});
 async function request(path, body) {
   const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
   const result = await response.json();
@@ -88,6 +93,7 @@ async function navigate() {
   if (profile.open) profile.close();
   if (confirmation.open) confirmation.close();
   copyEditor.close();
+  profileCopyEditor.close();
   try {
     if (route.startsWith('wilds/') && !state.encounters[route.split('/')[1]] && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action('visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
@@ -185,7 +191,9 @@ function showDefinition(kind, draft) {
 function inspect(id) {
   const horse = findHorse(id);
   if (!horse) return;
+  profile.dataset.horseId = id;
   profile.innerHTML = profileContent(horse, state);
+  profileCopyEditor.attach(profile);
   trackForms(profile);
   if (!profile.open) profile.showModal();
 }
@@ -317,6 +325,7 @@ document.addEventListener('click', async event => {
     } else if (intent === 'toggle-copy-mode') {
       await action('developer-edit-mode', { enabled:!state.settings.developerEditMode });
       render();
+      if (profile.open) inspect(profile.dataset.horseId);
       notify(state.settings.developerEditMode ? 'Edit mode enabled. Use the pencils beside page text.' : 'Edit mode closed. Unsaved drafts remain available until you reload.');
     } else if (intent === 'apply-theme' || intent === 'theme-mode') {
       await action('website-theme', { id:intent === 'theme-mode' ? state.settings.websiteTheme || 'default' : id, mode:intent === 'theme-mode' ? button.dataset.mode : state.settings.websiteThemeMode || 'dark' });
@@ -489,6 +498,7 @@ try {
   main.innerHTML = `<section class="panel"><h1>The sanctuary couldn’t open</h1><p>${e(error.message)}</p><p>Check that the local server is running, then reload this page. Existing save files have been preserved.</p><button class="button primary" id="retry-load">Try again</button></section>`;
   $('#retry-load').addEventListener('click', () => location.reload());
 }
+
 
 
 

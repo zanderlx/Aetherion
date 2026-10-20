@@ -11,11 +11,27 @@ import { normalizeCatalog, definitionKinds } from '../public/definitions.js';
 import { libraryEditorPage, editorRoutes } from '../public/library-editor.js';
 import { keeperPage, avatarSVG } from '../public/keeper.js';
 import { roadmapPage } from '../public/roadmap.js';
+import { card } from '../public/ui.js';
 
 const catalog = normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8')));
 const settings = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
 const horses = createEncounters(catalog, 'aetherion', 3);
 const state = { settings, horses: [], sold: [], gold: 0, encounters: { aetherion: horses }, transactions: [], savedAt: new Date().toISOString() };
+test('horse previews and details expose edit targets and the simplified nine-color layout', () => {
+  const horse = {...horses[0],birthday:'2020-02-29',palette:{...horses[0].palette,name:'HiddenPaletteName'}};
+  const html = profileContent(horse,state);
+  assert.match(html,/data-copy-key="horse.title"/);
+  assert.match(html,/02-29-2020/);
+  assert.doesNotMatch(html,/HiddenPaletteName|>Return |IN YOUR CARE|A WILD ACQUAINTANCE/);
+  assert.ok(html.indexOf('Eye color') > html.indexOf('Traits & little details'));
+  assert.ok(html.indexOf('profile-id-footer') > html.indexOf('profile-actions'));
+  const preview = card(horse,state,'stable');
+  assert.equal((preview.match(/--swatch:/g) || []).length,9);
+  assert.doesNotMatch(preview,/HiddenPaletteName|A NEW ACQUAINTANCE|In your care/);
+  const wild = wildPage(catalog.locations[0],state);
+  assert.match(wild,/data-copy-key="encounters.count"/);
+  assert.doesNotMatch(wild,/field-note|stable-shortcut/);
+});
 test('every navigation destination renders content without undefined values', () => {
   for (const [route] of groups.flatMap(group => group.items)) {
     const [section, page] = route.split('/');

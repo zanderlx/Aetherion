@@ -11,7 +11,7 @@ export function wildPage(location, state, locations = [location], catalog) {
   <h1 id="location-title" data-copy-key="hero.title">${e(location.name)}</h1><p data-copy-key="hero.description">${e(location.description)}</p>
   <div class="hero-bottom"><span>${icon('compass')} ${e(location.custom ? location.subtitle || atmosphereDefinition.name : location.id === 'hallowhoof' ? 'Halloween realm' : 'The evergreen realm')}</span><span class="hero-divider"></span><span>${icon('leaf')} Free exploration</span></div>
   </div><span class="hero-mark" aria-hidden="true">✧</span></section>
-  <section class="encounters" aria-labelledby="encounter-title"><div class="section-heading"><div><span class="eyebrow">A CHANCE ENCOUNTER</span><h2 id="encounter-title" data-copy-key="encounters.title">${e(atmosphereDefinition.encounterTitle)}</h2><p data-copy-skip>${horses.length ? `${horses.length} ${horses.length === 1 ? 'horse has' : 'horses have'} wandered into the clearing. Get to know them.` : 'The clearing is quiet. Follow the trail to meet someone new.'}</p></div><button class="button primary search-button" data-action="search">${icon('refresh')} Search the wilds</button></div>
+  <section class="encounters" aria-labelledby="encounter-title"><div class="section-heading"><div><span class="eyebrow">A CHANCE ENCOUNTER</span><h2 id="encounter-title" data-copy-key="encounters.title">${e(atmosphereDefinition.encounterTitle)}</h2><p data-copy-key="encounters.count" data-copy-label="Encounter counter" data-copy-default="{encounterCount} horses have wandered into the clearing. Get to know them.">${horses.length ? `${horses.length} ${horses.length === 1 ? 'horse has' : 'horses have'} wandered into the clearing. Get to know them.` : 'The clearing is quiet. Follow the trail to meet someone new.'}</p></div><button class="button primary search-button" data-action="search">${icon('refresh')} Search the wilds</button></div>
   <div class="horse-grid">${horses.map(h => card(h, state)).join('')}</div>
   ${horses.length === 0 ? emptyState('A little further down the trail…', 'Search the wilds above to discover your next companions.', null, null, 'leaf') : ''}
   </section>
@@ -87,6 +87,7 @@ export function editModePage(state) {
   return `${heading('THE KEEPER’S WORKBENCH', 'Edit Mode', 'Manage website wording from one dedicated place.')}
   <section class="panel" data-copy-ui><h2>Page Text Editing</h2><p>Current status: <strong>${state.settings.developerEditMode ? 'Enabled' : 'Disabled'}</strong>. Enable editing, then visit any page and use its pencils to change headings, section text, sidebar labels, or footer wording.</p><p>Save one section immediately, or preview several edits and use Save Page. Restore defaults and discard controls are available in the editing toolbar. All saved wording is included in backups and exports.</p><button class="button primary" data-action="toggle-copy-mode" aria-pressed="${Boolean(state.settings.developerEditMode)}">${state.settings.developerEditMode ? 'Disable' : 'Enable'} Edit Mode</button></section>`;
 }
+
 
 
 
