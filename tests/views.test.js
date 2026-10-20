@@ -26,7 +26,7 @@ test('wild horses have no deletion control; owned horses can be released', () =>
 test('horse previews and details expose edit targets and the simplified nine-color layout', () => {
   const horse = {...horses[0],birthday:'2020-02-29',palette:{...horses[0].palette,name:'HiddenPaletteName'}};
   const html = profileContent(horse,state);
-  assert.match(html,/data-copy-key="horse.title"/);
+  assert.match(html,/id="profile-title"/);
   assert.match(html,/02-29-2020/);
   assert.doesNotMatch(html,/HiddenPaletteName|>Return |IN YOUR CARE|A WILD ACQUAINTANCE/);
   assert.ok(html.indexOf('Eye color') > html.indexOf('Traits & little details'));
@@ -165,4 +165,5 @@ test('all existing definitions and blank editor forms render without missing val
     }
   }
 });
+
 

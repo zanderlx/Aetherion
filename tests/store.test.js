@@ -18,6 +18,18 @@ async function fixture(t) {
   });
   return { directory, store: await new GameStore(directory, catalog, defaults).init() };
 }
+test('catch validates names atomically and saves the chosen name', async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const id = store.state.encounters.aetherion[0].id;
+  await assert.rejects(store.action('catch',{id,name:'x'.repeat(61)}));
+  assert.equal(store.state.horses.length,0);
+  assert.equal(store.state.encounters.aetherion[0].id,id);
+  await store.action('catch',{id,name:'  Moonbeam  '});
+  assert.equal(store.state.horses[0].name,'Moonbeam');
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(restored.state.horses[0].name,'Moonbeam');
+});
 test('zone and horse deletion persist without awarding gold or removing unrelated records', async t => {
   const { directory, store } = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});

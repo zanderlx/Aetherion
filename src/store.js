@@ -1,3 +1,4 @@
+import { validateHorseName } from '../public/horse-fields.js';
 import { mkdir, readFile, writeFile, rename, copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -58,7 +59,7 @@ export class GameStore {
         if (type === 'catch') {
           if (isCollected) throw new Error('This horse is already in your stable.');
           if (!next.settings.ignoreStableLimit && next.horses.length >= next.settings.stableCapacity) throw new Error('Your stable is full. Adjust capacity in Game Settings.');
-          next.horses.push({ ...horse, caughtAt: new Date().toISOString() });
+          next.horses.push({ ...horse, name: payload.name === undefined ? horse.name : validateHorseName(payload.name), caughtAt: new Date().toISOString() });
         } else {
           next.horses = next.horses.filter(h => h.id !== horse.id);
           next.sold.push({ ...horse, soldAt: new Date().toISOString(), soldFor: next.settings.sellingPrice });
@@ -70,8 +71,7 @@ export class GameStore {
         const horse = next.horses.find(h => h.id === payload.id);
         if (!horse) throw new Error('Horse not found in your stable.');
         if (type === 'rename') {
-          if (typeof payload.name !== 'string' || payload.name.trim().length > 60) throw new Error('Names must be 60 characters or fewer.');
-          horse.name = payload.name.trim();
+          horse.name = validateHorseName(payload.name);
         } else horse.favorite = !horse.favorite;
       } else if (type === 'save-profile') {
         next.keeper = validateKeeper(payload);

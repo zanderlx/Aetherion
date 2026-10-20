@@ -1,3 +1,4 @@
+import { createHorseDialogs } from './horse-dialogs.js';
 import { icon, sidebar, groups, escapeHTML as e, number } from './ui.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
 import { profileContent } from './profile.js';
@@ -27,6 +28,7 @@ const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() =
   const horse = findHorse(profile.dataset.horseId);
   return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:displayBirthday(horse.birthday),personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
 }});
+const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:(id,kind) => { render(); if (kind === 'catch') { profile.close(); main.focus(); } else inspect(id); }});
 async function request(path, body) {
   const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
   const result = await response.json();
@@ -97,6 +99,7 @@ async function navigate() {
   if (confirmation.open) confirmation.close();
   copyEditor.close();
   profileCopyEditor.close();
+  horseDialogs.close();
   try {
     if (route.startsWith('wilds/') && !state.encounters[route.split('/')[1]] && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action('visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
@@ -252,6 +255,9 @@ document.addEventListener('click', async event => {
     return askToDelete('delete-definition',{kind,id},catalog[kind].find(d => d.id === id)?.name || 'Entry','Remove this option from future use. Existing horse details stay unchanged. Matching zone pools are updated; zones with empty pools close. Deleted atmospheres use a remaining atmosphere, item themes are cleared, and a deleted active website theme returns to Original.');
   }
   if (intent === 'site-search') return openSiteSearch();
+  if (intent === 'catch') return horseDialogs.open(id,'catch');
+  if (intent === 'rename-horse') return horseDialogs.open(id,'rename');
+  if (intent === 'edit-horse-field') return horseDialogs.open(id,'field',button.dataset.field);
   if (intent === 'inspect') return inspect(id);
   if (intent === 'close-profile') return profile.close();
   if (intent === 'cancel-sell') return confirmation.close();
@@ -344,13 +350,6 @@ document.addEventListener('click', async event => {
       render();
       main.querySelector('[data-action="search"]')?.focus({ preventScroll: true });
       notify('Fresh hoofprints. New companions are waiting.');
-    } else if (intent === 'catch') {
-      const horse = findHorse(id);
-      await action('catch', { id });
-      profile.close();
-      render();
-      main.focus({ preventScroll: true });
-      notify(`${horse.name || horse.species} is now in your stable.`);
     } else if (intent === 'confirm-sell') {
       await action('sell', { id });
       confirmation.close();
@@ -383,7 +382,7 @@ document.addEventListener('click', async event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['keeper-form', 'gold-form', 'settings-form', 'rename-form', 'zone-form', 'definition-form'].includes(form.id)) return;
+  if (!['keeper-form', 'gold-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -426,12 +425,7 @@ document.addEventListener('submit', async event => {
       render();
       $('#settings-status').textContent = 'Settings saved. Your next search and future sales will use these values.';
       notify('Your world, a little more your own. Settings saved.');
-    } else {
-      await action('rename', { id: form.dataset.id, name: values.name });
-      render();
-      inspect(form.dataset.id);
-      $('#horse-name').focus();
-      notify('Your companion’s name is saved.');
+
     }
   } catch (error) {
     if (form.id === 'zone-form' && $('#zone-status')) $('#zone-status').textContent = error.message;

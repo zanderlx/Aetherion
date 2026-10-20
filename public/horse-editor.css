@@ -1,0 +1,7 @@
+.horse-name-row { display:flex; align-items:center; gap:12px; }
+.horse-name-row h2 { margin-right:0; }
+.horse-edit-dialog { width:min(520px,calc(100vw - 32px)); }
+.horse-edit-body { padding:24px; }
+.horse-edit-body label { display:grid; gap:10px; }
+.horse-edit-body input,.horse-edit-body select { width:100%; box-sizing:border-box; }
+.horse-edit-body .form-actions { display:flex; flex-wrap:wrap; gap:12px; }
