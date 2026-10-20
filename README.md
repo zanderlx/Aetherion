@@ -1,18 +1,31 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.1](docs/assets/aetherion-banner.svg)
+
+**Version 1.1.0 · Collection & Horse Profile Update**
 
 **A local fantasy horse sanctuary you can make your own.**
 
 Explore woodland realms, collect companions, and customize your world through visual editors.
 
-[Get Started](#get-started) · [Features](#version-1-features) · [Customization](#make-it-yours) · [Backups](#backups) · [Roadmap](#remaining-features)
+[Get Started](#get-started) · [Features](#features) · [Customization](#make-it-yours) · [Backups](#backups) · [Roadmap](#remaining-features)
 
 </div>
 
 ---
 
-> **Version 1 is a working collection and customization preview.** Catching, saving, editing definitions, and website customization work today. The full probability-based Horse Generator, full Horse Editor, breeding, inventory gameplay, and Town activities are still planned.
+> **Version 1.1 is a working collection and customization preview.** Catching, saving, editing definitions, and website customization work today. The full probability-based Horse Generator, full Horse Editor, breeding, inventory gameplay, and Town activities are still planned.
+
+## Version History
+
+Versions follow **major.minor.patch**: major for breaking changes, minor for compatible features, patch for fixes. Commits are grouped by release rather than each receiving a new version.
+
+| Version | Changes |
+| --- | --- |
+| **1.1.0 — current** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
+| **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
+
+Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **51 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -87,13 +100,13 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 
 </details>
 
-## Version 1 Features
+## Features
 
 | 🌿 Explore & collect | ✨ Build & customize |
 | --- | --- |
 | Wilds encounters with inspectable horse profiles | Create, edit, randomize, and delete zones |
-| Catch, rename, favorite, sell, and delete horses | Define species, traits, palettes, eyes, and personalities |
-| Stable search, sorting, and sold-horse history | Maintain mutation, item, item-theme, and atmosphere definitions |
+| Catch, rename, favorite, sell, and release owned horses | Define species, traits, palettes, eyes, and personalities |
+| Stable search, sorting, favorites, and preserved sale records | Maintain mutation, item, item-theme, and atmosphere definitions |
 | Nine-region color swatches and saved characteristics | Edit website wording without changing source code |
 | Current gold editor and transaction history | Nine website themes, plus custom theme editing |
 | Site-wide search with **Ctrl+K / Cmd+K** | Profile name, About Me, and twelve avatar color choices |
@@ -113,11 +126,27 @@ Every supplied hex value is preserved. These are palette definitions; choosing o
 
 ### What the preview does
 
-Encounters cycle through configured species, complete palette pools, eye definitions, and personalities. They are **not weighted random spawns**. Preview horses are adult, normal-sized, mutation-free, and free to catch.
+Each horse independently draws a species with equal odds from its zone’s pool. Repeats are allowed, including three of the same species. New searches use this rule; saved encounters stay unchanged. Complete palettes, eye definitions, and personalities still cycle through their configured pools. Preview horses are adult, normal-sized, mutation-free, and free to catch.
 
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 
 Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; **Starting Gold** is reserved for future new-game/reset functionality. Editing mutation and item descriptions does not execute their effects.
+
+### Horse view and preview refinements
+
+Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
+
+Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color appears first in Traits & Little Details; Horse ID is tracked internally. Interface font sizes increased by two pixels.
+
+New preview adults receive a random birthday 3–20 years before creation, saved once in ISO date form and displayed as MM-DD-YYYY. The range is provisional for adult preview horses; existing saved birthdays are preserved.
+
+### Horse names, notes, and details
+
+Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. The default name is grey until changed; the catch dialog has Save and Cancel, with no X or separate keep-name button. Owned horses have a rename pencil beside their name. Owned horse profiles have saved notes in place of the personality description, with scrolling when needed and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
+
+Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
+
+Stables contains My Horses, Favorites, and Breeding. Wilds tabs and sidebar locations sort alphabetically. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
 
 ## Make It Yours
 
@@ -160,8 +189,8 @@ The same roadmap is available in **Developer Settings → Remaining Features**.
 
 | Remaining feature | Information or decisions needed |
 | --- | --- |
-| **Horse Editor & custom creator** | Editable fields, validation versus sandbox overrides, duplicate IDs, and import behavior. A basic editor can start with the existing schema; spawn probabilities are not a prerequisite. |
-| **Horse Generator & Spawn Rates** | Correct or approve relative weights totaling 115% for uncommon species and 101.01% for standard mutations; define special-spawn splits/order, restricted species, age/gender/size distributions, palette/eye odds, and trait counts. |
+| **Horse Editor & custom creator** | Birthday, age, origin, size, personality, and eye edits already work. Remaining: species/palette/trait/mutation editing, sandbox validation, duplicate IDs, and import behavior. |
+| **Horse Generator & Spawn Rates** | Equal species odds within each zone are implemented. Remaining: mutation weights (the supplied standard weights total 101.01%), special-spawn splits/order, age/gender/size distributions, palette/eye odds, and trait counts. |
 | **Mutation effects & exact artwork** | Stacking, repeats, wings, special-spawn slots, the two uses of “Astral,” base stats, and visual references/assets. The five fixed mutation palettes are now supplied. |
 | **Breeding & family history** | Parent eligibility, costs, timing, regional color mixing, trait/mutation inheritance, special-spawn inheritance, twins, and lineage restrictions. Cross-species 50/50 species inheritance is already confirmed. |
 | **Inventory, gacha & shop** | Final tack/potion lists, equip slots, effects, consumption, duplicates, and prices. The 50-gold gacha price and main reward splits are already supplied. |
@@ -202,21 +231,3 @@ The automated suite checks persistence, deletion, palettes, theme contrast, prof
 ✦ **A little world of your own.** ✦
 
 </div>
-
-### Horse view and preview refinements
-
-Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
-
-Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color appears first in Traits & Little Details; Horse ID is tracked internally. Interface font sizes increased by two pixels.
-
-New preview adults receive a random birthday 3–20 years before creation, saved once in ISO date form and displayed as MM-DD-YYYY. The range is provisional for adult preview horses; existing saved birthdays are preserved.
-
-### Horse names, notes, and details
-
-Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. Owned horses have a rename pencil beside their name. Owned horse profiles have saved notes in place of the personality description, with scrolling when needed and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
-
-Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
-
-Stables contains My Horses, Favorites, and Breeding. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
-
-Wild species are selected independently with equal odds from the zone’s species pool. Repeats are allowed, including three of the same species. This applies to new searches; saved encounters remain unchanged.
