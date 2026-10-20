@@ -1,19 +1,19 @@
-.zone-field{display:flex;flex-direction:column;gap:8px;margin:20px 0;font-size:12px;color:var(--gold)}
-.zone-field input,.zone-field select,.zone-field textarea{width:100%;font:13px/1.7 var(--sans)}
+.zone-field{display:flex;flex-direction:column;gap:8px;margin:20px 0;font-size:14px;color:var(--gold)}
+.zone-field input,.zone-field select,.zone-field textarea{width:100%;font:15px/1.7 var(--sans)}
 .zone-field textarea{resize:vertical;min-height:110px;border:1px solid #675744;border-radius:5px;background:#211e1b;color:var(--text);padding:12px}
 .zone-field textarea:focus-visible{outline:2px solid #efd192;outline-offset:4px}
 .zone-draft-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0 2px}
 .zone-pool{min-width:0;border:1px solid var(--border);border-radius:6px;margin:25px 0 0;padding:15px}
-.zone-pool legend{font:20px var(--serif);padding:0 8px;color:var(--text)}
-.zone-pool p{font-size:11px;margin-bottom:12px}
+.zone-pool legend{font:22px var(--serif);padding:0 8px;color:var(--text)}
+.zone-pool p{font-size:13px;margin-bottom:12px}
 .zone-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:245px;overflow:auto;gap:5px;scrollbar-width:thin}
-.zone-choice{display:flex;align-items:center;gap:9px;padding:7px 6px;min-height:40px;color:var(--text);font-size:12px;cursor:pointer;border-radius:4px}
+.zone-choice{display:flex;align-items:center;gap:9px;padding:7px 6px;min-height:40px;color:var(--text);font-size:14px;cursor:pointer;border-radius:4px}
 .zone-choice:hover,.zone-choice:has(input:checked){background:#d2b4770c}
 .zone-choice input{width:17px;height:17px;min-height:17px;flex-shrink:0}
 .zone-guide{margin-top:20px}
 .zone-preview .hero-content{padding:28px;min-width:0}
-.zone-preview h2{font-size:32px;line-height:1.25;color:#fff1d5;margin:15px 0}
-.zone-preview p{font-size:12px}
+.zone-preview h2{font-size:34px;line-height:1.25;color:#fff1d5;margin:15px 0}
+.zone-preview p{font-size:14px}
 .zone-preview .hero-bottom{margin-top:18px}
 .zone-preview{min-height:310px}
 .zone-collection{margin-top:30px}
