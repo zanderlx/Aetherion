@@ -202,7 +202,8 @@ test('built-in zone edits and renamed built-in species and palettes keep pool re
   assert.ok(location.speciesPool.includes('Mooncorn'));
   assert.ok(location.palettePool.includes('Sunlight'));
   await store.action('search', { locationId: original.id });
-  assert.equal(store.state.encounters[original.id][0].species, 'Mooncorn');
+  assert.ok(store.state.encounters[original.id].every(h => location.speciesPool.includes(h.species)));
+  assert.ok(store.state.encounters[original.id].every(h => h.species !== 'Unicorn'));
 });
 test('all definition categories support additions and updates', async t => {
   const { store } = await fixture(t);

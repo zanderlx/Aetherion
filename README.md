@@ -218,3 +218,5 @@ Catch a horse to review its prefilled name, optionally change it, and select Sav
 Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
 Stables contains My Horses, Favorites, and Breeding. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
+
+Wild species are selected independently with equal odds from the zone’s species pool. Repeats are allowed, including three of the same species. This applies to new searches; saved encounters remain unchanged.

@@ -9,13 +9,13 @@ export function randomBirthday(now = new Date(), choose = randomInt) {
 }
 
 // Explicitly a preview sampler. It does not claim to implement production spawn odds.
-export function createEncounters(catalog, locationId, count, searchNumber = 0, location) {
+export function createEncounters(catalog, locationId, count, searchNumber = 0, location, chooseSpecies = randomInt) {
   location ??= locationsFor(catalog).find(l => l.id === locationId);
   if (!location) throw new Error('Unknown location.');
-  const pool = location.speciesPool;
+  const pool = [...new Set(location.speciesPool)];
   const paletteNames = location.palettePool;
   return Array.from({ length: count }, (_, i) => {
-    const species = pool[(i + searchNumber * count) % pool.length];
+    const species = pool[chooseSpecies(pool.length)];
     const palette = catalog.palettes.find(p => p.name === paletteNames[(i + searchNumber) % paletteNames.length]);
     const personality = catalog.personalities[(i + searchNumber * 2) % catalog.personalities.length];
     const definition = catalog.species.find(s => s.name === species);
