@@ -5,7 +5,7 @@ export function createHorseDialogs({getState,getCatalog,findHorse,save,onSaved,n
   let dialog, current, saving = false;
   function open(id,kind,field) {
     const horse = findHorse(id);
-    if (!horse) return;
+    if (!horse || (kind === 'field' && !getState().settings.developerEditMode)) return;
     if (kind === 'rename' && !getState().horses.some(h => h.id === id)) return;
     if (!dialog) {
       dialog = document.createElement('dialog');

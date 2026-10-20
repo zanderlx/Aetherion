@@ -6,6 +6,7 @@ import { join, dirname, resolve, basename } from 'node:path';
 import { GameStore } from '../src/store.js';
 import { newZoneDraft } from '../public/zones.js';
 import { locationsFor } from '../public/zones.js';
+import {horseFieldOptions} from '../public/horse-fields.js';
 
 const catalog = JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8'));
 const defaults = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
@@ -42,6 +43,29 @@ test('horse notes survive catching and reload; invalid notes leave the save unch
   assert.equal(restored.state.horses[0].notes,notes);
   await store.action('horse-notes',{id,notes:''});
   assert.equal(store.state.horses[0].notes,'');
+});
+test('edit mode updates only the selected horse with validated choices and dates', async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const id = store.state.encounters.aetherion[0].id;
+  const other = structuredClone(store.state.encounters.aetherion[1]);
+  await assert.rejects(store.action('horse-field',{id,field:'age',value:'Elder'}));
+  await store.action('developer-edit-mode',{enabled:true});
+  const options = horseFieldOptions('personality',store.getCatalog(),store.state);
+  assert.deepEqual(options.map(o => o.label),options.map(o => o.label).sort((a,b) => a.localeCompare(b)));
+  for (const [field,value] of Object.entries({age:'Elder',origin:'Wild',size:'Teacup',birthday:'2024-02-29',personality:options[0].value})) {
+    await store.action('horse-field',{id,field,value});
+  }
+  const saved = structuredClone(store.state.encounters.aetherion[0]);
+  for (const [field,value] of [['birthday','2023-02-29'],['birthday','9999-01-01'],['age','Unknown'],['origin','Unknown'],['size','Unknown'],['personality','Unknown'],['gold','100']]) {
+    await assert.rejects(store.action('horse-field',{id,field,value}));
+  }
+  assert.deepEqual(store.state.encounters.aetherion[0],saved);
+  assert.deepEqual(store.state.encounters.aetherion[1],other);
+  assert.equal(saved.sizePercent,75);
+  assert.equal(saved.personality.name,options[0].label);
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.deepEqual(restored.state.encounters.aetherion[0],saved);
 });
 test('zone and horse deletion persist without awarding gold or removing unrelated records', async t => {
   const { directory, store } = await fixture(t);

@@ -8,3 +8,4 @@
 .horse-notes { padding:0 28px 24px; }
 .horse-notes textarea { width:100%; box-sizing:border-box; height:140px; overflow-y:auto; resize:vertical; }
 .horse-notes .form-actions { display:flex; gap:12px; margin-top:12px; }
+.horse-field-pencil { width:28px; height:28px; margin-left:6px; vertical-align:middle; }

@@ -1,4 +1,4 @@
-import { validateHorseName, horseRecords } from '../public/horse-fields.js';
+import { validateHorseName, horseRecords, updateHorseField } from '../public/horse-fields.js';
 import { mkdir, readFile, writeFile, rename, copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -73,6 +73,11 @@ export class GameStore {
         if (type === 'rename') {
           horse.name = validateHorseName(payload.name);
         } else horse.favorite = !horse.favorite;
+      } else if (type === 'horse-field') {
+        if (!next.settings.developerEditMode) throw new Error('Enable Edit Mode to change horse details.');
+        const horse = horseRecords(next).find(h => h.id === payload.id);
+        if (!horse) throw new Error('Horse not found.');
+        updateHorseField(horse,payload.field,payload.value,catalog,next);
       } else if (type === 'horse-notes') {
         const horse = horseRecords(next).find(h => h.id === payload.id);
         if (!horse) throw new Error('Horse not found.');

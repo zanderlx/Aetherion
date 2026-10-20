@@ -22,6 +22,16 @@ test('wild horses have no deletion control; owned horses can be released', () =>
   const owned = profileContent(horses[0],{...state,horses:[horses[0]]});
   assert.match(owned,/Release Horse/);
   assert.doesNotMatch(owned,/Delete Horse/);
+  assert.match(owned,/data-action="rename-horse"/);
+  assert.doesNotMatch(owned,/rename-form|Give your companion a name/);
+  assert.doesNotMatch(profileContent(horses[0],state),/data-action="rename-horse"/);
+});
+test('horse fields have individual edit controls only in edit mode and notes are escaped', () => {
+  const horse = {...horses[0],notes:'</textarea><script>bad</script>'};
+  const html = profileContent(horse,{...state,settings:{...settings,developerEditMode:true}});
+  for (const field of ['age','origin','size','birthday','personality','eye']) assert.ok(html.includes(`data-field="${field}"`));
+  assert.doesNotMatch(profileContent(horse,state),/data-action="edit-horse-field"/);
+  assert.match(html,/&lt;\/textarea&gt;&lt;script&gt;/);
 });
 test('horse previews and details expose edit targets and the simplified nine-color layout', () => {
   const horse = {...horses[0],birthday:'2020-02-29',palette:{...horses[0].palette,name:'HiddenPaletteName'}};
