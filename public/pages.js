@@ -15,8 +15,6 @@ export function wildPage(location, state, locations = [location], catalog) {
   <div class="horse-grid">${horses.map(h => card(h, state)).join('')}</div>
   ${horses.length === 0 ? emptyState('A little further down the trail…', 'Search the wilds above to discover your next companions.', null, null, 'leaf') : ''}
   </section>
-  <div class="wild-bottom"><div class="field-note"><span class="note-icon">${icon('book')}</span><div><span class="eyebrow">THE HORSEKEEPER’S NOTES</span><h3>Every great bond begins with a little curiosity.</h3><p data-copy-key="field-note.body" data-copy-default="Inspect a horse to see its palette and personality. Bring it home, or sell it for {sellingPrice} gold from its profile.">Inspect a horse to see its palette and personality. Bring it home, or sell it for <strong>${number(state.settings.sellingPrice)} gold</strong> from its profile.</p></div></div>
-  <a class="stable-shortcut" href="#stable/all">${icon('stable')}<span>Your sanctuary<small>${state.horses.length} ${state.horses.length === 1 ? 'companion' : 'companions'} in your care</small></span>${icon('arrow')}</a></div>
   <p class="preview-note">${icon('spark')} Foundation preview · Curated sample encounters, not final spawn odds. Artwork is illustrative; missing species traits are marked in profiles.</p>`;
 }
 export function stablePage(kind, state) {
@@ -89,5 +87,6 @@ export function editModePage(state) {
   return `${heading('THE KEEPER’S WORKBENCH', 'Edit Mode', 'Manage website wording from one dedicated place.')}
   <section class="panel" data-copy-ui><h2>Page Text Editing</h2><p>Current status: <strong>${state.settings.developerEditMode ? 'Enabled' : 'Disabled'}</strong>. Enable editing, then visit any page and use its pencils to change headings, section text, sidebar labels, or footer wording.</p><p>Save one section immediately, or preview several edits and use Save Page. Restore defaults and discard controls are available in the editing toolbar. All saved wording is included in backups and exports.</p><button class="button primary" data-action="toggle-copy-mode" aria-pressed="${Boolean(state.settings.developerEditMode)}">${state.settings.developerEditMode ? 'Disable' : 'Enable'} Edit Mode</button></section>`;
 }
+
 
 
