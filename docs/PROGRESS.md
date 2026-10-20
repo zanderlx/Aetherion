@@ -36,7 +36,7 @@ A basic Horse Editor can begin with the existing schema. Generator probabilities
 
 ## Verification
 
-**42 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**45 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -52,3 +52,8 @@ Browser observation was blocked by the browser tool's localhost policy. No alter
 8. Enable Edit Mode; preview/save/discard/reset wording and verify after refresh.
 9. Check keyboard navigation, Escape, dialog focus, mobile drawer focus, and reduced motion.
 10. Create a dated backup and export; verify saved data and restart retention.
+
+## Horse view refinements
+
+Implemented editable profile wording and encounter counter, reversible text deletion, nine-color previews without palette names, simplified Wilds/profile labels, larger fonts, and saved random adult birthdays displayed as MM-DD-YYYY. Existing birthdays remain unchanged. Changes are committed separately and remain unpushed per the current workflow preference. Browser visual checks remain unverified.
+

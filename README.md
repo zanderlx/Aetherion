@@ -201,3 +201,11 @@ The automated suite checks persistence, deletion, palettes, theme contrast, prof
 ✦ **A little world of your own.** ✦
 
 </div>
+
+### Horse view and preview refinements
+
+Edit Mode also covers horse-profile headings, labels, descriptive wording, and the live Wilds encounter counter. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
+
+Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color is last in Traits & Little Details, and Horse ID appears at the profile bottom. Interface font sizes increased by two pixels.
+
+New preview adults receive a random birthday 3–20 years before creation, saved once in ISO date form and displayed as MM-DD-YYYY. The range is provisional for adult preview horses; existing saved birthdays are preserved.
