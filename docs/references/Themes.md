@@ -1,0 +1,52 @@
+# Themes
+- Amber
+- Amethyst
+- Armored [Medieval Event]
+- Aurora Borealis [Christmas Event]
+- Autumn
+- Berry
+- Blackberry
+- Blue Agate
+- Blueberry
+- Candycane [Christmas Event]
+- Cloud
+- Clover
+- Coffee
+- Cookie
+- Cotton Candy [Carnival Event]
+- Cow Print [Western Event]
+- Dyed [Easter Event]
+- Floral
+- Fossilized
+- Frozen [Christmas Event]
+- Galaxy
+- Ghoul [Halloween Event]
+- Gift (Rare)
+- Gold (Rare)
+- Goop [Alien Event]
+- Heavenly (Rare)
+- Lemon
+- Magma
+- Martian [Alien Event]
+- Mint [Valentine Event]
+- Moon
+- Nature
+- Nebula
+- Obsidian
+- Ocean
+- Opal
+- Polka Dot [Carnival Event]
+- Popcorn [Carnival Event]
+- Pumpkin [Halloween Event]
+- Purple Geode [Royal Event]
+- Rose [Valentine Event]
+- Royal Pattern [Royal Event]
+- Ruby
+- Sakura (Rare)
+- Stained Glass [Medieval Event]
+- Stardust
+- Sun
+- Thunder
+- Tulip [Easter Event]
+- Void (Rare)
+- Witch Potion [Halloween Event]

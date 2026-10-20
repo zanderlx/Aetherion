@@ -1,0 +1,1600 @@
+{
+  "version": 1,
+  "source": "Supplied Markdown references; original spelling preserved.",
+  "species": [
+    {
+      "id": "akhal-teke",
+      "name": "Akhal Teke",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "alces",
+      "name": "Alces",
+      "event": "Christmas",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "anticorn",
+      "name": "Anticorn",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "bisorse",
+      "name": "Bisorse",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "cactaline",
+      "name": "Cactaline",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "calaverita",
+      "name": "Calaverita",
+      "event": "Halloween",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "caniquine",
+      "name": "Caniquine",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "caprine",
+      "name": "Caprine",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "carousel",
+      "name": "Carousel",
+      "event": "Carnival",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "celestial",
+      "name": "Celestial",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "clydesdale",
+      "name": "Clydesdale",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "crystallion",
+      "name": "Crystallion",
+      "event": "Royal",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "cybred",
+      "name": "Cybred",
+      "event": null,
+      "restriction": "unsure where to source this one, tbd",
+      "traitsComplete": false
+    },
+    {
+      "id": "donkey",
+      "name": "Donkey",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "equenari",
+      "name": "Equenari",
+      "event": "Alien",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "equus",
+      "name": "Equus",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "fae",
+      "name": "Fae",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "felorse",
+      "name": "Felorse",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "fjord",
+      "name": "Fjord",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "flora",
+      "name": "Flora",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "friesan",
+      "name": "Friesan",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "gargoyle",
+      "name": "Gargoyle",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "ghoulsteed",
+      "name": "Ghoulsteed",
+      "event": "Halloween",
+      "restriction": null,
+      "traitsComplete": true
+    },
+    {
+      "id": "giraffetti",
+      "name": "Giraffetti",
+      "event": "Carnival",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "griff",
+      "name": "Griff",
+      "event": "Medieval",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "hauntmare",
+      "name": "Hauntmare",
+      "event": "Halloween",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "heartbane",
+      "name": "Heartbane",
+      "event": "Valentine",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "hippocampus",
+      "name": "Hippocampus",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "hollyhoof",
+      "name": "Hollyhoof",
+      "event": "Christmas",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "honeytrot",
+      "name": "Honeytrot",
+      "event": "Easter",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "horse",
+      "name": "Horse",
+      "event": null,
+      "restriction": "Realistic breed",
+      "traitsComplete": false
+    },
+    {
+      "id": "kelpie",
+      "name": "Kelpie",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "kirin",
+      "name": "Kirin",
+      "event": null,
+      "restriction": "Egg cave only",
+      "traitsComplete": false
+    },
+    {
+      "id": "lusitano",
+      "name": "Lusitano",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "marwari",
+      "name": "Marwari",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "nephyrian",
+      "name": "Nephyrian",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "pastrequine",
+      "name": "Pastrequine",
+      "event": "Valentine",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "peryton",
+      "name": "Peryton",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "plush",
+      "name": "Plush",
+      "event": null,
+      "restriction": "Plush Machine only",
+      "traitsComplete": false
+    },
+    {
+      "id": "pony",
+      "name": "Pony",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "saurequine",
+      "name": "Saurequine",
+      "event": null,
+      "restriction": "Digsite only",
+      "traitsComplete": false
+    },
+    {
+      "id": "seraph",
+      "name": "Seraph",
+      "event": null,
+      "restriction": "Boss Fight only",
+      "traitsComplete": false
+    },
+    {
+      "id": "serpentine",
+      "name": "Serpentine",
+      "event": null,
+      "restriction": "Rare Spawn",
+      "traitsComplete": false
+    },
+    {
+      "id": "sovremeign",
+      "name": "Sovremeign",
+      "event": "Royal",
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "unicorn",
+      "name": "Unicorn",
+      "event": null,
+      "restriction": null,
+      "traitsComplete": false
+    },
+    {
+      "id": "wolper",
+      "name": "Wolper",
+      "event": "Easter",
+      "restriction": null,
+      "traitsComplete": false
+    }
+  ],
+  "personalities": [
+    {
+      "name": "Anxious",
+      "description": "The mount emits the startled emote when being dismounted, player is idle, near a crowd or loud event. If the mount is near other mounts or the player walks away, the sweat drop emote is emitted."
+    },
+    {
+      "name": "Affectionate",
+      "description": "The mount emits the sad emote when the player walks away from them. When the player is idle, or the mount is fed, the nuzzle emote is emitted. If mounted or near other mounts, the heart effect appears."
+    },
+    {
+      "name": "Clingy",
+      "description": "It emits the nuzzle emote when mounted, and the sad emote when dismounted or when the player walks away from it. Mount emits nuzzle emote when near other mounts. When the mount is near a crowd or a loud event, they follow the player more closely."
+    },
+    {
+      "name": "Curious",
+      "description": "The mount emits the question mark emote if a Clue is nearby, when player is idle, mounted, near other mounts or crowd and when hearing a loud event."
+    },
+    {
+      "name": "Energetic",
+      "description": "When the player is idle, 8 point star effect is emitted. When mounted, rays effect or excited emote is emitted. Being fed results in sparkles effect being emitted. If the player walks away, then the mount follows them quickly. Dismounted results in blep emote being emitted."
+    },
+    {
+      "name": "Grumpy",
+      "description": "Mounts always emit both hoof stomp and angry puff emotes in quick succession just after being equipped. The mount emits the angry puff emote when being mounted, and the hoof stomp emote when being dismounted. When the mount is groomed, player is idle, near a crowd or loud event, the angry puff emote is emitted."
+    },
+    {
+      "name": "Lazy",
+      "description": "Usually emits the tired emote when being groomed or if the player is idle. Mounts frequently tends to lie down. When the player walks away, mounts slowly follow them."
+    },
+    {
+      "name": "Playful",
+      "description": "Tends to walk around in circles a lot, and rarely lies down. Approaches other equipped mounts & the player with a tail wag emote. When mounted and dismounted, the blep emote is emitted. When the player walks away, mounts follow playfully."
+    }
+  ],
+  "palettes": [
+    {
+      "name": "Natural Gold",
+      "group": "Natural",
+      "natural": true,
+      "colors": {
+        "Coat Top": "#FDDEAE",
+        "Coat Bottom": "#C39975",
+        "Hair": "#E0951D",
+        "Hoof": "#2B221D",
+        "Nose": "#E0951D",
+        "Sock": "#B67F2E",
+        "Keratin": "#FDCC6F",
+        "Paint": "#FFCE7F",
+        "Pattern": "#FFAC54"
+      },
+      "complete": true
+    },
+    {
+      "name": "Template",
+      "group": "Other",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Pumpkin",
+      "group": "Halloween",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#CB7125",
+        "Coat Bottom": "#EEB77E",
+        "Hair": "#404725",
+        "Hoof": "#281406",
+        "Nose": "#E7DECC",
+        "Sock": "#563321",
+        "Keratin": "#381A00",
+        "Paint": "#F7CDA3",
+        "Pattern": "#DD9E44"
+      },
+      "complete": true
+    },
+    {
+      "name": "Mushroom",
+      "group": "Halloween",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Ghoulish",
+      "group": "Halloween",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#9BBC87",
+        "Coat Bottom": "#CFEAAF",
+        "Hair": "#B2CEA7",
+        "Hoof": "#EFE6D5",
+        "Nose": "#F7E9CE",
+        "Sock": "#7A736A",
+        "Keratin": "#EFE9DD",
+        "Paint": "#E1ECB1",
+        "Pattern": "#CFEAAF"
+      },
+      "complete": true
+    },
+    {
+      "name": "Monochrome",
+      "group": "Halloween",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#101217",
+        "Coat Bottom": "#101217",
+        "Hair": "#101217",
+        "Hoof": "#B3B3A9",
+        "Nose": "#B3B3A9",
+        "Sock": "#101217",
+        "Keratin": "#878478",
+        "Paint": "#878478",
+        "Pattern": "#878478"
+      },
+      "complete": true
+    },
+    {
+      "name": "Raven",
+      "group": "Halloween",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Chocolate Mint",
+      "group": "Valentines",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#A5D8A4",
+        "Coat Bottom": "#A5D8A4",
+        "Hair": "#54423D",
+        "Hoof": "#2B221D",
+        "Nose": "#54423D",
+        "Sock": "#357762",
+        "Keratin": "#2B221D",
+        "Paint": "#E0F2CB",
+        "Pattern": "#76AB89"
+      },
+      "complete": true
+    },
+    {
+      "name": "Neapolitan",
+      "group": "Valentines",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#FFEEE2",
+        "Coat Bottom": "#3F240E",
+        "Hair": "#FF98A1",
+        "Hoof": "#190F0D",
+        "Nose": "#FFC3C3",
+        "Sock": "#381A00",
+        "Keratin": "#FC5B91",
+        "Paint": "#3F240E",
+        "Pattern": "#F6C293"
+      },
+      "complete": true
+    },
+    {
+      "name": "Oreo",
+      "group": "Valentines",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#190F0D",
+        "Coat Bottom": "#190F0D",
+        "Hair": "#FFFEE6",
+        "Hoof": "#190F0D",
+        "Nose": "#190F0D",
+        "Sock": "#FFFEE6",
+        "Keratin": "#190F0D",
+        "Paint": "#190F0D",
+        "Pattern": "#FFFEE6"
+      },
+      "complete": true
+    },
+    {
+      "name": "Dango",
+      "group": "Valentines",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#FFC3C3",
+        "Coat Bottom": "#EFE3BC",
+        "Hair": "#EFE3BC",
+        "Hoof": "#FFA199",
+        "Nose": "#EFE3BC",
+        "Sock": "#6FAF4F",
+        "Keratin": "#81C14F",
+        "Paint": "#FFA199",
+        "Pattern": "#9FD450"
+      },
+      "complete": true
+    },
+    {
+      "name": "Peppermint",
+      "group": "Christmas",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Gingerbread",
+      "group": "Christmas",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Frozen",
+      "group": "Christmas",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Enchanted",
+      "group": "Other",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#D35BE5",
+        "Coat Bottom": "#240046",
+        "Hair": "#0B0E28",
+        "Hoof": "#5A199B",
+        "Nose": "#F3E4EB",
+        "Sock": "#272A82",
+        "Keratin": "#5A199B",
+        "Paint": "#F3E4EB",
+        "Pattern": "#0C103D"
+      },
+      "complete": true
+    },
+    {
+      "name": "Monarch Butterfly",
+      "group": "Other",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#000000",
+        "Coat Bottom": "#000000",
+        "Hair": "#000000",
+        "Hoof": "#D45600",
+        "Nose": "#FFFFFF",
+        "Sock": "#D45600",
+        "Keratin": "#FFFFFF",
+        "Paint": "#FFFFFF",
+        "Pattern": "#D45600"
+      },
+      "complete": true
+    },
+    {
+      "name": "Evil",
+      "group": "Other",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#161616",
+        "Coat Bottom": "#790019",
+        "Hair": "#161616",
+        "Hoof": "#161616",
+        "Nose": "#790019",
+        "Sock": "#161616",
+        "Keratin": "#790019",
+        "Paint": "#161616",
+        "Pattern": "#790019"
+      },
+      "complete": true
+    },
+    {
+      "name": "Bumblebee",
+      "group": "Easter",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#FDBF44",
+        "Coat Bottom": "#FDBF44",
+        "Hair": "#FDBF44",
+        "Hoof": "#1B1D23",
+        "Nose": "#1B1D23",
+        "Sock": "#1B1D23",
+        "Keratin": "#1B1D23",
+        "Paint": "#1B1D23",
+        "Pattern": "#1B1D23"
+      },
+      "complete": true
+    },
+    {
+      "name": "Carrot",
+      "group": "Easter",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Pastel",
+      "group": "Easter",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#FFD6D6",
+        "Coat Bottom": "#CCE0FF",
+        "Hair": "#E1ECB1",
+        "Hoof": "#CFB8FC",
+        "Nose": "#FFC3C3",
+        "Sock": "#9AC6E1",
+        "Keratin": "#FEECA0",
+        "Paint": "#CFEFC9",
+        "Pattern": "#FCDA85"
+      },
+      "complete": true
+    },
+    {
+      "name": "Lettuce",
+      "group": "Easter",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Tomato",
+      "group": "Easter",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Clown",
+      "group": "Carnival",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Scene",
+      "group": "Carnival",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#181B1D",
+        "Coat Bottom": "#F03167",
+        "Hair": "#83FF00",
+        "Hoof": "#181B1D",
+        "Nose": "#F03167",
+        "Sock": "#83FF00",
+        "Keratin": "#F03167",
+        "Paint": "#83FF00",
+        "Pattern": "#F03167"
+      },
+      "complete": true
+    },
+    {
+      "name": "Emerald",
+      "group": "Royal",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#0F7E6C",
+        "Coat Bottom": "#009104",
+        "Hair": "#A5E5D2",
+        "Hoof": "#E0F2CB",
+        "Nose": "#FBF2ED",
+        "Sock": "#17603D",
+        "Keratin": "#9BBC87",
+        "Paint": "#FFFFFF",
+        "Pattern": "#FFFFFF"
+      },
+      "complete": true
+    },
+    {
+      "name": "Ruby",
+      "group": "Royal",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Sapphire",
+      "group": "Royal",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "name": "Amethyst",
+      "group": "Royal",
+      "natural": false,
+      "colors": {
+        "Coat Top": "#E0AAFE",
+        "Coat Bottom": "#E0AAFE",
+        "Hair": "#D35BE5",
+        "Hoof": "#8977BE",
+        "Nose": "#7E52A1",
+        "Sock": "#AEA2BA",
+        "Keratin": "#8977BE",
+        "Paint": "#AEA2BA",
+        "Pattern": "#8977BE"
+      },
+      "complete": true
+    },
+    {
+      "name": "Topaz",
+      "group": "Royal",
+      "natural": false,
+      "colors": {},
+      "complete": false
+    },
+    {
+      "id": "mutated-palette-solar",
+      "name": "Solar",
+      "group": "Mutated Horse",
+      "natural": false,
+      "complete": true,
+      "description": "Fixed Solar colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
+      "colors": {
+        "Coat Top": "#FFDF44",
+        "Coat Bottom": "#FECC32",
+        "Hair": "#B72908",
+        "Hoof": "#FFFFFF",
+        "Nose": "#FEECA0",
+        "Sock": "#FFFAC5",
+        "Keratin": "#FFFFFF",
+        "Paint": "#FF9E30",
+        "Pattern": "#FF4800"
+      }
+    },
+    {
+      "id": "mutated-palette-lunar",
+      "name": "Lunar",
+      "group": "Mutated Horse",
+      "natural": false,
+      "complete": true,
+      "description": "Fixed Lunar colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
+      "colors": {
+        "Coat Top": "#9AC6E1",
+        "Coat Bottom": "#CCE0FF",
+        "Hair": "#E2F7FF",
+        "Hoof": "#0B0E28",
+        "Nose": "#7693B4",
+        "Sock": "#303C61",
+        "Keratin": "#FFFFFF",
+        "Paint": "#5860A3",
+        "Pattern": "#7693B4"
+      }
+    },
+    {
+      "id": "mutated-palette-astral",
+      "name": "Astral",
+      "group": "Mutated Horse",
+      "natural": false,
+      "complete": true,
+      "description": "Fixed Astral colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
+      "colors": {
+        "Coat Top": "#E0AAFE",
+        "Coat Bottom": "#E0AAFE",
+        "Hair": "#E0AAFE",
+        "Hoof": "#C67DFF",
+        "Nose": "#EBC8FE",
+        "Sock": "#EBC8FE",
+        "Keratin": "#CFB8FC",
+        "Paint": "#C67DFF",
+        "Pattern": "#C67DFF"
+      }
+    },
+    {
+      "id": "mutated-palette-heavenly",
+      "name": "Heavenly",
+      "group": "Mutated Horse",
+      "natural": false,
+      "complete": true,
+      "description": "Fixed Heavenly colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
+      "colors": {
+        "Coat Top": "#FFFFFF",
+        "Coat Bottom": "#FFFFFF",
+        "Hair": "#FFFFFF",
+        "Hoof": "#FFFFFF",
+        "Nose": "#FFFFFF",
+        "Sock": "#FFFFFF",
+        "Keratin": "#FFFFFF",
+        "Paint": "#FFFFFF",
+        "Pattern": "#FFFFFF"
+      }
+    },
+    {
+      "id": "mutated-palette-void",
+      "name": "Void",
+      "group": "Mutated Horse",
+      "natural": false,
+      "complete": true,
+      "description": "Fixed Void colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
+      "colors": {
+        "Coat Top": "#000000",
+        "Coat Bottom": "#000000",
+        "Hair": "#000000",
+        "Hoof": "#000000",
+        "Nose": "#000000",
+        "Sock": "#000000",
+        "Keratin": "#000000",
+        "Paint": "#000000",
+        "Pattern": "#000000"
+      }
+    }
+  ],
+  "eyes": [
+    {
+      "name": "Dark Brown",
+      "rarity": "Common",
+      "colors": [
+        "#734E49"
+      ]
+    },
+    {
+      "name": "Vibrant Dark Brown",
+      "rarity": "Common",
+      "colors": [
+        "#551F00"
+      ]
+    },
+    {
+      "name": "Brown",
+      "rarity": "Common",
+      "colors": [
+        "#B05735"
+      ]
+    },
+    {
+      "name": "Tan Brown",
+      "rarity": "Common",
+      "colors": [
+        "#CE8653"
+      ]
+    },
+    {
+      "name": "Dull Brown",
+      "rarity": "Common",
+      "colors": [
+        "#725046"
+      ]
+    },
+    {
+      "name": "Truffle",
+      "rarity": "Common",
+      "colors": [
+        "#291C2A"
+      ]
+    },
+    {
+      "name": "Red Brown",
+      "rarity": "Common",
+      "colors": [
+        "#CA4837"
+      ]
+    },
+    {
+      "name": "Gold",
+      "rarity": "Common",
+      "colors": [
+        "#FFD636"
+      ]
+    },
+    {
+      "name": "Olive",
+      "rarity": "Common",
+      "colors": [
+        "#52461A"
+      ]
+    },
+    {
+      "name": "Olive Green",
+      "rarity": "Uncommon",
+      "colors": [
+        "#788450"
+      ]
+    },
+    {
+      "name": "Hazel",
+      "rarity": "Uncommon",
+      "colors": [
+        "#6D2515",
+        "#7B865A"
+      ]
+    },
+    {
+      "name": "Dark Green",
+      "rarity": "Uncommon",
+      "colors": [
+        "#10830A"
+      ]
+    },
+    {
+      "name": "Dark Gray",
+      "rarity": "Uncommon",
+      "colors": [
+        "#505050"
+      ]
+    },
+    {
+      "name": "Light Gray",
+      "rarity": "Uncommon",
+      "colors": [
+        "#B8B8B8"
+      ]
+    },
+    {
+      "name": "Gray Blue",
+      "rarity": "Uncommon",
+      "colors": [
+        "#678DBE"
+      ]
+    },
+    {
+      "name": "Green",
+      "rarity": "Uncommon",
+      "colors": [
+        "#91EF33"
+      ]
+    },
+    {
+      "name": "Blue",
+      "rarity": "Uncommon",
+      "colors": [
+        "#6DADC0"
+      ]
+    },
+    {
+      "name": "Ocean",
+      "rarity": "Uncommon",
+      "colors": [
+        "#75FFE3"
+      ]
+    },
+    {
+      "name": "Lime Green",
+      "rarity": "Uncommon",
+      "colors": [
+        "#D6FF50"
+      ]
+    },
+    {
+      "name": "Light Green",
+      "rarity": "Uncommon",
+      "colors": [
+        "#D7FF8A"
+      ]
+    },
+    {
+      "name": "Deep Blue",
+      "rarity": "Uncommon",
+      "colors": [
+        "#1D417C"
+      ]
+    },
+    {
+      "name": "Dark Blue",
+      "rarity": "Uncommon",
+      "colors": [
+        "#306BD0"
+      ]
+    },
+    {
+      "name": "Crystal Blue",
+      "rarity": "Uncommon",
+      "colors": [
+        "#942803"
+      ]
+    },
+    {
+      "name": "Abyss",
+      "rarity": "Uncommon",
+      "colors": [
+        "#2EA2BC"
+      ]
+    },
+    {
+      "name": "Magenta",
+      "rarity": "Rare",
+      "colors": [
+        "#DD508F"
+      ]
+    },
+    {
+      "name": "Pink",
+      "rarity": "Rare",
+      "colors": [
+        "#FF9EE1"
+      ]
+    },
+    {
+      "name": "Light Pink",
+      "rarity": "Rare",
+      "colors": [
+        "#FFEBF4"
+      ]
+    },
+    {
+      "name": "Candy",
+      "rarity": "Rare",
+      "colors": [
+        "#DF76DA",
+        "#78C0FF"
+      ]
+    },
+    {
+      "name": "Dark Purple",
+      "rarity": "Rare",
+      "colors": [
+        "#6D63FF"
+      ]
+    },
+    {
+      "name": "Purple",
+      "rarity": "Rare",
+      "colors": [
+        "#8162FF"
+      ]
+    },
+    {
+      "name": "Light Purple",
+      "rarity": "Rare",
+      "colors": [
+        "#D5CAFF"
+      ]
+    },
+    {
+      "name": "Sunset",
+      "rarity": "Rare",
+      "colors": [
+        "#B54EFF"
+      ]
+    },
+    {
+      "name": "Blood",
+      "rarity": "Rare",
+      "colors": [
+        "#942803"
+      ]
+    },
+    {
+      "name": "Red",
+      "rarity": "Rare",
+      "colors": [
+        "#FF0000"
+      ]
+    },
+    {
+      "name": "Albino",
+      "rarity": "Rare",
+      "colors": [
+        "#FE6D67"
+      ]
+    },
+    {
+      "name": "Amber",
+      "rarity": "Rare",
+      "colors": [
+        "#FF7504"
+      ]
+    },
+    {
+      "name": "Sun",
+      "rarity": "Rare",
+      "colors": [
+        "#FDFF00",
+        "#D03502"
+      ]
+    },
+    {
+      "name": "Yellow",
+      "rarity": "Rare",
+      "colors": [
+        "#FFD182"
+      ]
+    },
+    {
+      "name": "Pale Yellow",
+      "rarity": "Rare",
+      "colors": [
+        "#FFF9B4"
+      ]
+    },
+    {
+      "name": "White",
+      "rarity": "Rare",
+      "colors": [
+        "#FFFFFF"
+      ]
+    },
+    {
+      "name": "Black",
+      "rarity": "Rare",
+      "colors": [
+        "#212121"
+      ]
+    }
+  ],
+  "traits": {
+    "Ghoulsteed": {
+      "Mane": [
+        "Chopped Mohawk",
+        "Short Mane",
+        "Feral Mane",
+        "Lupine Mane",
+        "Poltergeist Mane",
+        "Cloaked Mane",
+        "Spinneret Mane",
+        "Weeping Mane",
+        "Greasy Mane",
+        "Spectral Hair",
+        "Tattered Mane"
+      ],
+      "Tail": [
+        "Tattered Tail",
+        "Poltergeist Tail",
+        "Spectral Tail",
+        "Zombie Tail",
+        "Chopped Tail",
+        "Feral Tail",
+        "Spinneret Tail",
+        "Greasy Tail",
+        "Cloaked Tail",
+        "Skeleton Tail",
+        "Weeping Tail",
+        "Ancient Lupine Tail",
+        "Short Tail"
+      ],
+      "Pattern": [
+        "Necro Bands",
+        "Weeping Souls",
+        "Spiral Runes",
+        "Corrupted Vision",
+        "Crescent Face",
+        "Arcane Sigil",
+        "Tattered Socks",
+        "Sharp Runes",
+        "Weeping Face",
+        "Ancient Runes",
+        "Poisoned",
+        "Zombie Back Patches",
+        "Intricate Glyphs",
+        "Corrupted Stripes",
+        "Abyssal Rifts",
+        "Spectre",
+        "Zombie Front Patches",
+        "Vampire Cape",
+        "Whisp",
+        "Bound Ciphers"
+      ],
+      "Paint": [
+        "Limb Flairs",
+        "Astral Flame Socks",
+        "Infection",
+        "Ghosts",
+        "Drool",
+        "Dragons Breath",
+        "Flaming Belly",
+        "Astral Core"
+      ],
+      "Cosmetic": [
+        "Decaying Flesh",
+        "Sporadic Bones",
+        "Back Plates",
+        "Claws",
+        "Mangy Fur",
+        "Ankle Spikes",
+        "Lupine Ankle Fur",
+        "Ribcage Spikes",
+        "Poltergeist Fur",
+        "Stitches",
+        "Messy Ankle Fur",
+        "Lupine Nose",
+        "Back Spikes",
+        "Tufted Fur",
+        "Limb Spikes",
+        "Lupine Beard",
+        "Neck Spike Bones",
+        "Mangy Back Patch",
+        "Zombie Ankle Fur",
+        "External Bones",
+        "Face Bone Spikes",
+        "Zombie Splits",
+        "Decaying Ankles"
+      ],
+      "Keratin": [
+        "Hell Horn",
+        "Thin Horns",
+        "Oni Fangs",
+        "Curled Devil Horns",
+        "Draconic Horns",
+        "Moon Horns",
+        "Goat Horns",
+        "Demon Horns",
+        "Horn Crown",
+        "Curled Horn",
+        "High Demon Horns",
+        "Ghoulish Horns",
+        "Curling Demon Horns",
+        "Spiked Horn",
+        "Jagged Fangs",
+        "Ram Horns"
+      ],
+      "Ears": [
+        "Lupine Ears",
+        "Bat Ears"
+      ],
+      "Whiskers": [
+        "None"
+      ]
+    }
+  },
+  "mutations": [
+    {
+      "name": "Nimble Hooves",
+      "type": "Standard",
+      "weight": 8.37,
+      "description": "+50% turn speed"
+    },
+    {
+      "name": "Limber Tendons",
+      "type": "Standard",
+      "weight": 5.58,
+      "description": "+10% speed"
+    },
+    {
+      "name": "Springy Tendons",
+      "type": "Standard",
+      "weight": 23.33,
+      "description": "+10% jump height"
+    },
+    {
+      "name": "Strong Muscles",
+      "type": "Standard",
+      "weight": 11.16,
+      "description": "+10% damage to foragables"
+    },
+    {
+      "name": "Powerful Lungs",
+      "type": "Standard",
+      "weight": 16.75,
+      "description": "+25% stamina"
+    },
+    {
+      "name": "Dwarfism",
+      "type": "Standard",
+      "weight": 3.35,
+      "description": "Decreases species size by 2%"
+    },
+    {
+      "name": "Gigantism",
+      "type": "Standard",
+      "weight": 3.35,
+      "description": "Increases species size by 2%"
+    },
+    {
+      "name": "Very Fertile",
+      "type": "Standard",
+      "weight": 0.56,
+      "description": "-25% gestation time"
+    },
+    {
+      "name": "Double Stamina",
+      "type": "Standard",
+      "weight": 1.12,
+      "description": "Doubles your stamina!"
+    },
+    {
+      "name": "Double Jump",
+      "type": "Standard",
+      "weight": 0.84,
+      "description": "Lets you jump one more time mid-air!"
+    },
+    {
+      "name": "Close Bond",
+      "type": "Standard",
+      "weight": 1.12,
+      "description": "Increases bond skill trait inheritance by 25%"
+    },
+    {
+      "name": "Mutated",
+      "type": "Standard",
+      "weight": 0.03,
+      "description": "25% mutation inheritance"
+    },
+    {
+      "name": "Intelligence",
+      "type": "Standard",
+      "weight": 2.79,
+      "description": "Increases Skill experience by 25%"
+    },
+    {
+      "name": "Twins",
+      "type": "Standard",
+      "weight": 0.28,
+      "description": "+5% chance to give birth to 2 foals"
+    },
+    {
+      "name": "Perfect Twins",
+      "type": "Standard",
+      "weight": 0.06,
+      "description": "+5% chance to give birth to 2 identical foals"
+    },
+    {
+      "name": "Chimera Mane",
+      "type": "Standard",
+      "weight": 5.58,
+      "description": "Makes the mane to be pattern colored."
+    },
+    {
+      "name": "Chimera Tail",
+      "type": "Standard",
+      "weight": 5.58,
+      "description": "Makes the tail to be pattern colored."
+    },
+    {
+      "name": "Harlequin Mane",
+      "type": "Standard",
+      "weight": 5.58,
+      "description": "Makes the mane to be paint colored."
+    },
+    {
+      "name": "Harlequin Tail",
+      "type": "Standard",
+      "weight": 5.58,
+      "description": "Makes the tail to be paint colored."
+    },
+    {
+      "name": "Alien",
+      "type": "Special",
+      "weight": null,
+      "description": "Coat top, coat bottom, hair, sock and pattern are darkened and retextured with black branching tendrils and glowing spots. The species' eyes glow white and a pattern colored whispy halo swirls around the species' neck."
+    },
+    {
+      "name": "Arcane",
+      "type": "Special",
+      "weight": null,
+      "description": "Covers your horse in mystical arcane sigils."
+    },
+    {
+      "name": "Arisen",
+      "type": "Special",
+      "weight": null,
+      "description": "Coat Top and Coat Bottom are re-textured with a blue tinted crystal-like pattern, Hair and Hoof becomes transparent, Sock and Keratin becomes glowing. Certain colors can overpower the blue texture. The mount's eyes also glow white and a pattern-colored halo sits around the neck."
+    },
+    {
+      "name": "Artisan",
+      "type": "Special",
+      "weight": null,
+      "description": "Covers your horse in a bright artisan design."
+    },
+    {
+      "name": "Astral",
+      "type": "Special",
+      "weight": null,
+      "description": "Causes your horse to gain a veil of cosmic energy."
+    },
+    {
+      "name": "Crystallized",
+      "type": "Special",
+      "weight": null,
+      "description": "Entire species is retextured with a Cyan crystal texture. Certain colors can overpower the cyan."
+    },
+    {
+      "name": "Dilute",
+      "type": "Special",
+      "weight": null,
+      "description": "Transforms all colors to a much whiter version, giving your horse a pastel appearance."
+    },
+    {
+      "name": "Festive Eye",
+      "type": "Special",
+      "weight": null,
+      "description": "The species' eyes shift between glowing green and red."
+    },
+    {
+      "name": "Flowering Sakura",
+      "type": "Special",
+      "weight": null,
+      "description": "Coat Bottom, Hair, and Sock are retextured with sakura petals. The species' eyes glow white and Sock colored petals fall from their legs."
+    },
+    {
+      "name": "Frost",
+      "type": "Special",
+      "weight": null,
+      "description": "Recolors the species' base colors to an icy blue with a white snowflake pattern. Certain colors can overpower the blue. A snowflake halo swirls around the species' neck, and the eyes glow light blue."
+    },
+    {
+      "name": "Geode",
+      "type": "Special",
+      "weight": null,
+      "description": "Transforms your horse into a geode with crystal regions!"
+    },
+    {
+      "name": "Ghost",
+      "type": "Special",
+      "weight": null,
+      "description": "Makes the species' base features see-through."
+    },
+    {
+      "name": "Ghoul",
+      "type": "Special",
+      "weight": null,
+      "description": "Makes the species' secondary features (Hair, Paint, Pattern, Keratin colored regions) see-through."
+    },
+    {
+      "name": "Gilded",
+      "type": "Special",
+      "weight": null,
+      "description": "Adds a gold foil texture overriding the colors of the hoof, keratin, paint, nose, and sock. The color region influences the mutation color."
+    },
+    {
+      "name": "Glow",
+      "type": "Special",
+      "weight": null,
+      "description": "A single part of the horse will glow with a magical aura!(Can only apply to Hoof, Hair, Paint, Keratin, Pattern, Sock, or Eyes regions)"
+    },
+    {
+      "name": "Haunting",
+      "type": "Special",
+      "weight": null,
+      "description": "All regions except Pattern and Paint become see-through, the eyes are solid black, and mini white spheres circle the mount's head."
+    },
+    {
+      "name": "Jester",
+      "type": "Special",
+      "weight": null,
+      "description": "Adds a Checkered Texture overriding the colors of the socks, mane and pattern, alongside black diamond leg particles."
+    },
+    {
+      "name": "Lacebound",
+      "type": "Special",
+      "weight": null,
+      "description": "Causes your horse to appear adorned in gothic lace. (Applies to Coat Top, Coat Bottom and Sock. The legs have heart particles.)"
+    },
+    {
+      "name": "North Star",
+      "type": "Special",
+      "weight": null,
+      "description": "Encases your horse in stars."
+    },
+    {
+      "name": "Porcelain",
+      "type": "Special",
+      "weight": null,
+      "description": "Hoof, Paint, Pattern, and Keratin are retextured with porcelain pattern. The species' eyes glow dark blue along with glowing Sock."
+    },
+    {
+      "name": "Reptile",
+      "type": "Special",
+      "weight": null,
+      "description": "Adds a scale pattern texture overiding the colors of the socks, mane, and pattern."
+    },
+    {
+      "name": "Rose Infection",
+      "type": "Special",
+      "weight": null,
+      "description": "Infects your horse with a rose-like texture and glowing eyes. (Applies to Paint, Pattern, Keratin, and Eyes)"
+    },
+    {
+      "name": "Tie Dye",
+      "type": "Special",
+      "weight": null,
+      "description": "Adds a Tie Dye texture overriding the colors of the hair, hoof, sock, coat top and coat bottom. The color region influences the mutation color."
+    },
+    {
+      "name": "Trophy",
+      "type": "Special",
+      "weight": null,
+      "description": "Entire species apart from eyes is retextured with a smooth, metallic material. Color is dictated by the tier of the trophy mutation."
+    },
+    {
+      "name": "X Ray",
+      "type": "Special",
+      "weight": null,
+      "description": "Makes every feature see-through and the skeleton becomes visible."
+    },
+    {
+      "name": "Solar",
+      "type": "Mutated",
+      "weight": null,
+      "description": "Entire species is re-painted in red and yellows hues with a bright flare texture and a magical solar neck ring."
+    },
+    {
+      "name": "Lunar",
+      "type": "Mutated",
+      "weight": null,
+      "description": "Entire species is re-painted in blue hues with a sparkling moon texture and a magical lunar neck ring."
+    },
+    {
+      "name": "Heavenly",
+      "type": "Mutated",
+      "weight": null,
+      "description": "Species' coat becomes a pure white with glowing parts, a neck halo, and black glow eyes."
+    },
+    {
+      "name": "Void",
+      "type": "Mutated",
+      "weight": null,
+      "description": "Species' coat becomes a pure black with glowing parts, a neck halo, and white glow eyes."
+    },
+    {
+      "name": "Astral",
+      "type": "Mutated",
+      "weight": null,
+      "description": "Species' coat becomes textured with a star pattern, along with purple glowing parts."
+    }
+  ],
+  "themes": [
+    "Amber",
+    "Amethyst",
+    "Armored [Medieval Event]",
+    "Aurora Borealis [Christmas Event]",
+    "Autumn",
+    "Berry",
+    "Blackberry",
+    "Blue Agate",
+    "Blueberry",
+    "Candycane [Christmas Event]",
+    "Cloud",
+    "Clover",
+    "Coffee",
+    "Cookie",
+    "Cotton Candy [Carnival Event]",
+    "Cow Print [Western Event]",
+    "Dyed [Easter Event]",
+    "Floral",
+    "Fossilized",
+    "Frozen [Christmas Event]",
+    "Galaxy",
+    "Ghoul [Halloween Event]",
+    "Gift (Rare)",
+    "Gold (Rare)",
+    "Goop [Alien Event]",
+    "Heavenly (Rare)",
+    "Lemon",
+    "Magma",
+    "Martian [Alien Event]",
+    "Mint [Valentine Event]",
+    "Moon",
+    "Nature",
+    "Nebula",
+    "Obsidian",
+    "Ocean",
+    "Opal",
+    "Polka Dot [Carnival Event]",
+    "Popcorn [Carnival Event]",
+    "Pumpkin [Halloween Event]",
+    "Purple Geode [Royal Event]",
+    "Rose [Valentine Event]",
+    "Royal Pattern [Royal Event]",
+    "Ruby",
+    "Sakura (Rare)",
+    "Stained Glass [Medieval Event]",
+    "Stardust",
+    "Sun",
+    "Thunder",
+    "Tulip [Easter Event]",
+    "Void (Rare)",
+    "Witch Potion [Halloween Event]"
+  ],
+  "items": [
+    "Example Ghoulsteed Bridle (Pumpkin)",
+    "Example Ghoulsteed Socks",
+    "Example Ghoulsteed Saddle",
+    "Example Wing Potion (Gives your horse the \"EXAMPLE\" Wings)",
+    "Example Mutation Potion (Gives your horse the \"EXAMPLE\" Mutation)"
+  ],
+  "locations": [
+    {
+      "id": "aetherion",
+      "name": "Aetherion Wilds",
+      "subtitle": "Where the ordinary becomes extraordinary.",
+      "description": "Follow the winding paths beneath ancient boughs. Somewhere in the quiet, a new companion is waiting.",
+      "event": null
+    },
+    {
+      "id": "hallowhoof",
+      "name": "Hallowhoof",
+      "subtitle": "Some spirits leave hoofprints.",
+      "description": "Lanterns flicker between twisted trees. Beyond the autumn mist, the wilds have a little more magic to share.",
+      "event": "Halloween"
+    }
+  ]
+}

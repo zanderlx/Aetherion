@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+<title id="title">Aetherion · A Horsekeeper's Chronicle · Version 1</title><desc id="desc">A golden horse crest over a dark woodland and lavender sky.</desc>
+<defs><linearGradient id="sky" x2="1" y2="1"><stop stop-color="#171f22"/><stop offset=".55" stop-color="#302738"/><stop offset="1" stop-color="#553744"/></linearGradient></defs>
+<rect width="1200" height="340" rx="24" fill="url(#sky)"/>
+<path d="M0 260Q160 185 310 265T620 260T920 225T1200 245V340H0Z" fill="#1b2927" opacity=".8"/>
+<path d="M0 310Q200 245 400 310T800 280T1200 315V340H0Z" fill="#121c1d"/>
+<g fill="#e5c78f"><circle cx="990" cy="78" r="34" opacity=".15"/><path d="m1040 175 3 8 8 3-8 3-3 8-3-8-8-3 8-3Zm-170-120 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/><circle cx="1080" cy="80" r="2"/><circle cx="790" cy="120" r="2"/><circle cx="940" cy="225" r="2"/></g>
+<g transform="translate(76 75) scale(2.1)"><path d="M40 7 65 22v28L40 73 15 50V22Z" fill="#24252b" stroke="#d8b77d"/><path d="m28 57 2-16-7-5 6-11 8-3 5-10 4 12c13 3 15 17 10 32H28Z" fill="#d8b77d"/><path d="m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32" fill="none" stroke="#24252b" stroke-width="2"/></g>
+<text x="290" y="105" fill="#d8b77d" font-family="Segoe UI,Arial,sans-serif" font-size="13" letter-spacing="4">A HORSEKEEPER'S CHRONICLE</text>
+<text x="285" y="180" fill="#faf1e5" font-family="Georgia,serif" font-size="68" letter-spacing="3">AETHERION</text>
+<text x="290" y="221" fill="#d3c6cc" font-family="Segoe UI,Arial,sans-serif" font-size="18">Collect companions. Shape your world. Make it yours.</text>
+<rect x="290" y="248" width="100" height="27" rx="13" fill="#e0c493"/><text x="340" y="267" text-anchor="middle" fill="#28232c" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="bold">VERSION 1</text>
+<text x="410" y="267" fill="#b9c8bd" font-family="Segoe UI,Arial,sans-serif" font-size="12" letter-spacing="2">LOCAL · OFFLINE · CUSTOMIZABLE</text>
+</svg>

@@ -1,0 +1,495 @@
+import { icon, sidebar, groups, escapeHTML as e, number } from './ui.js';
+import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
+import { profileContent } from './profile.js';
+import { locationsFor, newZoneDraft, randomZone, validateZone } from './zones.js';
+import { zoneEditorPage, zonePreview } from './zone-editor.js';
+import { draftDefinition, validateDefinition } from './definitions.js';
+import { editorRoutes, libraryEditorPage, readDefinitionForm, traitRow, colorControl, applyWebsiteTheme } from './library-editor.js';
+import { createCopyEditor } from './copy-editor.js';
+import { prepareSearch, searchEntries } from './site-search.js';
+import { keeperPage, avatarSVG } from './keeper.js';
+import { roadmapPage } from './roadmap.js';
+import { trackForms, updateFormState, formBaseline, restoreBaseline } from './form-state.js';
+
+let state, catalog, defaults, busy = false, toastTimer;
+let route = location.hash.slice(1) || 'wilds/aetherion';
+let routeVersion = 0, pendingDeletion;
+let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer, pendingSearchResult;
+const openGroups = new Set(groups.filter(g => g.open).map(g => g.title));
+const $ = selector => document.querySelector(selector);
+const main = $('#main');
+const profile = $('#profile');
+const confirmation = $('#confirm');
+const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
+
+async function request(path, body) {
+  const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'Unable to save. Please try again.');
+  return result;
+}
+async function action(type, payload) {
+  const result = await request('/api/action', { type, payload });
+  state = result.state;
+  if (result.catalog) catalog = result.catalog;
+  return state;
+}
+function notify(message, error = false) {
+  const toast = $('#toast');
+  toast.textContent = message;
+  toast.className = `visible ${error ? 'error' : ''}`;
+  toast.setAttribute('role', error ? 'alert' : 'status');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.className = '', error ? 8000 : 4500);
+}
+function renderChrome() {
+  const navScroll = $('#sidebar nav')?.scrollTop || 0;
+  for (const details of $('#sidebar').querySelectorAll('details')) { if (details.open) openGroups.add(details.dataset.group); else openGroups.delete(details.dataset.group); }
+  applyWebsiteTheme(catalog, state);
+  $('#sidebar').innerHTML = sidebar(route, state, openGroups, catalog);
+  $('#sidebar').querySelectorAll('details').forEach(details => details.addEventListener('toggle', () => {
+    if (details.open) openGroups.add(details.dataset.group);
+    else openGroups.delete(details.dataset.group);
+  }));
+  $('#topbar').innerHTML = `<div class="breadcrumb"><button class="icon-button mobile-menu" data-action="menu" aria-label="Open navigation" aria-expanded="${document.body.classList.contains('nav-open')}">${icon('menu')}</button>${icon(route.startsWith('wilds') ? 'compass' : route.startsWith('dev') ? 'settings' : 'stable')}<span>${route.startsWith('wilds') ? 'The Wilds' : route.startsWith('dev') ? 'The Workbench' : 'Your Sanctuary'}</span><span class="crumb-separator">/</span><strong>${e(routeTitle(route, locationsFor(catalog, state)))}</strong></div><div class="header-right"><button class="icon-button" data-action="site-search" aria-label="Search entire site" title="Search entire site (Ctrl+K)">${icon('search')}</button><span class="save-status"><span class="save-dot"></span>Saved locally</span><a class="gold-balance" href="#dev/economy" aria-label="${number(state.gold)} gold. Open economy settings.">${icon('coin')}<strong>${number(state.gold)}</strong><span>GOLD</span></a><a href="#dev/profile" class="keeper-avatar" aria-label="Open my profile">${avatarSVG(state.keeper?.avatarSeed ?? 11)}</a></div>`;
+}
+function pageContent(pageRoute, pageState = state) {
+  const state = pageState;
+  const [section, page] = pageRoute.split('/');
+  const route = pageRoute;
+  const locations = locationsFor(catalog, state);
+  if (section === 'wilds' && locations.some(l => l.id === page && l.enabled)) return wildPage(locations.find(l => l.id === page), state, locations, catalog);
+  else if (section === 'stable') return stablePage(page, state);
+  else if (route === 'dev/settings' || route === 'dev/economy') return settingsPage(state, page === 'economy');
+  else if (route === 'dev/saves') return savesPage(state);
+  else if (route === 'dev/roadmap') return roadmapPage();
+  else if (route === 'dev/profile') return keeperPage(state);
+  else if (route === 'dev/edit-mode') return editModePage(state);
+  else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
+  else if (section === 'dev' && Object.hasOwn(editorRoutes, page)) return libraryEditorPage(editorRoutes[page], catalog, state);
+  else return plannedPage(route, state);
+}
+function render() {
+  renderChrome();
+  main.innerHTML = pageContent(route);
+  document.title = `${routeTitle(route, locationsFor(catalog, state))} · Aetherion`;
+  copyEditor.attach(main);
+  trackForms(main);
+}
+async function navigate() {
+  const version = ++routeVersion;
+  route = location.hash.slice(1) || 'wilds/aetherion';
+  if (route.startsWith('wilds/') && !locationsFor(catalog,state).some(zone => zone.enabled && route === `wilds/${zone.id}`)) {
+    const available = locationsFor(catalog,state).find(zone => zone.enabled);
+    route = available ? `wilds/${available.id}` : 'stable/all';
+    history.replaceState(null,'',`#${route}`);
+  }
+  closeMenu();
+  if (profile.open) profile.close();
+  if (confirmation.open) confirmation.close();
+  copyEditor.close();
+  try {
+    if (route.startsWith('wilds/') && !state.encounters[route.split('/')[1]] && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action('visit', { locationId: route.split('/')[1] });
+    if (version !== routeVersion) return;
+    render();
+    if (pendingSearchResult?.route === route) {
+      const result = pendingSearchResult;
+      pendingSearchResult = null;
+      if (result.kind) showDefinition(result.kind,catalog[result.kind].find(d => d.id === result.id));
+      if (result.horse) inspect(result.id);
+      if (result.zone) showZoneDraft(locationsFor(catalog,state).find(d => d.id === result.id));
+    }
+    main.focus({ preventScroll: true });
+    window.scrollTo({ top: 0 });
+  } catch (error) { notify(error.message, true); }
+}
+function findHorse(id) { return [...state.horses, ...state.sold, ...Object.values(state.encounters).flat()].find(h => h.id === id); }
+function openSiteSearch() {
+  if (searchState !== state) {
+    const entries = [], locations = locationsFor(catalog,state);
+    const routes = new Map(groups.flatMap(group => group.items).filter(([path]) => !path.startsWith('wilds/')));
+    for (const zone of locations.filter(z => z.enabled)) routes.set(`wilds/${zone.id}`,zone.name);
+    const template = document.createElement('template');
+    // Horse records have their own index entries; don't generate their artwork to index page copy.
+    const pageState = {...state, horses:[], sold:[], encounters:{}, transactions:[]};
+    for (const [path,title] of routes) {
+      template.innerHTML = pageContent(path,pageState);
+      template.content.querySelectorAll('.definition-list,.horse-grid,.theme-grid,input,select,textarea').forEach(el => el.remove());
+      entries.push({ route:path, title:state.pageCopy?.[path]?.['page.title'] || title, text:template.content.textContent.replace(/\s+/g,' ') + ' ' + Object.values(state.pageCopy?.[path] || {}).join(' '), category:'Page' });
+    }
+    for (const [path,kind] of Object.entries(editorRoutes)) for (const entry of catalog[kind]) entries.push({
+      route:`dev/${path}`, kind, id:entry.id, title:entry.name, text:JSON.stringify(entry), category:kind
+    });
+    for (const zone of locations) entries.push({ route:'dev/locations', zone:true,id:zone.id,title:zone.name,text:JSON.stringify(zone),category:'Zone' });
+    const seen = new Set();
+    for (const [path,horses] of [['stable/all',state.horses],['stable/sold',state.sold],...Object.entries(state.encounters).map(([id,horses]) => [`wilds/${id}`,horses])]) {
+      for (const horse of horses) {
+        if (seen.has(horse.id)) continue;
+        seen.add(horse.id);
+        entries.push({ route:path.startsWith('wilds/') && !locations.some(z => `wilds/${z.id}` === path && z.enabled) ? 'stable/all' : path, horse:true,id:horse.id,title:horse.name || horse.species,text:JSON.stringify(horse),category:'Horse' });
+      }
+    }
+    for (const [key,text] of Object.entries(state.pageCopy?.site || {})) entries.push({route:key.startsWith('nav-') ? key.slice(4).replace('-', '/') : 'dev/edit-mode',title:text,text:'Shared website wording',category:'Website text'});
+    if (state.keeper) entries.push({route:'dev/profile',title:state.keeper.name,text:state.keeper.about,category:'Profile'});
+    searchIndex = prepareSearch(entries);
+    searchState = state;
+  }
+  if (!searchDialog) {
+    searchDialog = document.createElement('dialog');
+    searchDialog.id = 'site-search-dialog';
+    searchDialog.setAttribute('aria-labelledby','site-search-title');
+    searchDialog.innerHTML = `<div class="dialog-top"><h2 id="site-search-title">Search The Site</h2><button class="icon-button" data-search-close aria-label="Close search">×</button></div><label for="site-search-input">Pages, settings, traits, colors, zones, and horses</label><input type="search" id="site-search-input" placeholder="Try natural gold, selling price, or a horse name…" autocomplete="off"><p role="status" id="site-search-status"></p><div class="site-search-results"></div>`;
+    document.body.append(searchDialog);
+    searchDialog.querySelector('input').addEventListener('input',() => { clearTimeout(searchTimer); searchTimer = setTimeout(updateSiteSearch,120); });
+    searchDialog.addEventListener('click',event => {
+      if (event.target.closest('[data-search-close]')) searchDialog.close();
+      const button = event.target.closest('[data-search-result]');
+      if (!button) return;
+      const result = searchResults[Number(button.dataset.searchResult)];
+      pendingSearchResult = result;
+      searchDialog.close();
+      if (route === result.route) navigate(); else location.hash = result.route;
+    });
+  }
+  searchDialog.showModal();
+  updateSiteSearch();
+  searchDialog.querySelector('input').focus();
+}
+function updateSiteSearch() {
+  const query = searchDialog.querySelector('input').value;
+  searchResults = searchEntries(searchIndex,query);
+  searchDialog.querySelector('#site-search-status').textContent = !query.trim() ? 'Type keywords to search the whole site.' : searchResults.length ? `${searchResults.length} results${searchResults.length === 60 ? ' · showing the first 60; add words to narrow your search' : ''}` : 'No matches. Try a name, color, trait, or setting.';
+  searchDialog.querySelector('.site-search-results').innerHTML = searchResults.map((result,index) => `<button class="site-search-result" data-search-result="${index}"><strong>${e(result.title)}</strong><small>${e(result.category)} · ${e(routeTitle(result.route,locationsFor(catalog,state)))}</small></button>`).join('');
+}
+function readZoneForm(form) {
+  const values = new FormData(form);
+  return { id: form.dataset.id || undefined, name: values.get('name'), subtitle: values.get('subtitle'),
+    description: values.get('description'), atmosphere: values.get('atmosphere'),
+    enabled: form.elements.enabled.checked, speciesPool: values.getAll('speciesPool'), palettePool: values.getAll('palettePool') };
+}
+function showZoneDraft(draft) {
+  main.innerHTML = zoneEditorPage(catalog, state, draft);
+  copyEditor.attach(main);
+  trackForms(main);
+  if (!draft.id && draft.name) restoreBaseline($('#zone-form'),'unsaved-generated-draft');
+  $('#zone-form input[name="name"]').focus({ preventScroll: true });
+  main.scrollIntoView({ block: 'start' });
+}
+function showDefinition(kind, draft) {
+  main.innerHTML = libraryEditorPage(kind, catalog, state, draft);
+  copyEditor.attach(main);
+  trackForms(main);
+  if (!draft.id && draft.name) restoreBaseline($('#definition-form'),'unsaved-duplicate-draft');
+  $('#definition-form input[name="name"]')?.focus({ preventScroll: true });
+}
+function inspect(id) {
+  const horse = findHorse(id);
+  if (!horse) return;
+  profile.innerHTML = profileContent(horse, state);
+  trackForms(profile);
+  if (!profile.open) profile.showModal();
+}
+function closeMenu() {
+  document.body.classList.remove('nav-open');
+  $('.workspace').inert = false;
+  if (matchMedia('(max-width: 900px)').matches) $('#sidebar').inert = true;
+  $('.mobile-menu')?.setAttribute('aria-expanded', 'false');
+}
+function syncResponsiveMenu() {
+  const mobile = matchMedia('(max-width: 900px)').matches;
+  const opened = document.body.classList.contains('nav-open');
+  $('#sidebar').inert = mobile && !opened;
+  $('.workspace').inert = mobile && opened;
+}
+function askToSell(id) {
+  const horse = findHorse(id);
+  confirmation.innerHTML = `<div class="dialog-top"><span class="eyebrow">A FOND FAREWELL</span><button class="icon-button" data-action="cancel-sell" aria-label="Cancel sale">${icon('close')}</button></div><h2 id="confirm-title">Sell ${e(horse.name || horse.species)}?</h2><p>You’ll receive <strong>${number(state.settings.sellingPrice)} gold</strong>. This horse will leave your care, and its full profile will be kept in your sold-horse history.</p><div class="form-actions"><button class="button secondary" data-action="cancel-sell" autofocus>Keep this horse</button><button class="button primary" data-action="confirm-sell" data-id="${id}">Sell horse</button></div>`;
+  confirmation.showModal();
+}
+function updateAvatarPreview() {
+  const form = $('#keeper-form');
+  if (!form) return;
+  const seed = Number(form.elements.avatarSeed.value);
+  $('#keeper-preview').innerHTML = avatarSVG(seed);
+  form.querySelectorAll('[data-seed]').forEach(button => button.setAttribute('aria-pressed',String(Number(button.dataset.seed) === seed)));
+  updateFormState(form);
+}
+function askToDelete(type, payload, name, detail) {
+  pendingDeletion = {type,payload};
+  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${type === 'delete-profile' ? 'Reset' : 'Delete'} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>Keep It</button><button class="button primary" data-action="confirm-delete">Confirm ${type === 'delete-profile' ? 'Reset' : 'Delete'}</button></div>`;
+  confirmation.showModal();
+}
+document.addEventListener('click', async event => {
+  const button = event.target.closest('[data-action]');
+  if (!button || busy) return;
+  const { action: intent, id } = button.dataset;
+  if (intent === 'choose-avatar') {
+    $('#keeper-form').elements.avatarSeed.value = button.dataset.seed;
+    updateAvatarPreview();
+    return;
+  }
+  if (intent === 'cancel-delete') { pendingDeletion = null; confirmation.close(); return; }
+  if (intent === 'delete-profile') return askToDelete('delete-profile',{},'Profile','Reset your display name, About Me, and avatar. Horses and progress stay unchanged.');
+  if (intent === 'delete-horse') return askToDelete('delete-horse',{id},findHorse(id)?.name || findHorse(id)?.species || 'Horse','Remove this horse from the stable, encounters, or sold archive. Deleting gives no gold and does not reverse earlier sales.');
+  if (intent === 'delete-zone') return askToDelete('delete-zone',{id},locationsFor(catalog,state).find(z => z.id === id)?.name || 'Zone','Remove this zone and its wild encounters. Collected horses and sold records stay unchanged.');
+  if (intent === 'delete-definition') {
+    const kind = button.dataset.kind;
+    return askToDelete('delete-definition',{kind,id},catalog[kind].find(d => d.id === id)?.name || 'Entry','Remove this option from future use. Existing horse details stay unchanged. Matching zone pools are updated; zones with empty pools close. Deleted atmospheres use a remaining atmosphere, item themes are cleared, and a deleted active website theme returns to Original.');
+  }
+  if (intent === 'site-search') return openSiteSearch();
+  if (intent === 'inspect') return inspect(id);
+  if (intent === 'close-profile') return profile.close();
+  if (intent === 'cancel-sell') return confirmation.close();
+  if (intent === 'sell') return askToSell(id);
+  if (intent === 'new-zone') return showZoneDraft(newZoneDraft());
+  if (intent === 'edit-zone') return showZoneDraft(locationsFor(catalog, state).find(l => l.id === id));
+  if (intent === 'new-definition') return showDefinition(button.dataset.kind, draftDefinition(button.dataset.kind));
+  if (intent === 'edit-definition') return showDefinition(button.dataset.kind, catalog[button.dataset.kind].find(d => d.id === id));
+  if (intent === 'duplicate-definition') {
+    const kind = button.dataset.kind, copy = structuredClone(catalog[kind].find(d => d.id === id));
+    delete copy.id;
+    let suffix = 1, name = `${copy.name.slice(0, 65)} copy`;
+    while (catalog[kind].some(d => d.name.toLowerCase() === name.toLowerCase())) name = `${copy.name.slice(0, 65)} copy ${++suffix}`;
+    copy.name = name;
+    return showDefinition(kind, copy);
+  }
+  if (intent === 'add-trait-category') {
+    $('#trait-rows').insertAdjacentHTML('beforeend', traitRow());
+    $('#trait-rows').lastElementChild.querySelector('input').focus();
+    updateFormState($('#definition-form'));
+    return;
+  }
+  if (intent === 'remove-trait-category') {
+    button.closest('.trait-editor-row').remove();
+    updateFormState($('#definition-form'));
+    return;
+  }
+  if (intent === 'add-eye-color') {
+    const rows = [...$('#eye-color-rows').children];
+    if (rows.length >= 6) return notify('You can combine up to six eye colors.', true);
+    const key = crypto.randomUUID();
+    $('#eye-color-rows').insertAdjacentHTML('beforeend', `<div class="eye-color-row">${colorControl(key, '#8A689E', 'Additional eye color')}<button class="text-button" type="button" data-action="remove-eye-color">Remove color</button></div>`);
+    updateFormState($('#definition-form'));
+    return;
+  }
+  if (intent === 'remove-eye-color') {
+    if ($('#eye-color-rows').children.length === 1) return notify('Keep at least one eye color.', true);
+    button.closest('.eye-color-row').remove();
+    updateFormState($('#definition-form'));
+    return;
+  }
+  if (intent === 'random-zone') {
+    const editingId = $('#zone-form').dataset.id;
+    const baseline = formBaseline($('#zone-form'));
+    showZoneDraft({ ...randomZone(catalog, locationsFor(catalog, state)), ...(editingId ? { id: editingId } : {}) });
+    restoreBaseline($('#zone-form'),baseline);
+    $('#zone-status').textContent = 'A new idea is ready. Adjust anything you like, then save your zone.';
+    return;
+  }
+  if (intent === 'menu') {
+    const opened = document.body.classList.toggle('nav-open');
+    syncResponsiveMenu();
+    button.setAttribute('aria-expanded', String(opened));
+    if (opened) $('#sidebar a').focus();
+    return;
+  }
+  if (intent === 'defaults') {
+    const form = $('#settings-form');
+    for (const [name, value] of Object.entries(defaults)) {
+      const input = form.elements.namedItem(name);
+      if (!input) continue;
+      if (input.type === 'checkbox') input.checked = value; else input.value = value;
+    }
+    $('#settings-status').textContent = 'Defaults loaded into the form. Save settings to apply, or cancel to keep your current values.';
+    return;
+  }
+  busy = true;
+  button.disabled = true;
+  try {
+    if (intent === 'confirm-delete') {
+      if (!pendingDeletion) return;
+      await action(pendingDeletion.type,pendingDeletion.payload);
+      pendingDeletion = null;
+      confirmation.close();
+      profile.close();
+      render();
+      notify('Removed and saved.');
+    } else if (intent === 'toggle-copy-mode') {
+      await action('developer-edit-mode', { enabled:!state.settings.developerEditMode });
+      render();
+      notify(state.settings.developerEditMode ? 'Edit mode enabled. Use the pencils beside page text.' : 'Edit mode closed. Unsaved drafts remain available until you reload.');
+    } else if (intent === 'apply-theme' || intent === 'theme-mode') {
+      await action('website-theme', { id:intent === 'theme-mode' ? state.settings.websiteTheme || 'default' : id, mode:intent === 'theme-mode' ? button.dataset.mode : state.settings.websiteThemeMode || 'dark' });
+      render();
+      (intent === 'theme-mode' ? main.querySelector(`[data-action="theme-mode"][data-mode="${button.dataset.mode}"]`) : main.querySelector(`[data-action="apply-theme"][data-id="${id}"]`))?.focus({ preventScroll: true });
+      notify('Your website theme is saved.');
+    } else if (intent === 'search') {
+      await action('search', { locationId: route.split('/')[1] });
+      render();
+      main.querySelector('[data-action="search"]')?.focus({ preventScroll: true });
+      notify('Fresh hoofprints. New companions are waiting.');
+    } else if (intent === 'catch') {
+      const horse = findHorse(id);
+      await action('catch', { id });
+      profile.close();
+      render();
+      main.focus({ preventScroll: true });
+      notify(`${horse.name || horse.species} is now in your stable.`);
+    } else if (intent === 'confirm-sell') {
+      await action('sell', { id });
+      confirmation.close();
+      profile.close();
+      render();
+      main.focus({ preventScroll: true });
+      notify(`A fond farewell. ${number(state.settings.sellingPrice)} gold added.`);
+    } else if (intent === 'favorite') {
+      const search = $('#horse-search')?.value || '';
+      const sort = $('#horse-sort')?.value || 'recent';
+      await action('favorite', { id });
+      render();
+      if ($('#horse-search')) {
+        $('#horse-search').value = search;
+        $('#horse-sort').value = sort;
+        $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, search, sort);
+      }
+      if (profile.open) {
+        inspect(id);
+        profile.querySelector('[data-action="favorite"]')?.focus();
+      } else main.querySelector(`[data-action="favorite"][data-id="${id}"]`)?.focus({ preventScroll: true });
+      notify(findHorse(id).favorite ? 'A special place in your heart.' : 'Removed from favorites.');
+    } else if (intent === 'backup') {
+      await action('backup');
+      render();
+      notify('A dated backup was saved in data/backups.');
+    }
+  } catch (error) { notify(error.message, true); }
+  finally { busy = false; button.disabled = false; }
+});
+document.addEventListener('submit', async event => {
+  const form = event.target;
+  if (!['keeper-form', 'gold-form', 'settings-form', 'rename-form', 'zone-form', 'definition-form'].includes(form.id)) return;
+  event.preventDefault();
+  if (busy) return;
+  busy = true;
+  const submit = form.querySelector('[type="submit"]');
+  submit.disabled = true;
+  try {
+    const values = Object.fromEntries(new FormData(form));
+    if (form.id === 'keeper-form') {
+      await action('save-profile', {name:values.name,about:values.about,avatarSeed:Number(values.avatarSeed)});
+      render();
+      notify('Profile saved.');
+    } else if (form.id === 'gold-form') {
+      await action('current-gold', { gold:Number(values.gold) });
+      render();
+      notify('Current gold balance saved.');
+    } else if (form.id === 'definition-form') {
+      const payload = readDefinitionForm(form);
+      validateDefinition(payload.kind, payload.values);
+      await action('save-definition', payload);
+      renderChrome();
+      const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
+      showDefinition(payload.kind, saved);
+      $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes','mutations'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved. This definition is available for future horses.';
+      notify('Your new possibilities are saved.');
+    } else if (form.id === 'zone-form') {
+      const draft = readZoneForm(form);
+      validateZone(draft, catalog);
+      await action('save-zone', draft);
+      renderChrome();
+      const saved = state.customLocations.find(l => l.id === draft.id || l.name === draft.name.trim());
+      showZoneDraft(saved);
+      $('#zone-status').textContent = saved.enabled ? 'Saved! Your zone is now in the Wilds navigation and the atlas below.' : 'Saved as a closed zone. Enable exploration whenever you are ready.';
+      notify('Your new corner of the world is saved.');
+    } else if (form.id === 'settings-form') {
+      await action('settings', {
+        horsesPerSearch: Number(values.horsesPerSearch ?? state.settings.horsesPerSearch), sellingPrice: Number(values.sellingPrice ?? state.settings.sellingPrice),
+        startingGold: Number(values.startingGold ?? state.settings.startingGold), stableCapacity: Number(values.stableCapacity ?? state.settings.stableCapacity),
+        ignoreStableLimit: form.elements.ignoreStableLimit?.checked ?? state.settings.ignoreStableLimit
+      });
+      render();
+      $('#settings-status').textContent = 'Settings saved. Your next search and future sales will use these values.';
+      notify('Your world, a little more your own. Settings saved.');
+    } else {
+      await action('rename', { id: form.dataset.id, name: values.name });
+      render();
+      inspect(form.dataset.id);
+      $('#horse-name').focus();
+      notify('Your companion’s name is saved.');
+    }
+  } catch (error) {
+    if (form.id === 'zone-form' && $('#zone-status')) $('#zone-status').textContent = error.message;
+    if (form.id === 'definition-form' && $('#definition-status')) $('#definition-status').textContent = error.message;
+    notify(error.message, true);
+  }
+  finally { busy = false; submit.disabled = false; }
+});
+document.addEventListener('input', event => {
+  if (event.target.matches('[data-color-picker]')) {
+    event.target.closest('.color-inputs').querySelector('[data-color-hex]').value = event.target.value.toUpperCase();
+  }
+  if (event.target.matches('[data-color-hex]') && /^#[\da-f]{6}$/i.test(event.target.value)) {
+    event.target.closest('.color-inputs').querySelector('[data-color-picker]').value = event.target.value;
+  }
+  updateFormState(event.target.form);
+  if (event.target.id === 'definition-search') {
+    const query = event.target.value.trim().toLowerCase();
+    let matches = 0;
+    for (const item of main.querySelectorAll('.definition-list-item')) {
+      item.hidden = !item.dataset.search.includes(query);
+      if (!item.hidden) matches++;
+    }
+    $('#definition-no-results').hidden = matches > 0;
+  }
+  if (event.target.closest('#zone-form')) $('#zone-preview').innerHTML = zonePreview(readZoneForm($('#zone-form')), catalog);
+  if (event.target.id === 'horse-search') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, event.target.value, $('#horse-sort').value);
+});
+document.addEventListener('change', event => {
+  updateFormState(event.target.form);
+  if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value);
+});
+document.addEventListener('reset', event => {
+  setTimeout(() => { updateFormState(event.target); if (event.target.id === 'keeper-form') updateAvatarPreview(); },0);
+  if (event.target.id === 'settings-form') $('#settings-status').textContent = '';
+  if (event.target.id === 'zone-form') {
+    event.preventDefault();
+    showZoneDraft(locationsFor(catalog, state).find(l => l.id === event.target.dataset.id) || newZoneDraft());
+  }
+  if (event.target.id === 'definition-form') {
+    event.preventDefault();
+    const kind = event.target.dataset.kind;
+    showDefinition(kind, catalog[kind].find(d => d.id === event.target.dataset.id) || draftDefinition(kind));
+  }
+});
+$('.scrim').addEventListener('click', closeMenu);
+document.addEventListener('keydown', event => {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (!document.querySelector('dialog[open]')) openSiteSearch(); }
+  if (event.key === 'Tab' && document.body.classList.contains('nav-open') && matchMedia('(max-width: 900px)').matches) {
+    const focusable = [...$('#sidebar').querySelectorAll('a, summary')].filter(el => el.getClientRects().length);
+    const first = focusable[0], last = focusable.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+  if (event.key === 'Escape' && document.body.classList.contains('nav-open')) {
+    closeMenu();
+    $('.mobile-menu').focus();
+  }
+});
+for (const dialog of [profile, confirmation]) dialog.addEventListener('click', event => {
+  const bounds = dialog.getBoundingClientRect();
+  if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+});
+matchMedia('(max-width: 900px)').addEventListener('change', syncResponsiveMenu);
+window.addEventListener('hashchange', navigate);
+try {
+  ({ state, catalog, defaults } = await request('/api/state'));
+  await navigate();
+  syncResponsiveMenu();
+} catch (error) {
+  main.innerHTML = `<section class="panel"><h1>The sanctuary couldn’t open</h1><p>${e(error.message)}</p><p>Check that the local server is running, then reload this page. Existing save files have been preserved.</p><button class="button primary" id="retry-load">Try again</button></section>`;
+  $('#retry-load').addEventListener('click', () => location.reload());
+}
+
+
+
+

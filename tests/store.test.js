@@ -1,0 +1,205 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, readFile, writeFile, rm, readdir } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, dirname, resolve, basename } from 'node:path';
+import { GameStore } from '../src/store.js';
+import { newZoneDraft } from '../public/zones.js';
+import { locationsFor } from '../public/zones.js';
+
+const catalog = JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8'));
+const defaults = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
+async function fixture(t) {
+  const directory = await mkdtemp(join(tmpdir(), 'aetherion-test-'));
+  t.after(async () => {
+    assert.equal(dirname(resolve(directory)), resolve(tmpdir()));
+    assert.ok(basename(directory).startsWith('aetherion-test-'));
+    await rm(directory, { recursive: true, force: true });
+  });
+  return { directory, store: await new GameStore(directory, catalog, defaults).init() };
+}
+test('zone and horse deletion persist without awarding gold or removing unrelated records', async t => {
+  const { directory, store } = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const first = store.state.encounters.aetherion[0].id;
+  const second = store.state.encounters.aetherion[1].id;
+  await store.action('catch',{id:first});
+  await store.action('sell',{id:second});
+  const gold = store.state.gold;
+  await store.action('save-zone',{...newZoneDraft(),name:'Delete Me',description:'Temporary.',speciesPool:['Unicorn'],palettePool:['Natural Gold']});
+  const zone = store.state.customLocations.at(-1);
+  await store.action('visit',{locationId:zone.id});
+  await store.action('delete-zone',{id:zone.id});
+  assert.equal(store.state.encounters[zone.id],undefined);
+  await store.action('delete-zone',{id:'aetherion'});
+  assert.equal(store.state.horses[0].id,first);
+  assert.equal(store.state.sold[0].id,second);
+  await store.action('delete-horse',{id:first});
+  assert.equal(store.state.sold[0].id,second);
+  await store.action('delete-horse',{id:second});
+  assert.equal(store.state.gold,gold);
+  const loaded = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(loaded.state.horses.length,0);
+  assert.equal(loaded.state.sold.length,0);
+  assert.equal(locationsFor(loaded.getCatalog(),loaded.state).some(z => z.id === 'aetherion' || z.id === zone.id),false);
+  await assert.rejects(loaded.action('delete-horse',{id:first}));
+});
+test('keeper profile validates, persists and resets without affecting the game', async t => {
+  const { directory, store } = await fixture(t);
+  const profile = {name:'Moon Keeper',about:'I love unicorns. <script>plain text</script>',avatarSeed:9876};
+  await store.action('save-profile',profile);
+  const loaded = await new GameStore(directory,catalog,defaults).init();
+  assert.deepEqual(loaded.state.keeper,profile);
+  for (const patch of [{name:''},{about:'a'.repeat(2001)},{avatarSeed:-1},{avatarSeed:'red'}]) {
+    await assert.rejects(loaded.action('save-profile',{...profile,...patch}));
+    assert.deepEqual(loaded.state.keeper,profile);
+  }
+  const gold = loaded.state.gold;
+  await loaded.action('delete-profile');
+  assert.equal(loaded.state.keeper,undefined);
+  assert.equal(loaded.state.gold,gold);
+});
+test('current gold updates the live balance, records the difference and survives reload', async t => {
+  const { directory, store } = await fixture(t);
+  const before = store.state.gold;
+  await store.action('current-gold',{gold:9876});
+  assert.equal(store.state.gold,9876);
+  assert.equal(store.state.transactions.at(-1).amount,9876-before);
+  assert.equal(store.state.settings.startingGold,defaults.startingGold);
+  await store.action('current-gold',{gold:0});
+  assert.equal(store.state.transactions.at(-1).amount,-9876);
+  const reloaded = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(reloaded.state.gold,0);
+  for (const gold of [-1,1.2,1000000001,'500',null]) {
+    const snapshot = store.snapshot();
+    await assert.rejects(store.action('current-gold',{gold}));
+    assert.deepEqual(store.snapshot(),snapshot);
+  }
+});
+test('visit is stable; catching, naming and favoriting survive reload', async t => {
+  const { directory, store } = await fixture(t);
+  const initial = await store.action('visit', { locationId: 'aetherion' });
+  const id = initial.encounters.aetherion[0].id;
+  const again = await store.action('visit', { locationId: 'aetherion' });
+  assert.deepEqual(again.encounters, initial.encounters);
+  await store.action('catch', { id });
+  await store.action('rename', { id, name: 'Moon & Marigold' });
+  await store.action('favorite', { id });
+  const restarted = await new GameStore(directory, catalog, defaults).init();
+  assert.equal(restarted.state.horses[0].name, 'Moon & Marigold');
+  assert.equal(restarted.state.horses[0].favorite, true);
+  assert.deepEqual(restarted.state.horses[0].palette, initial.encounters.aetherion[0].palette);
+  assert.equal(restarted.state.encounters.aetherion.length, 2);
+});
+test('selling retains complete horse history and concurrent duplicate sales cannot award gold twice', async t => {
+  const { store } = await fixture(t);
+  await store.action('visit', { locationId: 'hallowhoof' });
+  const horse = store.state.encounters.hallowhoof[0];
+  await store.action('catch', { id: horse.id });
+  const results = await Promise.allSettled([store.action('sell', { id: horse.id }), store.action('sell', { id: horse.id })]);
+  assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
+  assert.equal(store.state.gold, 300);
+  assert.equal(store.state.horses.length, 0);
+  assert.equal(store.state.sold.length, 1);
+  assert.deepEqual(store.state.sold[0].traits, horse.traits);
+  assert.equal(store.state.transactions.length, 1);
+});
+test('settings persist and affect new searches and sales, never existing horses', async t => {
+  const { directory, store } = await fixture(t);
+  await store.action('visit', { locationId: 'aetherion' });
+  const horse = store.state.encounters.aetherion[0];
+  await store.action('catch', { id: horse.id });
+  const original = structuredClone(store.state.horses[0]);
+  await store.action('settings', { ...defaults, horsesPerSearch: 5, sellingPrice: 420 });
+  await store.action('search', { locationId: 'aetherion' });
+  assert.equal(store.state.encounters.aetherion.length, 5);
+  assert.deepEqual(store.state.horses[0], original);
+  await store.action('sell', { id: horse.id });
+  assert.equal(store.state.gold, 420);
+  const restarted = await new GameStore(directory, catalog, defaults).init();
+  assert.equal(restarted.state.settings.horsesPerSearch, 5);
+});
+test('invalid settings and full stable fail without mutating the save', async t => {
+  const { store } = await fixture(t);
+  await assert.rejects(store.action('settings', { ...defaults, horsesPerSearch: 0 }));
+  await assert.rejects(store.action('settings', { ...defaults, sellingPrice: -1 }));
+  await store.action('settings', { ...defaults, stableCapacity: 1, ignoreStableLimit: false });
+  await store.action('visit', { locationId: 'aetherion' });
+  const [a, b] = store.state.encounters.aetherion;
+  await store.action('catch', { id: a.id });
+  const before = store.snapshot();
+  await assert.rejects(store.action('catch', { id: b.id }), /full/);
+  assert.deepEqual(store.state, before);
+});
+test('backups retain preceding save and malformed save is not replaced', async t => {
+  const { directory, store } = await fixture(t);
+  await store.action('visit', { locationId: 'aetherion' });
+  await store.action('backup');
+  assert.ok((await readdir(join(directory, 'backups'))).some(file => file.startsWith('save-')));
+  const previous = JSON.parse(await readFile(join(directory, 'backups', 'previous-save.json'), 'utf8'));
+  assert.equal(previous.encounters.aetherion.length, 3);
+  const filename = join(directory, 'player', 'save.json');
+  await writeFile(filename, '{broken');
+  await assert.rejects(new GameStore(directory, catalog, defaults).init(), /preserved/);
+  assert.equal(await readFile(filename, 'utf8'), '{broken');
+});
+test('reference imports preserve incomplete palettes but preview uses complete palettes', async t => {
+  const { store } = await fixture(t);
+  assert.equal(catalog.species.length, 46);
+  assert.ok(catalog.palettes.some(p => !p.complete));
+  for (const location of catalog.locations) {
+    await store.action('visit', { locationId: location.id });
+    for (const horse of store.state.encounters[location.id]) {
+      assert.equal(Object.keys(horse.palette.colors).length, 9);
+      assert.equal(horse.preview, true);
+      assert.equal(horse.traits.Mane.length, 1);
+      assert.equal(horse.traits.Tail.length, 1);
+      assert.ok(horse.eye.colors.length);
+    }
+  }
+});
+test('custom zones persist, use selected pools, and edits preserve old encounters and collected horses', async t => {
+  const { directory, store } = await fixture(t);
+  await store.action('save-zone', { ...newZoneDraft(), name: 'Silver Vale', description: 'A frosted woodland.', atmosphere: 'frost', speciesPool: ['Ghoulsteed'], palettePool: ['Pumpkin'] });
+  const zone = store.state.customLocations[0];
+  await store.action('visit', { locationId: zone.id });
+  const horse = store.state.encounters[zone.id][0];
+  assert.equal(horse.species, 'Ghoulsteed');
+  assert.equal(horse.palette.name, 'Pumpkin');
+  assert.equal(horse.locationId, zone.id);
+  await store.action('catch', { id: horse.id });
+  const oldEncounters = structuredClone(store.state.encounters[zone.id]);
+  await store.action('save-zone', { ...zone, speciesPool: ['Unicorn'], palettePool: ['Emerald'], name: 'Silver Haven' });
+  assert.deepEqual(store.state.encounters[zone.id], oldEncounters);
+  await store.action('search', { locationId: zone.id });
+  assert.ok(store.state.encounters[zone.id].every(h => h.species === 'Unicorn' && h.palette.name === 'Emerald'));
+  assert.equal(store.state.horses[0].palette.name, 'Pumpkin');
+  const reloaded = await new GameStore(directory, catalog, defaults).init();
+  assert.equal(reloaded.state.customLocations[0].name, 'Silver Haven');
+  assert.equal(reloaded.state.horses[0].id, horse.id);
+  await reloaded.action('save-zone', { ...reloaded.state.customLocations[0], enabled: false });
+  await assert.rejects(reloaded.action('visit', { locationId: zone.id }), /Unknown location/);
+  assert.equal(reloaded.state.horses[0].id, horse.id);
+});
+test('invalid, empty, duplicate and unknown zone edits are rejected without saving', async t => {
+  const { store } = await fixture(t);
+  const valid = { ...newZoneDraft(), name: 'A new zone', description: 'A lovely place.' };
+  for (const patch of [{ name: '' }, { name: 'x'.repeat(61) }, { description: '' }, { atmosphere: 'unknown' }, { speciesPool: [] }, { speciesPool: ['Unknown horse'] }, { palettePool: [] }, { palettePool: ['Mushroom'] }, { id: 'missing-zone' }, { name: 'aetherion wilds' }]) {
+    const before = store.snapshot();
+    await assert.rejects(store.action('save-zone', { ...valid, ...patch }));
+    assert.deepEqual(store.state, before);
+  }
+  await store.action('save-zone', valid);
+  await assert.rejects(store.action('save-zone', { ...valid, name: 'A NEW ZONE' }), /already exists/);
+  assert.equal(store.state.customLocations.length, 1);
+});
+test('old saves without custom zones load without changing existing data', async t => {
+  const { directory, store } = await fixture(t);
+  const legacy = store.snapshot();
+  delete legacy.customLocations;
+  await writeFile(join(directory, 'player', 'save.json'), JSON.stringify(legacy));
+  const loaded = await new GameStore(directory, catalog, defaults).init();
+  assert.deepEqual(loaded.state, { ...legacy, customLocations: [] });
+  assert.deepEqual(JSON.parse(await readFile(join(directory, 'player', 'save.json'), 'utf8')), legacy);
+});
+

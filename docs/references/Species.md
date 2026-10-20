@@ -1,0 +1,47 @@
+# Species
+- Akhal Teke (Rare Spawn)
+- Alces [Christmas Event]
+- Anticorn
+- Bisorse
+- Cactaline
+- Calaverita [Halloween Event]
+- Caniquine (Rare Spawn)
+- Caprine
+- Carousel [Carnival Event]
+- Celestial
+- Clydesdale (Rare Spawn)
+- Crystallion [Royal Event]
+- Cybred (unsure where to source this one, tbd)
+- Donkey
+- Equenari [Alien Event]
+- Equus
+- Fae
+- Felorse (Rare Spawn)
+- Fjord
+- Flora
+- Friesan (Rare Spawn)
+- Gargoyle
+- Ghoulsteed [Halloween Event]
+- Giraffetti [Carnival Event]
+- Griff [Medieval Event]
+- Hauntmare [Halloween Event]
+- Heartbane [Valentine Event]
+- Hippocampus
+- Hollyhoof [Christmas Event]
+- Honeytrot [Easter Event]
+- Horse (Realistic breed)
+- Kelpie
+- Kirin (Egg cave only)
+- Lusitano
+- Marwari
+- Nephyrian (Rare Spawn)
+- Pastrequine [Valentine Event]
+- Peryton
+- Plush (Plush Machine only)
+- Pony
+- Saurequine (Digsite only)
+- Seraph (Boss Fight only)
+- Serpentine (Rare Spawn)
+- Sovremeign [Royal Event]
+- Unicorn
+- Wolper [Easter Event]

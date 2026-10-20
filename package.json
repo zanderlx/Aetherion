@@ -1,0 +1,14 @@
+{
+  "name": "aetherion-horse-sanctuary",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Aetherion v1: a local fantasy horse collection and customization preview.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test",
+    "import:references": "node scripts/import-references.js"
+  },
+  "engines": { "node": ">=22" }
+}
