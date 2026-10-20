@@ -29,7 +29,7 @@ test('horse previews and details expose edit targets and the simplified nine-col
   assert.equal((preview.match(/--swatch:/g) || []).length,9);
   assert.doesNotMatch(preview,/HiddenPaletteName|A NEW ACQUAINTANCE|In your care/);
   const wild = wildPage(catalog.locations[0],state);
-  assert.match(wild,/data-copy-key="encounters.count"/);
+  assert.doesNotMatch(wild,/encounters.count|A CHANCE ENCOUNTER|wandered into the clearing/);
   assert.doesNotMatch(wild,/field-note|stable-shortcut/);
 });
 test('every navigation destination renders content without undefined values', () => {
