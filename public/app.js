@@ -64,6 +64,7 @@ function pageContent(pageRoute, pageState = state) {
   const route = pageRoute;
   const locations = locationsFor(catalog, state);
   if (section === 'wilds' && locations.some(l => l.id === page && l.enabled)) return wildPage(locations.find(l => l.id === page), state, locations, catalog);
+  else if (route === 'stable/breeding') return plannedPage(route,state);
   else if (section === 'stable') return stablePage(page, state);
   else if (route === 'dev/settings' || route === 'dev/economy') return settingsPage(state, page === 'economy');
   else if (route === 'dev/saves') return savesPage(state);
@@ -89,6 +90,8 @@ async function navigate() {
     route = available ? `wilds/${available.id}` : 'stable/all';
     history.replaceState(null,'',`#${route}`);
   }
+  const movedRoutes = {'breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
+  if (movedRoutes[route]) { route = movedRoutes[route]; history.replaceState(null,'', '#' + route); }
   closeMenu();
   if (profile.open) profile.close();
   if (confirmation.open) confirmation.close();

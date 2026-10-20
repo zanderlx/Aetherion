@@ -42,6 +42,7 @@ test('every navigation destination renders content without undefined values', ()
   for (const [route] of groups.flatMap(group => group.items)) {
     const [section, page] = route.split('/');
     const html = section === 'wilds' ? wildPage(catalog.locations.find(l => l.id === page), state)
+      : route === 'stable/breeding' ? plannedPage(route,state)
       : section === 'stable' ? stablePage(page, state)
       : ['dev/settings', 'dev/economy'].includes(route) ? settingsPage(state)
       : route === 'dev/saves' ? savesPage(state)
@@ -56,7 +57,9 @@ test('every navigation destination renders content without undefined values', ()
   }
 });
 test('navigation groups have alphabetized links and profile content safely renders user text', () => {
-  for (const group of groups) assert.deepEqual(group.items.map(item => item[1]),group.items.map(item => item[1]).sort((a,b) => a.localeCompare(b)));
+  assert.deepEqual(groups.find(g => g.title === 'Stables').items.map(item => item[1]),['My Horses','Favorites','Breeding']);
+  assert.equal(groups.some(g => g.title === 'Breeding'),false);
+  for (const group of groups.filter(g => g.title !== 'Stables')) assert.deepEqual(group.items.map(item => item[1]),group.items.map(item => item[1]).sort((a,b) => a.localeCompare(b)));
   const html = keeperPage({...state,keeper:{name:'<Keeper>',about:'</textarea><script>bad</script>',avatarSeed:27}});
   assert.doesNotMatch(html,/<script>/);
   assert.match(html,/&lt;Keeper&gt;/);

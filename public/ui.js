@@ -26,10 +26,9 @@ export const icons = {
 export const icon = name => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.spark}</svg>`;
 export const groups = [
   { title: 'Town', icon: 'town', items: [['town/gacha', 'Gacha Machine'], ['town/spirit', 'Spirit Tame'], ['town/plush', 'Plush Machine'], ['town/cave', 'Ancient Cave'], ['town/digsite', 'Digsite']] },
-  { title: 'Stables', icon: 'stable', open: true, items: [['stable/all', 'My Horses'], ['stable/favorites', 'Favorites'], ['stable/sold', 'Horse Management']] },
+  { title: 'Stables', icon: 'stable', open: true, items: [['stable/all', 'My Horses'], ['stable/favorites', 'Favorites'], ['stable/breeding', 'Breeding']] },
   { title: 'Inventory', icon: 'bag', items: [['inventory/accessories', 'Accessories'], ['inventory/potions', 'Potions']] },
   { title: 'Wilds', icon: 'compass', open: true, items: [['wilds/aetherion', 'Aetherion Wilds'], ['wilds/hallowhoof', 'Hallowhoof']] },
-  { title: 'Breeding', icon: 'heart', items: [['breeding/stable', 'Breeding Stable'], ['breeding/history', 'Breeding History']] },
   { title: 'Developer Settings', icon: 'settings', items: [['dev/settings', 'Game Settings'], ['dev/generator', 'Horse Generator'], ['dev/editor', 'Horse Editor'], ['dev/species', 'Species & Traits'], ['dev/colors', 'Colors & Palettes'], ['dev/mutations', 'Mutations'], ['dev/spawn', 'Spawn Rates'], ['dev/economy', 'Economy'], ['dev/items', 'Inventory & Items'], ['dev/locations', 'Events & Locations'], ['dev/saves', 'Save Management']] }
 ];
 const workbench = groups.find(g => g.title === 'Developer Settings');
@@ -40,9 +39,9 @@ groups.push(
   {title:'Horse Tools',icon:'settings',items:[['dev/editor','Horse Editor'],['dev/generator','Horse Generator'],['dev/spawn','Spawn Rates']]},
   {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/edit-mode','Edit Mode'],['dev/profile','My Profile']]}
 );
-for (const group of groups) group.items.sort((a,b) => a[1].localeCompare(b[1]));
+for (const group of groups) if (group.title !== 'Stables') group.items.sort((a,b) => a[1].localeCompare(b[1]));
 export function sidebar(route, state, openGroups, catalog) {
-  const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locationsFor(catalog, state).filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:[...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));
+  const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locationsFor(catalog, state).filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:group.title === 'Stables' ? group.items : [...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));
   return `<a href="#wilds/aetherion" class="brand"><svg class="brand-logo" viewBox="0 0 80 80" aria-hidden="true"><rect width="80" height="80" rx="22" fill="var(--panel-deep)"/><path d="M40 7 65 22v28L40 73 15 50V22Z" fill="none" stroke="var(--gold)" stroke-width="1.5"/><path d="m28 57 2-16-7-5 6-11 8-3 5-10 4 12c13 3 15 17 10 32H28Z" fill="var(--gold)"/><path d="m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32" fill="none" stroke="var(--panel-deep)" stroke-width="2"/><circle cx="34" cy="29" r="1.5" fill="var(--panel-deep)"/></svg><span><span class="brand-title">AETHERION</span><small>A HORSEKEEPER’S CHRONICLE</small></span></a>
     <div class="nav-caption">YOUR LITTLE WORLD <span>✧</span></div>
     <nav>${navigation.map(group => `<details data-group="${group.title}" ${openGroups.has(group.title) || group.items.some(([path]) => path === route) ? 'open' : ''}>
