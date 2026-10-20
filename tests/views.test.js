@@ -17,6 +17,12 @@ const catalog = normalizeCatalog(JSON.parse(await readFile(new URL('../data/defi
 const settings = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
 const horses = createEncounters(catalog, 'aetherion', 3);
 const state = { settings, horses: [], sold: [], gold: 0, encounters: { aetherion: horses }, transactions: [], savedAt: new Date().toISOString() };
+test('wild horses have no deletion control; owned horses can be released', () => {
+  assert.doesNotMatch(profileContent(horses[0],state), /data-action="delete-horse"/);
+  const owned = profileContent(horses[0],{...state,horses:[horses[0]]});
+  assert.match(owned,/Release Horse/);
+  assert.doesNotMatch(owned,/Delete Horse/);
+});
 test('horse previews and details expose edit targets and the simplified nine-color layout', () => {
   const horse = {...horses[0],birthday:'2020-02-29',palette:{...horses[0].palette,name:'HiddenPaletteName'}};
   const html = profileContent(horse,state);

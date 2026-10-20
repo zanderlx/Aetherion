@@ -222,9 +222,9 @@ function updateAvatarPreview() {
   form.querySelectorAll('[data-seed]').forEach(button => button.setAttribute('aria-pressed',String(Number(button.dataset.seed) === seed)));
   updateFormState(form);
 }
-function askToDelete(type, payload, name, detail) {
+function askToDelete(type, payload, name, detail, verb = type === 'delete-profile' ? 'Reset' : 'Delete') {
   pendingDeletion = {type,payload};
-  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${type === 'delete-profile' ? 'Reset' : 'Delete'} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>Keep It</button><button class="button primary" data-action="confirm-delete">Confirm ${type === 'delete-profile' ? 'Reset' : 'Delete'}</button></div>`;
+  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>Keep It</button><button class="button primary" data-action="confirm-delete">Confirm ${verb}</button></div>`;
   confirmation.showModal();
 }
 document.addEventListener('click', async event => {
@@ -238,7 +238,11 @@ document.addEventListener('click', async event => {
   }
   if (intent === 'cancel-delete') { pendingDeletion = null; confirmation.close(); return; }
   if (intent === 'delete-profile') return askToDelete('delete-profile',{},'Profile','Reset your display name, About Me, and avatar. Horses and progress stay unchanged.');
-  if (intent === 'delete-horse') return askToDelete('delete-horse',{id},findHorse(id)?.name || findHorse(id)?.species || 'Horse','Remove this horse from the stable, encounters, or sold archive. Deleting gives no gold and does not reverse earlier sales.');
+  if (intent === 'delete-horse') {
+    const owned = state.horses.some(h => h.id === id);
+    if (!owned && !state.sold.some(h => h.id === id)) return;
+    return askToDelete('delete-horse',{id},findHorse(id)?.name || findHorse(id)?.species || 'Horse',owned ? 'Release this horse from your stable. Releasing gives no gold.' : 'Remove this horse from the sold archive. This does not reverse the sale.',owned ? 'Release' : 'Delete');
+  }
   if (intent === 'delete-zone') return askToDelete('delete-zone',{id},locationsFor(catalog,state).find(z => z.id === id)?.name || 'Zone','Remove this zone and its wild encounters. Collected horses and sold records stay unchanged.');
   if (intent === 'delete-definition') {
     const kind = button.dataset.kind;
