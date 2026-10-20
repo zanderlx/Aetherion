@@ -23,12 +23,18 @@ test('wild horses have no deletion control; owned horses can be released', () =>
   assert.match(owned,/Release Horse/);
   assert.doesNotMatch(owned,/Delete Horse/);
   assert.match(owned,/data-action="rename-horse"/);
+  assert.match(owned,/horse-notes-form/);
+  assert.ok(owned.indexOf('horse-notes-form') < owned.indexOf('profile-lower'));
+  assert.ok(owned.indexOf('trait.eye-color') < owned.indexOf('trait.' + 'text-'));
+  assert.doesNotMatch(owned,/personality-note|Horse notes|Horse ID/);
+  assert.doesNotMatch(profileContent(horses[0],state),/horse-notes-form|data-action="sell"/);
+  assert.match(owned,/data-action="sell"/);
   assert.doesNotMatch(owned,/rename-form|Give your companion a name/);
   assert.doesNotMatch(profileContent(horses[0],state),/data-action="rename-horse"/);
 });
 test('horse fields have individual edit controls only in edit mode and notes are escaped', () => {
   const horse = {...horses[0],notes:'</textarea><script>bad</script>'};
-  const html = profileContent(horse,{...state,settings:{...settings,developerEditMode:true}});
+  const html = profileContent(horse,{...state,horses:[horse],settings:{...settings,developerEditMode:true}});
   for (const field of ['age','origin','size','birthday','personality','eye']) assert.ok(html.includes(`data-field="${field}"`));
   assert.doesNotMatch(profileContent(horse,state),/data-action="edit-horse-field"/);
   assert.match(html,/&lt;\/textarea&gt;&lt;script&gt;/);
@@ -40,7 +46,7 @@ test('horse previews and details expose edit targets and the simplified nine-col
   assert.match(html,/02-29-2020/);
   assert.doesNotMatch(html,/HiddenPaletteName|>Return |IN YOUR CARE|A WILD ACQUAINTANCE/);
   assert.ok(html.indexOf('Eye color') > html.indexOf('Traits & little details'));
-  assert.ok(html.indexOf('profile-id-footer') > html.indexOf('profile-actions'));
+  assert.doesNotMatch(html,/profile-id-footer|Horse ID/);
   const preview = card(horse,state,'stable');
   assert.equal((preview.match(/--swatch:/g) || []).length,9);
   assert.doesNotMatch(preview,/HiddenPaletteName|A NEW ACQUAINTANCE|In your care/);
