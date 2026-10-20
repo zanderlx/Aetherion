@@ -4,7 +4,7 @@
 
 - Local Node HTTP server, browser interface, offline SVG artwork, and persistent JSON saves.
 - Preview Wilds encounters; catch, rename, favorite, sell, delete, search, and sort horses.
-- Stable and sold history, current-gold editing, sale prices, encounter count, and stable limits.
+- Stable collection and preserved sold records, current-gold editing, sale prices, encounter count, and stable limits.
 - Create/edit/randomize/delete zones with editable species, palette, and atmosphere pools.
 - Create/edit/duplicate/delete species, traits, palettes, eyes, personalities, mutations, items, item themes, atmospheres, and website themes.
 - Five supplied **Mutated Horse** palettes: Solar, Lunar, Astral, Heavenly, Void. All nine colors are preserved; old editable libraries receive missing entries without replacing custom data.
@@ -22,7 +22,7 @@
 
 See [README — Remaining Features](../README.md#remaining-features) for the feature-by-feature requirements and [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for detailed rule ambiguities.
 
-- [ ] Individual Horse Editor, duplication/import, and custom horse creator.
+- [ ] Remaining Horse Editor fields (species, palette, traits, mutations), duplication/import, and custom horse creator.
 - [ ] Probability-based Horse Generator and spawn controls.
 - [ ] Executable mutation/item effects and exact species/trait artwork.
 - [ ] Breeding, color/trait inheritance, and family history.
@@ -36,7 +36,7 @@ A basic Horse Editor can begin with the existing schema. Generator probabilities
 
 ## Verification
 
-**45 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**50 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -57,3 +57,11 @@ Browser observation was blocked by the browser tool's localhost policy. No alter
 
 Implemented editable profile wording and encounter counter, reversible text deletion, nine-color previews without palette names, simplified Wilds/profile labels, larger fonts, and saved random adult birthdays displayed as MM-DD-YYYY. Existing birthdays remain unchanged. Changes are committed separately and remain unpushed per the current workflow preference. Browser visual checks remain unverified.
 
+
+### Latest horse profile update
+
+- Catch-time name prompt and owned-name pencil.
+- Saved, scrollable horse notes with change-only Save/Cancel.
+- Edit Mode birthday picker and alphabetized age/origin/size/personality/eye choices, persisted per horse.
+- Stables fixed order: My Horses, Favorites, Breeding; old management/history navigation removed.
+- New controls verified with template and isolated store tests; browser interaction QA remains pending.

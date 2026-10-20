@@ -134,7 +134,7 @@ function openSiteSearch() {
     });
     for (const zone of locations) entries.push({ route:'dev/locations', zone:true,id:zone.id,title:zone.name,text:JSON.stringify(zone),category:'Zone' });
     const seen = new Set();
-    for (const [path,horses] of [['stable/all',state.horses],['stable/sold',state.sold],...Object.entries(state.encounters).map(([id,horses]) => [`wilds/${id}`,horses])]) {
+    for (const [path,horses] of [['stable/all',state.horses],['stable/all',state.sold],...Object.entries(state.encounters).map(([id,horses]) => [`wilds/${id}`,horses])]) {
       for (const horse of horses) {
         if (seen.has(horse.id)) continue;
         seen.add(horse.id);

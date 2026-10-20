@@ -12,7 +12,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1 is a working collection and customization preview.** Catching, saving, editing definitions, and website customization work today. The full probability-based Horse Generator, individual Horse Editor, breeding, inventory gameplay, and Town activities are still planned.
+> **Version 1 is a working collection and customization preview.** Catching, saving, editing definitions, and website customization work today. The full probability-based Horse Generator, full Horse Editor, breeding, inventory gameplay, and Town activities are still planned.
 
 ## Get Started
 
@@ -123,6 +123,7 @@ Starting gold and stable limits are provisional settings. **Current Gold** chang
 
 | Navigation section | Contents |
 | --- | --- |
+| **Stables** | My Horses, Favorites, Breeding (in that order) |
 | **Developer Settings** | Game Settings, Economy, Save Management, Remaining Features |
 | **Horse Definitions** | Species & Traits, Horse Palettes, Eye Colors, Personalities, Mutations |
 | **Horse Tools** | Planned Horse Editor, Horse Generator, Spawn Rates |
@@ -204,8 +205,16 @@ The automated suite checks persistence, deletion, palettes, theme contrast, prof
 
 ### Horse view and preview refinements
 
-Edit Mode also covers horse-profile headings, labels, descriptive wording, and the live Wilds encounter counter. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
+Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
 
 Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color is last in Traits & Little Details, and Horse ID appears at the profile bottom. Interface font sizes increased by two pixels.
 
 New preview adults receive a random birthday 3–20 years before creation, saved once in ISO date form and displayed as MM-DD-YYYY. The range is provisional for adult preview horses; existing saved birthdays are preserved.
+
+### Horse names, notes, and details
+
+Catch a horse to choose a name or keep its current name before saving to My Horses. Owned horses have a rename pencil beside their name. Every horse profile has saved notes with scrolling when needed and Save/Cancel controls after changes.
+
+Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
+
+Stables contains My Horses, Favorites, and Breeding. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
