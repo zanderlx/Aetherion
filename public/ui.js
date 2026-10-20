@@ -61,7 +61,7 @@ export function card(horse, state, mode = 'wild') {
     <span class="art-caption">ILLUSTRATIVE PLACEHOLDER</span></div>
     <div class="card-body"><div class="card-title"><div>${horse.name ? `<span class="eyebrow">${escapeHTML(horse.species)}</span>` : ''}<h3><button data-action="inspect" data-id="${horse.id}">${escapeHTML(title)}</button></h3></div><span class="gender" aria-label="${horse.gender}">${horse.gender === 'Female' ? '♀' : '♂'}</span></div>
     <p class="horse-meta">${escapeHTML(horse.age)} <span>·</span> ${escapeHTML(horse.size)} <span>·</span> ${escapeHTML(horse.personality.name)}</p>
-    <div class="palette-line"><div class="swatches" aria-label="${escapeHTML(horse.palette.name)} palette">${Object.values(horse.palette.colors).slice(0, 5).map(c => `<span style="--swatch:${c}" title="${c}"></span>`).join('')}</div><span>${escapeHTML(horse.palette.name)}</span></div>
+    <div class="palette-line"><div class="swatches" aria-label="All nine horse colors">${Object.entries(horse.palette.colors).map(([region,c]) => `<span style="--swatch:${c}" title="${escapeHTML(region)}: ${c}"></span>`).join('')}</div></div>
     <div class="card-actions"><button class="button secondary" data-action="inspect" data-id="${horse.id}">View horse ${icon('arrow')}</button>
     ${mode === 'wild' ? `<button class="button primary" data-action="catch" data-id="${horse.id}">${icon('stable')} Catch</button>` : mode === 'sold' ? `<span class="sold-label">Sold · ${number(horse.soldFor)} gold</span>` : ''}</div></div></article>`;
 }
@@ -71,6 +71,7 @@ export function emptyState(title, description, link, linkLabel, symbol = 'stable
 export function heading(kicker, title, description, extra = '') {
   return `<div class="page-heading"><div><span class="eyebrow" data-copy-key="page.kicker" data-copy-label="Page eyebrow">${kicker}</span><h1 data-copy-key="page.title" data-copy-label="Page title">${title}</h1><p data-copy-key="page.description" data-copy-label="Page introduction">${description}</p></div>${extra}</div>`;
 }
+
 
 
 

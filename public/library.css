@@ -66,3 +66,4 @@ h1,h2,h3,h4,.breadcrumb strong{text-transform:capitalize}
 select{text-transform:uppercase}
 .brand-logo{width:43px;height:47px;flex-shrink:0}
 .profile-id-footer{padding:0 24px 20px;text-align:right;overflow-wrap:anywhere}
+.palette-line .swatches{flex-wrap:wrap;gap:4px}.palette-line{min-height:28px}
