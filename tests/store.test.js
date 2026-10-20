@@ -30,6 +30,19 @@ test('catch validates names atomically and saves the chosen name', async t => {
   const restored = await new GameStore(directory,catalog,defaults).init();
   assert.equal(restored.state.horses[0].name,'Moonbeam');
 });
+test('horse notes survive catching and reload; invalid notes leave the save unchanged', async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const id = store.state.encounters.aetherion[0].id;
+  const notes = 'Likes apples.\n<script>plain text</script>';
+  await store.action('horse-notes',{id,notes});
+  await assert.rejects(store.action('horse-notes',{id,notes:'a'.repeat(4001)}));
+  await store.action('catch',{id});
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(restored.state.horses[0].notes,notes);
+  await store.action('horse-notes',{id,notes:''});
+  assert.equal(store.state.horses[0].notes,'');
+});
 test('zone and horse deletion persist without awarding gold or removing unrelated records', async t => {
   const { directory, store } = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});

@@ -1,4 +1,4 @@
-import { validateHorseName } from '../public/horse-fields.js';
+import { validateHorseName, horseRecords } from '../public/horse-fields.js';
 import { mkdir, readFile, writeFile, rename, copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -73,6 +73,11 @@ export class GameStore {
         if (type === 'rename') {
           horse.name = validateHorseName(payload.name);
         } else horse.favorite = !horse.favorite;
+      } else if (type === 'horse-notes') {
+        const horse = horseRecords(next).find(h => h.id === payload.id);
+        if (!horse) throw new Error('Horse not found.');
+        if (typeof payload.notes !== 'string' || payload.notes.length > 4000) throw new Error('Notes must be 4,000 characters or fewer.');
+        horse.notes = payload.notes;
       } else if (type === 'save-profile') {
         next.keeper = validateKeeper(payload);
       } else if (type === 'delete-profile') {

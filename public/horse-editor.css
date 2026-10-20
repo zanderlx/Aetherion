@@ -5,3 +5,6 @@
 .horse-edit-body label { display:grid; gap:10px; }
 .horse-edit-body input,.horse-edit-body select { width:100%; box-sizing:border-box; }
 .horse-edit-body .form-actions { display:flex; flex-wrap:wrap; gap:12px; }
+.horse-notes { padding:0 28px 24px; }
+.horse-notes textarea { width:100%; box-sizing:border-box; height:140px; overflow-y:auto; resize:vertical; }
+.horse-notes .form-actions { display:flex; gap:12px; margin-top:12px; }
