@@ -12,6 +12,17 @@ import { mutatedPalettes } from '../public/mutated-palettes.js';
 
 const catalog = JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8'));
 const defaults = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
+test('profile wording and deleted text survive restart, restore cleanly, and support live tokens', async t => {
+  const { directory, store } = await fixture(t);
+  await store.action('save-copy',{scope:'horse/profile',entries:{'horse.title':'Meet {horseName}','personality.note':''}});
+  await store.action('save-copy',{scope:'wilds/aetherion',entries:{'encounters.count':'{encounterCount} visitors'}});
+  const loaded = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(loaded.state.pageCopy['horse/profile']['personality.note'],'');
+  assert.equal(renderCopy(loaded.state.pageCopy['horse/profile']['horse.title'],{horseName:'Moonbeam'}),'Meet Moonbeam');
+  assert.equal(renderCopy(loaded.state.pageCopy['wilds/aetherion']['encounters.count'],{encounterCount:2}),'2 visitors');
+  await loaded.action('save-copy',{scope:'horse/profile',entries:{'personality.note':null}});
+  assert.equal(loaded.state.pageCopy['horse/profile']['personality.note'],undefined);
+});
 test('page wording merges, resets, stays isolated and survives restart and backup', async t => {
   const { directory, store } = await fixture(t);
   await store.action('developer-edit-mode', { enabled:true });

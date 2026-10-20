@@ -75,7 +75,7 @@ export function createCopyEditor({ getState, getRoute, save, notify, includeChro
       dialog.className = 'copy-editor-dialog';
       dialog.setAttribute('aria-labelledby',uid + '-dialog-title');
       dialog.dataset.copyUi = '';
-      dialog.innerHTML = `<form id="copy-text-form"><div class="dialog-top"><h2 id="copy-dialog-title">Edit text</h2><button type="button" class="icon-button" data-copy-command="close" aria-label="Close text editor">×</button></div><div class="copy-dialog-body"><p id="copy-field-label"></p><label class="zone-field">Text<textarea id="copy-text-value" rows="7" maxlength="4000"></textarea></label><details><summary>Original wording</summary><p id="copy-original"></p></details><p class="preview-note">Plain text only. Live values: ${copyTokens.map(t => `{${t}}`).join(', ')}.</p><p class="form-status" role="status" id="copy-dialog-status"></p><div class="form-actions"><button class="button primary" type="submit">Save this section</button><button type="button" class="button secondary" data-copy-command="preview">Preview change</button><button type="button" class="text-button" data-copy-command="default">Use original wording</button><button type="button" class="text-button" data-copy-command="close">Cancel</button></div></div></form>`;
+      dialog.innerHTML = `<form id="copy-text-form"><div class="dialog-top"><h2 id="copy-dialog-title">Edit text</h2><button type="button" class="icon-button" data-copy-command="close" aria-label="Close text editor">×</button></div><div class="copy-dialog-body"><p id="copy-field-label"></p><label class="zone-field">Text<textarea id="copy-text-value" rows="7" maxlength="4000"></textarea></label><details><summary>Original wording</summary><p id="copy-original"></p></details><p class="preview-note">Plain text only. Live values: ${copyTokens.map(t => `{${t}}`).join(', ')}.</p><p class="form-status" role="status" id="copy-dialog-status"></p><div class="form-actions"><button class="button primary" type="submit">Save this section</button><button type="button" class="button secondary" data-copy-command="preview">Preview change</button><button type="button" class="text-button" data-copy-command="delete">Delete text</button><button type="button" class="text-button" data-copy-command="default">Use original wording</button><button type="button" class="text-button" data-copy-command="close">Cancel</button></div></div></form>`;
       dialog.innerHTML = dialog.innerHTML.replaceAll('id="copy-','id="' + uid + '-');
       document.body.append(dialog);
       query('form').addEventListener('submit', async event => {
@@ -98,6 +98,7 @@ export function createCopyEditor({ getState, getRoute, save, notify, includeChro
         const command = event.target.closest('[data-copy-command]')?.dataset.copyCommand;
         if (command === 'close') dialog.close();
         if (command === 'preview') { const text = query('textarea').value; stage(selected,text === selected.original ? null : text); dialog.close(); }
+        if (command === 'delete') { query('textarea').value = ''; query('#copy-dialog-status').textContent = 'Text cleared. Save this section or preview the deletion.'; }
         if (command === 'default') query('textarea').value = selected.original;
       });
     }
@@ -166,5 +167,6 @@ export function createCopyEditor({ getState, getRoute, save, notify, includeChro
   });
   return { attach, close:() => dialog?.close() };
 }
+
 
 
