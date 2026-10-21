@@ -129,7 +129,11 @@ select{text-transform:uppercase}
 .eye-name-rarity > .zone-field { margin:0; gap:6px; }
 .eye-definition-dialog .definition-fields > .zone-field { margin:12px 0; gap:6px; }
 .eye-definition-dialog #eye-color-rows { grid-auto-rows:1fr; align-items:stretch; }
-.eye-add-tile { display:flex; align-items:center; justify-content:center; align-self:stretch; gap:8px; min-height:0; border:1px dashed var(--border); border-radius:5px; }
+.eye-add-tile { display:flex; flex-direction:column; align-self:start; gap:9px; font-size:14px; }
+.eye-add-label { visibility:hidden; }
+.eye-add-actions { display:flex; align-items:center; justify-content:center; gap:8px; height:42px; border:1px dashed var(--border); border-radius:5px; }
+.eye-add-actions .icon-button { width:32px; height:32px; border:1px solid var(--border); border-radius:4px; }
+.eye-add-actions .icon-button:hover { border-color:var(--gold); background:var(--panel-deep); }
 .eye-add-tile[hidden] { display:none; }
 @media(max-width:500px) { .eye-name-rarity { grid-template-columns:1fr; gap:8px; } }
 .eye-definition-dialog > .dialog-top { position:sticky; top:0; z-index:2; background:var(--panel); }
