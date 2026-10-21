@@ -369,5 +369,5 @@ test('Horse mutations have numbered entries and a count including zero',()=>{
  assert.match(html,/<ol class="horse-mutations mutation-slots"/);
  assert.equal((html.match(/<li class="mutation-slot /g)||[]).length,4);
  assert.equal((html.match(/No Mutation/g)||[]).length,1);
- assert.match(html,/<p>Jump higher\.<\/p>/);
+ assert.match(html,/<strong>Double Jump<\/strong><span class="mutation-description">: Jump higher\.<\/span>/);
 });
