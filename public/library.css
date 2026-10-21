@@ -93,7 +93,7 @@ select{text-transform:uppercase}
 
 .definitions-main { min-width:0; }
 .definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
-.definitions-header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
+.definitions-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
 .manager-heading { margin:0; }
 .configuration-path { font-size:13px; margin:0 0 0 auto; text-align:right; overflow-wrap:anywhere; }
 .spawn-settings { margin-bottom:24px; }
