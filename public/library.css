@@ -96,8 +96,9 @@ select{text-transform:uppercase}
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; min-height:2.5em; overflow-wrap:anywhere; }
-.eye-card-rarity { display:block; color:var(--muted); margin:auto 0 18px; padding-top:8px; }
-.eye-swatches { display:flex; flex-shrink:0; width:100%; height:72px; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
+.eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:6px 0 16px; }
+.eye-card-rarity { display:block; color:var(--muted); margin-top:12px; }
+.eye-swatches { display:flex; flex-shrink:0; width:100%; height:72px; margin-top:auto; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
 .eye-swatches span { flex:1; }
 .eye-definition-dialog { width:min(760px,calc(100vw - 32px)); max-height:85vh; overflow-y:auto; }
 .eye-definition-dialog form { margin-top:16px; }
