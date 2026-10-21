@@ -31,3 +31,5 @@ main{scroll-margin-top:80px}
 .zone-layout>aside{min-width:0}
 @media(min-width:1201px){.zone-layout>aside{position:sticky;top:100px}}
 @media(max-width:480px){.zone-options{grid-template-columns:1fr}.zone-preview .hero-content{padding:24px}.zone-draft-actions>.button{width:100%}}
+
+.hero-bottom { flex-wrap:wrap; row-gap:10px; }

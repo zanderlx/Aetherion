@@ -17,6 +17,19 @@ const catalog = normalizeCatalog(JSON.parse(await readFile(new URL('../data/defi
 const settings = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
 const horses = createEncounters(catalog, 'aetherion', 3);
 const state = { settings, horses: [], sold: [], gold: 0, encounters: { aetherion: horses }, transactions: [], savedAt: new Date().toISOString() };
+test('zone tags render as safe text without icons and can be removed', () => {
+  const location = {...catalog.locations[0],tags:['The evergreen realm','Free exploration','<script>Quiet</script>']};
+  const html = wildPage(location,state);
+  const tags = html.match(/<div class="hero-bottom">(.*?)<\/div>/s)[1];
+  assert.match(tags,/The evergreen realm/);
+  assert.match(tags,/Free exploration/);
+  assert.match(tags,/&lt;script&gt;Quiet&lt;\/script&gt;/);
+  assert.doesNotMatch(tags,/<svg|<script/);
+  assert.match(wildPage({...location,tags:[]},state),/<div class="hero-bottom"><\/div>/);
+  const editor = zoneEditorPage(catalog,state);
+  assert.match(editor,/name="tags"/);
+  assert.match(editor,/The evergreen realm\nFree exploration/);
+});
 test('wild horses have no deletion control; owned horses can be released', () => {
   assert.doesNotMatch(profileContent(horses[0],state), /data-action="delete-horse"/);
   const owned = profileContent(horses[0],{...state,horses:[horses[0]]});

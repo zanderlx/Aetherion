@@ -36,6 +36,22 @@ test('owned personality descriptions default on catch, persist, and reject inval
   await store.action('horse-description',{id:first.id,description:''});
   assert.equal(store.state.horses[0].personalityDescription,'');
 });
+test('zone tags preserve legacy defaults and save additions, removals and empty lists', async t => {
+  const {directory,store} = await fixture(t);
+  const original = locationsFor(store.getCatalog(),store.state)[0];
+  assert.deepEqual(original.tags,['The evergreen realm','Free exploration']);
+  const draft = {...newZoneDraft(),name:'Tagged Grove',description:'A quiet grove.'};
+  await store.action('save-zone',{...draft,tags:[' Moonlit ', '<b>Quiet</b>','Moonlit']});
+  const zone = store.state.customLocations.at(-1);
+  assert.deepEqual(zone.tags,['Moonlit','<b>Quiet</b>']);
+  for (const tags of [null,'text',[''],['a'.repeat(101)],Array(21).fill('Tag')]) {
+    await assert.rejects(store.action('save-zone',{...zone,tags}));
+  }
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.deepEqual(restored.state.customLocations.at(-1).tags,zone.tags);
+  await restored.action('save-zone',{...zone,tags:[]});
+  assert.deepEqual(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === zone.id).tags,[]);
+});
 test('catch validates names atomically and saves the chosen name', async t => {
   const {directory,store} = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});

@@ -1,5 +1,5 @@
 import { escapeHTML as e, number, icon, card, emptyState, heading, groups } from './ui.js';
-import { atmosphereFor, atmosphereStyle } from './zones.js';
+import { atmosphereFor, atmosphereStyle, zoneTags } from './zones.js';
 
 export function wildPage(location, state, locations = [location], catalog) {
   const horses = state.encounters[location.id] || [];
@@ -9,7 +9,7 @@ export function wildPage(location, state, locations = [location], catalog) {
   <section class="hero ${['forest','autumn','moonlit','frost'].includes(atmosphere) ? atmosphere : 'atmosphere-custom'}" style="${atmosphereStyle(atmosphereDefinition)}" aria-labelledby="location-title"><div class="hero-content">
   <span class="eyebrow"><span class="tiny-diamond">◆</span> THE WILDS ARE CALLING</span>
   <h1 id="location-title" data-copy-key="hero.title">${e(location.name)}</h1><p data-copy-key="hero.description">${e(location.description)}</p>
-  <div class="hero-bottom"><span>${icon('compass')} ${e(location.custom ? location.subtitle || atmosphereDefinition.name : location.id === 'hallowhoof' ? 'Halloween realm' : 'The evergreen realm')}</span><span class="hero-divider"></span><span>${icon('leaf')} Free exploration</span></div>
+  <div class="hero-bottom">${zoneTags(location,catalog).map(tag => `<span>${e(tag)}</span>`).join('<span class="hero-divider" aria-hidden="true"></span>')}</div>
   </div><span class="hero-mark" aria-hidden="true">✧</span></section>
   <section class="encounters" aria-labelledby="encounter-title"><div class="section-heading"><div><h2 id="encounter-title" data-copy-key="encounters.title">${e(atmosphereDefinition.encounterTitle)}</h2></div><button class="button primary search-button" data-action="search">${icon('refresh')} Search the wilds</button></div>
   <div class="horse-grid">${horses.map(h => card(h, state)).join('')}</div>

@@ -25,7 +25,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0 — current** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **51 passing tests**; browser visual QA remains pending.
+Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **54 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -104,7 +104,7 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 
 | 🌿 Explore & collect | ✨ Build & customize |
 | --- | --- |
-| Wilds encounters with inspectable horse profiles | Create, edit, randomize, and delete zones |
+| Wilds encounters with inspectable horse profiles | Create, edit, randomize, and delete zones with editable tags |
 | Catch, rename, favorite, sell, and release owned horses | Define species, traits, palettes, eyes, and personalities |
 | Stable search, sorting, favorites, and preserved sale records | Maintain mutation, item, item-theme, and atmosphere definitions |
 | Nine-region color swatches and saved characteristics | Edit website wording without changing source code |
@@ -158,6 +158,8 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | **Horse Tools** | Planned Horse Editor, Horse Generator, Spawn Rates |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
 | **Website & Profile** | Appearance & Themes, Edit Mode, My Profile |
+
+**Zone tags:** zone creation and editing include a Tags field (one per line). New drafts include The evergreen realm and Free exploration. Add, replace, or remove tags, including all tags; they display without icons on Wilds pages and in the live preview. Existing zones keep their previous tag defaults.
 
 **Website themes:** Aetherion Original, Rosewater, Lavender Cloud, Mint Meadow, Bluebell Morning, Peach Blossom, Lemon Chiffon, Sea Glass, and Silver Mist. The original remains the default. Other presets offer dark and light variants, with dark selected by default. The Aetherion crest follows your theme colors.
 

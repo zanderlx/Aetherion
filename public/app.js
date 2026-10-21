@@ -178,6 +178,7 @@ function readZoneForm(form) {
   const values = new FormData(form);
   return { id: form.dataset.id || undefined, name: values.get('name'), subtitle: values.get('subtitle'),
     description: values.get('description'), atmosphere: values.get('atmosphere'),
+    tags: String(values.get('tags') || '').split(/\r?\n/).map(tag => tag.trim()).filter(Boolean),
     enabled: form.elements.enabled.checked, speciesPool: values.getAll('speciesPool'), palettePool: values.getAll('palettePool') };
 }
 function showZoneDraft(draft) {

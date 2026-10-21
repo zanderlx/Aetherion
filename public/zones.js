@@ -14,11 +14,14 @@ export function locationsFor(catalog, state = {}) {
       ...l
     }));
   return [...defaults.map(l => state.customLocations?.find(c => c.id === l.id) || l),
-    ...(state.customLocations || []).filter(l => !defaults.some(d => d.id === l.id))].filter(l => !state.deletedLocationIds?.includes(l.id));
+    ...(state.customLocations || []).filter(l => !defaults.some(d => d.id === l.id))].filter(l => !state.deletedLocationIds?.includes(l.id)).map(l => ({...l,tags:zoneTags(l,catalog)}));
 }
 export const availableAtmospheres = catalog => catalog?.atmospheres || baseAtmospheres;
 export const atmosphereFor = (catalog, id) => availableAtmospheres(catalog).find(a => a.id === id) || baseAtmospheres[0];
 export const atmosphereStyle = atmosphere => /^#[\da-f]{6}$/i.test(atmosphere.tint) ? `--zone-tint:${atmosphere.tint}` : '';
+export function zoneTags(zone, catalog) {
+  return zone.tags ?? [zone.custom ? zone.subtitle || atmosphereFor(catalog,zone.atmosphere).name : zone.id === 'hallowhoof' ? 'Halloween realm' : 'The evergreen realm','Free exploration'];
+}
 export function validateZone(input, catalog) {
   if (!input || typeof input !== 'object') throw new Error('Enter your zone details.');
   const text = (key, max, required = true) => {
@@ -28,16 +31,18 @@ export function validateZone(input, catalog) {
   const name = text('name', 60), subtitle = text('subtitle', 100, false), description = text('description', 600);
   if (!availableAtmospheres(catalog).some(a => a.id === input.atmosphere)) throw new Error('Choose an available atmosphere.');
   if (typeof input.enabled !== 'boolean') throw new Error('Choose whether the zone is enabled.');
+  const tags = input.tags === undefined ? zoneTags(input,catalog) : input.tags;
+  if (!Array.isArray(tags) || tags.length > 20 || tags.some(tag => typeof tag !== 'string' || !tag.trim() || tag.trim().length > 100)) throw new Error('Use up to 20 tags, each containing 1–100 characters.');
   const pool = (key, available) => {
     if (!Array.isArray(input[key]) || !input[key].length || input[key].length > available.length || input[key].some(value => !available.includes(value))) throw new Error(`Select at least one valid ${key === 'speciesPool' ? 'species' : 'complete palette'}.`);
     return [...new Set(input[key])];
   };
-  return { name, subtitle, description, atmosphere: input.atmosphere, enabled: input.enabled,
+  return { name, subtitle, description, tags:[...new Set(tags.map(tag => tag.trim()))], atmosphere: input.atmosphere, enabled: input.enabled,
     speciesPool: pool('speciesPool', catalog.species.map(s => s.name)),
     palettePool: pool('palettePool', catalog.palettes.filter(p => p.complete).map(p => p.name)), custom: true, event: null };
 }
 export function newZoneDraft() {
-  return { name: '', subtitle: '', description: '', atmosphere: 'forest', enabled: true, speciesPool: ['Unicorn', 'Peryton', 'Fae'], palettePool: ['Natural Gold'] };
+  return { name: '', subtitle: '', description: '', tags:['The evergreen realm','Free exploration'], atmosphere: 'forest', enabled: true, speciesPool: ['Unicorn', 'Peryton', 'Fae'], palettePool: ['Natural Gold'] };
 }
 export function randomZone(catalog, existing = [], rng = Math.random) {
   const pick = list => list[Math.floor(rng() * list.length)];
@@ -59,7 +64,7 @@ export function randomZone(catalog, existing = [], rng = Math.random) {
   return {
     name, subtitle: pick(['A new path. An unexpected companion.', 'A quiet corner of a magical world.', 'Follow the hoofprints into wonder.']),
     description: `${settings.detail} Follow the trail and meet the companions who call this place home.`,
-    atmosphere, enabled: true,
+    atmosphere, enabled: true, tags:[atmosphere === 'forest' ? 'The evergreen realm' : atmosphereFor(catalog,atmosphere).name,'Free exploration'],
     speciesPool: sample(catalog.species.map(s => s.name), 3 + Math.floor(rng() * 4)),
     palettePool: sample(catalog.palettes.filter(p => p.complete).map(p => p.name), 2 + Math.floor(rng() * 3))
   };

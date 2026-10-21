@@ -1,9 +1,9 @@
 import { escapeHTML as e, heading, icon } from './ui.js';
-import { availableAtmospheres, atmosphereFor, atmosphereStyle, locationsFor, newZoneDraft } from './zones.js';
+import { availableAtmospheres, atmosphereFor, atmosphereStyle, locationsFor, newZoneDraft, zoneTags } from './zones.js';
 
 export function zonePreview(draft, catalog) {
   const atmosphere = atmosphereFor(catalog, draft.atmosphere);
-  return `<section class="hero zone-preview ${['forest','autumn','moonlit','frost'].includes(atmosphere.id) ? atmosphere.id : 'atmosphere-custom'}" style="${atmosphereStyle(atmosphere)}" aria-label="Zone preview"><div class="hero-content"><span class="eyebrow">YOUR NEXT ADVENTURE</span><h2>${e(draft.name || 'An undiscovered place')}</h2><p>${e(draft.description || 'Give this little corner of the world a story of its own.')}</p><div class="hero-bottom"><span>${icon('compass')} ${e(draft.subtitle || atmosphere.name)}</span></div></div></section>`;
+  return `<section class="hero zone-preview ${['forest','autumn','moonlit','frost'].includes(atmosphere.id) ? atmosphere.id : 'atmosphere-custom'}" style="${atmosphereStyle(atmosphere)}" aria-label="Zone preview"><div class="hero-content"><span class="eyebrow">YOUR NEXT ADVENTURE</span><h2>${e(draft.name || 'An undiscovered place')}</h2><p>${e(draft.description || 'Give this little corner of the world a story of its own.')}</p><div class="hero-bottom">${zoneTags(draft,catalog).map(tag => `<span>${e(tag)}</span>`).join('<span class="hero-divider" aria-hidden="true"></span>')}</div></div></section>`;
 }
 export function zoneEditorPage(catalog, state, draft = newZoneDraft()) {
   const locations = locationsFor(catalog, state);
@@ -15,6 +15,7 @@ export function zoneEditorPage(catalog, state, draft = newZoneDraft()) {
     <label class="zone-field">Zone name<input name="name" maxlength="60" required placeholder="e.g. Moonwhisper Hollow" value="${e(draft.name)}"></label>
     <label class="zone-field">Short tagline<input name="subtitle" maxlength="100" placeholder="A quiet place for extraordinary companions." value="${e(draft.subtitle)}"></label>
     <label class="zone-field">Description<textarea name="description" maxlength="600" rows="4" required placeholder="What awaits beyond the trees?">${e(draft.description)}</textarea></label>
+    <label class="zone-field">Tags<textarea name="tags" rows="3" maxlength="2020" aria-describedby="zone-tags-help">${e(zoneTags(draft,catalog).join('\n'))}</textarea><small id="zone-tags-help">One tag per line. Add or remove lines to change the tags shown on the Wilds page. Leave blank for no tags (up to 20 tags, 100 characters each).</small></label>
     <label class="zone-field">Atmosphere<select name="atmosphere">${availableAtmospheres(catalog).map(a => `<option value="${a.id}" ${draft.atmosphere === a.id ? 'selected' : ''}>${e(a.name)}</option>`).join('')}</select></label>
     <p class="preview-note">Need more options? Add <a class="text-link" href="#dev/species">species</a>, <a class="text-link" href="#dev/colors">palettes</a>, or <a class="text-link" href="#dev/atmospheres">atmospheres</a> in the workbench.</p>
     <label class="setting-row"><span><strong>Open for exploration</strong><small>Show this zone in the Wilds navigation.</small></span><input type="checkbox" class="toggle" name="enabled" ${draft.enabled ? 'checked' : ''}></label>
