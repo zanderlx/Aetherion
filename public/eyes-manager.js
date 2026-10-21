@@ -20,8 +20,11 @@ export function createEyeEditor(renderEditor) {
     open(draft) {
       const template = document.createElement('template');
       template.innerHTML = renderEditor(draft);
-      dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? 'Edit Eye Color' : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
-      dialog.append(template.content.querySelector('#definition-form'));
+      dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
+      const form = template.content.querySelector('#definition-form');
+      form.querySelector('.panel-heading')?.remove();
+      dialog.append(form);
+      dialog.scrollTop = 0;
       if (!dialog.open) dialog.showModal();
       dialog.querySelector('[name="name"]').focus();
     }

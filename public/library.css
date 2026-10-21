@@ -103,6 +103,7 @@ select{text-transform:uppercase}
 .eye-swatches span { flex:1; }
 .eye-definition-dialog { width:min(760px,calc(100vw - 32px)); max-height:85vh; overflow-y:auto; }
 .eye-definition-dialog form { margin-top:16px; }
+.eye-definition-dialog > .dialog-top { position:sticky; top:0; z-index:2; background:var(--panel); }
 @media(hover:none) { .eye-edit { opacity:1; } }
 .definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
 .definitions-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
