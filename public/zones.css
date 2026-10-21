@@ -48,3 +48,5 @@ main{scroll-margin-top:80px}
 .zone-preview { box-sizing:border-box; }
 .zone-preview .hero-content { display:flex; flex-direction:column; width:100%; box-sizing:border-box; min-height:310px; }
 .zone-preview .hero-bottom { margin-top:auto; padding-top:18px; }
+
+.encounters > .section-heading { justify-content:flex-end; }

@@ -10,11 +10,10 @@ export function wildPage(location, state, locations = [location], catalog) {
   <h1 id="location-title" data-copy-key="hero.title">${e(location.name)}</h1><p data-copy-key="hero.description">${e(location.description)}</p>
   <div class="hero-bottom">${zoneTags(location,catalog).map(tag => `<span>${e(tag)}</span>`).join('<span class="hero-divider" aria-hidden="true"></span>')}</div>
   </div><span class="hero-mark" aria-hidden="true">✧</span></section>
-  <section class="encounters" aria-labelledby="encounter-title"><div class="section-heading"><div><h2 id="encounter-title" data-copy-key="encounters.title">${e(atmosphereDefinition.encounterTitle)}</h2></div><button class="button primary search-button" data-action="search">${icon('refresh')} Search the wilds</button></div>
+  <section class="encounters" aria-label="Wild horses"><div class="section-heading"><button class="button primary search-button" data-action="search">${icon('refresh')} Search the wilds</button></div>
   <div class="horse-grid">${horses.map(h => card(h, state)).join('')}</div>
   ${horses.length === 0 ? emptyState('A little further down the trail…', 'Search the wilds above to discover your next companions.', null, null, 'leaf') : ''}
-  </section>
-  <p class="preview-note">${icon('spark')} Foundation preview · Curated sample encounters, not final spawn odds. Artwork is illustrative; missing species traits are marked in profiles.</p>`;
+  </section>`;
 }
 export function stablePage(kind, state) {
   const sold = kind === 'sold';

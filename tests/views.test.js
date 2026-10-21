@@ -90,7 +90,7 @@ test('horse previews and details expose edit targets and the simplified nine-col
   assert.doesNotMatch(preview,/HiddenPaletteName|A NEW ACQUAINTANCE|In your care/);
   const wild = wildPage(catalog.locations[0],state);
   assert.doesNotMatch(wild,/encounters.count|A CHANCE ENCOUNTER|wandered into the clearing/);
-  assert.doesNotMatch(wild,/field-note|stable-shortcut/);
+  assert.doesNotMatch(wild,/field-note|stable-shortcut|encounter-title|encounters.title|Foundation preview|Curated sample encounters/);
 });
 test('every navigation destination renders content without undefined values', () => {
   for (const [route] of groups.flatMap(group => group.items)) {
@@ -149,7 +149,7 @@ test('edit mode has one dedicated page and economy exposes the actual gold balan
 test('wild view has three inspectable illustrations and explicit preview labeling', () => {
   const html = wildPage(catalog.locations[0], state);
   assert.equal((html.match(/class="horse-card"/g) || []).length, 3);
-  assert.match(html, /not final spawn odds/);
+  assert.doesNotMatch(html, /not final spawn odds/);
   assert.match(html, /ILLUSTRATIVE PLACEHOLDER/);
 });
 test('horse profile escapes names and preserves source traits and all nine color regions', () => {
