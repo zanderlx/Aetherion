@@ -63,7 +63,7 @@ export function readHorseDocument(document) {
     name:text(h.name ?? '','Name',60,true),species:text(h.species,'Species'),
     age:choice(h.age,ages,'age'),gender:choice(h.gender,['Female','Male'],'gender'),
     origin:text(h.origin,'Origin'),size,sizePercent:sizes[size],birthday,
-    personality:{...optionalID(h.personality.id),...(h.personality.systemId ? {systemId:text(h.personality.systemId,'Personality system ID')} : {}),behaviorTags:strings(h.personality.behaviorTags || [],'Behavior tag'),name:text(h.personality.name,'Personality'),description:text(h.personality.description ?? '','Default description',4000,true)},
+    personality:{...optionalID(h.personality.id),...(h.personality.emoji ? {emoji:text(h.personality.emoji,'Personality emoji',32)} : {}),...(h.personality.systemId ? {systemId:text(h.personality.systemId,'Personality system ID')} : {}),behaviorTags:strings(h.personality.behaviorTags || [],'Behavior tag'),name:text(h.personality.name,'Personality'),description:text(h.personality.description ?? '','Default description',4000,true)},
     personalityDescription:text(h.personalityDescription ?? h.personality.description ?? '','Description',4000,true),
     notes:text(h.notes ?? '','Notes',4000,true),
     palette:{...optionalID(h.palette.id),global:h.palette.global !== false,speciesIds:strings(h.palette.speciesIds || [],'Species ID'),assetSkins:strings(h.palette.assetSkins || [],'Asset skin',200),name:text(h.palette.name,'Palette name'),group:text(h.palette.group ?? 'Imported','Palette group'),natural:h.palette.natural === true,complete:true,colors:Object.fromEntries(regions.map(region => [region,color(h.palette.colors[region])]))},

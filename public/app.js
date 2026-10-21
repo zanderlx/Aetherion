@@ -1,3 +1,4 @@
+import {personalityForm} from './personalities-manager.js';
 import {closePersonalityEditor} from './personality-editor.js';
 import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
@@ -27,6 +28,12 @@ const $ = selector => document.querySelector(selector);
 const main = $('#main');
 const profile = $('#profile');
 const confirmation = $('#confirm');
+const personalityCreation = document.createElement('dialog');
+personalityCreation.className = 'personality-creation-dialog';
+personalityCreation.setAttribute('aria-label','Create Personality');
+document.body.append(personalityCreation);
+personalityCreation.addEventListener('close',()=>{if (!personalityCreation.open) personalityCreation.replaceChildren();});
+personalityCreation.addEventListener('cancel',event=>{event.preventDefault();closePersonalityEditor(personalityCreation.querySelector('form'),()=>personalityCreation.close());});
 const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft),() => catalog.eyes);
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
 
@@ -204,6 +211,14 @@ function showZoneDraft(draft) {
   $('#zone-form').scrollIntoView({ block: 'start' });
 }
 function showDefinition(kind, draft) {
+  if (kind === 'personalities' && !draft.id) {
+    render();
+    personalityCreation.innerHTML = personalityForm(draft);
+    if (!personalityCreation.open) personalityCreation.showModal();
+    trackForms(personalityCreation);
+    personalityCreation.querySelector('[name=name]').focus();
+    return;
+  }
   if (kind === 'eyes') {
     eyeEditor.open(draft);
     trackForms(eyeEditor.dialog);
@@ -299,7 +314,7 @@ document.addEventListener('click', async event => {
   if (intent === 'sell') return askToSell(id);
   if (intent === 'new-zone') return showZoneDraft(newZoneDraft());
   if (intent === 'edit-zone') return showZoneDraft(locationsFor(catalog, state).find(l => l.id === id));
-  if (intent === 'close-personality-editor') return closePersonalityEditor($('#definition-form'),render);
+  if (intent === 'close-personality-editor') return closePersonalityEditor($('#definition-form'),()=>{if (personalityCreation.open) personalityCreation.close(); else render();});
   if (intent === 'new-definition') return showDefinition(button.dataset.kind, draftDefinition(button.dataset.kind));
   if (intent === 'edit-definition') return showDefinition(button.dataset.kind, catalog[button.dataset.kind].find(d => d.id === id));
   if (intent === 'duplicate-definition') {
@@ -509,7 +524,7 @@ document.addEventListener('submit', async event => {
       renderChrome();
       const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
       if (payload.kind === 'eyes') { eyeEditor.dialog.close(); render(); }
-      else if (payload.kind === 'personalities') render();
+      else if (payload.kind === 'personalities') {personalityCreation.close();render();}
       else showDefinition(payload.kind, saved);
       if ($('#definition-status')) $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
       notify('Your new possibilities are saved.');

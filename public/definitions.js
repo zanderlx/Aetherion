@@ -129,7 +129,7 @@ export function validateDefinition(kind, input) {
     if (!Number.isInteger(result.sizeShift) || Math.abs(result.sizeShift) > 10) throw new Error('Size shift must be an integer between -10 and 10.');
     if (result.weight !== null && !Number.isInteger(result.weight)) throw new Error('Mutation weights must be whole ticket counts.');
   }
-  if (kind === 'personalities') result.behaviorTags = strings('behaviorTags');
+  if (kind === 'personalities') {result.behaviorTags = strings('behaviorTags'); result.emoji = text('emoji',32); }
   if (kind === 'items') Object.assign(result, { type: text('type', 60, true), rarity: text('rarity', 60, true), price: number('price'), theme: text('theme') });
   if (kind === 'themes') result.event = text('event');
   if (kind === 'atmospheres') Object.assign(result, { tint: color(input.tint), encounterTitle: text('encounterTitle', 100, true) });

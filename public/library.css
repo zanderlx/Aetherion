@@ -168,6 +168,10 @@ select{text-transform:uppercase}
 .personality-card-heading h2 { font-size:24px; overflow-wrap:anywhere; }
 .personality-card-heading .icon-button { flex-shrink:0; }
 .personality-card-description { text-transform:none; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.6; color:var(--muted); }
+.personality-emoji { font-family:var(--sans); }
+.personality-creation-dialog { width:min(560px,calc(100vw - 32px)); }
+.personality-creation-dialog .personality-card { margin:0; padding:24px; border:0; }
+.personality-creation-dialog .personality-card-heading { justify-content:space-between; }
 .personality-search { width:min(360px,100%); }
 .personality-card-grid form.personality-card { display:flex; flex-direction:column; }
 .personality-card .personality-editor-close { margin-left:auto; }

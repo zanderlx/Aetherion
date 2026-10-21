@@ -74,11 +74,12 @@ test('asset metadata, species links, mutation thresholds and personality tags pe
   const palette = await add(store,'palettes',{name:'Layered Gold',global:false,speciesIds:[sp.id],assetSkins:['skin-gold']});
   const eye = await add(store,'eyes',{name:'Layered Eye',textureId:'eye-texture',layers:[{textureId:'eye-overlay',color:'#123456',opacity:0.4}]});
   const mutation = await add(store,'mutations',{name:'Steady Heart',type:'Standard',weight:45,thresholds:{stamina:{min:10,max:20}}});
-  const personality = await add(store,'personalities',{name:'Explorer',systemId:'explorer-system',behaviorTags:['curious','social']});
+  const personality = await add(store,'personalities',{name:'Explorer',emoji:'🧭',systemId:'explorer-system',behaviorTags:['curious','social']});
   assert.deepEqual((await read('palettes.json')).find(p => p.id === palette.id).assetSkins,['skin-gold']);
   assert.equal((await read('eyes.json')).find(e => e.id === eye.id).layers[0].opacity,0.4);
   assert.deepEqual((await read('mutations.json')).find(m => m.id === mutation.id).thresholds,{stamina:{min:10,max:20}});
   assert.deepEqual((await read('personalities.json')).find(p => p.id === personality.id).behaviorTags,['curious','social']);
+  assert.equal((await read('personalities.json')).find(p => p.id === personality.id).emoji,'🧭');
   await store.action('spawn-settings',{ALLOW_DUPLICATE_MUTATIONS:true});
   assert.equal((await read('spawn-settings.json')).ALLOW_DUPLICATE_MUTATIONS,true);
   const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
