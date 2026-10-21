@@ -2,6 +2,16 @@ import {escapeHTML as e,icon} from './ui.js';
 import {colorControl} from './library-editor.js';
 import {trackForms,updateFormState,restoreBaseline} from './form-state.js';
 
+export function labelEyeColors(root) {
+  const rows = [...root.querySelectorAll('.eye-color-row')];
+  rows.forEach((row,index) => {
+    const label = rows.length === 1 ? 'Eye Color' : `Eye Color ${index+1}`;
+    row.querySelector('.color-control > span').textContent = label;
+    row.querySelector('[type="color"]').setAttribute('aria-label',`${label} color picker`);
+    row.querySelector('[data-color-hex]').setAttribute('aria-label',`${label} hex value`);
+  });
+}
+
 const rarityOrder = ['common','uncommon','rare','ultra rare','epic','legendary','mythic'];
 const eyeRarityChances = {common:60,uncommon:35,rare:5};
 const rarityRank = rarity => { const rank = rarityOrder.indexOf(rarity.toLowerCase()); return rank < 0 ? rarityOrder.length : rank; };
@@ -73,6 +83,7 @@ export function createEyeEditor(renderEditor,getEyes) {
     row.className = 'eye-color-row';
     row.innerHTML = `${colorControl(crypto.randomUUID(),color,'Eye Color')}<button type="button" class="text-button" data-action="remove-eye-color">Remove Color</button>`;
     rows.insertBefore(row,rows.querySelector('.eye-add-tile'));
+    labelEyeColors(rows);
     rows.querySelector('.eye-add-tile').hidden = rows.querySelectorAll('.eye-color-row').length >= 6;
     const picker = row.querySelector('[type="color"]');
     picker.focus();
@@ -89,7 +100,8 @@ export function createEyeEditor(renderEditor,getEyes) {
       form.querySelector('[data-action="duplicate-definition"]')?.remove();
       form.querySelector('[data-action="add-eye-color"]')?.remove();
       const colors = form.querySelector('#eye-color-rows');
-      colors.insertAdjacentHTML('beforeend',`<div class="eye-add-tile" ${colors.children.length >= 6 ? 'hidden' : ''}><span class="eye-add-label" aria-hidden="true">Eye Color</span><div class="eye-add-actions"><button type="button" class="icon-button" data-eye-add="manual" aria-label="Choose a new eye color">${icon('plus')}</button><button type="button" class="icon-button" data-eye-add="random" aria-label="Add a random eye color">${icon('refresh')}</button></div></div>`);
+      labelEyeColors(colors);
+      colors.insertAdjacentHTML('beforeend',`<div class="eye-add-tile" ${colors.children.length >= 6 ? 'hidden' : ''}><span class="eye-add-label" aria-hidden="true">Eye Color</span><div class="eye-add-actions"><button type="button" class="icon-button" data-eye-add="manual" title="Add a white color to customize" aria-label="Add a white color to customize">${icon('plus')}</button><button type="button" class="icon-button" data-eye-add="random" title="Add a random existing eye color" aria-label="Add a random existing eye color">${icon('refresh')}</button></div></div>`);
       if (!draft?.id) {
         const random = document.createElement('button');
         random.type = 'button'; random.className = 'button secondary';

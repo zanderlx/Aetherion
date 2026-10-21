@@ -132,7 +132,7 @@ select{text-transform:uppercase}
 .eye-add-tile { display:flex; flex-direction:column; align-self:start; gap:9px; font-size:14px; }
 .eye-add-label { visibility:hidden; }
 .eye-definition-dialog .color-inputs input { height:44px; min-height:44px; }
-.eye-add-actions { display:flex; align-items:center; justify-content:center; gap:8px; height:94px; border:1px dashed var(--border); border-radius:5px; }
+.eye-add-actions { display:flex; align-items:center; justify-content:center; gap:20px; height:94px; border:1px dashed var(--border); border-radius:5px; }
 .eye-add-actions .icon-button { width:32px; height:32px; border:1px solid var(--border); border-radius:4px; }
 .eye-add-actions .icon-button:hover { border-color:var(--gold); background:var(--panel-deep); }
 .eye-add-tile[hidden] { display:none; }

@@ -1,4 +1,4 @@
-import {eyesManagerPage,createEyeEditor,updateEyeGrid} from './eyes-manager.js';
+import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
@@ -333,6 +333,7 @@ document.addEventListener('click', async event => {
     button.closest('.eye-color-row').remove();
     const tile = $('#eye-color-rows').querySelector('.eye-add-tile');
     if (tile) tile.hidden = false;
+    labelEyeColors($('#eye-color-rows'));
     updateFormState($('#traits-form') || $('#definition-form'));
     return;
   }
