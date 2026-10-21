@@ -161,6 +161,9 @@ select{text-transform:uppercase}
 .manager-heading { margin:0; }
 .eye-manager-header { margin-bottom:34px; }
 .personality-manager-header { justify-content:flex-start; gap:36px; }
+.library-workbench:has(> form[hidden]) { grid-template-columns:1fr; }
+#definition-form[data-kind="personalities"] > .panel-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.personality-editor-close { flex-shrink:0; }
 .library-list-panel .personality-search { margin-top:0; }
 .breadcrumb .breadcrumb-path { font-size:12px; min-width:0; margin-left:-6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-transform:none; word-spacing:normal; letter-spacing:normal; }
 .spawn-settings { margin-bottom:24px; }

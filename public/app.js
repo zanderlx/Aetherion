@@ -1,3 +1,4 @@
+import {closePersonalityEditor} from './personality-editor.js';
 import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
@@ -298,6 +299,7 @@ document.addEventListener('click', async event => {
   if (intent === 'sell') return askToSell(id);
   if (intent === 'new-zone') return showZoneDraft(newZoneDraft());
   if (intent === 'edit-zone') return showZoneDraft(locationsFor(catalog, state).find(l => l.id === id));
+  if (intent === 'close-personality-editor') return closePersonalityEditor($('#definition-form'),render);
   if (intent === 'new-definition') return showDefinition(button.dataset.kind, draftDefinition(button.dataset.kind));
   if (intent === 'edit-definition') return showDefinition(button.dataset.kind, catalog[button.dataset.kind].find(d => d.id === id));
   if (intent === 'duplicate-definition') {
@@ -507,6 +509,7 @@ document.addEventListener('submit', async event => {
       renderChrome();
       const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
       if (payload.kind === 'eyes') { eyeEditor.dialog.close(); render(); }
+      else if (payload.kind === 'personalities' && form.dataset.closeAfterSave) render();
       else showDefinition(payload.kind, saved);
       if ($('#definition-status')) $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
       notify('Your new possibilities are saved.');

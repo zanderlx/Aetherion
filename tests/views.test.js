@@ -388,7 +388,11 @@ test('Random eye drafts generate colors without reusing internal IDs',()=>{
 });
 
 test('Personalities uses a compact search and header add button',()=>{
+ const initial=libraryEditorPage('personalities',catalog,state);
+ assert.match(initial,/<form id="definition-form" class="panel" hidden/);
  const html=libraryEditorPage('personalities',catalog,state,catalog.personalities[0]);
+ assert.match(html,/data-action="close-personality-editor"/);
+ assert.doesNotMatch(html,/<form id="definition-form" class="panel" hidden/);
  assert.doesNotMatch(html,/Your collection of options|Find an entry|Behavior Tags|System ID|data-action="duplicate-definition"/);
  assert.match(html,/placeholder="Search\.\.\."/);
  assert.match(html,/personality-manager-header/);
