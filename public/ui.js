@@ -34,13 +34,15 @@ export const groups = [
   { title: 'Developer Settings', icon: 'settings', items: [['dev/settings', 'Game Settings'], ['dev/generator', 'Horse Generator'], ['dev/editor', 'Horse Editor'], ['dev/species', 'Species & Traits'], ['dev/colors', 'Colors & Palettes'], ['dev/mutations', 'Mutations'], ['dev/spawn', 'Spawn Rates'], ['dev/items', 'Inventory & Items'], ['dev/locations', 'Events & Locations'], ['dev/saves', 'Save Management']] }
 ];
 const workbench = groups.find(g => g.title === 'Developer Settings');
-workbench.items = [['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
+workbench.items = [['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
 groups.push(
   {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species & Traits'],['dev/colors','Horse Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations']]},
   {title:'World & Items',icon:'compass',items:[['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]},
   {title:'Horse Tools',icon:'settings',items:[['dev/editor','Horse Editor'],['dev/generator','Horse Generator'],['dev/spawn','Spawn Rates']]},
-  {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/edit-mode','Edit Mode'],['dev/profile','My Profile']]}
+  {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}
 );
+groups.splice(groups.indexOf(workbench),1);
+groups.push(workbench);
 for (const group of groups) if (group.title !== 'Stables') group.items.sort((a,b) => a[1].localeCompare(b[1]));
 export function navigationSection(route) {
   return groups.find(group => group.items.some(([path]) => path === route))

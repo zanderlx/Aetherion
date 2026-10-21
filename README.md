@@ -153,11 +153,11 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | Navigation section | Contents |
 | --- | --- |
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
-| **Developer Settings** | Game Settings (including Economy), Save Management, Remaining Features |
+| **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
 | **Horse Definitions** | Species & Traits, Horse Palettes, Eye Colors, Personalities, Mutations |
 | **Horse Tools** | Planned Horse Editor, Horse Generator, Spawn Rates |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
-| **Website & Profile** | Appearance & Themes, Edit Mode, My Profile |
+| **Website & Profile** | Appearance & Themes, My Profile |
 
 **My Zones:** existing zone cards appear above the editor. Use the trash icon to request deletion. The editor includes an Event checkbox and a checkbox to show the zone in Wilds navigation; Short Tagline is no longer a field.
 
