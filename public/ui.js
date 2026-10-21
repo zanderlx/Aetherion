@@ -48,7 +48,7 @@ export function sidebar(route, state, openGroups, catalog) {
     <div class="nav-caption">YOUR LITTLE WORLD <span>✧</span></div>
     <nav>${navigation.map(group => `<details data-group="${group.title}" ${openGroups.has(group.title) || group.items.some(([path]) => path === route) ? 'open' : ''}>
       <summary>${icon(group.icon)}<span>${group.title}</span><span class="chevron">⌄</span></summary>
-      <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : path.startsWith('wilds/') && locations.some(l => l.id === path.split('/')[1] && l.event) ? '<span class="zone-event-label" aria-label="Event zone">EVENT</span>' : ''}</a>`).join('')}</div>
+      <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : path.startsWith('wilds/') && locations.some(l => l.id === path.split('/')[1] && l.event) ? '<span class="event-dot" title="Event zone"></span>' : ''}</a>`).join('')}</div>
     </details>`).join('')}</nav>
     <div class="sidebar-foot"><span class="save-dot"></span><div>A sanctuary of your own<small>Local files · Phase 1 preview</small></div></div>`;
 }

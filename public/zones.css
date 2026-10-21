@@ -48,6 +48,3 @@ main{scroll-margin-top:80px}
 .zone-preview { box-sizing:border-box; }
 .zone-preview .hero-content { display:flex; flex-direction:column; width:100%; box-sizing:border-box; min-height:310px; }
 .zone-preview .hero-bottom { margin-top:auto; padding-top:18px; }
-
-.zone-event-label { display:inline-block; color:var(--gold); font-size:11px; font-weight:600; letter-spacing:1px; }
-.nav-items .zone-event-label { flex-shrink:0; margin-left:8px; }
