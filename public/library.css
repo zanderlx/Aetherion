@@ -70,11 +70,11 @@ select{text-transform:uppercase}
 #profile>.dialog-top>.icon-button{margin-left:auto}
 
 
-.sale-history { margin-top:25px; }
+.sale-history { margin-top:48px; }
 .sale-history-scroll { overflow-x:auto; }
 .sale-history th,.sale-history td { white-space:nowrap; }
 
-.economy-settings { margin-top:32px; }
+.economy-settings { margin-top:48px; }
 .economy-settings > h2 { margin-bottom:20px; }
 
 .sale-history > h2 { margin-bottom:20px; }

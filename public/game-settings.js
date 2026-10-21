@@ -14,7 +14,7 @@ function settingForm(state,economy = false) {
 }
 
 export function gameSettingsPage(state) {
-  return `${heading('','Encounter & Stable Settings','Changes are saved on this computer.')}
+  return `${heading('','Encounter & Stable Settings','')}
   ${settingForm(state)}
   <section class="economy-settings" aria-labelledby="economy-heading"><h2 id="economy-heading" data-copy-key="economy.heading">Economy Settings</h2>
   ${settingForm(state,true)}</section>${saleHistoryTable(state)}`;
