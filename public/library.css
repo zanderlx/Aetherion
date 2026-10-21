@@ -96,6 +96,14 @@ select{text-transform:uppercase}
 .eye-rarity-section { margin-bottom:32px; }
 .eye-rarity-section > h2 { margin-bottom:16px; }
 .eye-rarity-chance { color:var(--muted); font-size:.75em; }
+.horse-mutations-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+.horse-mutation-count { color:var(--muted); font-variant-numeric:tabular-nums; }
+.horse-mutations { margin:0; padding-left:26px; }
+.horse-mutations li { padding:14px 0 14px 6px; border-bottom:1px solid var(--border); }
+.horse-mutations li:first-child { padding-top:0; }
+.horse-mutations li:last-child { border-bottom:0; }
+.horse-mutations li::marker { color:var(--gold); font-weight:600; }
+.horse-mutations li p { margin:6px 0 0; color:var(--muted); line-height:1.6; }
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }

@@ -359,3 +359,13 @@ test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
  assert.match(html,/\(35%\)/);
  assert.match(html,/\(5%\)/);
 });
+
+test('Horse mutations have numbered entries and a count including zero',()=>{
+ const empty=profileContent({...horses[0],mutations:[]},state);
+ assert.match(empty,/>0\/4<\/span>/);
+ const html=profileContent({...horses[0],mutations:['Springy Tendons',{name:'Double Jump',description:'Jump higher.'},'Twins']},state);
+ assert.match(html,/>3\/4<\/span>/);
+ assert.match(html,/<ol class="horse-mutations"/);
+ assert.equal((html.match(/<li><strong>/g)||[]).length,3);
+ assert.match(html,/<p>Jump higher\.<\/p>/);
+});
