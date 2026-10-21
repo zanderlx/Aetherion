@@ -142,7 +142,7 @@ export function createEyeEditor(renderEditor,getEyes) {
         random.type = 'button'; random.className = 'button secondary';
         random.textContent = 'Randomize';
         random.addEventListener('click',() => {
-          editor.open(randomEyeDraft(getEyes()));
+          editor.open({...draft,name:form.elements.name.value,description:form.elements.description.value,rarity:form.elements.rarity.value,colors:randomEyeDraft(getEyes()).colors});
           trackForms(dialog);
           restoreBaseline(dialog.querySelector('form'),'random-eye-draft');
         });
