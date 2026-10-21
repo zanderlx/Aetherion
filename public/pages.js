@@ -19,7 +19,7 @@ export function wildPage(location, state, locations = [location], catalog) {
 export function stablePage(kind, state) {
   const sold = kind === 'sold';
   const favorites = kind === 'favorites';
-  return `${heading('YOUR SANCTUARY', sold ? 'Horse management' : 'My Horses', sold ? 'A complete record of the companions you have sold.' : '')}
+  return `${heading('YOUR SANCTUARY', sold ? 'Horse management' : 'My Horses', sold ? 'A complete record of the companions you have sold.' : '', sold ? '' : `<button type="button" class="button secondary" data-action="import-horse">${icon('upload')} Import Horse</button>`)}
 
   <div class="collection-toolbar"><label class="search-field">${icon('search')}<input id="horse-search" type="search" placeholder="Search name, species, or personality…" aria-label="Search horses"></label><label class="sort-field">Sort by <select id="horse-sort"><option value="recent">Newest first</option><option value="name">Name</option><option value="species">Species</option><option value="birthday">Birthday</option><option value="favorites">Favorites</option></select></label></div>
   <div id="collection-grid" class="horse-grid">${collectionCards(kind, state)}</div>

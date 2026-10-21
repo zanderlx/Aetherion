@@ -7,6 +7,7 @@ import { GameStore } from '../src/store.js';
 import { newZoneDraft } from '../public/zones.js';
 import { locationsFor } from '../public/zones.js';
 import {horseFieldOptions} from '../public/horse-fields.js';
+import {createHorseDocument,readHorseDocument} from '../public/horse-transfer.js';
 
 const catalog = JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8'));
 const defaults = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
@@ -69,6 +70,48 @@ test('event classification can be enabled and disabled for custom and original z
   assert.equal(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === halloween.id).event,halloween.event);
   await restored.action('save-zone',{...halloween,event:false});
   assert.equal(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === halloween.id).event,null);
+});
+test('horse JSON export imports copies with fresh IDs, capacity checks and atomic validation', async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  await store.action('catch',{id:store.state.encounters.aetherion[0].id,name:'Moonbeam'});
+  const original = store.state.horses[0];
+  await store.action('horse-notes',{id:original.id,notes:'Favorite trail.\n<script>plain text</script>'});
+  await store.action('horse-description',{id:original.id,description:'Quiet and patient.'});
+  const before = store.snapshot();
+  const document = JSON.parse(JSON.stringify(createHorseDocument(before.horses[0])));
+  assert.equal(document.format,'aetherion-horse');
+  assert.equal(document.version,1);
+  assert.deepEqual(store.snapshot(),before);
+  await store.action('import-horse',document);
+  const imported = store.state.horses.at(-1);
+  assert.notEqual(imported.id,original.id);
+  assert.deepEqual(readHorseDocument(createHorseDocument(imported)),readHorseDocument(document));
+  assert.deepEqual(store.state.horses[0],before.horses[0]);
+  assert.equal(store.state.gold,before.gold);
+  await store.action('import-horse',document);
+  assert.equal(new Set(store.state.horses.map(h => h.id)).size,3);
+  const invalid = [
+    d => d.version = 99,
+    d => d.horse.birthday = '2025-02-30',
+    d => d.horse.palette.colors.Hair = '#fff" onload="alert(1)',
+    d => delete d.horse.palette.colors.Nose,
+    d => d.horse.eye.colors = [],
+    d => d.horse.sizePercent = 999,
+    d => d.horse.traits.Mane = 'Invalid',
+    d => d.horse.notes = 'a'.repeat(4001)
+  ];
+  const validState = store.snapshot();
+  for (const mutate of invalid) {
+    const bad = structuredClone(document);
+    mutate(bad);
+    await assert.rejects(store.action('import-horse',bad));
+    assert.deepEqual(store.snapshot(),validState);
+  }
+  await store.action('settings',{...store.state.settings,stableCapacity:3,ignoreStableLimit:false});
+  await assert.rejects(store.action('import-horse',document),/stable is full/);
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.deepEqual(restored.state.horses,store.state.horses);
 });
 test('catch validates names atomically and saves the chosen name', async t => {
   const {directory,store} = await fixture(t);

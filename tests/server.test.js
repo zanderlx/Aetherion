@@ -1,3 +1,4 @@
+import {createHorseDocument} from '../public/horse-transfer.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -30,7 +31,7 @@ test('HTTP application serves all assets, persists actions, exports data and rej
     child.once('error', rej);
     child.once('exit', code => rej(new Error(`Server exited early (${code}).`)));
   });
-  for (const asset of ['/', '/styles.css', '/zones.css', '/zones.js', '/zone-editor.js', '/library.css', '/themes.css', '/definitions.js', '/library-editor.js', '/dates.js', '/roadmap.js', '/mutated-palettes.js', '/keeper.js', '/form-state.js', '/site-search.js', '/theme-modes.js', '/page-copy.js', '/copy-editor.js', '/copy-editor.css', '/typography.css', '/app.js', '/ui.js', '/pages.js', '/profile.js', '/horse-dialogs.js', '/horse-inline-name.js', '/horse-fields.js', '/horse-editor.css', '/art.js', '/assets/crest.svg', '/assets/wilds.svg']) {
+  for (const asset of ['/', '/styles.css', '/zones.css', '/zones.js', '/zone-editor.js', '/library.css', '/themes.css', '/definitions.js', '/library-editor.js', '/dates.js', '/roadmap.js', '/mutated-palettes.js', '/keeper.js', '/form-state.js', '/site-search.js', '/theme-modes.js', '/page-copy.js', '/copy-editor.js', '/copy-editor.css', '/typography.css', '/app.js', '/ui.js', '/pages.js', '/profile.js', '/horse-dialogs.js', '/horse-transfer.js', '/horse-transfer-ui.js', '/horse-inline-name.js', '/horse-fields.js', '/horse-editor.css', '/art.js', '/assets/crest.svg', '/assets/wilds.svg']) {
     const response = await fetch(url + asset);
     assert.equal(response.status, 200, asset);
     assert.ok((await response.text()).length > 0);
@@ -49,6 +50,14 @@ test('HTTP application serves all assets, persists actions, exports data and rej
   const exported = await (await fetch(url + '/api/export')).json();
   assert.equal(exported.state.horses[0].id, horse.id);
   assert.equal(exported.catalog.species.length, 46);
+  const horseFile = createHorseDocument(horse);
+  const importedResponse = await post('import-horse',horseFile);
+  assert.equal(importedResponse.status,200);
+  const importedState = (await importedResponse.json()).state;
+  assert.equal(importedState.horses.length,2);
+  assert.notEqual(importedState.horses[1].id,horse.id);
+  assert.deepEqual(importedState.horses[1].palette.colors,horse.palette.colors);
+  assert.equal((await post('import-horse',{...horseFile,version:99})).status,400);
   assert.equal((await post('search', { locationId: 'missing' })).status, 400);
   const zoneResponse = await post('save-zone', { name: 'HTTP test grove', subtitle: 'A new trail', description: 'A peaceful place.', enabled: true, atmosphere: 'forest', speciesPool: ['Unicorn'], palettePool: ['Natural Gold'] });
   assert.equal(zoneResponse.status, 200);

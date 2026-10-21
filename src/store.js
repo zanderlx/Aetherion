@@ -1,3 +1,4 @@
+import { readHorseDocument } from '../public/horse-transfer.js';
 import { validateHorseName, horseRecords, updateHorseField } from '../public/horse-fields.js';
 import { mkdir, readFile, writeFile, rename, copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -67,6 +68,11 @@ export class GameStore {
           next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, amount: next.settings.sellingPrice, at: new Date().toISOString() });
         }
         for (const key of Object.keys(next.encounters)) next.encounters[key] = next.encounters[key].filter(h => h.id !== horse.id);
+      } else if (type === 'import-horse') {
+        if (JSON.stringify(payload).length > 524288) throw new Error('Horse files must be 512 KB or smaller.');
+        const horse = readHorseDocument(payload);
+        if (!next.settings.ignoreStableLimit && next.horses.length >= next.settings.stableCapacity) throw new Error('Your stable is full. Adjust capacity in Game Settings.');
+        next.horses.push({...horse,id:randomUUID(),caughtAt:new Date().toISOString()});
       } else if (type === 'rename' || type === 'favorite') {
         const horse = next.horses.find(h => h.id === payload.id);
         if (!horse) throw new Error('Horse not found in your stable.');

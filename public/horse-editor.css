@@ -24,3 +24,5 @@
 .horse-text-display { display:flex; align-items:flex-start; justify-content:flex-start; width:100%; box-sizing:border-box; height:110px; overflow-y:auto; white-space:pre-wrap; overflow-wrap:anywhere; text-align:left; font:inherit; line-height:1.7; color:var(--text); background:transparent; border:0; padding:0; cursor:text; }
 .horse-notes .horse-text-display { height:140px; }
 .horse-text-display[hidden] { display:none; }
+
+.profile-actions .horse-export { margin-left:auto; }

@@ -49,10 +49,11 @@ test('top Wilds tabs mark saved custom Event zones without icons or extra hero l
   assert.doesNotMatch(tabs,/<svg/);
   assert.doesNotMatch(page,/zone-event-label/);
 });
-test('wild horses have no deletion control; owned horses can be released', () => {
+test('wild horses have no export control; owned profiles export without release', () => {
   assert.doesNotMatch(profileContent(horses[0],state), /data-action="delete-horse"/);
   const owned = profileContent(horses[0],{...state,horses:[horses[0]]});
-  assert.match(owned,/Release Horse/);
+  assert.match(owned,/data-action="export-horse"/);
+  assert.doesNotMatch(owned,/Release Horse|data-action="delete-horse"/);
   assert.doesNotMatch(owned,/Delete Horse/);
   assert.match(owned,/data-action="rename-horse"/);
   assert.match(owned,/horse-notes-form/);
@@ -182,6 +183,7 @@ test('collection search, sorting and favorites work with complete saved records'
   assert.doesNotMatch(profileContent(collected[1],populated),/data-action="favorite"/);
   const page = stablePage('all',populated);
   assert.match(page,/>My Horses<\/h1>/);
+  assert.match(page,/data-action="import-horse"/);
   assert.match(page,/<option value="favorites">Favorites<\/option>/);
   assert.doesNotMatch(page,/A place to call home|A growing collection|Explore the wilds/);
   assert.doesNotMatch(card(collected[0],populated),/picture-badge|Preview encounter/);

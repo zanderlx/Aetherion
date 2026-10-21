@@ -1,3 +1,4 @@
+import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
 import { createHorseDialogs } from './horse-dialogs.js';
 import { icon, sidebar, groups, escapeHTML as e, number } from './ui.js';
@@ -30,6 +31,7 @@ const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() =
   return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:displayBirthday(horse.birthday),personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
 }});
 const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:(id,kind) => { render(); if (kind === 'catch') { profile.close(); main.focus(); } else inspect(id); }});
+const horseTransfers = createHorseTransfers({getState:() => state,save:action,notify,onImported:id => {render(); inspect(id);}});
 async function request(path, body) {
   const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
   const result = await response.json();
@@ -256,6 +258,8 @@ document.addEventListener('click', async event => {
     const kind = button.dataset.kind;
     return askToDelete('delete-definition',{kind,id},catalog[kind].find(d => d.id === id)?.name || 'Entry','Remove this option from future use. Existing horse details stay unchanged. Matching zone pools are updated; zones with empty pools close. Deleted atmospheres use a remaining atmosphere, item themes are cleared, and a deleted active website theme returns to Original.');
   }
+  if (intent === 'import-horse') return horseTransfers.importHorse();
+  if (intent === 'export-horse') return horseTransfers.exportHorse(id);
   if (intent === 'site-search') return openSiteSearch();
   if (intent === 'catch') return horseDialogs.open(id,'catch');
   if (intent === 'edit-horse-text') {
