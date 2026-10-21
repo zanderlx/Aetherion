@@ -1,6 +1,6 @@
 .horse-name-row { display:flex; align-items:center; gap:12px; }
 .profile-info .horse-name-row h2 { margin:0; }
-.horse-name-row { margin-top:12px; }
+.horse-name-row { margin-top:0; }
 .horse-name-row .icon-button { flex-shrink:0; }
 .horse-edit-dialog { width:min(520px,calc(100vw - 32px)); }
 .horse-edit-body { padding:24px; }
@@ -21,6 +21,6 @@
 .horse-description textarea { width:100%; box-sizing:border-box; height:110px; overflow-y:auto; resize:none; }
 .horse-description .form-actions { display:flex; gap:12px; margin-top:12px; }
 
-.horse-text-display { display:block; width:100%; box-sizing:border-box; height:110px; overflow-y:auto; white-space:pre-wrap; overflow-wrap:anywhere; text-align:left; font:inherit; line-height:1.7; color:var(--text); background:transparent; border:0; padding:0; cursor:text; }
+.horse-text-display { display:flex; align-items:flex-start; justify-content:flex-start; width:100%; box-sizing:border-box; height:110px; overflow-y:auto; white-space:pre-wrap; overflow-wrap:anywhere; text-align:left; font:inherit; line-height:1.7; color:var(--text); background:transparent; border:0; padding:0; cursor:text; }
 .horse-notes .horse-text-display { height:140px; }
 .horse-text-display[hidden] { display:none; }
