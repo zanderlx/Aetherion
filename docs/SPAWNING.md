@@ -2,7 +2,7 @@
 
 ## Horse Definitions dashboard
 
-Open **Horse Definitions** and choose one of the five managers in its sidebar. Each manager lists saved entries and supports Add, Edit, Save, Duplicate, and Delete. Saved horses keep their original snapshots.
+Open **Horse Definitions** and choose one of the five managers in the main navigation. Each manager lists saved entries and supports Add, Edit, Save, Duplicate, and Delete. Saved horses keep their original snapshots.
 
 | Manager | Editable data |
 | --- | --- |

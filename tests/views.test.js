@@ -278,8 +278,7 @@ test('Horse Definitions dashboard exposes five managers and the spawning configu
   for (const kind of ['species','palettes','eyes','mutations','personalities']) {
     const html = libraryEditorPage(kind,catalog,state);
     assert.match(html,/>Horse Definitions<\/h1>/);
-    const nav = html.match(/<nav class="definitions-sidebar"[\s\S]*?<\/nav>/)[0];
-    assert.equal((nav.match(/<a /g) || []).length,5);
+    assert.doesNotMatch(html,/definitions-sidebar|definitions-dashboard/);
     assert.match(html,/name="systemId"/);
   }
   const species = libraryEditorPage('species',catalog,state);
