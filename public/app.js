@@ -1,3 +1,4 @@
+import { startHorseRename } from './horse-inline-name.js';
 import { createHorseDialogs } from './horse-dialogs.js';
 import { icon, sidebar, groups, escapeHTML as e, number } from './ui.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
@@ -256,7 +257,7 @@ document.addEventListener('click', async event => {
   }
   if (intent === 'site-search') return openSiteSearch();
   if (intent === 'catch') return horseDialogs.open(id,'catch');
-  if (intent === 'rename-horse') return horseDialogs.open(id,'rename');
+  if (intent === 'rename-horse') return startHorseRename(button,{horse:findHorse(id),save:action,onSaved:render,notify});
   if (intent === 'edit-horse-field') return horseDialogs.open(id,'field',button.dataset.field);
   if (intent === 'inspect') return inspect(id);
   if (intent === 'close-profile') return profile.close();
