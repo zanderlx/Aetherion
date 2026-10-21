@@ -95,8 +95,11 @@ select{text-transform:uppercase}
 .eye-definition-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px; }
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
-.eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; min-height:2.5em; overflow-wrap:anywhere; }
-.eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:6px 0 16px; }
+.eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }
+.eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:2px 0 16px; }
+.eye-grid-controls { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:20px; }
+.eye-grid-controls .zone-field { flex:1 1 180px; margin:0; }
+.eye-grid-controls .zone-field:first-child { flex-grow:2; }
 .eye-card-rarity { display:block; color:var(--muted); margin-top:12px; }
 .eye-swatches { display:flex; flex-shrink:0; width:100%; height:72px; margin-top:auto; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
 .eye-swatches span { flex:1; }

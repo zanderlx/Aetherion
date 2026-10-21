@@ -1,5 +1,5 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
-import {eyesManagerPage} from '../public/eyes-manager.js';
+import {eyesManagerPage,filterEyes} from '../public/eyes-manager.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -330,4 +330,13 @@ test('Traits has a separate species-linked editor outside Species settings',()=>
  assert.match(html,/id="traits-species"/);
  assert.match(html,/id="traits-form"/);
  assert.doesNotMatch(libraryEditorPage('species',catalog,state),/id="trait-rows"/);
+});
+
+test('Eye card search combines name hex and rarity with alphabetical sorting',()=>{
+ const eyes=[{name:'Zinc',rarity:'Rare',colors:['#AABBCC']},{name:'Amber',rarity:'Common',colors:['#112233']}];
+ assert.equal(filterEyes(eyes)[0].name,'Amber');
+ assert.equal(filterEyes(eyes,'','', 'za')[0].name,'Zinc');
+ assert.equal(filterEyes(eyes,'zinc aabb','Rare').length,1);
+ assert.equal(filterEyes(eyes,'zinc','Common').length,0);
+ assert.equal(filterEyes(eyes,'missing').length,0);
 });

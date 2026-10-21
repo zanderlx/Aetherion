@@ -1,4 +1,4 @@
-import {eyesManagerPage,createEyeEditor} from './eyes-manager.js';
+import {eyesManagerPage,createEyeEditor,updateEyeGrid} from './eyes-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
@@ -537,6 +537,7 @@ document.addEventListener('input', event => {
     event.target.closest('.color-inputs').querySelector('[data-color-picker]').value = event.target.value;
   }
   updateFormState(event.target.form);
+  if (event.target.id === 'eye-search') updateEyeGrid(main,catalog);
   if (event.target.id === 'definition-search') {
     const query = event.target.value.trim().toLowerCase();
     let matches = 0;
@@ -550,6 +551,7 @@ document.addEventListener('input', event => {
   if (event.target.id === 'horse-search') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, event.target.value, $('#horse-sort').value);
 });
 document.addEventListener('change', event => {
+  if (['eye-rarity','eye-sort'].includes(event.target.id)) updateEyeGrid(main,catalog);
   if (event.target.id === 'traits-species') {main.innerHTML = traitsEditorPage(catalog,event.target.value); trackForms(main); return;}
   updateFormState(event.target.form);
   if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value);
