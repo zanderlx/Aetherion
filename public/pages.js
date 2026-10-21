@@ -20,7 +20,7 @@ export function stablePage(kind, state) {
   const sold = kind === 'sold';
   const favorites = kind === 'favorites';
   return `${heading('YOUR SANCTUARY', sold ? 'Horse management' : 'My Horses', sold ? 'A complete record of the companions you have sold.' : '')}
-  <div class="stat-strip"><div><strong>${state.horses.length}</strong><span>In your stable</span></div><div><strong>${new Set(state.horses.map(h => h.species)).size}</strong><span>Species collected</span></div><div><strong>${state.horses.filter(h => h.favorite).length}</strong><span>Favorites</span></div><div><strong>${state.sold.length}</strong><span>Sold companions</span></div></div>
+
   <div class="collection-toolbar"><label class="search-field">${icon('search')}<input id="horse-search" type="search" placeholder="Search name, species, or personality…" aria-label="Search horses"></label><label class="sort-field">Sort by <select id="horse-sort"><option value="recent">Newest first</option><option value="name">Name</option><option value="species">Species</option><option value="birthday">Birthday</option><option value="favorites">Favorites</option></select></label></div>
   <div id="collection-grid" class="horse-grid">${collectionCards(kind, state)}</div>
   <p class="preview-note">${icon('check')} Your companions and their characteristics are saved automatically to local JSON files.</p>`;
