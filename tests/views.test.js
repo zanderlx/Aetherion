@@ -95,7 +95,7 @@ test('horse previews and details expose edit targets and the simplified nine-col
   assert.match(html,/id="profile-title"/);
   assert.match(html,/02-29-2020/);
   assert.doesNotMatch(html,/HiddenPaletteName|>Return |IN YOUR CARE|A WILD ACQUAINTANCE/);
-  assert.ok(html.indexOf('Eye color') > html.indexOf('<h3>Traits</h3>'));
+  assert.ok(html.indexOf('Eye Color') > html.indexOf('<h3>Traits</h3>'));
   assert.doesNotMatch(html,/profile-id-footer|Horse ID/);
   const preview = card(horse,state,'stable');
   assert.equal((preview.match(/--swatch:/g) || []).length,9);
@@ -189,7 +189,7 @@ test('horse profile escapes names and preserves source traits and all nine color
   assert.match(html, /&lt;img src=x onerror=alert\(1\)&gt;/);
   assert.match(html, /Mane/);
   assert.match(html, /Tail/);
-  assert.match(html, /Eye color/);
+  assert.match(html, /Eye Color/);
   assert.match(html, /Awaiting species data/);
   for (const region of Object.keys(horse.palette.colors)) assert.ok(html.includes(region));
 });
@@ -385,4 +385,12 @@ test('Random eye drafts generate colors without reusing internal IDs',()=>{
  assert.equal(draft.textureId,'');
  assert.notEqual(draft.name,'Amber');
  assert.equal(eyes[0].name,'Amber');
+});
+
+test('Personalities uses a compact search and header add button',()=>{
+ const html=libraryEditorPage('personalities',catalog,state,catalog.personalities[0]);
+ assert.doesNotMatch(html,/Your collection of options|Find an entry|Behavior Tags|System ID|data-action="duplicate-definition"/);
+ assert.match(html,/placeholder="Search\.\.\."/);
+ assert.match(html,/personality-manager-header/);
+ assert.match(html,/type="hidden" name="systemId"/);
 });

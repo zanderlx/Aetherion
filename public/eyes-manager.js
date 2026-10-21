@@ -43,7 +43,7 @@ export function updateEyeGrid(root,catalog) {
 }
 
 export function eyesManagerPage(catalog) {
-  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">Create Eye Color</button></div>
+  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">${icon('spark')} Create Eye Color</button></div>
     <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search name, rarity, or hex…" aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field eye-percent-control"><span><input id="eye-percent" type="checkbox"> Show Percentages</span></label><label class="zone-field">Sort By<select id="eye-sort"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="rarity" selected>Rarity</option></select></label></div>
     <div id="eye-grid">${eyeResults(filterEyes(catalog.eyes,'','','rarity'),'rarity',catalog.eyes,false)}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
 }
