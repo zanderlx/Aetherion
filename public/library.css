@@ -124,7 +124,10 @@ select{text-transform:uppercase}
 .eye-swatches { display:flex; flex-shrink:0; width:100%; height:72px; margin-top:auto; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
 .eye-swatches span { flex:1; }
 .eye-definition-dialog { width:min(760px,calc(100vw - 32px)); max-height:85vh; overflow-y:auto; }
-.eye-definition-dialog form { margin-top:16px; }
+.eye-definition-dialog form { margin-top:0; padding-top:0; }
+.eye-name-rarity { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+.eye-name-rarity > .zone-field { margin-top:0; }
+@media(max-width:500px) { .eye-name-rarity { grid-template-columns:1fr; gap:8px; } }
 .eye-definition-dialog > .dialog-top { position:sticky; top:0; z-index:2; background:var(--panel); }
 .definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
 .definitions-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }

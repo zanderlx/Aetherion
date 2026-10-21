@@ -62,6 +62,13 @@ export function createEyeEditor(renderEditor) {
       dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
       const form = template.content.querySelector('#definition-form');
       form.querySelector('.panel-heading')?.remove();
+      const fields = form.querySelector('.definition-fields');
+      const name = fields.querySelector('[name="name"]').closest('label');
+      const rarity = fields.querySelector('[name="rarity"]').closest('label');
+      const row = document.createElement('div');
+      row.className = 'eye-name-rarity';
+      row.append(name,rarity);
+      fields.prepend(row);
       dialog.append(form);
       dialog.scrollTop = 0;
       if (!dialog.open) dialog.showModal();

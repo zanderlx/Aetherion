@@ -116,7 +116,7 @@ export function validateDefinition(kind, input) {
     if (!Array.isArray(input.colors) || !input.colors.length || input.colors.length > 6) throw new Error('Choose one to six eye colors.');
     result.colors = input.colors.map(color);
     result.rarity = text('rarity', 60, true);
-    result.textureId = text('textureId',200);
+    result.textureId = text('textureId',200) || `eye-${systemID(result.name)}`;
     if (!Array.isArray(input.layers ?? []) || (input.layers || []).length > 20) throw new Error('Provide up to 20 eye layers.');
     result.layers = (input.layers || []).map((layer,i) => {
       if (!layer || typeof layer !== 'object' || Array.isArray(layer) || typeof layer.textureId !== 'string' || layer.textureId.length > 200 || (layer.opacity !== undefined && (!Number.isFinite(layer.opacity) || layer.opacity < 0 || layer.opacity > 1))) throw new Error('Eye layers need textureId and optional opacity from 0 to 1.');
