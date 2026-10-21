@@ -16,12 +16,12 @@ export function pickWeighted(values,weight = v => v.weight,rng = randomFloat) {
   return active.at(-1);
 }
 export function cosmicForRoll(roll,settings = defaultSpawnSettings) {
-  const total = settings.cosmic.reduce((n,c) => n+c.chance,0);
+  const total = Number(settings.cosmic.reduce((n,c) => n+c.chance,0).toFixed(12));
   if (roll > total || total === 0) return null;
   let boundary = 0;
   for (const cosmic of settings.cosmic.filter(c => c.chance > 0)) {
-    boundary += cosmic.chance;
-    if (roll <= boundary + 1e-12) return cosmic;
+    boundary = Number((boundary + cosmic.chance).toFixed(12));
+    if (roll <= boundary) return cosmic;
   }
   return settings.cosmic.at(-1);
 }
@@ -36,7 +36,7 @@ export function rollMutations(catalog,species,cosmic,settings,rng = randomFloat)
     if (rng()*100 > chances[slot]) break;
     let mutation;
     if (cosmic && slot === 0) {
-      mutation = catalog.mutations.find(m => m.name === cosmic.name && ['Mutated','Cosmic'].includes(m.type)) || {id:`cosmic-${cosmic.name.toLowerCase()}`,name:cosmic.name,type:'Cosmic',description:''};
+      mutation = catalog.mutations.find(m => cosmic.mutationId ? m.id === cosmic.mutationId : m.name === cosmic.name && ['Mutated','Cosmic'].includes(m.type)) || {id:`cosmic-${cosmic.name.toLowerCase()}`,name:cosmic.name,type:'Cosmic',description:''};
     } else {
       if (!active.length) break;
       mutation = pickWeighted(active,m => m.weight,rng);

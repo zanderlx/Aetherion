@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,readFile,writeFile,rm,unlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join,resolve,dirname,basename} from 'node:path';
 import {GameStore} from '../src/store.js';
@@ -31,6 +31,10 @@ test('first startup seeds nineteen integer mutation weights and all local config
     const zone = await read(`zones/${id}.json`);
     assert.ok(zone.creatures.every(c => store.getCatalog().species.some(s => s.id === c.speciesId)));
   }
+  const solar = (await read('mutations.json')).find(m => m.name === 'Solar' && m.type === 'Mutated');
+  await store.action('delete-definition',{kind:'mutations',id:solar.id});
+  assert.equal((await read('spawn-settings.json')).cosmic.find(c => c.name === 'Solar').chance,0);
+  assert.ok(!(await read('mutations.json')).some(m => m.id === solar.id));
 });
 test('species CRUD synchronizes selected zone IDs and tier weights without altering existing horses',async t => {
   const {store,read} = await fixture(t);
@@ -84,6 +88,11 @@ test('spawn trigger reads current file contents, preserves snapshots, and reject
   await assert.rejects(store.action('search',{locationId:'aetherion'}));
   assert.deepEqual(store.snapshot(),before);
   await store.files.atomic('eyes.json',eyes);
+  const zone = await read('zones/aetherion.json');
+  await store.files.atomic('zones/aetherion.json',{...zone,tags:'invalid'});
+  await assert.rejects(store.action('search',{locationId:'aetherion'}));
+  assert.deepEqual(store.snapshot(),before);
+  await store.files.atomic('zones/aetherion.json',zone);
 });
 test('new profile uses file-backed palette skins, eye layers, personality IDs and mutation thresholds',async t => {
   const {store} = await fixture(t);
@@ -137,4 +146,11 @@ test('startup recovers interrupted file transactions using the player commit mar
   const committed = await new GameStore(directory,catalog,defaults).init();
   assert.equal(committed.getCatalog().personalities[0].name,'Recovered Personality');
   assert.equal(committed.getCatalog().personalities.length,1);
+});
+test('missing configuration index never silently replaces existing master files',async t => {
+  const {directory,store,read} = await fixture(t);
+  const species = await read('species.json');
+  await unlink(store.files.path('index.json'));
+  await assert.rejects(new GameStore(directory,catalog,defaults).init(),/index.json is missing/);
+  assert.deepEqual(await read('species.json'),species);
 });

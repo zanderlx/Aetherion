@@ -289,6 +289,12 @@ document.addEventListener('click', async event => {
     let suffix = 1, name = `${copy.name.slice(0, 65)} copy`;
     while (catalog[kind].some(d => d.name.toLowerCase() === name.toLowerCase())) name = `${copy.name.slice(0, 65)} copy ${++suffix}`;
     copy.name = name;
+    if (copy.systemId) {
+      const base = copy.systemId.slice(0,85);
+      let suffix = 1, id = `${base}-copy`;
+      while (catalog[kind].some(d => d.systemId === id)) id = `${base}-copy-${++suffix}`;
+      copy.systemId = id;
+    }
     return showDefinition(kind, copy);
   }
   if (intent === 'add-trait-category') {

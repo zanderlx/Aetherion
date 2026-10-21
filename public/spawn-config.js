@@ -36,7 +36,7 @@ export function validateSpawnSettings(input) {
   if (![1,2,3,4].every(t => numeric(s.tierWeights?.[t],1,1000000))) throw new Error('Each rarity tier needs a positive weight.');
   for (const key of ['cosmicSlots','wildSlots']) if (!Array.isArray(s[key]) || s[key].length !== 4 || !s[key].every(n => numeric(n,0,100))) throw new Error('Each mutation path needs four percentages.');
   if (s.cosmicSlots[0] !== 100) throw new Error('Cosmic slot 1 must remain guaranteed.');
-  if (!Array.isArray(s.cosmic) || s.cosmic.length !== 5 || new Set(s.cosmic.map(c => c.name)).size !== 5 || s.cosmic.some(c => typeof c.name !== 'string' || !c.name || !numeric(c.chance,0,100)) || s.cosmic.reduce((n,c) => n+c.chance,0) > 100) throw new Error('Provide five unique Cosmic chances totaling at most 100%.');
+  if (!Array.isArray(s.cosmic) || s.cosmic.length !== 5 || new Set(s.cosmic.map(c => c.name)).size !== 5 || s.cosmic.some(c => !defaultSpawnSettings.cosmic.some(base => base.name === c.name) || !numeric(c.chance,0,100)) || s.cosmic.reduce((n,c) => n+c.chance,0) > 100) throw new Error('Provide five unique Cosmic chances totaling at most 100%.');
   if (!Array.isArray(s.sizes) || s.sizes.length !== 11 || s.sizes.some((v,i) => v.name !== defaultSpawnSettings.sizes[i].name || v.percent !== 75+i*5 || !numeric(v.weight,0,1000000)) || !s.sizes.some(v => v.weight > 0)) throw new Error('Provide weights for the eleven ordered sizes.');
   if (!numeric(s.maleChance,0,100)) throw new Error('Male chance must be between 0 and 100.');
   return s;

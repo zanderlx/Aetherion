@@ -77,5 +77,7 @@ export function readHorseDocument(document) {
 export function createHorseDocument(horse) {
   const data = {...horse,birthday:horseAcquisitionDate(horse) || horse.birthday?.slice(0,10)};
   const snapshot = readHorseDocument({format:horseFormat,version:horseFormatVersion,horse:data});
-  return {format:horseFormat,version:horseFormatVersion,exportedAt:new Date().toISOString(),horse:{id:horse.id,...snapshot}};
+  const document = {format:horseFormat,version:horseFormatVersion,exportedAt:new Date().toISOString(),horse:{id:horse.id,...snapshot}};
+  if (JSON.stringify(document).length > 524288) throw new Error('This horse exceeds the 512 KB transfer limit.');
+  return document;
 }

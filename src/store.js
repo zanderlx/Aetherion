@@ -75,7 +75,11 @@ export class GameStore {
     this.state.customLocations = configuration.zones.filter(z => z.custom || overrides.has(z.id)).map(z => structuredClone(z));
     this.configuration = configuration;
   }
-  async refreshConfiguration() { await this.queue; await this.readConfiguration(); }
+  refreshConfiguration() {
+    const run = this.queue.then(() => this.readConfiguration());
+    this.queue = run.catch(() => {});
+    return run;
+  }
   action(type, payload = {}) {
     const run = this.queue.then(async () => {
       await this.readConfiguration();
@@ -159,6 +163,7 @@ export class GameStore {
         if (kind === 'siteThemes' && id === 'default') throw new Error('The original theme is kept as the fallback.');
         if (['species','palettes','eyes','personalities','atmospheres'].includes(kind) && catalog[kind].length === 1) throw new Error('Keep at least one entry of this type for the horse generator.');
         catalog[kind] = catalog[kind].filter(d => d.id !== id);
+        if (kind === 'mutations') for (const cosmic of catalog.spawning.cosmic) if (cosmic.mutationId === id) cosmic.chance = 0;
         if (kind === 'palettes') next.deletedBuiltinPalettes = [...new Set([...(next.deletedBuiltinPalettes || []),id])];
         if (['species','palettes'].includes(kind)) {
           const pool = kind === 'species' ? 'speciesPool' : 'palettePool';
@@ -228,6 +233,7 @@ export class GameStore {
             location[pool] = location[pool].map(name => name === existing.name ? updated.name : name);
           }
         }
+        if (kind === 'mutations' && !['Cosmic','Mutated'].includes(updated.type)) for (const cosmic of catalog.spawning.cosmic) if (cosmic.mutationId === updated.id) cosmic.chance = 0;
         if (registryKinds.includes(kind) && catalog[kind].some(d => d.id !== updated.id && d.systemId === updated.systemId)) throw new Error('That system ID is already in use.');
         if (kind === 'palettes' && updated.speciesIds.some(sid => !catalog.species.some(s => s.id === sid))) throw new Error('Choose registered species for this palette.');
         if (kind === 'species') {

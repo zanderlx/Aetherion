@@ -2,7 +2,7 @@ import {mkdir,readFile,writeFile,rename,unlink} from 'node:fs/promises';
 import {resolve,sep} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {normalizeCatalog,validateDefinition} from '../public/definitions.js';
-import {locationsFor} from '../public/zones.js';
+import {locationsFor,validateZone} from '../public/zones.js';
 import {registryKinds,defaultSpawnSettings,standardTokens,rarityTier,systemID,validateSpawnSettings,zoneCreatures,validateCreatures} from '../public/spawn-config.js';
 
 const safeID = id => typeof id === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$/.test(id);
@@ -41,11 +41,22 @@ export class ConfigurationFiles {
     }
     catalog.personalities = catalog.personalities.map(p => ({...p,systemId:p.systemId || p.id,behaviorTags:p.behaviorTags || []}));
     const settings = structuredClone(defaultSpawnSettings);
+    for (const cosmic of settings.cosmic) {
+      let mutation = catalog.mutations.find(m => m.name === cosmic.name && ['Mutated','Cosmic'].includes(m.type));
+      if (!mutation) {mutation = {id:`cosmic-${cosmic.name.toLowerCase()}`,name:cosmic.name,type:'Cosmic',description:'',weight:null,thresholds:{}}; catalog.mutations.push(mutation);}
+      cosmic.mutationId = mutation.id;
+    }
     const zones = locationsFor(catalog,state).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
     return {catalog,zones,settings};
   }
   async exists() {
-    try { await this.json('index.json'); return true; } catch(e) { if (e.code === 'ENOENT') return false; throw e; }
+    try { await this.json('index.json'); return true; } catch(e) { if (e.code !== 'ENOENT') throw e; }
+    for (const kind of registryKinds) {
+      try { await readFile(this.path(`${kind}.json`)); }
+      catch(e) { if (e.code === 'ENOENT') continue; throw e; }
+      throw new Error('Configuration index.json is missing; existing registry files have been preserved. Restore the matching index before starting.');
+    }
+    return false;
   }
   async read(base) {
     const index = await this.json('index.json');
@@ -58,10 +69,15 @@ export class ConfigurationFiles {
         if (kind === 'palettes' && entry.complete === false) return entry; // Preserve incomplete imported reference palettes, never spawn them.
         return {...entry,...validateDefinition(kind,entry)};
       });
+      const systemIDs = catalog[kind].map(e => e.systemId).filter(Boolean);
+      if (new Set(systemIDs).size !== systemIDs.length) throw new Error(`Duplicate system IDs in ${kind}.json.`);
       const keys = entries.map(e => `${kind === 'mutations' ? e.type : ''}:${e.name?.toLowerCase()}`);
       if (new Set(keys).size !== keys.length) throw new Error(`Duplicate names in ${kind}.json.`);
     }
+    if (!catalog.palettes.some(p => p.complete)) throw new Error('Keep at least one complete palette for spawning.');
     const settings = validateSpawnSettings(await this.json('spawn-settings.json'));
+    for (const cosmic of settings.cosmic) if (!cosmic.mutationId) cosmic.mutationId = catalog.mutations.find(m => m.name === cosmic.name && ['Cosmic','Mutated'].includes(m.type))?.id;
+    for (const cosmic of settings.cosmic) if (cosmic.chance > 0 && !catalog.mutations.some(m => m.id === cosmic.mutationId && ['Mutated','Cosmic'].includes(m.type))) throw new Error(`Cosmic ${cosmic.name} needs a registered Cosmic/Mutated mutation ID.`);
     for (const p of catalog.palettes) if ((p.speciesIds || []).some(id => !catalog.species.some(s => s.id === id))) throw new Error('A palette refers to an unknown species ID.');
     const personalityIDs = catalog.personalities.map(p => p.systemId);
     if (new Set(personalityIDs).size !== personalityIDs.length) throw new Error('Personality system IDs must be unique.');
@@ -70,7 +86,9 @@ export class ConfigurationFiles {
       const z = await this.json(`zones/${id}.json`);
       if (z.id !== id || typeof z.name !== 'string' || !z.name.trim() || typeof z.enabled !== 'boolean' || !Array.isArray(z.palettePool) || z.palettePool.some(n => !catalog.palettes.some(p => p.name === n && p.complete))) throw new Error(`Invalid zone file: ${id}.json.`);
       const creatures = validateCreatures(z.creatures,catalog);
-      zones.push({...z,creatures,speciesPool:creatures.map(c => catalog.species.find(s => s.id === c.speciesId).name),enabled:z.enabled && creatures.some(c => Math.abs(c.weight)>0) && z.palettePool.length>0});
+      const names = creatures.map(c => catalog.species.find(s => s.id === c.speciesId).name);
+      const metadata = validateZone({...z,speciesPool:names.length ? names : [catalog.species[0].name],palettePool:z.palettePool.length ? z.palettePool : [catalog.palettes.find(p => p.complete).name]},catalog);
+      zones.push({...z,...metadata,custom:z.custom,event:z.event,creatures,speciesPool:names,palettePool:z.palettePool,enabled:z.enabled && creatures.some(c => Math.abs(c.weight)>0) && z.palettePool.length>0});
     }
     catalog.locations = zones;
     catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name,s.traits]));
