@@ -36,7 +36,7 @@ A basic Horse Editor can begin with the existing schema. Generator probabilities
 
 ## Verification
 
-**51 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**52 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -67,3 +67,5 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - New controls verified with template and isolated store tests; browser interaction QA remains pending.
 
 - Wild species now use independent, equally likely draws from each zone pool; repeats are allowed.
+
+- Owned names edit inline and save on blur/Esc. Notes stay fixed-size; per-horse editable personality descriptions appear above Notes and default on catch.

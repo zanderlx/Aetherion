@@ -383,7 +383,7 @@ document.addEventListener('click', async event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-notes-form', 'keeper-form', 'gold-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'gold-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -391,7 +391,11 @@ document.addEventListener('submit', async event => {
   submit.disabled = true;
   try {
     const values = Object.fromEntries(new FormData(form));
-    if (form.id === 'horse-notes-form') {
+    if (form.id === 'horse-description-form') {
+      await action('horse-description',{id:form.dataset.id,description:values.description});
+      inspect(form.dataset.id);
+      notify('Personality description saved.');
+    } else if (form.id === 'horse-notes-form') {
       await action('horse-notes',{id:form.dataset.id,notes:values.notes});
       inspect(form.dataset.id);
       notify('Horse notes saved.');

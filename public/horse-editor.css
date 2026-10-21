@@ -16,3 +16,7 @@
 
 .horse-name-text { font:inherit; color:inherit; background:none; border:0; padding:0; text-align:left; cursor:text; }
 .horse-inline-name { width:100%; box-sizing:border-box; font:inherit; }
+
+.horse-description { margin-top:20px; }
+.horse-description textarea { width:100%; box-sizing:border-box; height:110px; overflow-y:auto; resize:none; }
+.horse-description .form-actions { display:flex; gap:12px; margin-top:12px; }

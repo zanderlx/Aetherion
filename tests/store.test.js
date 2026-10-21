@@ -19,6 +19,23 @@ async function fixture(t) {
   });
   return { directory, store: await new GameStore(directory, catalog, defaults).init() };
 }
+test('owned personality descriptions default on catch, persist, and reject invalid edits', async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const [first,second] = store.state.encounters.aetherion;
+  await assert.rejects(store.action('horse-description',{id:first.id,description:'Wild edit'}));
+  await store.action('catch',{id:first.id});
+  assert.equal(store.state.horses[0].personalityDescription,first.personality.description);
+  const description = 'Loves quiet trails.\n<script>plain text</script>';
+  await store.action('horse-description',{id:first.id,description});
+  await assert.rejects(store.action('horse-description',{id:first.id,description:'a'.repeat(4001)}));
+  assert.equal(store.state.encounters.aetherion.find(h => h.id === second.id).personalityDescription,undefined);
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(restored.state.horses[0].personalityDescription,description);
+  assert.equal(restored.state.horses[0].personality.description,first.personality.description);
+  await store.action('horse-description',{id:first.id,description:''});
+  assert.equal(store.state.horses[0].personalityDescription,'');
+});
 test('catch validates names atomically and saves the chosen name', async t => {
   const {directory,store} = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});

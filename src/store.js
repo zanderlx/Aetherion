@@ -59,7 +59,7 @@ export class GameStore {
         if (type === 'catch') {
           if (isCollected) throw new Error('This horse is already in your stable.');
           if (!next.settings.ignoreStableLimit && next.horses.length >= next.settings.stableCapacity) throw new Error('Your stable is full. Adjust capacity in Game Settings.');
-          next.horses.push({ ...horse, name: payload.name === undefined ? horse.name : validateHorseName(payload.name), caughtAt: new Date().toISOString() });
+          next.horses.push({ ...horse, personalityDescription: horse.personalityDescription ?? horse.personality.description ?? '', name: payload.name === undefined ? horse.name : validateHorseName(payload.name), caughtAt: new Date().toISOString() });
         } else {
           next.horses = next.horses.filter(h => h.id !== horse.id);
           next.sold.push({ ...horse, soldAt: new Date().toISOString(), soldFor: next.settings.sellingPrice });
@@ -78,6 +78,11 @@ export class GameStore {
         const horse = horseRecords(next).find(h => h.id === payload.id);
         if (!horse) throw new Error('Horse not found.');
         updateHorseField(horse,payload.field,payload.value,catalog,next);
+      } else if (type === 'horse-description') {
+        const horse = next.horses.find(h => h.id === payload.id);
+        if (!horse) throw new Error('Horse not found in your stable.');
+        if (typeof payload.description !== 'string' || payload.description.length > 4000) throw new Error('Description must be 4,000 characters or fewer.');
+        horse.personalityDescription = payload.description;
       } else if (type === 'horse-notes') {
         const horse = horseRecords(next).find(h => h.id === payload.id);
         if (!horse) throw new Error('Horse not found.');
