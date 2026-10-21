@@ -393,7 +393,7 @@ test('Personalities uses a compact search and header add button',()=>{
  assert.doesNotMatch(initial,/<form id="definition-form"/);
  assert.match(initial,/personality-card-description/);
  const html=libraryEditorPage('personalities',catalog,state,catalog.personalities[0]);
- assert.doesNotMatch(html,/data-action="close-personality-editor"/);
+ assert.match(html,/data-action="close-personality-editor"/);
  assert.match(html,/Delete Entry/);
  assert.match(html,/<form id="definition-form"/);
  assert.doesNotMatch(html,/Your collection of options|Find an entry|Behavior Tags|System ID|data-action="duplicate-definition"/);
