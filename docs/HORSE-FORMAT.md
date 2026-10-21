@@ -44,6 +44,8 @@ This excerpt shows the envelope; the example file contains all required horse fi
 
 Palette `colors` requires these exact keys: `Coat Top`, `Coat Bottom`, `Hair`, `Hoof`, `Nose`, `Sock`, `Keratin`, `Paint`, and `Pattern`. All palette and eye colors must use six-digit `#RRGGBB` values. Exports normalize colors to uppercase.
 
+Spawned horse files also preserve optional species/palette/eye/personality registry IDs, personality system ID and behavior tags, palette skin/scope metadata, selected skin ID, and eye texture/layer data. Older version-1 files remain valid.
+
 ## Import rules
 
 - Every import creates a fresh local horse ID and a new stable-arrival timestamp and Birthday date. Profile Age starts at 0 days. Importing the same file again creates a separate copy; it never replaces an existing horse.

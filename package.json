@@ -1,9 +1,9 @@
 {
   "name": "aetherion-horse-sanctuary",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
-  "description": "Aetherion v1: a local fantasy horse collection and customization preview.",
+  "description": "Aetherion: a local fantasy horse collection game with data-driven spawning.",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",

@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.1](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.2](docs/assets/aetherion-banner.svg)
 
-**Version 1.1.0 · Collection & Horse Profile Update**
+**Version 1.2.0 · Data-Driven Spawning & Local Configuration**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1.1 is a working collection and customization preview.** Catching, saving, editing definitions, and website customization work today. The full probability-based Horse Generator, full Horse Editor, breeding, inventory gameplay, and Town activities are still planned.
+> **Version 1.2 adds the data-driven spawning pipeline and file-backed configuration managers.** Cosmic/Wild selection, weighted species, cascading mutations, sizes, gender, aesthetics, personalities, horse import/export, and local saves work today. Full horse creation, gameplay effects, breeding, inventory gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,10 +22,11 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.1.0 — current** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
+| **1.2.0 — current** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
+| **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **62 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **78 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -124,13 +125,17 @@ Available under **Horse Definitions → Horse Palettes**:
 
 Every supplied hex value is preserved. These are palette definitions; choosing one does **not** activate a special-spawn probability or mutation effect.
 
-### What the preview does
+### Data-driven spawning
 
-Each horse independently draws a species with equal odds from its zone’s pool. Repeats are allowed, including three of the same species. New searches use this rule; saved encounters stay unchanged. Complete palettes, eye definitions, and personalities still cycle through their configured pools. Preview horses are adult, normal-sized, mutation-free, and free to catch.
+Horse Definitions is a parent dashboard with five managers: **Species**, **Horse Palettes**, **Eye Color**, **Mutations**, and **Personalities**. CRUD overwrites local JSON configuration files. Species expose rarity tiers and zone checkboxes; palettes support species links and skin IDs; eyes support textures/layers; mutations expose tokens, thresholds, and duplicate control; personalities expose system IDs and behavior tags.
+
+Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects any registered species uniformly. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
+
+See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file paths, thresholds, assets, migration, and recovery. Existing horses retain their snapshots; new searches use saved configuration changes.
 
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 
-Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; the Economy section within Game Settings includes a sale history table (newest first). The header gold display is informational. The internal Starting Gold value is reserved for future new-game/reset functionality and is hidden from settings. Editing mutation and item descriptions does not execute their effects.
+Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; the Economy section within Game Settings includes a sale history table (newest first). The header gold display is informational. The internal Starting Gold value is reserved for future new-game/reset functionality and is hidden from settings. Mutation selection, thresholds, and size shifts are active. Speed, stamina, fertility, item effects, and exact asset rendering remain separate gameplay work.
 
 ### Horse view and preview refinements
 
@@ -154,7 +159,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | --- | --- |
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
 | **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
-| **Horse Definitions** | Species & Traits, Horse Palettes, Eye Colors, Personalities, Mutations |
+| **Horse Definitions** | Five CRUD managers with local master files and zone synchronization |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
 | **Website & Profile** | Appearance & Themes, My Profile |
 
@@ -183,12 +188,14 @@ Your primary save lives on disk, **not in browser localStorage**.
 | `data/player/save.json` | Horses, gold, settings, profile, custom definitions/zones, and website wording |
 | `data/backups/previous-save.json` | The save immediately preceding the latest successful change |
 | `data/backups/save-*.json` | Dated backups made from Save Management |
-| `data/definitions/catalog.json` | Baseline definitions |
+| `data/config/` | Authoritative local species/palette/eye/mutation/personality/spawn and zone files |
+| `data/backups/pre-spawning-*.json` | Player save preserved before the first configuration migration |
+| `data/definitions/catalog.json` | Bootstrap definitions used when config files are first created |
 | `docs/references/` | Original reference documents, preserved as supplied |
 
 Copy the entire **`data` folder** before updating the project or making major changes. Save Management also offers **Export All Data** and **Create Backup**. Saves use serialized writes, a temporary file, and atomic replacement.
 
-An exported bundle includes state, definitions, and defaults. It is **not** interchangeable with `save.json`. Automated import and restore are planned. For manual restoration, stop the server, keep a copy of the current data, replace `data/player/save.json` with a standalone player backup, then restart.
+An exported bundle includes state, definitions, and defaults. It is **not** interchangeable with `save.json`. Automated import and restore are planned. For manual player restoration, stop the server, keep a copy of the current data, replace `data/player/save.json` with a standalone player backup, then restart. To restore world definitions too, restore the matching `data/config/` folder; player backups alone do not replace those files.
 
 Deleting a zone removes its wild encounters, but preserves collected horses. Deleting a horse gives no gold and does not reverse earlier sales. Definition deletion updates future-use references and closes zones left with empty pools. The original website theme and the last required generator entries remain protected.
 
@@ -199,8 +206,8 @@ The same roadmap is available in **Developer Settings → Remaining Features**.
 | Remaining feature | Information or decisions needed |
 | --- | --- |
 | **Horse Editor & custom creator** | Birthday, age, origin, size, personality, and eye edits already work. Remaining: species/palette/trait/mutation editing, sandbox validation, custom creation, duplicate handling, and advanced import options. |
-| **Horse Generator & Spawn Rates** | Equal species odds within each zone are implemented. Remaining: mutation weights (the supplied standard weights total 101.01%), special-spawn splits/order, age/gender/size distributions, palette/eye odds, and trait counts. |
-| **Mutation effects & exact artwork** | Stacking, repeats, wings, special-spawn slots, the two uses of “Astral,” base stats, and visual references/assets. The five fixed mutation palettes are now supplied. |
+| **Generator refinements** | The specified pipeline is implemented. Remaining: exact species artwork, additional species-specific appearance traits, and any future gameplay rules beyond generation. |
+| **Mutation effects & exact artwork** | Selection, duplicate control, thresholds, Cosmic slots, and size shifts work. Define speed/stamina/fertility effects, visual stacking, wings, and supply matching artwork/assets. |
 | **Breeding & family history** | Parent eligibility, costs, timing, regional color mixing, trait/mutation inheritance, special-spawn inheritance, twins, and lineage restrictions. Cross-species 50/50 species inheritance is already confirmed. |
 | **Inventory, gacha & shop** | Final tack/potion lists, equip slots, effects, consumption, duplicates, and prices. The 50-gold gacha price and main reward splits are already supplied. |
 | **Town activities & events** | Costs, rewards, progression, and success rules for Spirit Tame, Plush Machine, Ancient Cave, and Digsite; event schedules and eligible pools. |
@@ -218,13 +225,13 @@ See [the detailed open questions](docs/OPEN-QUESTIONS.md) and [development progr
 | `npm test` | Run isolated automated tests without touching your player save |
 | `npm run import:references` | Rebuild the baseline catalog from reference documents plus the supplied Mutated Horse palettes |
 
-The importer replaces the baseline catalog; preserve manual catalog edits first. It does not replace player saves or their editable library snapshots.
+The importer replaces the bootstrap catalog; preserve manual catalog edits first. Existing `data/config/` registries remain authoritative and are edited through Horse Definitions. It does not replace player saves.
 
 ```text
 HorseGenerator/
 ├── public/             Browser UI, editors, styles, SVG artwork
-├── src/                Save transactions and preview encounters
-├── data/               Definitions, settings, player save, backups
+├── src/                Save/configuration transactions and spawning pipeline
+├── data/               Bootstrap data, live config files, player save, backups
 ├── docs/               Reference rules, roadmap, project notes
 ├── scripts/            Reference importer
 ├── tests/              Persistence, validation, HTTP, template checks

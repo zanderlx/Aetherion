@@ -1,6 +1,8 @@
 # Rules to confirm before the probability-based generator
 
-These questions do not block the Phase 1 interface. The current sampler is explicitly labeled as preview data. No ambiguous probabilities have been silently normalized or treated as final rules.
+> **Spawning update:** the Cosmic/Wild split, tier weights, chained slots, duplicate policy, size ladder, gender split, and random palette/eye/personality selection are now specified and implemented in [SPAWNING.md](SPAWNING.md). Historical questions below are superseded for those rules. Artwork, gameplay effects, events, and breeding still need decisions.
+
+These historical questions document the original Phase 1 rules. Use the implemented spawning specification above for current generation behavior; unresolved artwork and gameplay questions still apply.
 
 1. **Uncommon species:** Game Logic lists 30% Felorse, 20% Friesan, 30% Clydesdale, and 35% Akhal Teke: a total of 115%. Are these relative weights, or should one or more values change?
 2. **Rarity groups:** Game Logic makes those four species uncommon; Species labels them “Rare Spawn.” We will follow Game Logic as requested, but should the label in Species be corrected? Is the remaining ordinary species tier 65%?

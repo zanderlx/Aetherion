@@ -1,4 +1,4 @@
-# Aetherion — Version 1 Progress
+# Aetherion — Version 1.2 Progress
 
 ## Implemented
 
@@ -23,7 +23,7 @@
 See [README — Remaining Features](../README.md#remaining-features) for the feature-by-feature requirements and [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for detailed rule ambiguities.
 
 - [ ] Remaining Horse Editor fields (species, palette, traits, mutations), duplication/import, and custom horse creator.
-- [ ] Probability-based Horse Generator and spawn controls.
+- [x] Data-driven Cosmic/Wild generation, weighted zone creatures, cascading mutations, and file-backed CRUD controls.
 - [ ] Executable mutation/item effects and exact species/trait artwork.
 - [ ] Breeding, color/trait inheritance, and family history.
 - [ ] Inventory, equipment, consumables, gacha, and shop.
@@ -32,11 +32,11 @@ See [README — Remaining Features](../README.md#remaining-features) for the fea
 - [ ] Advanced collection filters, statistics, bulk actions, final game defaults.
 - [ ] Desktop/mobile browser, keyboard, accessibility, and visual QA.
 
-A basic Horse Editor can begin with the existing schema. Generator probabilities, trait rules, breeding rules, and activity mechanics need the specific decisions listed in the roadmap. Fixed special-spawn palette colors have now been supplied; their probabilities and effects remain unresolved.
+The specified spawning pipeline is implemented; see SPAWNING.md. Full horse editing, gameplay effects, exact artwork, breeding, and activity mechanics remain separate systems.
 
 ## Verification
 
-**62 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**78 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -83,3 +83,11 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - Economy uses one card for Current Gold and Horse Selling Price, saved together atomically. Starting Gold is hidden; existing internal values remain preserved.
 
 - Horse profiles show Birthday from the saved catch date and Age as elapsed calendar days. Uncaught horses show Not caught yet. Birthday edits update the catch date; Age is derived rather than separately editable.
+
+### Version 1.2 — current spawning and configuration
+
+- Five-manager Horse Definitions dashboard with master JSON CRUD, species rarity tiers, world-zone assignments, asset metadata, mutation thresholds/tokens, and personality system IDs/tags.
+- Local `data/config/` master files and one creature file per zone; ID-based species references and tier synchronization.
+- Cosmic 0.325% split, uniform Cosmic species, weighted Wild species, chained mutation slots, duplicate lockout, 50/50 gender, and shifted/clamped eleven-step sizes.
+- Dynamic file reads on spawn, atomic writes, rollback/recovery journal, and dated pre-migration player backup. Existing horses remain unchanged.
+- Historical preview notes above describe earlier versions and are superseded by this update. Visual browser QA remains unverified.
