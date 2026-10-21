@@ -1,3 +1,4 @@
+import {rarityTier,systemID,validateThresholds} from './spawn-config.js';
 import { mutatedPalettes } from './mutated-palettes.js';
 export const regions = ['Coat Top', 'Coat Bottom', 'Hair', 'Hoof', 'Nose', 'Sock', 'Keratin', 'Paint', 'Pattern'];
 export const traitCategories = ['Mane', 'Tail', 'Pattern', 'Paint', 'Cosmetic', 'Keratin', 'Ears', 'Whiskers'];
@@ -33,8 +34,11 @@ export function normalizeCatalog(source) {
     });
   }
   catalog.species = catalog.species.map(s => ({
-    ...s, traits: s.traits || catalog.traits?.[s.name] || Object.fromEntries(traitCategories.map(k => [k, []]))
+    ...s, rarityTier:rarityTier(s), attributes:s.attributes || {}, traits: s.traits || catalog.traits?.[s.name] || Object.fromEntries(traitCategories.map(k => [k, []]))
   }));
+  catalog.personalities = catalog.personalities.map(p => ({...p,systemId:p.systemId || p.id,behaviorTags:p.behaviorTags || []}));
+  catalog.palettes = catalog.palettes.map(p => ({...p,global:p.global ?? !p.speciesIds?.length,speciesIds:p.speciesIds || [],assetSkins:p.assetSkins || []}));
+  catalog.eyes = catalog.eyes.map(p => ({...p,textureId:p.textureId || '',layers:p.layers || []}));
   catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name, s.traits]));
   catalog.locations = catalog.locations.map(l => ({
     ...l, atmosphere: l.atmosphere || (l.id === 'hallowhoof' ? 'autumn' : 'forest'),
@@ -50,7 +54,7 @@ export function catalogFor(original, state) {
   return catalog;
 }
 export function draftDefinition(kind) {
-  return { name: '', description: '', event: '', restriction: '', group: 'Custom', natural: false, rarity: 'Custom', type: kind === 'mutations' ? 'Special' : 'Accessory', price: 0, theme: '', weight: null,
+  return { name: '', description: '', rarityTier:4,attributes:{},speciesIds:[],assetSkins:[],textureId:'',layers:[],behaviorTags:[],systemId:'',thresholds:{}, event: '', restriction: '', group: 'Custom', natural: false, rarity: 'Custom', type: kind === 'mutations' ? 'Standard' : 'Accessory', price: 0, theme: '', weight: 0, sizeShift:0, global:true,
     traits: Object.fromEntries(traitCategories.map(k => [k, []])),
     colors: kind === 'palettes' ? Object.fromEntries(regions.map(r => [r, '#d6b4df'])) : kind === 'siteThemes' ? { ...defaultThemes[1].colors } : ['#8a689e'],
     scheme: 'light', encounterTitle: 'A new companion awaits', tint: '#8c709f' };
@@ -72,7 +76,22 @@ export function validateDefinition(kind, input) {
     return input[key];
   };
   const result = { name: text('name', 80, true), description: text('description', 4000) };
+  const strings = (key,max = 100) => {
+    const values = input[key] ?? [];
+    if (!Array.isArray(values) || values.length > 10000 || values.some(v => typeof v !== 'string' || !v.trim() || v.length > max)) throw new Error(`${key} must contain valid text entries.`);
+    return [...new Set(values.map(v => v.trim()))];
+  };
+  if (['species','palettes','eyes','mutations','personalities'].includes(kind)) {
+    result.systemId = text('systemId',100) || (kind === 'mutations' ? `${systemID(input.type || 'Standard')}-${systemID(result.name)}` : systemID(result.name));
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$/.test(result.systemId)) throw new Error('System IDs use letters, digits, underscores, and hyphens.');
+  }
   if (kind === 'species') {
+    const tier = input.rarityTier ?? 4;
+    if (!Number.isInteger(tier) || tier < 1 || tier > 4) throw new Error('Rarity Tier must be an integer from 1 to 4.');
+    result.rarityTier = tier;
+    const attributes = input.attributes ?? {};
+    if (!attributes || typeof attributes !== 'object' || Array.isArray(attributes) || Object.keys(attributes).length > 30 || Object.entries(attributes).some(([k,v]) => !/^[a-zA-Z][a-zA-Z0-9_]{0,59}$/.test(k) || ['constructor','prototype','__proto__'].includes(k) || !Number.isFinite(v))) throw new Error('Base attributes must be named finite numbers.');
+    result.attributes = structuredClone(attributes);
     const traits = input.traits;
     if (!traits || typeof traits !== 'object' || Array.isArray(traits) || Object.keys(traits).length > 30) throw new Error('Provide up to 30 trait categories.');
     const entries = Object.entries(traits).map(([key, values]) => {
@@ -86,6 +105,10 @@ export function validateDefinition(kind, input) {
   }
   if (kind === 'palettes') {
     if (typeof input.natural !== 'boolean') throw new Error('Choose a palette type.');
+    result.speciesIds = strings('speciesIds');
+    result.assetSkins = strings('assetSkins',200);
+    if (input.global !== undefined && typeof input.global !== 'boolean') throw new Error('Choose whether the palette is global.');
+    result.global = input.global ?? !result.speciesIds.length;
     result.colors = Object.fromEntries(regions.map(r => [r, color(input.colors?.[r])]));
     Object.assign(result, { natural: input.natural, group: text('group', 80, true), complete: true });
   }
@@ -93,8 +116,20 @@ export function validateDefinition(kind, input) {
     if (!Array.isArray(input.colors) || !input.colors.length || input.colors.length > 6) throw new Error('Choose one to six eye colors.');
     result.colors = input.colors.map(color);
     result.rarity = text('rarity', 60, true);
+    result.textureId = text('textureId',200);
+    if (!Array.isArray(input.layers ?? []) || (input.layers || []).length > 20) throw new Error('Provide up to 20 eye layers.');
+    result.layers = (input.layers || []).map((layer,i) => {
+      if (!layer || typeof layer !== 'object' || Array.isArray(layer) || typeof layer.textureId !== 'string' || layer.textureId.length > 200 || (layer.opacity !== undefined && (!Number.isFinite(layer.opacity) || layer.opacity < 0 || layer.opacity > 1))) throw new Error('Eye layers need textureId and optional opacity from 0 to 1.');
+      return {id:String(layer.id || `layer-${i+1}`).slice(0,100),textureId:layer.textureId,...(layer.color ? {color:color(layer.color)} : {}),opacity:layer.opacity ?? 1};
+    });
   }
-  if (kind === 'mutations') Object.assign(result, { type: text('type', 60, true), weight: number('weight', true) });
+  if (kind === 'mutations') {
+    Object.assign(result,{type:text('type',60,true),weight:number('weight',true),thresholds:validateThresholds(input.thresholds)});
+    result.sizeShift = input.sizeShift ?? (result.name === 'Dwarfism' ? -1 : result.name === 'Gigantism' ? 1 : 0);
+    if (!Number.isInteger(result.sizeShift) || Math.abs(result.sizeShift) > 10) throw new Error('Size shift must be an integer between -10 and 10.');
+    if (result.weight !== null && !Number.isInteger(result.weight)) throw new Error('Mutation weights must be whole ticket counts.');
+  }
+  if (kind === 'personalities') result.behaviorTags = strings('behaviorTags');
   if (kind === 'items') Object.assign(result, { type: text('type', 60, true), rarity: text('rarity', 60, true), price: number('price'), theme: text('theme') });
   if (kind === 'themes') result.event = text('event');
   if (kind === 'atmospheres') Object.assign(result, { tint: color(input.tint), encounterTitle: text('encounterTitle', 100, true) });

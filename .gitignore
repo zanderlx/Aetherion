@@ -5,3 +5,5 @@ data/backups/
 node_modules/
 .DS_Store
 test-results/
+
+data/config/

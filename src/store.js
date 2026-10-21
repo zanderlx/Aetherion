@@ -1,3 +1,5 @@
+import {ConfigurationFiles} from './configuration.js';
+import {registryKinds,defaultSpawnSettings,validateSpawnSettings,zoneCreatures,validateCreatures} from '../public/spawn-config.js';
 import {localCalendarDate} from '../public/dates.js';
 import { readHorseDocument } from '../public/horse-transfer.js';
 import { validateHorseName, horseRecords, updateHorseField } from '../public/horse-fields.js';
@@ -11,25 +13,42 @@ import { validateKeeper } from '../public/keeper.js';
 import { validateCopyPatch } from '../public/page-copy.js';
 
 export class GameStore {
-  constructor(directory, catalog, defaults) {
+  constructor(directory, catalog, defaults, options = {}) {
     this.directory = directory;
     this.catalog = catalog;
     this.defaults = defaults;
     this.queue = Promise.resolve();
+    this.files = new ConfigurationFiles(directory);
+    this.rng = options.rng;
   }
   async init() {
     await mkdir(join(this.directory, 'player'), { recursive: true });
     await mkdir(join(this.directory, 'backups'), { recursive: true });
     this.file = join(this.directory, 'player', 'save.json');
+    let existingSave = true;
     try {
       this.state = JSON.parse(await readFile(this.file, 'utf8'));
       if (this.state.version !== 1 || !Array.isArray(this.state.horses) || !Array.isArray(this.state.sold) || !this.state.settings) throw new Error('Invalid save structure');
     } catch (error) {
       if (error.code !== 'ENOENT') throw new Error(`Cannot read save; existing file has been preserved. ${error.message}`);
+      existingSave = false;
       this.state = { version: 1, gold: this.defaults.startingGold, settings: structuredClone(this.defaults), horses: [], sold: [], inventory: [], transactions: [], encounters: {}, searches: {}, createdAt: new Date().toISOString(), savedAt: null };
       await this.persist(this.state, false);
     }
     this.state.customLocations ??= [];
+    await this.files.recover(this.state);
+    if (!await this.files.exists()) {
+      if (existingSave) await copyFile(this.file,join(this.directory,'backups',`pre-spawning-${Date.now()}-${randomUUID()}.json`));
+      const seeded = this.files.seed(catalogFor(this.catalog,this.state),this.state);
+      const next = this.snapshot();
+      await this.files.commit(seeded,async revision => {
+        await this.files.read(seeded.catalog);
+        next.configurationRevision = revision;
+        await this.persist(next);
+      });
+      this.state = next;
+    }
+    await this.readConfiguration();
     return this;
   }
   async persist(next, backup = true) {
@@ -40,9 +59,26 @@ export class GameStore {
     await rename(tmp, this.file);
   }
   snapshot() { return structuredClone(this.state); }
-  getCatalog(state = this.state) { return catalogFor(this.catalog, state); }
+  getCatalog(state = this.state) {
+    const catalog = catalogFor(this.catalog,state);
+    if (this.configuration) {
+      for (const kind of registryKinds) catalog[kind] = structuredClone(this.configuration.catalog[kind]);
+      catalog.locations = structuredClone(this.configuration.zones);
+      catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name,s.traits]));
+      catalog.spawning = structuredClone(this.configuration.settings);
+    }
+    return catalog;
+  }
+  async readConfiguration() {
+    const configuration = await this.files.read(catalogFor(this.catalog,this.state));
+    const overrides = new Set(this.state.customLocations.map(z => z.id));
+    this.state.customLocations = configuration.zones.filter(z => z.custom || overrides.has(z.id)).map(z => structuredClone(z));
+    this.configuration = configuration;
+  }
+  async refreshConfiguration() { await this.queue; await this.readConfiguration(); }
   action(type, payload = {}) {
     const run = this.queue.then(async () => {
+      await this.readConfiguration();
       const next = this.snapshot();
       const catalog = this.getCatalog(next);
       if (type === 'search' || type === 'visit') {
@@ -50,7 +86,7 @@ export class GameStore {
         if (!location) throw new Error('Unknown location.');
         if (type === 'search' || !next.encounters[location.id]) {
           const searchNumber = next.searches[location.id] || 0;
-          next.encounters[location.id] = createEncounters(catalog, location.id, next.settings.horsesPerSearch, searchNumber, location);
+          next.encounters[location.id] = createEncounters(catalog, location.id, next.settings.horsesPerSearch, searchNumber, location, this.rng);
           next.searches[location.id] = searchNumber + 1;
         }
       } else if (type === 'catch' || type === 'sell') {
@@ -128,9 +164,11 @@ export class GameStore {
           const pool = kind === 'species' ? 'speciesPool' : 'palettePool';
           for (const zone of [...catalog.locations,...next.customLocations]) {
             zone[pool] = zone[pool].filter(name => name !== entry.name);
+            if (kind === 'species') zone.creatures = (zone.creatures || []).filter(c => c.speciesId !== id);
             if (!zone[pool].length) zone.enabled = false;
           }
         }
+        if (kind === 'species') for (const palette of catalog.palettes) palette.speciesIds = (palette.speciesIds || []).filter(sid => sid !== id);
         if (kind === 'atmospheres') for (const zone of [...catalog.locations,...next.customLocations]) if (zone.atmosphere === id) zone.atmosphere = catalog.atmospheres[0].id;
         if (kind === 'themes') for (const item of catalog.items) if (item.theme === entry.name) item.theme = '';
         if (kind === 'siteThemes') {
@@ -138,6 +176,9 @@ export class GameStore {
           if (next.settings.websiteTheme === id) next.settings.websiteTheme = 'default';
         }
         next.library = catalog;
+      } else if (type === 'spawn-settings') {
+        const settings = {...catalog.spawning,...payload};
+        catalog.spawning = validateSpawnSettings(settings);
       } else if (type === 'current-gold' || type === 'economy-settings') {
         if (!Number.isSafeInteger(payload.gold) || payload.gold < 0 || payload.gold > 1000000000) throw new Error('Gold must be a whole number between 0 and 1,000,000,000.');
         if (type === 'economy-settings') {
@@ -160,6 +201,12 @@ export class GameStore {
         if (payload.id && !existing) throw new Error('Zone not found.');
         if (locationsFor(catalog, next).some(l => l.id !== existing?.id && l.name.toLowerCase() === zone.name.toLowerCase())) throw new Error('A zone with that name already exists. Choose a different name.');
         if (existing) zone.event = payload.event === undefined ? existing.event : zone.event ? existing.event || zone.event : null;
+        const weights = new Map((existing?.creatures || []).map(c => [c.speciesId,c.weight]));
+        const provided = payload.creatures === undefined ? null : validateCreatures(payload.creatures,catalog);
+        const matching = provided && provided.length === zone.speciesPool.length && provided.every(c => zone.speciesPool.includes(catalog.species.find(s => s.id === c.speciesId).name));
+        zone.creatures = matching ? provided : zone.speciesPool.map(name => catalog.species.find(s => s.name === name)).map(s => ({speciesId:s.id,weight:weights.get(s.id) ?? catalog.spawning.tierWeights[s.rarityTier]}));
+        zone.speciesPool = zone.creatures.map(c => catalog.species.find(s => s.id === c.speciesId).name);
+        if (zone.enabled && !zone.creatures.some(c => Math.abs(c.weight) > 0)) throw new Error('An open zone needs at least one species with a nonzero weight.');
         const override = next.customLocations.find(l => l.id === payload.id);
         if (override) Object.assign(override, zone, { custom: existing.custom });
         else if (existing) next.customLocations.push({ ...existing, ...zone, custom: existing.custom, id: existing.id });
@@ -179,6 +226,23 @@ export class GameStore {
           const pool = kind === 'species' ? 'speciesPool' : 'palettePool';
           for (const location of [...catalog.locations, ...next.customLocations]) {
             location[pool] = location[pool].map(name => name === existing.name ? updated.name : name);
+          }
+        }
+        if (registryKinds.includes(kind) && catalog[kind].some(d => d.id !== updated.id && d.systemId === updated.systemId)) throw new Error('That system ID is already in use.');
+        if (kind === 'palettes' && updated.speciesIds.some(sid => !catalog.species.some(s => s.id === sid))) throw new Error('Choose registered species for this palette.');
+        if (kind === 'species') {
+          const locations = [...catalog.locations,...next.customLocations];
+          if (values.zoneIds !== undefined && (!Array.isArray(values.zoneIds) || values.zoneIds.some(zid => !locations.some(z => z.id === zid)))) throw new Error('Choose registered zones.');
+          for (const zone of locations) {
+            const included = values.zoneIds === undefined ? zone.speciesPool.includes(updated.name) : values.zoneIds.includes(zone.id);
+            zone.speciesPool = zone.speciesPool.filter(name => name !== updated.name);
+            const previous = (zone.creatures || []).find(c => c.speciesId === updated.id);
+            zone.creatures = (zone.creatures || []).filter(c => c.speciesId !== updated.id);
+            if (included) {
+              zone.speciesPool.push(updated.name);
+              zone.creatures.push({speciesId:updated.id,weight:previous && existing?.rarityTier === updated.rarityTier ? previous.weight : catalog.spawning.tierWeights[updated.rarityTier]});
+            }
+            if (!zone.speciesPool.length) zone.enabled = false;
           }
         }
         if (existing && kind === 'themes' && existing.name !== updated.name) {
@@ -206,7 +270,17 @@ export class GameStore {
       } else if (type === 'backup') {
         await writeFile(join(this.directory, 'backups', `save-${Date.now()}-${randomUUID().slice(0, 8)}.json`), JSON.stringify(next, null, 2) + '\n', { flag: 'wx' });
       } else throw new Error('Unknown action.');
-      await this.persist(next);
+      if (['save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
+        const settings = catalog.spawning || defaultSpawnSettings;
+        const zones = locationsFor(catalog,next).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
+        let committed;
+        await this.files.commit({catalog,zones,settings},async revision => {
+          committed = await this.files.read(catalog);
+          next.configurationRevision = revision;
+          await this.persist(next);
+        });
+        this.configuration = committed;
+      } else await this.persist(next);
       this.state = next;
       return this.snapshot();
     });

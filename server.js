@@ -24,8 +24,9 @@ const server = createServer(async (req, res) => {
   if (!allowedHosts.has(req.headers.host)) return send(res, 403, { error: 'Local connections only.' });
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
-    if (req.method === 'GET' && url.pathname === '/api/state') return send(res, 200, { state: store.snapshot(), catalog: store.getCatalog(), defaults });
+    if (req.method === 'GET' && url.pathname === '/api/state') { await store.refreshConfiguration(); return send(res,200,{state:store.snapshot(),catalog:store.getCatalog(),defaults}); }
     if (req.method === 'GET' && url.pathname === '/api/export') {
+      await store.refreshConfiguration();
       res.setHeader('Content-Disposition', 'attachment; filename="aetherion-backup.json"');
       return send(res, 200, { state: store.snapshot(), catalog: store.getCatalog(), defaults });
     }

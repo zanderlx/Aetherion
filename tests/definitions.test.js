@@ -16,7 +16,7 @@ test('profile wording and deleted text survive restart, restore cleanly, and sup
   const { directory, store } = await fixture(t);
   await store.action('save-copy',{scope:'horse/profile',entries:{'horse.title':'Meet {horseName}','personality.note':''}});
   await store.action('save-copy',{scope:'wilds/aetherion',entries:{'encounters.count':'{encounterCount} visitors'}});
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.state.pageCopy['horse/profile']['personality.note'],'');
   assert.equal(renderCopy(loaded.state.pageCopy['horse/profile']['horse.title'],{horseName:'Moonbeam'}),'Meet Moonbeam');
   assert.equal(renderCopy(loaded.state.pageCopy['wilds/aetherion']['encounters.count'],{encounterCount:2}),'2 visitors');
@@ -30,7 +30,7 @@ test('page wording merges, resets, stays isolated and survives restart and backu
   await store.action('save-copy', { scope:'stable/all', entries:{ 'page.title':'Our sanctuary' } });
   await store.action('save-copy', { scope:'site', entries:{ 'brand-subtitle':'A quiet place' } });
   await store.action('save-copy', { scope:'wilds/aetherion', entries:{ 'page.title':'The woods' } });
-  const loaded = await new GameStore(directory, catalog, defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.state.settings.developerEditMode, true);
   assert.equal(loaded.state.pageCopy['stable/all']['page.title'], 'Our sanctuary');
   assert.equal(loaded.state.pageCopy['stable/all'].intro, '<script>plain text</script> {horseCount}');
@@ -67,7 +67,7 @@ test('dark themes are the default and custom variants persist independently', as
   assert.notEqual(darkColors.bg,lightColors.bg);
   const custom = await add(store,'siteThemes',{name:'Two skies',scheme:'dark',colors:darkColors,darkColors,lightColors});
   await store.action('website-theme',{id:custom.id,mode:'light'});
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.state.settings.websiteThemeMode,'light');
   assert.deepEqual(colorsForMode(loaded.getCatalog().siteThemes.at(-1),'light'),Object.fromEntries(Object.entries(lightColors).map(([key,value]) => [key,value.toUpperCase()])));
   await assert.rejects(store.action('website-theme',{id:custom.id,mode:'bad'}));
@@ -89,7 +89,7 @@ async function fixture(t) {
     assert.ok(basename(directory).startsWith('aetherion-definitions-'));
     await rm(directory, { recursive: true, force: true });
   });
-  return { directory, store: await new GameStore(directory, catalog, defaults).init() };
+  return { directory, store: await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init() };
 }
 async function add(store, kind, values) {
   await store.action('save-definition', { kind, values: { ...draftDefinition(kind), ...values } });
@@ -122,7 +122,7 @@ test('new mutation palettes upgrade old libraries, work in zones, and respect ed
   await store.action('save-definition',{kind:'palettes',id:solar.id,values:{...solar,colors:{...solar.colors,Hair:'#123456'}}});
   assert.equal(store.getCatalog().palettes.find(p => p.id === solar.id).colors.Hair,'#123456');
   await store.action('delete-definition',{kind:'palettes',id:solar.id});
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.getCatalog().palettes.some(p => p.id === solar.id),false);
 });
 test('definition deletion updates pools, closes empty zones and preserves existing horse snapshots', async t => {
@@ -137,7 +137,7 @@ test('definition deletion updates pools, closes empty zones and preserves existi
   assert.equal(store.getCatalog().species.some(s => s.id === species.id),false);
   assert.equal(locationsFor(store.getCatalog(),store.state).find(z => z.id === zone.id).enabled,false);
   assert.deepEqual(store.state.horses[0],horse);
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.getCatalog().species.some(s => s.id === species.id),false);
 });
 test('every creatable definition type can be deleted and active website themes fall back', async t => {
@@ -150,7 +150,7 @@ test('every creatable definition type can be deleted and active website themes f
   }
   assert.equal(store.state.settings.websiteTheme,'default');
   await store.action('delete-definition',{kind:'siteThemes',id:'pastel-peach'});
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.getCatalog().siteThemes.some(t => t.id === 'pastel-peach'),false);
   await assert.rejects(store.action('delete-definition',{kind:'siteThemes',id:'default'}),/fallback/);
   await assert.rejects(store.action('delete-definition',{kind:'__proto__',id:'bad'}));
@@ -185,7 +185,7 @@ test('new species, traits, palettes and atmospheres drive encounters and survive
   await store.action('search', { locationId: zone.id });
   assert.equal(store.state.encounters[zone.id][0].species, 'Skypony');
   assert.equal(store.state.encounters[zone.id][0].palette.colors.Hair, '#123456');
-  const reloaded = await new GameStore(directory, catalog, defaults).init();
+  const reloaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(reloaded.getCatalog().species.at(-1).name, 'Skypony');
   assert.deepEqual(reloaded.state.horses, before);
 });
@@ -223,7 +223,7 @@ test('website theme selection persists and the original theme cannot be overwrit
   const original = store.getCatalog().siteThemes[0];
   await assert.rejects(store.action('save-definition', { kind: 'siteThemes', id: 'default', values: { ...original, name: 'Changed' } }), /preserved/);
   await store.action('website-theme', { id: 'pastel-rose' });
-  const reloaded = await new GameStore(directory, catalog, defaults).init();
+  const reloaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(reloaded.state.settings.websiteTheme, 'pastel-rose');
   const custom = await add(reloaded, 'siteThemes', { name: 'My pastel theme' });
   await reloaded.action('website-theme', { id: custom.id });

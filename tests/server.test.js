@@ -31,7 +31,7 @@ test('HTTP application serves all assets, persists actions, exports data and rej
     child.once('error', rej);
     child.once('exit', code => rej(new Error(`Server exited early (${code}).`)));
   });
-  for (const asset of ['/', '/styles.css', '/zones.css', '/zones.js', '/zone-editor.js', '/library.css', '/themes.css', '/definitions.js', '/library-editor.js', '/dates.js', '/roadmap.js', '/mutated-palettes.js', '/keeper.js', '/form-state.js', '/site-search.js', '/theme-modes.js', '/page-copy.js', '/copy-editor.js', '/copy-editor.css', '/typography.css', '/app.js', '/ui.js', '/pages.js', '/economy.js', '/game-settings.js', '/profile.js', '/horse-dialogs.js', '/horse-transfer.js', '/horse-transfer-ui.js', '/horse-inline-name.js', '/horse-fields.js', '/horse-editor.css', '/art.js', '/assets/crest.svg', '/assets/wilds.svg']) {
+  for (const asset of ['/', '/styles.css', '/zones.css', '/zones.js', '/zone-editor.js', '/library.css', '/themes.css', '/definitions.js', '/spawn-config.js', '/library-editor.js', '/dates.js', '/roadmap.js', '/mutated-palettes.js', '/keeper.js', '/form-state.js', '/site-search.js', '/theme-modes.js', '/page-copy.js', '/copy-editor.js', '/copy-editor.css', '/typography.css', '/app.js', '/ui.js', '/pages.js', '/economy.js', '/game-settings.js', '/profile.js', '/horse-dialogs.js', '/horse-transfer.js', '/horse-transfer-ui.js', '/horse-inline-name.js', '/horse-fields.js', '/horse-editor.css', '/art.js', '/assets/crest.svg', '/assets/wilds.svg']) {
     const response = await fetch(url + asset);
     assert.equal(response.status, 200, asset);
     assert.ok((await response.text()).length > 0);
@@ -63,7 +63,7 @@ test('HTTP application serves all assets, persists actions, exports data and rej
   assert.equal(zoneResponse.status, 200);
   const zone = (await zoneResponse.json()).state.customLocations[0];
   const visit = await (await post('visit', { locationId: zone.id })).json();
-  assert.ok(visit.state.encounters[zone.id].every(h => h.species === 'Unicorn'));
+  assert.ok(visit.state.encounters[zone.id].every(h => h.spawnPath === 'Cosmic' || h.species === 'Unicorn'));
   const bundle = await (await fetch(url + '/api/export')).json();
   assert.equal(bundle.state.customLocations[0].id, zone.id);
   const definitionResponse = await post('save-definition', { kind: 'personalities', values: { name: 'Daydreamer', description: 'Always watching the clouds.' } });

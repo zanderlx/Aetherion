@@ -18,7 +18,7 @@ async function fixture(t) {
     assert.ok(basename(directory).startsWith('aetherion-test-'));
     await rm(directory, { recursive: true, force: true });
   });
-  return { directory, store: await new GameStore(directory, catalog, defaults).init() };
+  return { directory, store: await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init() };
 }
 test('owned personality descriptions default on catch, persist, and reject invalid edits', async t => {
   const {directory,store} = await fixture(t);
@@ -30,8 +30,8 @@ test('owned personality descriptions default on catch, persist, and reject inval
   const description = 'Loves quiet trails.\n<script>plain text</script>';
   await store.action('horse-description',{id:first.id,description});
   await assert.rejects(store.action('horse-description',{id:first.id,description:'a'.repeat(4001)}));
-  assert.equal(store.state.encounters.aetherion.find(h => h.id === second.id).personalityDescription,undefined);
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(store.state.encounters.aetherion.find(h => h.id === second.id).personalityDescription,second.personality.description);
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.horses[0].personalityDescription,description);
   assert.equal(restored.state.horses[0].personality.description,first.personality.description);
   await store.action('horse-description',{id:first.id,description:''});
@@ -48,7 +48,7 @@ test('zone tags preserve legacy defaults and save additions, removals and empty 
   for (const tags of [null,'text',[''],['a'.repeat(101)],Array(21).fill('Tag')]) {
     await assert.rejects(store.action('save-zone',{...zone,tags}));
   }
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.deepEqual(restored.state.customLocations.at(-1).tags,zone.tags);
   await restored.action('save-zone',{...zone,tags:[]});
   assert.deepEqual(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === zone.id).tags,[]);
@@ -61,7 +61,7 @@ test('event classification can be enabled and disabled for custom and original z
   const zone = store.state.customLocations.at(-1);
   assert.equal(zone.event,'Event');
   await assert.rejects(store.action('save-zone',{...zone,event:123}));
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.customLocations.at(-1).event,'Event');
   await restored.action('save-zone',{...zone,event:false});
   assert.equal(restored.state.customLocations.at(-1).event,null);
@@ -110,7 +110,7 @@ test('horse JSON export imports copies with fresh IDs, capacity checks and atomi
   }
   await store.action('settings',{...store.state.settings,stableCapacity:3,ignoreStableLimit:false});
   await assert.rejects(store.action('import-horse',document),/stable is full/);
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.deepEqual(restored.state.horses,store.state.horses);
 });
 test('combined Economy settings save gold and price atomically without changing Starting Gold', async t => {
@@ -127,7 +127,7 @@ test('combined Economy settings save gold and price atomically without changing 
   const count = store.state.transactions.length;
   await store.action('economy-settings',{gold:999,sellingPrice:600});
   assert.equal(store.state.transactions.length,count);
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.gold,999);
   assert.equal(restored.state.settings.sellingPrice,600);
 });
@@ -140,7 +140,7 @@ test('catch validates names atomically and saves the chosen name', async t => {
   assert.equal(store.state.encounters.aetherion[0].id,id);
   await store.action('catch',{id,name:'  Moonbeam  '});
   assert.equal(store.state.horses[0].name,'Moonbeam');
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.horses[0].name,'Moonbeam');
 });
 test('horse notes survive catching and reload; invalid notes leave the save unchanged', async t => {
@@ -151,7 +151,7 @@ test('horse notes survive catching and reload; invalid notes leave the save unch
   await store.action('horse-notes',{id,notes});
   await assert.rejects(store.action('horse-notes',{id,notes:'a'.repeat(4001)}));
   await store.action('catch',{id});
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.horses[0].notes,notes);
   await store.action('horse-notes',{id,notes:''});
   assert.equal(store.state.horses[0].notes,'');
@@ -176,7 +176,7 @@ test('edit mode updates only the selected horse with validated choices and dates
   assert.deepEqual(store.state.encounters.aetherion[1],other);
   assert.equal(saved.sizePercent,75);
   assert.equal(saved.personality.name,options[0].label);
-  const restored = await new GameStore(directory,catalog,defaults).init();
+  const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.deepEqual(restored.state.encounters.aetherion[0],saved);
 });
 test('zone and horse deletion persist without awarding gold or removing unrelated records', async t => {
@@ -199,7 +199,7 @@ test('zone and horse deletion persist without awarding gold or removing unrelate
   assert.equal(store.state.sold[0].id,second);
   await store.action('delete-horse',{id:second});
   assert.equal(store.state.gold,gold);
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(loaded.state.horses.length,0);
   assert.equal(loaded.state.sold.length,0);
   assert.equal(locationsFor(loaded.getCatalog(),loaded.state).some(z => z.id === 'aetherion' || z.id === zone.id),false);
@@ -209,7 +209,7 @@ test('keeper profile validates, persists and resets without affecting the game',
   const { directory, store } = await fixture(t);
   const profile = {name:'Moon Keeper',about:'I love unicorns. <script>plain text</script>',avatarSeed:9876};
   await store.action('save-profile',profile);
-  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.deepEqual(loaded.state.keeper,profile);
   for (const patch of [{name:''},{about:'a'.repeat(2001)},{avatarSeed:-1},{avatarSeed:'red'}]) {
     await assert.rejects(loaded.action('save-profile',{...profile,...patch}));
@@ -229,7 +229,7 @@ test('current gold updates the live balance, records the difference and survives
   assert.equal(store.state.settings.startingGold,defaults.startingGold);
   await store.action('current-gold',{gold:0});
   assert.equal(store.state.transactions.at(-1).amount,-9876);
-  const reloaded = await new GameStore(directory,catalog,defaults).init();
+  const reloaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(reloaded.state.gold,0);
   for (const gold of [-1,1.2,1000000001,'500',null]) {
     const snapshot = store.snapshot();
@@ -246,7 +246,7 @@ test('visit is stable; catching, naming and favoriting survive reload', async t 
   await store.action('catch', { id });
   await store.action('rename', { id, name: 'Moon & Marigold' });
   await store.action('favorite', { id });
-  const restarted = await new GameStore(directory, catalog, defaults).init();
+  const restarted = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restarted.state.horses[0].name, 'Moon & Marigold');
   assert.equal(restarted.state.horses[0].favorite, true);
   assert.deepEqual(restarted.state.horses[0].palette, initial.encounters.aetherion[0].palette);
@@ -277,7 +277,7 @@ test('settings persist and affect new searches and sales, never existing horses'
   assert.deepEqual(store.state.horses[0], original);
   await store.action('sell', { id: horse.id });
   assert.equal(store.state.gold, 420);
-  const restarted = await new GameStore(directory, catalog, defaults).init();
+  const restarted = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restarted.state.settings.horsesPerSearch, 5);
 });
 test('invalid settings and full stable fail without mutating the save', async t => {
@@ -301,7 +301,7 @@ test('backups retain preceding save and malformed save is not replaced', async t
   assert.equal(previous.encounters.aetherion.length, 3);
   const filename = join(directory, 'player', 'save.json');
   await writeFile(filename, '{broken');
-  await assert.rejects(new GameStore(directory, catalog, defaults).init(), /preserved/);
+  await assert.rejects(new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init(), /preserved/);
   assert.equal(await readFile(filename, 'utf8'), '{broken');
 });
 test('reference imports preserve incomplete palettes but preview uses complete palettes', async t => {
@@ -312,7 +312,7 @@ test('reference imports preserve incomplete palettes but preview uses complete p
     await store.action('visit', { locationId: location.id });
     for (const horse of store.state.encounters[location.id]) {
       assert.equal(Object.keys(horse.palette.colors).length, 9);
-      assert.equal(horse.preview, true);
+      assert.equal(horse.preview, false);
       assert.equal(horse.traits.Mane.length, 1);
       assert.equal(horse.traits.Tail.length, 1);
       assert.ok(horse.eye.colors.length);
@@ -335,7 +335,7 @@ test('custom zones persist, use selected pools, and edits preserve old encounter
   await store.action('search', { locationId: zone.id });
   assert.ok(store.state.encounters[zone.id].every(h => h.species === 'Unicorn' && h.palette.name === 'Emerald'));
   assert.equal(store.state.horses[0].palette.name, 'Pumpkin');
-  const reloaded = await new GameStore(directory, catalog, defaults).init();
+  const reloaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(reloaded.state.customLocations[0].name, 'Silver Haven');
   assert.equal(reloaded.state.horses[0].id, horse.id);
   await reloaded.action('save-zone', { ...reloaded.state.customLocations[0], enabled: false });
@@ -359,7 +359,7 @@ test('old saves without custom zones load without changing existing data', async
   const legacy = store.snapshot();
   delete legacy.customLocations;
   await writeFile(join(directory, 'player', 'save.json'), JSON.stringify(legacy));
-  const loaded = await new GameStore(directory, catalog, defaults).init();
+  const loaded = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.deepEqual(loaded.state, { ...legacy, customLocations: [] });
   assert.deepEqual(JSON.parse(await readFile(join(directory, 'player', 'save.json'), 'utf8')), legacy);
 });
