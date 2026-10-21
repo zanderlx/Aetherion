@@ -117,7 +117,7 @@ Save and Cancel controls appear when a form has changes. Deletion requires confi
 
 ### Mutated Horse palettes
 
-Available under **Horse Definitions → Horse Palettes**:
+Available under **Horse Definitions → Palettes**:
 
 | Solar | Lunar | Astral | Heavenly | Void |
 | --- | --- | --- | --- | --- |
@@ -127,7 +127,7 @@ Every supplied hex value is preserved. These are palette definitions; choosing o
 
 ### Data-driven spawning
 
-Horse Definitions is a parent dashboard with five managers: **Species**, **Horse Palettes**, **Eye Color**, **Mutations**, and **Personalities**. CRUD overwrites local JSON configuration files. Species expose rarity tiers and zone checkboxes; palettes support species links and skin IDs; eyes support textures/layers; mutations expose tokens, thresholds, and duplicate control; personalities expose system IDs and behavior tags.
+Horse Definitions is a parent dashboard with five managers: **Species**, **Palettes**, **Eye Color**, **Mutations**, and **Personalities**. CRUD overwrites local JSON configuration files. Species expose rarity tiers and zone checkboxes; palettes support species links and skin IDs; eyes support textures/layers; mutations expose tokens, thresholds, and duplicate control; personalities expose system IDs and behavior tags.
 
 Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects any registered species uniformly. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 

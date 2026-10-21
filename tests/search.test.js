@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { prepareSearch, searchEntries } from '../public/site-search.js';
 test('site search matches multiple keywords, accents and partial words and ranks names first', () => {
   const index = prepareSearch([
-    {title:'Horse Palettes',text:'Includes natural gold',route:'dev/colors'},
+    {title:'Palettes',text:'Includes natural gold',route:'dev/colors'},
     {title:'Natural Gold',text:'Natural horse palette',route:'dev/colors',id:'gold'},
     {title:'Étoile',text:'Unicorn with a silver mane',route:'stable/all',id:'horse'}
   ]);

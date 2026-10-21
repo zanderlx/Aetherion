@@ -36,7 +36,7 @@ export const groups = [
 const workbench = groups.find(g => g.title === 'Developer Settings');
 workbench.items = [['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
 groups.push(
-  {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species & Traits'],['dev/colors','Horse Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations']]},
+  {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species & Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations']]},
   {title:'World & Items',icon:'compass',items:[['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]},
   {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}
 );

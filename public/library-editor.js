@@ -43,7 +43,7 @@ export function libraryEditorPage(kind, catalog, state, draft) {
   const readOnly = kind === 'siteThemes' && draft.id === 'default';
   const kindName = definitionKinds[kind];
   const primary = registryKinds.includes(kind);
-  const managers = {species:'Species Manager',palettes:'Horse Palettes Manager',eyes:'Eye Color Manager',mutations:'Mutations Manager',personalities:'Personalities Manager'};
+  const managers = {species:'Species Manager',palettes:'Palettes Manager',eyes:'Eye Color Manager',mutations:'Mutations Manager',personalities:'Personalities Manager'};
   let fields = '';
   if (kind === 'species') {
     fields = `<label class="zone-field">Rarity Tier<select name="rarityTier">${[[1,'Ultra Rare'],[2,'Rare'],[3,'Uncommon'],[4,'Common']].map(([tier,label]) => `<option value="${tier}" ${Number(draft.rarityTier ?? 4) === tier ? 'selected' : ''}>${tier}: ${label}</option>`).join('')}</select></label>` + jsonField('Base Attributes (JSON)','attributes',draft.attributes || {}) +

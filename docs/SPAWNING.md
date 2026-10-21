@@ -7,7 +7,7 @@ Open **Horse Definitions** and choose one of the five managers in the main navig
 | Manager | Editable data |
 | --- | --- |
 | Species | Name, system ID, integer rarity tier, numeric base attributes, appearance traits, and zone checkboxes. |
-| Horse Palettes | Nine hex colors, global/species scope, species links, and asset skin IDs. |
+| Palettes | Nine hex colors, global/species scope, species links, and asset skin IDs. |
 | Eye Color | Color combinations, texture ID, and visual layers with texture, optional color, and opacity. |
 | Mutations | Name, category, integer weight tokens, attribute thresholds, and size-index shift. The global `ALLOW_DUPLICATE_MUTATIONS` toggle appears at the top. |
 | Personalities | Name, system ID, description, and behavior tags. Every horse selects exactly one record. |
