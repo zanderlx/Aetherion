@@ -204,7 +204,7 @@ function showDefinition(kind, draft) {
   if (kind === 'eyes') {
     eyeEditor.open(draft);
     trackForms(eyeEditor.dialog);
-    if (!draft?.id) restoreBaseline(eyeEditor.dialog.querySelector('#definition-form'),'new-eye-draft');
+    if (!draft?.id && draft?.name) restoreBaseline(eyeEditor.dialog.querySelector('#definition-form'),'new-eye-draft');
     return;
   }
   main.innerHTML = libraryEditorPage(kind, catalog, state, draft);
@@ -251,7 +251,7 @@ function updateAvatarPreview() {
 function askToDelete(type, payload, name, detail, verb = type === 'delete-profile' ? 'Reset' : 'Delete') {
   pendingDeletion = {type,payload};
   confirmation.classList.toggle('eye-delete-confirm',type === 'delete-definition' && payload.kind === 'eyes');
-  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
+  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)} This is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
   confirmation.showModal();
 }
 document.addEventListener('click', async event => {

@@ -147,6 +147,11 @@ select{text-transform:uppercase}
 .eye-definition-dialog > .dialog-top { position:sticky; top:0; z-index:2; background:var(--panel); }
 .eye-definition-dialog #eye-editor-title { margin-right:12px; }
 .eye-definition-dialog .eye-header-delete { margin-right:auto; flex-shrink:0; }
+.eye-save-confirm { width:min(500px,calc(100vw - 32px)); }
+.eye-save-confirm .dialog-top { padding:20px 24px; }
+.eye-save-confirm h2 { margin:0; }
+.eye-save-confirm > p { padding:20px 24px; line-height:1.6; }
+.eye-save-confirm .form-actions { padding:0 24px 24px; margin:0; }
 .definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
 .definitions-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
 .definitions-header > .button { align-self:center; }

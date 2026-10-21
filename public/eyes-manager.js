@@ -1,6 +1,6 @@
 import {escapeHTML as e,icon} from './ui.js';
 import {colorControl} from './library-editor.js';
-import {trackForms,updateFormState,restoreBaseline} from './form-state.js';
+import {trackForms,updateFormState,restoreBaseline,formSignature,formBaseline} from './form-state.js';
 
 export function labelEyeColors(root) {
   const rows = [...root.querySelectorAll('.eye-color-row')];
@@ -69,9 +69,31 @@ export function createEyeEditor(renderEditor,getEyes) {
   dialog.className = 'eye-definition-dialog';
   dialog.setAttribute('aria-labelledby','eye-editor-title');
   document.body.append(dialog);
+  const savePrompt = document.createElement('dialog');
+  savePrompt.className = 'eye-save-confirm';
+  savePrompt.setAttribute('aria-labelledby','eye-save-title');
+  savePrompt.innerHTML = `<div class="dialog-top"><h2 id="eye-save-title">Save Changes?</h2></div><p>You have unsaved eye color changes. Save them before closing?</p><div class="form-actions"><button type="button" class="button secondary" data-eye-decision="keep" autofocus>Keep Editing</button><button type="button" class="button secondary" data-eye-decision="discard">Discard Changes</button><button type="button" class="button primary" data-eye-decision="save">Save</button></div>`;
+  document.body.append(savePrompt);
+  function requestClose() {
+    const form = dialog.querySelector('form');
+    if (!form || formSignature(form) === formBaseline(form)) dialog.close();
+    else if (!savePrompt.open) savePrompt.showModal();
+  }
+  savePrompt.addEventListener('click',event => {
+    const decision = event.target.closest('[data-eye-decision]')?.dataset.eyeDecision;
+    if (!decision) return;
+    savePrompt.close();
+    if (decision === 'discard') dialog.close();
+    if (decision === 'save') dialog.querySelector('form')?.requestSubmit();
+  });
+  dialog.addEventListener('cancel',event => {event.preventDefault(); requestClose();});
   dialog.addEventListener('close',() => { if (!dialog.open) dialog.replaceChildren(); });
   dialog.addEventListener('click',event => {
-    if (event.target.closest('[data-action="close-eye-editor"]')) dialog.close();
+    if (event.target.closest('[data-action="close-eye-editor"]')) {requestClose(); return;}
+    if (event.target === dialog) {
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) requestClose();
+    }
     const button = event.target.closest('[data-eye-add]');
     if (!button) return;
     event.stopPropagation();
