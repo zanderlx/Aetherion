@@ -7,7 +7,8 @@ export function validateHorseName(name) {
   return name.trim();
 }
 export function horseFieldOptions(field, catalog, state) {
-  const options = field === 'age' ? ages : field === 'size' ? Object.keys(sizes) : field === 'origin' ? origins(state) : field === 'gender' ? ['Female','Male'] : null;
+  if (field === 'gender') return [{value:'Male',label:'♂ Male'},{value:'Female',label:'♀ Female'}];
+  const options = field === 'age' ? ages : field === 'size' ? Object.keys(sizes) : field === 'origin' ? origins(state) : null;
   return options ? options.map(name => ({value:name,label:name})).sort((a,b) => field === 'size' ? sizes[a.value] - sizes[b.value] : a.label.localeCompare(b.label))
     : ['personality','eye'].includes(field) ? catalog[field === 'eye' ? 'eyes' : 'personalities'].map(item => ({value:item.id,label:item.name})).sort((a,b) => a.label.localeCompare(b.label)) : [];
 }

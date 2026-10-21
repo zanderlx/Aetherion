@@ -75,8 +75,9 @@ test('wild horses have no export control; owned profiles export without release'
 test('horse fields have individual edit controls only in edit mode and notes are escaped', () => {
   const horse = {...horses[0],notes:'</textarea><script>bad</script>'};
   const html = profileContent(horse,{...state,horses:[horse],settings:{...settings,developerEditMode:true}});
-  for (const field of ['age','origin','size','birthday','personality','eye']) assert.ok(html.includes(`data-field="${field}"`));
+  for (const field of ['age','origin','size','birthday','personality','eye','gender']) assert.ok(html.includes(`data-field="${field}"`));
   assert.doesNotMatch(profileContent(horse,state),/data-action="edit-horse-field"/);
+  assert.doesNotMatch(html,/data-copy-key="horse.subtitle"|data-field="species"/);
   assert.match(html,/&lt;\/textarea&gt;&lt;script&gt;/);
 });
 test('horse previews and details expose edit targets and the simplified nine-color layout', () => {
