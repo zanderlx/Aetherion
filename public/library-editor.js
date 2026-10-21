@@ -1,4 +1,5 @@
 import {registryKinds,defaultSpawnSettings} from './spawn-config.js';
+import {personalitiesManagerPage} from './personalities-manager.js';
 import {locationsFor} from './zones.js';
 import { escapeHTML as e, heading, icon } from './ui.js';
 import { definitionKinds, draftDefinition, regions, traitCategories, themeTokens } from './definitions.js';
@@ -38,6 +39,7 @@ export function themePicker(catalog, state) {
   }).join('')}</div></section>`;
 }
 export function libraryEditorPage(kind, catalog, state, draft) {
+  if (kind === 'personalities') return personalitiesManagerPage(catalog,draft);
   const showEditor = kind !== 'personalities' || !!draft;
   draft ||= draftDefinition(kind);
   const current = draft.id ? catalog[kind].find(d => d.id === draft.id) : null;

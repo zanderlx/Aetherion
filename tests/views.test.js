@@ -288,7 +288,7 @@ test('Horse Definitions dashboard exposes five managers and the spawning configu
     const html = libraryEditorPage(kind,catalog,state);
     assert.doesNotMatch(html,/>Horse Definitions<\/h1>/);
     assert.doesNotMatch(html,/definitions-sidebar|definitions-dashboard/);
-    assert.match(html,/name="systemId"/);
+    if (kind !== 'personalities') assert.match(html,/name="systemId"/);
   }
   const species = libraryEditorPage('species',catalog,state);
   assert.match(species,/name="rarityTier"/);
@@ -304,13 +304,14 @@ test('Horse Definitions dashboard exposes five managers and the spawning configu
   assert.match(mutations,/name="ALLOW_DUPLICATE_MUTATIONS"/);
   assert.match(mutations,/name="thresholds"/);
   assert.ok(mutations.indexOf('spawn-settings-form') < mutations.indexOf('id="definition-form"'));
-  assert.match(libraryEditorPage('personalities',catalog,state),/name="behaviorTags"/);
+  assert.match(libraryEditorPage('personalities',catalog,state,catalog.personalities[0]),/name="behaviorTags"/);
 });
 test('all existing definitions and blank editor forms render without missing values', () => {
   for (const kind of Object.keys(definitionKinds)) {
     for (const draft of [undefined, ...catalog[kind]]) {
       const html = libraryEditorPage(kind, catalog, state, draft);
-      assert.match(html, /id="definition-form"/);
+      if (kind === 'personalities' && !draft) assert.doesNotMatch(html,/id="definition-form"/);
+      else assert.match(html, /id="definition-form"/);
       assert.doesNotMatch(html, /undefined|NaN/, `${kind}: ${draft?.name || 'new'}`);
     }
   }
@@ -389,10 +390,12 @@ test('Random eye drafts generate colors without reusing internal IDs',()=>{
 
 test('Personalities uses a compact search and header add button',()=>{
  const initial=libraryEditorPage('personalities',catalog,state);
- assert.match(initial,/<form id="definition-form" class="panel" hidden/);
+ assert.doesNotMatch(initial,/<form id="definition-form"/);
+ assert.match(initial,/personality-card-description/);
  const html=libraryEditorPage('personalities',catalog,state,catalog.personalities[0]);
- assert.match(html,/data-action="close-personality-editor"/);
- assert.doesNotMatch(html,/<form id="definition-form" class="panel" hidden/);
+ assert.doesNotMatch(html,/data-action="close-personality-editor"/);
+ assert.match(html,/Delete Entry/);
+ assert.match(html,/<form id="definition-form"/);
  assert.doesNotMatch(html,/Your collection of options|Find an entry|Behavior Tags|System ID|data-action="duplicate-definition"/);
  assert.match(html,/placeholder="Search\.\.\."/);
  assert.match(html,/personality-manager-header/);
