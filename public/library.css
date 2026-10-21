@@ -95,6 +95,7 @@ select{text-transform:uppercase}
 .eye-definition-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px; }
 .eye-rarity-section { margin-bottom:32px; }
 .eye-rarity-section > h2 { margin-bottom:16px; }
+.eye-rarity-chance { color:var(--muted); font-size:.75em; }
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }

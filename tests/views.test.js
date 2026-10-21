@@ -345,7 +345,10 @@ test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
  const eyes=['Rare','Common','Uncommon'].map(rarity=>({id:rarity,name:rarity,rarity,colors:['#112233']}));
  assert.deepEqual(filterEyes(eyes,'','','rarity').map(e=>e.rarity),['Common','Uncommon','Rare']);
  const html=eyeResults(eyes,'rarity');
- assert.ok(html.indexOf('<h2>Common</h2>') < html.indexOf('<h2>Uncommon</h2>'));
- assert.ok(html.indexOf('<h2>Uncommon</h2>') < html.indexOf('<h2>Rare</h2>'));
+ assert.ok(html.indexOf('<h2>Common ') < html.indexOf('<h2>Uncommon '));
+ assert.ok(html.indexOf('<h2>Uncommon ') < html.indexOf('<h2>Rare '));
  assert.equal((html.match(/eye-rarity-section/g)||[]).length,3);
+ assert.match(html,/\(60%\)/);
+ assert.match(html,/\(35%\)/);
+ assert.match(html,/\(5%\)/);
 });

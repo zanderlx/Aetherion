@@ -1,6 +1,7 @@
 import {escapeHTML as e,icon} from './ui.js';
 
 const rarityOrder = ['common','uncommon','rare','ultra rare','epic','legendary','mythic'];
+const eyeRarityChances = {common:60,uncommon:35,rare:5};
 const rarityRank = rarity => { const rank = rarityOrder.indexOf(rarity.toLowerCase()); return rank < 0 ? rarityOrder.length : rank; };
 const compareRarity = (a,b) => rarityRank(a)-rarityRank(b) || a.localeCompare(b);
 
@@ -16,7 +17,7 @@ export function eyeResults(eyes,sort = 'az') {
     if (!groups.has(eye.rarity)) groups.set(eye.rarity,[]);
     groups.get(eye.rarity).push(eye);
   }
-  return [...groups].sort(([a],[b]) => compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}</h2><div class="eye-definition-grid">${eyeCards(entries)}</div></section>`).join('');
+  return [...groups].sort(([a],[b]) => compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}${eyeRarityChances[rarity.toLowerCase()] === undefined ? '' : ` <span class="eye-rarity-chance">(${eyeRarityChances[rarity.toLowerCase()]}%)</span>`}</h2><div class="eye-definition-grid">${eyeCards(entries)}</div></section>`).join('');
 }
 
 export function updateEyeGrid(root,catalog) {
