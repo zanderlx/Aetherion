@@ -10,14 +10,14 @@ export function filterEyes(eyes,query = '',rarity = '',sort = 'az') {
   return eyes.filter(eye => (!rarity || eye.rarity === rarity) && words.every(word => [eye.name,eye.rarity,...eye.colors].join(' ').toLowerCase().includes(word))).sort((a,b) => sort === 'za' ? b.name.localeCompare(a.name) : sort === 'rarity' ? compareRarity(a.rarity,b.rarity) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
 }
 
-export function eyeResults(eyes,sort = 'az') {
-  if (sort !== 'rarity') return eyeCards(eyes);
+export function eyeResults(eyes,sort = 'az',allEyes = eyes) {
+  if (sort !== 'rarity') return eyeCards(eyes,allEyes);
   const groups = new Map();
   for (const eye of eyes) {
     if (!groups.has(eye.rarity)) groups.set(eye.rarity,[]);
     groups.get(eye.rarity).push(eye);
   }
-  return [...groups].sort(([a],[b]) => compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}${eyeRarityChances[rarity.toLowerCase()] === undefined ? '' : ` <span class="eye-rarity-chance">(${eyeRarityChances[rarity.toLowerCase()]}%)</span>`}</h2><div class="eye-definition-grid">${eyeCards(entries)}</div></section>`).join('');
+  return [...groups].sort(([a],[b]) => compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}${eyeRarityChances[rarity.toLowerCase()] === undefined ? '' : ` <span class="eye-rarity-chance">(${eyeRarityChances[rarity.toLowerCase()]}%)</span>`}</h2><div class="eye-definition-grid">${eyeCards(entries,allEyes)}</div></section>`).join('');
 }
 
 export function updateEyeGrid(root,catalog) {
@@ -25,17 +25,24 @@ export function updateEyeGrid(root,catalog) {
   const grid = root.querySelector('#eye-grid');
   const sort = root.querySelector('#eye-sort').value;
   grid.classList.toggle('eye-definition-grid',sort !== 'rarity');
-  grid.innerHTML = eyeResults(eyes,sort);
+  grid.innerHTML = eyeResults(eyes,sort,catalog.eyes);
   root.querySelector('#eye-empty').hidden = eyes.length > 0;
 }
 
 export function eyesManagerPage(catalog) {
   return `<div class="definitions-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">Create Eye Color</button><p class="configuration-path">data/config/eyes.json</p></div>
     <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search name, rarity, or hex…" aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field">Sort By<select id="eye-sort"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="rarity">Rarity</option></select></label></div>
-    <div id="eye-grid" class="eye-definition-grid">${eyeCards(filterEyes(catalog.eyes))}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
+    <div id="eye-grid" class="eye-definition-grid">${eyeCards(filterEyes(catalog.eyes),catalog.eyes)}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
 }
 
-function eyeCards(eyes) { return eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-hex">${eye.colors.map(color => e(color.toUpperCase())).join(' · ')}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span><span class="eye-card-rarity">${e(eye.rarity)}</span></button>`).join(''); }
+export function eyeIndividualChance(eye,allEyes) {
+  const chance = eyeRarityChances[eye.rarity.toLowerCase()];
+  if (chance === undefined) return '';
+  const count = allEyes.filter(item => item.rarity.toLowerCase() === eye.rarity.toLowerCase()).length;
+  return count ? ` · ${Number((chance/count).toFixed(4))}%` : '';
+}
+
+function eyeCards(eyes,allEyes) { return eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-hex">${eye.colors.map(color => e(color.toUpperCase())).join(' · ')}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span><span class="eye-card-rarity">${e(eye.rarity)}${eyeIndividualChance(eye,allEyes)}</span></button>`).join(''); }
 
 export function createEyeEditor(renderEditor) {
   const dialog = document.createElement('dialog');

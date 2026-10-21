@@ -1,5 +1,12 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
-import {eyesManagerPage,filterEyes,eyeResults} from '../public/eyes-manager.js';
+import {eyesManagerPage,filterEyes,eyeResults,eyeIndividualChance} from '../public/eyes-manager.js';
+
+test('individual eye percentages use all colors in the rarity',()=>{
+  const eyes = [{rarity:'Common'},{rarity:'Common'},{rarity:'Rare'}];
+  assert.equal(eyeIndividualChance(eyes[0],eyes),' · 30%');
+  assert.equal(eyeIndividualChance(eyes[2],eyes),' · 5%');
+  assert.equal(eyeIndividualChance({rarity:'Custom'},eyes),'');
+});
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
