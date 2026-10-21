@@ -1,3 +1,5 @@
+import {registryKinds,defaultSpawnSettings} from './spawn-config.js';
+import {locationsFor} from './zones.js';
 import { escapeHTML as e, heading, icon } from './ui.js';
 import { definitionKinds, draftDefinition, regions, traitCategories, themeTokens } from './definitions.js';
 import { colorsForMode } from './theme-modes.js';
@@ -7,13 +9,15 @@ export const editorRoutes = {
   mutations: 'mutations', items: 'items', themes: 'themes', atmospheres: 'atmospheres', appearance: 'siteThemes'
 };
 const textField = (label, key, value, required = false, suggestions = []) => `<label class="zone-field">${label}<input name="${key}" value="${e(value || '')}" maxlength="${key === 'name' ? 80 : 100}" ${required ? 'required' : ''} ${suggestions.length ? `list="${key}-suggestions"` : ''}></label>${suggestions.length ? `<datalist id="${key}-suggestions">${[...new Set(suggestions.filter(Boolean))].map(v => `<option value="${e(v)}"></option>`).join('')}</datalist>` : ''}`;
+const jsonField = (label,key,value) => `<label class="zone-field">${label}<textarea name="${key}" rows="4" maxlength="8192">${e(JSON.stringify(value,null,2))}</textarea></label>`;
+const linesField = (label,key,values) => `<label class="zone-field">${label}<textarea name="${key}" rows="3">${e((values || []).join('\n'))}</textarea></label>`;
 const checkbox = (label, key, checked) => `<label class="zone-choice"><input type="checkbox" name="${key}" ${checked ? 'checked' : ''}><span>${label}</span></label>`;
 const editorGuidance = {
-  species:['Define species and their available traits, then choose them in zone pools.','Species edits affect future encounters. Collected horses retain their saved species and traits.'],
+  species:['Manage species, rarity tiers, attributes, and zone assignments.','Saves update species.json and the selected zone creature files. Existing horses retain their snapshots.'],
   palettes:['Create complete nine-region horse palettes and organize them by type or event.','Palette edits affect future horses using this palette. Existing horse colors are preserved.'],
-  eyes:['Define eye colors, color combinations, and rarity labels for future horses.','The preview sampler cycles through these eye definitions; final rarity rolls are still planned.'],
+  eyes:['Manage eye colors, textures, and visual layers.','Spawns read eyes.json for random eye definitions and visual IDs.'],
   personalities:['Write personality names and descriptions for future companions.','New encounters use these descriptions. Gameplay effects are not simulated.'],
-  mutations:['Document mutation categories, descriptions, and selection weights.','These are definitions only. Mutation rolls, visual effects, and gameplay effects are not implemented yet.'],
+  mutations:['Manage mutation ticket weights and attribute thresholds.','Standard mutations drive the cascading slots. Thresholds check the species base attributes; size shifts affect the final size.'],
   items:['Define accessories and potions, their prices, rarities, and item themes.','Editing an item does not grant it. Inventory, gacha rewards, and item use remain planned.'],
   themes:['Organize item styles and optional event associations.','These themes label items and future rewards. Website colors are managed in Appearance & Themes.'],
   atmospheres:['Customize zone tints and encounter headings.','Choose the saved atmosphere in a zone editor to apply its appearance and encounter heading.'],
@@ -38,18 +42,24 @@ export function libraryEditorPage(kind, catalog, state, draft) {
   const current = draft.id ? catalog[kind].find(d => d.id === draft.id) : null;
   const readOnly = kind === 'siteThemes' && draft.id === 'default';
   const kindName = definitionKinds[kind];
+  const primary = registryKinds.includes(kind);
+  const managers = {species:'Species Manager',palettes:'Horse Palettes Manager',eyes:'Eye Color Manager',mutations:'Mutations Manager',personalities:'Personalities Manager'};
   let fields = '';
   if (kind === 'species') {
-    fields = textField('Event or group (optional)', 'event', draft.event, false, catalog.species.map(s => s.event)) +
+    fields = `<label class="zone-field">Rarity Tier<select name="rarityTier">${[[1,'Ultra Rare'],[2,'Rare'],[3,'Uncommon'],[4,'Common']].map(([tier,label]) => `<option value="${tier}" ${Number(draft.rarityTier ?? 4) === tier ? 'selected' : ''}>${tier}: ${label}</option>`).join('')}</select></label>` + jsonField('Base Attributes (JSON)','attributes',draft.attributes || {}) +
+      `<fieldset class="zone-pool"><legend>World Zones</legend>${locationsFor(catalog,state).map(z => `<label class="zone-choice"><input type="checkbox" name="speciesZones" value="${e(z.id)}" ${z.creatures?.some(c => c.speciesId === draft.id) || z.speciesPool.includes(draft.name) ? 'checked' : ''}><span>${e(z.name)}</span></label>`).join('')}</fieldset>` +
+      textField('Event or group (optional)', 'event', draft.event, false, catalog.species.map(s => s.event)) +
       textField('Acquisition or rarity notes (optional)', 'restriction', draft.restriction) +
-      `<fieldset class="zone-pool"><legend>Species-specific traits</legend><p>Add names one per line. Mane and Tail options supply the baseline traits for new preview horses. Add your own categories below.</p><div id="trait-rows">${Object.entries({ ...Object.fromEntries(traitCategories.map(k => [k, []])), ...draft.traits }).map(([key, values]) => traitRow(key, values)).join('')}</div><button class="button secondary" type="button" data-action="add-trait-category">Add trait category</button></fieldset><p class="preview-note">After saving a new species, select it in World & Items → Zones to make it appear in that zone.</p>`;
+      `<fieldset class="zone-pool"><legend>Species-specific traits</legend><p>Add names one per line. Mane and Tail options supply the baseline traits for new preview horses. Add your own categories below.</p><div id="trait-rows">${Object.entries({ ...Object.fromEntries(traitCategories.map(k => [k, []])), ...draft.traits }).map(([key, values]) => traitRow(key, values)).join('')}</div><button class="button secondary" type="button" data-action="add-trait-category">Add trait category</button></fieldset><p class="preview-note">Selected zones receive this species ID and rarity weight. Unchecking removes it from that zone.</p>`;
   }
-  if (kind === 'palettes') fields = textField('Palette type or event', 'group', draft.group, true, catalog.palettes.map(p => p.group)) + checkbox('Natural palette', 'natural', draft.natural) +
+  if (kind === 'palettes') fields = checkbox('Global palette (available to all species)','global',draft.global ?? !draft.speciesIds?.length) +
+    `<fieldset class="zone-pool"><legend>Species Links (used when Global is off)</legend>${catalog.species.map(sp => `<label class="zone-choice"><input type="checkbox" name="speciesIds" value="${e(sp.id)}" ${(draft.speciesIds || []).includes(sp.id) ? 'checked' : ''}><span>${e(sp.name)}</span></label>`).join('')}</fieldset>` + linesField('Asset Skin IDs · one per line','assetSkins',draft.assetSkins) + textField('Palette type or event', 'group', draft.group, true, catalog.palettes.map(p => p.group)) + checkbox('Natural palette', 'natural', draft.natural) +
     `<div class="color-editor-grid">${regions.map(r => colorControl(r, draft.colors?.[r] || '#D6B4DF')).join('')}</div><p class="preview-note">Each palette needs all nine regions. Choose it in a zone to use it for new horses.</p>`;
-  if (kind === 'eyes') fields = textField('Rarity label (choose or type your own)', 'rarity', draft.rarity, true, catalog.eyes.map(d => d.rarity)) +
+  if (kind === 'eyes') fields = textField('Texture ID','textureId',draft.textureId) + jsonField('Visual Layers (JSON array: textureId, optional color and opacity)','layers',draft.layers || []) + textField('Rarity label (choose or type your own)', 'rarity', draft.rarity, true, catalog.eyes.map(d => d.rarity)) +
     `<div id="eye-color-rows" class="color-editor-grid">${(draft.colors || ['#8A689E']).map((c, i) => `<div class="eye-color-row">${colorControl(String(i), c, `Eye color ${i + 1}`)}<button class="text-button" type="button" data-action="remove-eye-color">Remove color</button></div>`).join('')}</div><button class="button secondary" type="button" data-action="add-eye-color">Add eye color</button>`;
   if (kind === 'mutations') fields = textField('Mutation category (choose or type your own)', 'type', draft.type, true, catalog.mutations.map(d => d.type)) +
-    `<label class="zone-field">Selection weight (optional)<input type="number" min="0" max="1000000" step="any" name="weight" value="${draft.weight ?? ''}"></label><p class="callout">Definitions and weights are saved. Mutation rolls and gameplay effects are still awaiting the full generator; descriptions do not execute effects.</p>`;
+    `<label class="zone-field">Selection Weight Tokens<input type="number" min="0" max="1000000" step="1" name="weight" value="${draft.weight ?? 0}"></label>` + jsonField('Attribute Thresholds (JSON: {"stamina":{"min":10,"max":100}})','thresholds',draft.thresholds || {}) + `<label class="zone-field">Size Index Shift<input type="number" name="sizeShift" min="-10" max="10" step="1" value="${draft.sizeShift ?? (draft.name === 'Dwarfism' ? -1 : draft.name === 'Gigantism' ? 1 : 0)}"></label>`;
+  if (kind === 'personalities') fields = linesField('Behavior Tags · one per line','behaviorTags',draft.behaviorTags);
   if (kind === 'items') fields = textField('Item type (choose or type your own)', 'type', draft.type || 'Accessory', true, catalog.items.map(d => d.type || 'Accessory')) +
     textField('Rarity (choose or type your own)', 'rarity', draft.rarity || 'Common', true, catalog.items.map(d => d.rarity)) +
     textField('Theme (optional, or add one in Item Themes)', 'theme', draft.theme, false, catalog.themes.map(d => d.name)) +
@@ -57,8 +67,9 @@ export function libraryEditorPage(kind, catalog, state, draft) {
   if (kind === 'themes') fields = textField('Event (optional)', 'event', draft.event, false, catalog.species.map(d => d.event));
   if (kind === 'atmospheres') fields = textField('Encounter heading', 'encounterTitle', draft.encounterTitle, true) + colorControl('tint', draft.tint, 'Woodland tint') + '<p class="preview-note">A new atmosphere becomes available in the zone editor immediately.</p>';
   if (kind === 'siteThemes') fields = `<input name="scheme" type="hidden" value="dark">${['dark','light'].map(mode => `<fieldset class="zone-pool"><legend>${mode === 'dark' ? 'Dark variant · default' : 'Light variant'}</legend><div class="color-editor-grid">${themeTokens.map(key => colorControl(`${mode}:${key}`, colorsForMode(draft, mode)[key], ({ bg:'Page background', panel:'Panels', 'panel-deep':'Secondary surfaces', sidebar:'Sidebar', border:'Borders', gold:'Accent text', 'gold-soft':'Secondary accent', text:'Main text', muted:'Secondary text', burgundy:'Primary buttons', green:'Success color' })[key])).join('')}</div></fieldset>`).join('')}<p class="preview-note">Save both variants, then choose a theme and mode above. The original theme keeps its original dark appearance.</p>`;
-  return `${heading('THE KEEPER’S WORKBENCH', kindName, editorGuidance[kind][0])}
-    <div class="editor-tabs">${Object.entries(editorRoutes).map(([path, k]) => `<a href="#dev/${path}" ${k === kind ? 'aria-current="page"' : ''}>${definitionKinds[k]}</a>`).join('')}</div>
+  return `${heading(primary ? '' : 'THE KEEPER’S WORKBENCH',primary ? 'Horse Definitions' : kindName,editorGuidance[kind][0])}
+    ${primary ? `<div class="definitions-dashboard"><nav class="definitions-sidebar" aria-label="Horse Definitions">${Object.entries(editorRoutes).filter(([,k]) => registryKinds.includes(k)).map(([path,k]) => `<a href="#dev/${path}" ${k === kind ? 'aria-current="page"' : ''}>${managers[k]}</a>`).join('')}</nav><div class="definitions-main"><h2 class="manager-heading">${managers[kind]}</h2><p class="configuration-path">data/config/${kind}.json</p>` : `<div class="editor-tabs">${Object.entries(editorRoutes).filter(([,k]) => !registryKinds.includes(k)).map(([path,k]) => `<a href="#dev/${path}" ${k === kind ? 'aria-current="page"' : ''}>${definitionKinds[k]}</a>`).join('')}</div>`}
+    ${kind === 'mutations' ? `<form id="spawn-settings-form" class="panel spawn-settings"><p data-copy-skip>Standard pool: ${catalog.mutations.filter(m => m.type === 'Standard').length} mutations · ${catalog.mutations.filter(m => m.type === 'Standard').reduce((n,m) => n+Math.abs(m.weight || 0),0).toLocaleString()} tickets</p><label class="setting-row"><span><strong>ALLOW_DUPLICATE_MUTATIONS</strong><small>Allow the same standard mutation in multiple slots on one horse.</small></span><input type="checkbox" class="toggle" name="ALLOW_DUPLICATE_MUTATIONS" ${(catalog.spawning || defaultSpawnSettings).ALLOW_DUPLICATE_MUTATIONS ? 'checked' : ''}></label><div class="form-actions"><button class="button primary" type="submit">Save Configuration</button><button class="button secondary" type="reset">Cancel Changes</button></div></form>` : ''}
     ${kind === 'siteThemes' ? themePicker(catalog, state) : ''}
     <div class="library-workbench"><section class="panel library-list-panel"><div class="panel-heading"><h2>Your collection of options</h2></div><label class="zone-field">Find an entry<input type="search" id="definition-search" placeholder="Search by name…"></label><button class="button primary" data-action="new-definition" data-kind="${kind}">${icon('spark')} Add new</button><div class="definition-list">${catalog[kind].map(d => `<button class="definition-list-item ${d.id === draft.id ? 'selected' : ''}" data-action="edit-definition" data-kind="${kind}" data-id="${e(d.id)}" data-search="${e(`${d.name} ${d.group || d.type || d.rarity || ''}`.toLowerCase())}"><strong>${e(d.name)}</strong><small>${e(d.group || d.type || d.event || d.rarity || (d.traitsComplete === false ? 'Trait data incomplete' : ''))}</small></button>`).join('')}</div><p id="definition-no-results" hidden>No matching entries.</p></section>
     <form id="definition-form" class="panel" data-kind="${kind}" data-id="${e(draft.id || '')}"><div class="panel-heading"><div><h2>${current ? 'Edit ' + e(current.name) : 'Create a new entry'}</h2><p>${e(editorGuidance[kind][1])}</p></div></div>
@@ -66,10 +77,10 @@ export function libraryEditorPage(kind, catalog, state, draft) {
     <fieldset class="definition-fields" ${readOnly ? 'disabled' : ''}>
     ${textField('Name', 'name', draft.name, true)}
     <label class="zone-field">Description & notes<textarea name="description" maxlength="4000" rows="4" placeholder="Add appearance, behavior, lore, or other details…">${e(draft.description || '')}</textarea></label>
-    ${fields}</fieldset>
+    ${primary ? textField('System ID','systemId',draft.systemId) : ''}${fields}</fieldset>
     <p id="definition-status" class="form-status" role="status"></p>
     <div class="form-actions">${!readOnly ? '<button class="button primary" type="submit">Save entry</button><button class="button secondary" type="reset">Cancel changes</button>' : ''}${current && !readOnly ? `<button class="text-button" type="button" data-action="delete-definition" data-kind="${kind}" data-id="${e(current.id)}">Delete Entry</button>` : ''}${current ? `<button class="text-button" type="button" data-action="duplicate-definition" data-kind="${kind}" data-id="${e(current.id)}">Duplicate</button>` : ''}</div>
-    </form></div>`;
+    </form></div>${primary ? '</div></div>' : ''}`;
 }
 export function readDefinitionForm(form) {
   const data = new FormData(form), kind = form.dataset.kind;
@@ -86,6 +97,13 @@ export function readDefinitionForm(form) {
     for (const mode of ['dark','light']) values[`${mode}Colors`] = Object.fromEntries(colors.filter(([key]) => key.startsWith(`color:${mode}:`)).map(([key,value]) => [key.slice(`color:${mode}:`.length),value]));
     values.colors = values.darkColors;
   }
+  const lines = key => String(values[key] || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+  const json = key => {try {return JSON.parse(values[key]);} catch {throw new Error(`${key} must be valid JSON.`);}};
+  if (kind === 'species') {values.rarityTier = Number(values.rarityTier); values.attributes = json('attributes'); values.zoneIds = data.getAll('speciesZones');}
+  if (kind === 'personalities') values.behaviorTags = lines('behaviorTags');
+  if (kind === 'eyes') {values.layers = json('layers');}
+  if (kind === 'mutations') {values.thresholds = json('thresholds'); values.sizeShift = Number(values.sizeShift);}
+  if (kind === 'palettes') {values.global = form.elements.global.checked; values.speciesIds = data.getAll('speciesIds'); values.assetSkins = lines('assetSkins');}
   if (kind === 'palettes') values.natural = form.elements.natural.checked;
   if (kind === 'mutations') values.weight = values.weight === '' ? null : Number(values.weight);
   if (kind === 'items') values.price = Number(values.price);

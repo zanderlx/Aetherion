@@ -16,7 +16,7 @@ import {saleHistory} from '../public/economy.js';
 
 const catalog = normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8')));
 const settings = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
-const horses = createEncounters(catalog, 'aetherion', 3);
+const horses = createEncounters(catalog, 'aetherion', 3, 0, undefined, () => 0.5);
 const state = { settings, horses: [], sold: [], gold: 0, encounters: { aetherion: horses }, transactions: [], savedAt: new Date().toISOString() };
 test('zone tags render as safe text without icons and can be removed', () => {
   const location = {...catalog.locations[0],tags:['The evergreen realm','Free exploration','<script>Quiet</script>']};
@@ -273,6 +273,30 @@ test('random zone drafts are valid, varied, editable data and avoid duplicate na
   assert.equal(names.size, 100);
   const same = randomZone(catalog, [], () => 0);
   assert.notEqual(randomZone(catalog, [same], () => 0).name, same.name);
+});
+test('Horse Definitions dashboard exposes five managers and the spawning configuration fields', () => {
+  for (const kind of ['species','palettes','eyes','mutations','personalities']) {
+    const html = libraryEditorPage(kind,catalog,state);
+    assert.match(html,/>Horse Definitions<\/h1>/);
+    const nav = html.match(/<nav class="definitions-sidebar"[\s\S]*?<\/nav>/)[0];
+    assert.equal((nav.match(/<a /g) || []).length,5);
+    assert.match(html,/name="systemId"/);
+  }
+  const species = libraryEditorPage('species',catalog,state);
+  assert.match(species,/name="rarityTier"/);
+  assert.match(species,/1: Ultra Rare/);
+  assert.match(species,/name="speciesZones"/);
+  const palettes = libraryEditorPage('palettes',catalog,state);
+  assert.match(palettes,/name="assetSkins"/);
+  assert.match(palettes,/name="speciesIds"/);
+  const eyes = libraryEditorPage('eyes',catalog,state);
+  assert.match(eyes,/name="textureId"/);
+  assert.match(eyes,/name="layers"/);
+  const mutations = libraryEditorPage('mutations',catalog,state);
+  assert.match(mutations,/name="ALLOW_DUPLICATE_MUTATIONS"/);
+  assert.match(mutations,/name="thresholds"/);
+  assert.ok(mutations.indexOf('spawn-settings-form') < mutations.indexOf('id="definition-form"'));
+  assert.match(libraryEditorPage('personalities',catalog,state),/name="behaviorTags"/);
 });
 test('all existing definitions and blank editor forms render without missing values', () => {
   for (const kind of Object.keys(definitionKinds)) {

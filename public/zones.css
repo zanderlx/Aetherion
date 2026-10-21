@@ -60,3 +60,8 @@ main{scroll-margin-top:80px}
 @media(max-width:480px) { .wilds-search-row { gap:10px; } .wilds-search-ornament { gap:5px; } .wilds-search-ornament .icon { display:none; } }
 
 .hero + .encounters { margin-top:28px; }
+
+.zone-creature-row { display:flex; align-items:center; gap:10px; }
+.zone-creature-row > .zone-choice { flex:1; min-width:0; }
+.zone-creature-row > label:last-child { font-size:12px; }
+.zone-creature-row input[type=number] { width:85px; display:block; }

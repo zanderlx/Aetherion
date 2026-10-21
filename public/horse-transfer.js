@@ -41,20 +41,33 @@ export function readHorseDocument(document) {
   const mutations = h.mutations.map(m => {
     if (typeof m === 'string') return text(m,'Mutation',120);
     if (!object(m)) throw new Error('Invalid mutation.');
-    return {name:text(m.name,'Mutation name',120),description:text(m.description ?? '','Mutation description',4000,true),...(m.type === undefined ? {} : {type:text(m.type,'Mutation type',100)})};
+    return {...optionalID(m.id),name:text(m.name,'Mutation name',120),description:text(m.description ?? '','Mutation description',4000,true),...(m.type === undefined ? {} : {type:text(m.type,'Mutation type',100)})};
   });
+  const strings = (values,label,max = 100) => {
+    if (!Array.isArray(values) || values.length > 10000) throw new Error(`${label} must be a list.`);
+    return values.map(v => text(v,label,max));
+  };
+  const layers = h.eye.layers ?? h.eyeLayers ?? [];
+  if (!Array.isArray(layers) || layers.length > 20) throw new Error('Provide up to 20 eye layers.');
+  const eyeLayers = layers.map((layer,i) => {
+    if (!object(layer) || (layer.opacity !== undefined && (!Number.isFinite(layer.opacity) || layer.opacity < 0 || layer.opacity > 1))) throw new Error('Invalid eye layer.');
+    return {id:text(layer.id || `layer-${i+1}`,'Layer ID'),textureId:text(layer.textureId ?? '','Layer texture',200,true),opacity:layer.opacity ?? 1,...(layer.color ? {color:color(layer.color)} : {})};
+  });
+  const identifiers = {};
+  for (const key of ['speciesId','paletteId','eyeId','personalityId','personalitySystemId','skinId','eyeTextureId','spawnPath']) if (h[key] != null) identifiers[key] = text(h[key],key,200);
   const size = choice(h.size,Object.keys(sizes),'size');
   if (h.sizePercent !== undefined && h.sizePercent !== sizes[size]) throw new Error('Size percentage must match the selected size.');
   for (const key of ['favorite','preview','traitsComplete']) if (h[key] !== undefined && typeof h[key] !== 'boolean') throw new Error(`${key} must be true or false.`);
   return {
+    ...identifiers,
     name:text(h.name ?? '','Name',60,true),species:text(h.species,'Species'),
     age:choice(h.age,ages,'age'),gender:choice(h.gender,['Female','Male'],'gender'),
     origin:text(h.origin,'Origin'),size,sizePercent:sizes[size],birthday,
-    personality:{...optionalID(h.personality.id),name:text(h.personality.name,'Personality'),description:text(h.personality.description ?? '','Default description',4000,true)},
+    personality:{...optionalID(h.personality.id),...(h.personality.systemId ? {systemId:text(h.personality.systemId,'Personality system ID')} : {}),behaviorTags:strings(h.personality.behaviorTags || [],'Behavior tag'),name:text(h.personality.name,'Personality'),description:text(h.personality.description ?? '','Default description',4000,true)},
     personalityDescription:text(h.personalityDescription ?? h.personality.description ?? '','Description',4000,true),
     notes:text(h.notes ?? '','Notes',4000,true),
-    palette:{...optionalID(h.palette.id),name:text(h.palette.name,'Palette name'),group:text(h.palette.group ?? 'Imported','Palette group'),natural:h.palette.natural === true,complete:true,colors:Object.fromEntries(regions.map(region => [region,color(h.palette.colors[region])]))},
-    eye:{...optionalID(h.eye.id),name:text(h.eye.name,'Eye name'),...(h.eye.rarity === undefined ? {} : {rarity:text(h.eye.rarity,'Eye rarity')}),colors:h.eye.colors.map(color)},traits:safeTraits,mutations,
+    palette:{...optionalID(h.palette.id),global:h.palette.global !== false,speciesIds:strings(h.palette.speciesIds || [],'Species ID'),assetSkins:strings(h.palette.assetSkins || [],'Asset skin',200),name:text(h.palette.name,'Palette name'),group:text(h.palette.group ?? 'Imported','Palette group'),natural:h.palette.natural === true,complete:true,colors:Object.fromEntries(regions.map(region => [region,color(h.palette.colors[region])]))},
+    eyeLayers,eye:{...optionalID(h.eye.id),textureId:text(h.eye.textureId ?? h.eyeTextureId ?? '','Eye texture',200,true),layers:eyeLayers,name:text(h.eye.name,'Eye name'),...(h.eye.rarity === undefined ? {} : {rarity:text(h.eye.rarity,'Eye rarity')}),colors:h.eye.colors.map(color)},traits:safeTraits,mutations,
     specialSpawn:h.specialSpawn == null ? null : text(h.specialSpawn,'Special spawn'),
     favorite:h.favorite ?? false,preview:h.preview ?? true,traitsComplete:h.traitsComplete ?? false,
     locationId:text(h.locationId ?? 'imported','Location ID',100),

@@ -182,6 +182,7 @@ function readZoneForm(form) {
   const values = new FormData(form);
   return { id: form.dataset.id || undefined, name: values.get('name'), subtitle: locationsFor(catalog,state).find(l => l.id === form.dataset.id)?.subtitle || '',
     description: values.get('description'), atmosphere: values.get('atmosphere'),
+    creatures:values.getAll('speciesPool').map(name => {const sp = catalog.species.find(s => s.name === name); return {speciesId:sp.id,weight:Number(values.get(`weight:${sp.id}`))};}),
     tags: String(values.get('tags') || '').split(/\r?\n/).map(tag => tag.trim()).filter(Boolean),
     enabled: form.elements.enabled.checked, event: form.elements.event.checked, speciesPool: values.getAll('speciesPool'), palettePool: values.getAll('palettePool') };
 }
@@ -432,7 +433,7 @@ profile.addEventListener('keydown',event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -440,7 +441,11 @@ document.addEventListener('submit', async event => {
   submit.disabled = true;
   try {
     const values = Object.fromEntries(new FormData(form));
-    if (form.id === 'horse-description-form') {
+    if (form.id === 'spawn-settings-form') {
+      await action('spawn-settings',{ALLOW_DUPLICATE_MUTATIONS:form.elements.ALLOW_DUPLICATE_MUTATIONS.checked});
+      render();
+      notify('Spawning configuration saved.');
+    } else if (form.id === 'horse-description-form') {
       await action('horse-description',{id:form.dataset.id,description:values.description});
       savedHorseText(form);
       notify('Description saved.');
@@ -468,7 +473,7 @@ document.addEventListener('submit', async event => {
       renderChrome();
       const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
       showDefinition(payload.kind, saved);
-      $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes','mutations'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved. This definition is available for future horses.';
+      $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
       notify('Your new possibilities are saved.');
     } else if (form.id === 'zone-form') {
       const draft = readZoneForm(form);

@@ -90,3 +90,15 @@ select{text-transform:uppercase}
 .nav-section-link { display:flex; align-items:center; gap:11px; min-height:43px; margin-bottom:5px; padding:10px; border-radius:4px; font-size:15px; font-weight:500; color:var(--muted); }
 .nav-section-link:hover { background:var(--panel-deep); color:var(--text); }
 .nav-section-link[aria-current] { background:var(--panel-deep); color:var(--gold); }
+
+.definitions-dashboard { display:grid; grid-template-columns:190px minmax(0,1fr); gap:24px; align-items:start; }
+.definitions-sidebar { display:flex; flex-direction:column; gap:8px; padding:12px; overflow:visible; background:var(--panel); border:1px solid var(--border); border-radius:6px; position:sticky; top:95px; }
+.definitions-sidebar a { padding:10px; border-radius:4px; color:var(--muted); font-size:14px; }
+.definitions-sidebar a[aria-current],.definitions-sidebar a:hover { background:var(--panel-deep); color:var(--gold); }
+.definitions-main { min-width:0; }
+.definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
+.manager-heading { margin-bottom:8px; }
+.configuration-path { font-size:13px; margin-bottom:22px; }
+.spawn-settings { margin-bottom:24px; }
+@media(max-width:1400px) { .definitions-main .library-workbench { grid-template-columns:1fr; } .definitions-main .library-list-panel { position:static; } .definitions-main .definition-list { max-height:260px; } }
+@media(max-width:900px) { .definitions-dashboard { grid-template-columns:1fr; } .definitions-sidebar { position:static; flex-direction:row; flex-wrap:wrap; } }
