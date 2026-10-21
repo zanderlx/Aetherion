@@ -103,6 +103,13 @@ select{text-transform:uppercase}
 .eye-rarity-chance { color:var(--muted); font-size:.75em; }
 .horse-mutations-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
 .horse-mutation-count { font:400 25px/1.4 var(--serif); color:inherit; font-variant-numeric:tabular-nums; }
+.trait-list { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.trait-list > div { display:flex; flex-direction:column; gap:8px; padding:12px; min-width:0; border:1px solid var(--border); border-radius:5px; }
+.trait-list dt { font-weight:600; }
+.trait-list dd { overflow-wrap:anywhere; line-height:1.5; }
+.trait-list .horse-eye-value { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
+.horse-eye-swatch { display:inline-flex; width:24px; height:18px; flex-shrink:0; border:1px solid var(--border); border-radius:3px; overflow:hidden; pointer-events:none; }
+.horse-eye-swatch > span { flex:1; }
 .profile-actions > [data-action="catch"] { width:min(260px,100%); margin-inline:auto; }
 .horse-mutations { margin:0; padding-left:26px; }
 .horse-mutations li p { margin:6px 0 0; color:var(--muted); line-height:1.6; }
