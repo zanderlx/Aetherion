@@ -12,7 +12,7 @@ import { createCopyEditor } from './copy-editor.js';
 import { prepareSearch, searchEntries } from './site-search.js';
 import { keeperPage, avatarSVG } from './keeper.js';
 import { roadmapPage } from './roadmap.js';
-import { trackForms, updateFormState, formBaseline, restoreBaseline } from './form-state.js';
+import { trackForms, updateFormState, formSignature, formBaseline, restoreBaseline } from './form-state.js';
 
 let state, catalog, defaults, busy = false, toastTimer;
 let route = location.hash.slice(1) || 'wilds/aetherion';
@@ -389,6 +389,39 @@ document.addEventListener('click', async event => {
   } catch (error) { notify(error.message, true); }
   finally { busy = false; button.disabled = false; }
 });
+const horseTextForms = '#horse-description-form,#horse-notes-form';
+function closeHorseText(form) {
+  form.hidden = true;
+  const display = profile.querySelector(`[data-form="${form.id}"]`);
+  if (display) display.hidden = false;
+}
+function savedHorseText(form) {
+  const input = form.querySelector('textarea');
+  input.defaultValue = input.value;
+  restoreBaseline(form,formSignature(form));
+  const display = profile.querySelector(`[data-form="${form.id}"]`);
+  display.textContent = input.value || (form.id === 'horse-notes-form' ? 'Click to add notes' : 'Click to add a description');
+  closeHorseText(form);
+}
+function finishHorseText(form) {
+  if (!form?.isConnected || form.hidden || busy) return;
+  if (formSignature(form) === formBaseline(form)) closeHorseText(form);
+  else form.requestSubmit();
+}
+profile.addEventListener('focusout',event => {
+  const form = event.target.closest(horseTextForms);
+  if (form) setTimeout(() => {
+    if (!form.contains(document.activeElement)) finishHorseText(form);
+  },0);
+});
+profile.addEventListener('keydown',event => {
+  const form = event.target.closest(horseTextForms);
+  if (form && event.key === 'Escape') {
+    event.preventDefault();
+    event.stopPropagation();
+    finishHorseText(form);
+  }
+});
 document.addEventListener('submit', async event => {
   const form = event.target;
   if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'gold-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
@@ -401,11 +434,11 @@ document.addEventListener('submit', async event => {
     const values = Object.fromEntries(new FormData(form));
     if (form.id === 'horse-description-form') {
       await action('horse-description',{id:form.dataset.id,description:values.description});
-      inspect(form.dataset.id);
-      notify('Personality description saved.');
+      savedHorseText(form);
+      notify('Description saved.');
     } else if (form.id === 'horse-notes-form') {
       await action('horse-notes',{id:form.dataset.id,notes:values.notes});
-      inspect(form.dataset.id);
+      savedHorseText(form);
       notify('Horse notes saved.');
     } else if (form.id === 'keeper-form') {
       await action('save-profile', {name:values.name,about:values.about,avatarSeed:Number(values.avatarSeed)});
