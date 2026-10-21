@@ -146,7 +146,7 @@ Catch a horse to review its prefilled name, optionally change it, and select Sav
 
 Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
-Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to place those horses first. Owned profiles offer Export Horse instead of Release Horse. Wilds tabs and sidebar locations sort alphabetically. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
+Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to show only favorite horses, with an empty-state message when there are none. Owned profiles offer Export Horse instead of Release Horse. Wilds tabs and sidebar locations sort alphabetically. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
 
 ## Make It Yours
 
