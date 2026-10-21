@@ -211,8 +211,9 @@ function showZoneDraft(draft) {
   $('#zone-form').scrollIntoView({ block: 'start' });
 }
 function showDefinition(kind, draft) {
-  if (kind === 'personalities' && !draft.id) {
+  if (kind === 'personalities') {
     render();
+    personalityCreation.setAttribute('aria-label',draft.id ? 'Edit Personality' : 'Create Personality');
     personalityCreation.innerHTML = personalityForm(draft);
     if (!personalityCreation.open) personalityCreation.showModal();
     trackForms(personalityCreation);
@@ -391,6 +392,7 @@ document.addEventListener('click', async event => {
     if (intent === 'confirm-delete') {
       if (!pendingDeletion) return;
       await action(pendingDeletion.type,pendingDeletion.payload);
+      personalityCreation.close();
       eyeEditor.dialog.close();
       pendingDeletion = null;
       confirmation.close();
