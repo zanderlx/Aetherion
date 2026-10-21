@@ -68,7 +68,7 @@ export function createEyeEditor(renderEditor,getEyes) {
     const rows = dialog.querySelector('#eye-color-rows');
     if (rows.querySelectorAll('.eye-color-row').length >= 6) return;
     const colors = getEyes().flatMap(eye => eye.colors);
-    const color = colors[Math.floor(Math.random()*colors.length)] || '#8A689E';
+    const color = button.dataset.eyeAdd === 'manual' ? '#FFFFFF' : colors[Math.floor(Math.random()*colors.length)] || '#FFFFFF';
     const row = document.createElement('div');
     row.className = 'eye-color-row';
     row.innerHTML = `${colorControl(crypto.randomUUID(),color,'Eye Color')}<button type="button" class="text-button" data-action="remove-eye-color">Remove Color</button>`;
@@ -76,7 +76,6 @@ export function createEyeEditor(renderEditor,getEyes) {
     rows.querySelector('.eye-add-tile').hidden = rows.querySelectorAll('.eye-color-row').length >= 6;
     const picker = row.querySelector('[type="color"]');
     picker.focus();
-    if (button.dataset.eyeAdd === 'manual') { if (picker.showPicker) picker.showPicker(); else picker.click(); }
     updateFormState(dialog.querySelector('form'));
   });
   const editor = {
