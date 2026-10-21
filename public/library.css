@@ -98,6 +98,7 @@ select{text-transform:uppercase}
 .eye-rarity-chance { color:var(--muted); font-size:.75em; }
 .horse-mutations-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
 .horse-mutation-count { font:400 25px/1.4 var(--serif); color:inherit; font-variant-numeric:tabular-nums; }
+.profile-actions > [data-action="catch"] { width:min(260px,100%); margin-inline:auto; }
 .horse-mutations { margin:0; padding-left:26px; }
 .horse-mutations li p { margin:6px 0 0; color:var(--muted); line-height:1.6; }
 .mutation-slots { display:grid; grid-auto-rows:1fr; gap:12px; list-style:none; counter-reset:mutation-slot; padding:0; }
