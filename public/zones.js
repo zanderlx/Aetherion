@@ -28,9 +28,11 @@ export function validateZone(input, catalog) {
     if (typeof input[key] !== 'string' || input[key].trim().length > max || (required && !input[key].trim())) throw new Error(`${key} must ${required ? 'contain text and ' : ''}be ${max} characters or fewer.`);
     return input[key].trim();
   };
-  const name = text('name', 60), subtitle = text('subtitle', 100, false), description = text('description', 600);
+  const name = text('name', 60), subtitle = input.subtitle === undefined ? '' : text('subtitle', 100, false), description = text('description', 600);
   if (!availableAtmospheres(catalog).some(a => a.id === input.atmosphere)) throw new Error('Choose an available atmosphere.');
   if (typeof input.enabled !== 'boolean') throw new Error('Choose whether the zone is enabled.');
+  if (input.event !== undefined && input.event !== null && typeof input.event !== 'boolean' && (typeof input.event !== 'string' || !input.event.trim() || input.event.length > 60)) throw new Error('Choose whether the zone is an Event.');
+  const event = input.event === true ? 'Event' : input.event || null;
   const tags = input.tags === undefined ? zoneTags(input,catalog) : input.tags;
   if (!Array.isArray(tags) || tags.length > 20 || tags.some(tag => typeof tag !== 'string' || !tag.trim() || tag.trim().length > 100)) throw new Error('Use up to 20 tags, each containing 1–100 characters.');
   const pool = (key, available) => {
@@ -39,10 +41,10 @@ export function validateZone(input, catalog) {
   };
   return { name, subtitle, description, tags:[...new Set(tags.map(tag => tag.trim()))], atmosphere: input.atmosphere, enabled: input.enabled,
     speciesPool: pool('speciesPool', catalog.species.map(s => s.name)),
-    palettePool: pool('palettePool', catalog.palettes.filter(p => p.complete).map(p => p.name)), custom: true, event: null };
+    palettePool: pool('palettePool', catalog.palettes.filter(p => p.complete).map(p => p.name)), custom: true, event };
 }
 export function newZoneDraft() {
-  return { name: '', subtitle: '', description: '', tags:['The evergreen realm','Free exploration'], atmosphere: 'forest', enabled: true, speciesPool: ['Unicorn', 'Peryton', 'Fae'], palettePool: ['Natural Gold'] };
+  return { name: '', subtitle: '', description: '', tags:['The evergreen realm','Free exploration'], event:false, atmosphere: 'forest', enabled: true, speciesPool: ['Unicorn', 'Peryton', 'Fae'], palettePool: ['Natural Gold'] };
 }
 export function randomZone(catalog, existing = [], rng = Math.random) {
   const pick = list => list[Math.floor(rng() * list.length)];
@@ -64,7 +66,7 @@ export function randomZone(catalog, existing = [], rng = Math.random) {
   return {
     name, subtitle: pick(['A new path. An unexpected companion.', 'A quiet corner of a magical world.', 'Follow the hoofprints into wonder.']),
     description: `${settings.detail} Follow the trail and meet the companions who call this place home.`,
-    atmosphere, enabled: true, tags:[atmosphere === 'forest' ? 'The evergreen realm' : atmosphereFor(catalog,atmosphere).name,'Free exploration'],
+    atmosphere, enabled: true, event:false, tags:[atmosphere === 'forest' ? 'The evergreen realm' : atmosphereFor(catalog,atmosphere).name,'Free exploration'],
     speciesPool: sample(catalog.species.map(s => s.name), 3 + Math.floor(rng() * 4)),
     palettePool: sample(catalog.palettes.filter(p => p.complete).map(p => p.name), 2 + Math.floor(rng() * 3))
   };

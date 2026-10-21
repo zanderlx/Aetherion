@@ -176,10 +176,10 @@ function updateSiteSearch() {
 }
 function readZoneForm(form) {
   const values = new FormData(form);
-  return { id: form.dataset.id || undefined, name: values.get('name'), subtitle: values.get('subtitle'),
+  return { id: form.dataset.id || undefined, name: values.get('name'), subtitle: locationsFor(catalog,state).find(l => l.id === form.dataset.id)?.subtitle || '',
     description: values.get('description'), atmosphere: values.get('atmosphere'),
     tags: String(values.get('tags') || '').split(/\r?\n/).map(tag => tag.trim()).filter(Boolean),
-    enabled: form.elements.enabled.checked, speciesPool: values.getAll('speciesPool'), palettePool: values.getAll('palettePool') };
+    enabled: form.elements.enabled.checked, event: form.elements.event.checked, speciesPool: values.getAll('speciesPool'), palettePool: values.getAll('palettePool') };
 }
 function showZoneDraft(draft) {
   main.innerHTML = zoneEditorPage(catalog, state, draft);

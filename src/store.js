@@ -146,9 +146,10 @@ export class GameStore {
         const existing = payload.id ? locationsFor(catalog, next).find(l => l.id === payload.id) : null;
         if (payload.id && !existing) throw new Error('Zone not found.');
         if (locationsFor(catalog, next).some(l => l.id !== existing?.id && l.name.toLowerCase() === zone.name.toLowerCase())) throw new Error('A zone with that name already exists. Choose a different name.');
+        if (existing) zone.event = payload.event === undefined ? existing.event : zone.event ? existing.event || zone.event : null;
         const override = next.customLocations.find(l => l.id === payload.id);
-        if (override) Object.assign(override, zone, { custom: existing.custom, event: existing.event });
-        else if (existing) next.customLocations.push({ ...existing, ...zone, custom: existing.custom, event: existing.event, id: existing.id });
+        if (override) Object.assign(override, zone, { custom: existing.custom });
+        else if (existing) next.customLocations.push({ ...existing, ...zone, custom: existing.custom, id: existing.id });
         else next.customLocations.push({ ...zone, id: `zone-${randomUUID()}` });
       } else if (type === 'save-definition') {
         const { kind, id, values } = payload;

@@ -28,6 +28,10 @@ test('zone tags render as safe text without icons and can be removed', () => {
   assert.match(wildPage({...location,tags:[]},state),/<div class="hero-bottom"><\/div>/);
   const editor = zoneEditorPage(catalog,state);
   assert.match(editor,/name="tags"/);
+  assert.doesNotMatch(editor,/name="subtitle"|Short tagline|Open for exploration/);
+  assert.match(editor,/name="event"/);
+  assert.match(editor,/<span>Show this zone in the Wilds navigation\.<\/span>/);
+  assert.match(editor,/class="icon-button" data-action="delete-zone"[^>]*aria-label="Delete /);
   assert.match(editor,/>My Zones<\/h1>/);
   assert.ok(editor.indexOf('zone-collection') < editor.indexOf('id="zone-form"'));
   assert.doesNotMatch(editor,/THE KEEPER’S WORLDBUILDER|Make room for a little wonder|Places to get a little lost|Let curiosity lead/);

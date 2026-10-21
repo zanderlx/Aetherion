@@ -52,6 +52,24 @@ test('zone tags preserve legacy defaults and save additions, removals and empty 
   await restored.action('save-zone',{...zone,tags:[]});
   assert.deepEqual(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === zone.id).tags,[]);
 });
+test('event classification can be enabled and disabled for custom and original zones', async t => {
+  const {directory,store} = await fixture(t);
+  const draft = {...newZoneDraft(),name:'Event Grove',description:'A seasonal gathering.',event:true};
+  delete draft.subtitle;
+  await store.action('save-zone',draft);
+  const zone = store.state.customLocations.at(-1);
+  assert.equal(zone.event,'Event');
+  await assert.rejects(store.action('save-zone',{...zone,event:123}));
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(restored.state.customLocations.at(-1).event,'Event');
+  await restored.action('save-zone',{...zone,event:false});
+  assert.equal(restored.state.customLocations.at(-1).event,null);
+  const halloween = locationsFor(restored.getCatalog(),restored.state).find(l => l.id === 'hallowhoof');
+  await restored.action('save-zone',{...halloween,event:true});
+  assert.equal(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === halloween.id).event,halloween.event);
+  await restored.action('save-zone',{...halloween,event:false});
+  assert.equal(locationsFor(restored.getCatalog(),restored.state).find(l => l.id === halloween.id).event,null);
+});
 test('catch validates names atomically and saves the chosen name', async t => {
   const {directory,store} = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});

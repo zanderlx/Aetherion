@@ -16,6 +16,7 @@ export const icons = {
   coin: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6"/><path d="m12 8 3 4-3 4-3-4Z"/>',
   leaf: '<path d="M20 3C8 2 2 8 5 15s17 6 15-12ZM5 20 16 9"/>',
   check: '<path d="m5 12 4 4L19 6"/>',
+  trash: '<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/>',
   close: '<path d="m6 6 12 12M6 18 18 6"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   search: '<circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/>',
@@ -41,12 +42,13 @@ groups.push(
 );
 for (const group of groups) if (group.title !== 'Stables') group.items.sort((a,b) => a[1].localeCompare(b[1]));
 export function sidebar(route, state, openGroups, catalog) {
-  const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locationsFor(catalog, state).filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:group.title === 'Stables' ? group.items : [...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));
+  const locations = catalog ? locationsFor(catalog,state) : [{id:'hallowhoof',event:true}];
+  const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locations.filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:group.title === 'Stables' ? group.items : [...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));
   return `<a href="#wilds/aetherion" class="brand"><svg class="brand-logo" viewBox="0 0 80 80" aria-hidden="true"><rect width="80" height="80" rx="22" fill="var(--panel-deep)"/><path d="M40 7 65 22v28L40 73 15 50V22Z" fill="none" stroke="var(--gold)" stroke-width="1.5"/><path d="m28 57 2-16-7-5 6-11 8-3 5-10 4 12c13 3 15 17 10 32H28Z" fill="var(--gold)"/><path d="m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32" fill="none" stroke="var(--panel-deep)" stroke-width="2"/><circle cx="34" cy="29" r="1.5" fill="var(--panel-deep)"/></svg><span><span class="brand-title">AETHERION</span><small>A HORSEKEEPER’S CHRONICLE</small></span></a>
     <div class="nav-caption">YOUR LITTLE WORLD <span>✧</span></div>
     <nav>${navigation.map(group => `<details data-group="${group.title}" ${openGroups.has(group.title) || group.items.some(([path]) => path === route) ? 'open' : ''}>
       <summary>${icon(group.icon)}<span>${group.title}</span><span class="chevron">⌄</span></summary>
-      <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : path === 'wilds/hallowhoof' ? '<span class="event-dot" title="Halloween location"></span>' : ''}</a>`).join('')}</div>
+      <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : path.startsWith('wilds/') && locations.some(l => l.id === path.split('/')[1] && l.event) ? '<span class="event-dot" title="Event zone"></span>' : ''}</a>`).join('')}</div>
     </details>`).join('')}</nav>
     <div class="sidebar-foot"><span class="save-dot"></span><div>A sanctuary of your own<small>Local files · Phase 1 preview</small></div></div>`;
 }
