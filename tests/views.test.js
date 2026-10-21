@@ -363,11 +363,11 @@ test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
 test('Horse mutations have numbered entries and a count including zero',()=>{
  const empty=profileContent({...horses[0],mutations:[]},state);
  assert.match(empty,/>0\/4<\/span>/);
- assert.equal((empty.match(/No Mutation/g)||[]).length,4);
+ assert.equal((empty.match(/aria-label="Locked mutation slot"/g)||[]).length,4);
  const html=profileContent({...horses[0],mutations:['Springy Tendons',{name:'Double Jump',description:'Jump higher.'},'Twins']},state);
  assert.match(html,/>3\/4<\/span>/);
  assert.match(html,/<ol class="horse-mutations mutation-slots"/);
  assert.equal((html.match(/<li class="mutation-slot /g)||[]).length,4);
- assert.equal((html.match(/No Mutation/g)||[]).length,1);
+ assert.equal((html.match(/aria-label="Locked mutation slot"/g)||[]).length,1);
  assert.match(html,/<strong>Double Jump<\/strong><span class="mutation-description">: Jump higher\.<\/span>/);
 });

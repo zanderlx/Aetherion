@@ -107,7 +107,10 @@ select{text-transform:uppercase}
 .mutation-description { color:var(--muted); }
 .horse-mutations .mutation-slot:last-child { border-bottom:1px solid var(--border); }
 .mutation-slot.is-empty { color:var(--muted); border-style:dashed; }
-.mutation-slot.is-empty strong { font-weight:400; }
+.mutation-slot.is-empty::before { content:none; }
+.mutation-slot.is-empty { align-content:stretch; }
+.mutation-slot-lock { grid-column:1 / -1; display:grid; place-items:center; min-height:26px; }
+.mutation-slot-lock .icon { width:24px; height:24px; }
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }
