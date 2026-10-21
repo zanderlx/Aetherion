@@ -31,12 +31,12 @@ export const groups = [
   { title: 'Stables', icon: 'stable', open: true, items: [['stable/all', 'My Horses'], ['stable/breeding', 'Breeding']] },
   { title: 'Inventory', icon: 'bag', items: [['inventory/accessories', 'Accessories'], ['inventory/potions', 'Potions']] },
   { title: 'Wilds', icon: 'compass', open: true, items: [['wilds/aetherion', 'Aetherion Wilds'], ['wilds/hallowhoof', 'Hallowhoof']] },
-  { title: 'Developer Settings', icon: 'settings', items: [['dev/settings', 'Game Settings'], ['dev/species', 'Species & Traits'], ['dev/colors', 'Colors & Palettes'], ['dev/mutations', 'Mutations'], ['dev/items', 'Inventory & Items'], ['dev/locations', 'Events & Locations'], ['dev/saves', 'Save Management']] }
+  { title: 'Developer Settings', icon: 'settings', items: [['dev/settings', 'Game Settings'], ['dev/species', 'Species'], ['dev/traits', 'Traits'], ['dev/colors', 'Colors & Palettes'], ['dev/mutations', 'Mutations'], ['dev/items', 'Inventory & Items'], ['dev/locations', 'Events & Locations'], ['dev/saves', 'Save Management']] }
 ];
 const workbench = groups.find(g => g.title === 'Developer Settings');
 workbench.items = [['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
 groups.push(
-  {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species & Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations']]},
+  {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species'],['dev/traits','Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations']]},
   {title:'World & Items',icon:'compass',items:[['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]},
   {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}
 );

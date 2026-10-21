@@ -1,3 +1,4 @@
+import {traitsEditorPage} from '../public/traits-editor.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -308,3 +309,11 @@ test('all existing definitions and blank editor forms render without missing val
 });
 
 
+
+test('Traits has a separate species-linked editor outside Species settings',()=>{
+ const html=traitsEditorPage(catalog);
+ assert.match(html,/<h1>Traits<\/h1>/);
+ assert.match(html,/id="traits-species"/);
+ assert.match(html,/id="traits-form"/);
+ assert.doesNotMatch(libraryEditorPage('species',catalog,state),/id="trait-rows"/);
+});

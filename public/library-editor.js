@@ -50,7 +50,7 @@ export function libraryEditorPage(kind, catalog, state, draft) {
       `<fieldset class="zone-pool"><legend>World Zones</legend>${locationsFor(catalog,state).map(z => `<label class="zone-choice"><input type="checkbox" name="speciesZones" value="${e(z.id)}" ${z.creatures?.some(c => c.speciesId === draft.id) || z.speciesPool.includes(draft.name) ? 'checked' : ''}><span>${e(z.name)}</span></label>`).join('')}</fieldset>` +
       textField('Event or group (optional)', 'event', draft.event, false, catalog.species.map(s => s.event)) +
       textField('Acquisition or rarity notes (optional)', 'restriction', draft.restriction) +
-      `<fieldset class="zone-pool"><legend>Species-specific traits</legend><p>Add names one per line. Mane and Tail options supply the baseline traits for new preview horses. Add your own categories below.</p><div id="trait-rows">${Object.entries({ ...Object.fromEntries(traitCategories.map(k => [k, []])), ...draft.traits }).map(([key, values]) => traitRow(key, values)).join('')}</div><button class="button secondary" type="button" data-action="add-trait-category">Add trait category</button></fieldset><p class="preview-note">Selected zones receive this species ID and rarity weight. Unchecking removes it from that zone.</p>`;
+      `<p class="preview-note">Selected zones receive this species ID and rarity weight. Manage appearance traits in the Traits section.</p>`;
   }
   if (kind === 'palettes') fields = checkbox('Global palette (available to all species)','global',draft.global ?? !draft.speciesIds?.length) +
     `<fieldset class="zone-pool"><legend>Species Links (used when Global is off)</legend>${catalog.species.map(sp => `<label class="zone-choice"><input type="checkbox" name="speciesIds" value="${e(sp.id)}" ${(draft.speciesIds || []).includes(sp.id) ? 'checked' : ''}><span>${e(sp.name)}</span></label>`).join('')}</fieldset>` + linesField('Asset Skin IDs · one per line','assetSkins',draft.assetSkins) + textField('Palette type or event', 'group', draft.group, true, catalog.palettes.map(p => p.group)) + checkbox('Natural palette', 'natural', draft.natural) +
@@ -88,7 +88,7 @@ export function readDefinitionForm(form) {
   if (kind === 'species') {
     const entries = [...form.querySelectorAll('.trait-editor-row')].map(row => [row.querySelector('[data-trait-category]').value.trim(), row.querySelector('[data-trait-values]').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean)]);
     if (new Set(entries.map(([key]) => key)).size !== entries.length) throw new Error('Each trait category needs a different name.');
-    values.traits = Object.fromEntries(entries);
+    if (entries.length) values.traits = Object.fromEntries(entries);
   }
   const colors = [...data].filter(([key]) => key.startsWith('color:'));
   if (kind === 'eyes') values.colors = colors.map(([, value]) => value);

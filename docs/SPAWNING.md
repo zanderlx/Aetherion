@@ -6,13 +6,17 @@ Open **Horse Definitions** and choose one of the five managers in the main navig
 
 | Manager | Editable data |
 | --- | --- |
-| Species | Name, system ID, integer rarity tier, numeric base attributes, appearance traits, and zone checkboxes. |
+| Species | Name, system ID, integer rarity tier, numeric base attributes and zone checkboxes. |
 | Palettes | Nine hex colors, global/species scope, species links, and asset skin IDs. |
 | Eye Color | Color combinations, texture ID, and visual layers with texture, optional color, and opacity. |
 | Mutations | Name, category, integer weight tokens, attribute thresholds, and size-index shift. The global `ALLOW_DUPLICATE_MUTATIONS` toggle appears at the top. |
 | Personalities | Name, system ID, description, and behavior tags. Every horse selects exactly one record. |
 
 Internal `id` values stay stable when an entry is renamed. `systemId` is an editable identifier and must be unique within a registry. Use the web forms for changes that affect zone references.
+
+## Traits
+
+The separate **Traits** navigation page selects a species and edits its appearance categories and options. Add or remove categories and trait names, then save. Traits stay linked to species in the same local species file; existing horse snapshots remain unchanged.
 
 ## Local files
 

@@ -18,6 +18,23 @@ async function add(store,kind,values) {
   await store.action('save-definition',{kind,values:{...draftDefinition(kind),...values}});
   return store.getCatalog()[kind].find(d => d.name === values.name);
 }
+
+test('separate trait edits persist without changing species settings or existing horses',async t => {
+  const {store,read} = await fixture(t);
+  const species = store.getCatalog().species[0];
+  const original = structuredClone(species);
+  await store.action('save-traits',{id:species.id,traits:{Mane:['Flowing'],Tail:['Long'],Markings:['Stars']}});
+  const saved = (await read('species.json')).find(s => s.id === species.id);
+  assert.deepEqual(saved.traits,{Mane:['Flowing'],Tail:['Long'],Markings:['Stars']});
+  assert.equal(saved.name,original.name);
+  assert.equal(saved.rarityTier,original.rarityTier);
+  assert.deepEqual(saved.attributes,original.attributes);
+  const before = store.snapshot();
+  await assert.rejects(store.action('save-traits',{id:species.id,traits:{Mane:'invalid'}}));
+  assert.deepEqual(store.snapshot(),before);
+  await store.action('save-traits',{id:species.id,traits:{}});
+  assert.deepEqual((await read('species.json')).find(s => s.id === species.id).traits,{});
+});
 test('first startup seeds nineteen integer mutation weights and all local configuration files',async t => {
   const {store,read} = await fixture(t);
   const standards = (await read('mutations.json')).filter(m => m.type === 'Standard');

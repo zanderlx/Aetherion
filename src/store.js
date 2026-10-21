@@ -216,9 +216,14 @@ export class GameStore {
         if (override) Object.assign(override, zone, { custom: existing.custom });
         else if (existing) next.customLocations.push({ ...existing, ...zone, custom: existing.custom, id: existing.id });
         else next.customLocations.push({ ...zone, id: `zone-${randomUUID()}` });
+      } else if (type === 'save-traits') {
+        const existing = catalog.species.find(s => s.id === payload.id);
+        if (!existing) throw new Error('Species not found.');
+        const validated = validateDefinition('species',{...existing,traits:payload.traits});
+        Object.assign(existing,{traits:validated.traits,traitsComplete:validated.traitsComplete});
       } else if (type === 'save-definition') {
         const { kind, id, values } = payload;
-        const definition = validateDefinition(kind, values);
+        const definition = validateDefinition(kind, kind === 'species' && values.traits === undefined ? {...values,traits:catalog.species.find(s => s.id === id)?.traits || {}} : values);
         const existing = id ? catalog[kind].find(d => d.id === id) : null;
         if (id && !existing) throw new Error('Definition not found.');
         if (kind === 'siteThemes' && id === 'default') throw new Error('The original theme is preserved. Duplicate it to customize a copy.');
@@ -276,7 +281,7 @@ export class GameStore {
       } else if (type === 'backup') {
         await writeFile(join(this.directory, 'backups', `save-${Date.now()}-${randomUUID().slice(0, 8)}.json`), JSON.stringify(next, null, 2) + '\n', { flag: 'wx' });
       } else throw new Error('Unknown action.');
-      if (['save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
+      if (['save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
         const settings = catalog.spawning || defaultSpawnSettings;
         const zones = locationsFor(catalog,next).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
         let committed;

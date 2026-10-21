@@ -21,7 +21,7 @@ export const baseAtmospheres = [
   { id: 'frost', name: 'Frosted forest', encounterTitle: 'Where the silver branches shimmer', tint: '#87a8bb', description: 'Gentle hoofprints wind through glittering frost.' }
 ];
 export const definitionKinds = {
-  species: 'Species & traits', palettes: 'Horse palettes', eyes: 'Eye colors', personalities: 'Personalities',
+  species: 'Species', palettes: 'Palettes', eyes: 'Eye colors', personalities: 'Personalities',
   mutations: 'Mutations', items: 'Items & potions', themes: 'Item themes', atmospheres: 'Zone atmospheres', siteThemes: 'Website themes'
 };
 export function normalizeCatalog(source) {

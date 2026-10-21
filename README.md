@@ -26,7 +26,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **78 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **80 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -159,7 +159,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | --- | --- |
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
 | **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
-| **Horse Definitions** | Five CRUD managers with local master files and zone synchronization |
+| **Horse Definitions** | Species, Traits, Palettes, Eye Colors, Mutations, and Personalities with local files |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
 | **Website & Profile** | Appearance & Themes, My Profile |
 

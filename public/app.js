@@ -1,3 +1,4 @@
+import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
 import { createHorseDialogs } from './horse-dialogs.js';
@@ -79,6 +80,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/profile') return keeperPage(state);
   else if (route === 'dev/edit-mode') return editModePage(state);
   else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
+  else if (section === 'dev' && page === 'traits') return traitsEditorPage(catalog);
   else if (section === 'dev' && Object.hasOwn(editorRoutes, page)) return libraryEditorPage(editorRoutes[page], catalog, state);
   else return plannedPage(route, state);
 }
@@ -300,12 +302,12 @@ document.addEventListener('click', async event => {
   if (intent === 'add-trait-category') {
     $('#trait-rows').insertAdjacentHTML('beforeend', traitRow());
     $('#trait-rows').lastElementChild.querySelector('input').focus();
-    updateFormState($('#definition-form'));
+    updateFormState($('#traits-form') || $('#definition-form'));
     return;
   }
   if (intent === 'remove-trait-category') {
     button.closest('.trait-editor-row').remove();
-    updateFormState($('#definition-form'));
+    updateFormState($('#traits-form') || $('#definition-form'));
     return;
   }
   if (intent === 'add-eye-color') {
@@ -313,13 +315,13 @@ document.addEventListener('click', async event => {
     if (rows.length >= 6) return notify('You can combine up to six eye colors.', true);
     const key = crypto.randomUUID();
     $('#eye-color-rows').insertAdjacentHTML('beforeend', `<div class="eye-color-row">${colorControl(key, '#8A689E', 'Additional eye color')}<button class="text-button" type="button" data-action="remove-eye-color">Remove color</button></div>`);
-    updateFormState($('#definition-form'));
+    updateFormState($('#traits-form') || $('#definition-form'));
     return;
   }
   if (intent === 'remove-eye-color') {
     if ($('#eye-color-rows').children.length === 1) return notify('Keep at least one eye color.', true);
     button.closest('.eye-color-row').remove();
-    updateFormState($('#definition-form'));
+    updateFormState($('#traits-form') || $('#definition-form'));
     return;
   }
   if (intent === 'random-zone') {
@@ -439,7 +441,7 @@ profile.addEventListener('keydown',event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -447,7 +449,13 @@ document.addEventListener('submit', async event => {
   submit.disabled = true;
   try {
     const values = Object.fromEntries(new FormData(form));
-    if (form.id === 'spawn-settings-form') {
+    if (form.id === 'traits-form') {
+      const payload = readTraitsForm(form);
+      await action('save-traits',payload);
+      main.innerHTML = traitsEditorPage(catalog,payload.id);
+      trackForms(main);
+      notify('Traits saved.');
+    } else if (form.id === 'spawn-settings-form') {
       await action('spawn-settings',{ALLOW_DUPLICATE_MUTATIONS:form.elements.ALLOW_DUPLICATE_MUTATIONS.checked});
       render();
       notify('Spawning configuration saved.');
@@ -474,6 +482,7 @@ document.addEventListener('submit', async event => {
       notify('Current gold balance saved.');
     } else if (form.id === 'definition-form') {
       const payload = readDefinitionForm(form);
+      if (payload.kind === 'species') payload.values.traits = catalog.species.find(s => s.id === payload.id)?.traits || {};
       validateDefinition(payload.kind, payload.values);
       await action('save-definition', payload);
       renderChrome();
@@ -529,10 +538,17 @@ document.addEventListener('input', event => {
   if (event.target.id === 'horse-search') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, event.target.value, $('#horse-sort').value);
 });
 document.addEventListener('change', event => {
+  if (event.target.id === 'traits-species') {main.innerHTML = traitsEditorPage(catalog,event.target.value); trackForms(main); return;}
   updateFormState(event.target.form);
   if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value);
 });
 document.addEventListener('reset', event => {
+  if (event.target.id === 'traits-form') {
+    event.preventDefault();
+    main.innerHTML = traitsEditorPage(catalog,event.target.dataset.id);
+    trackForms(main);
+    return;
+  }
   if (['horse-description-form','horse-notes-form'].includes(event.target.id)) {
     event.target.hidden = true;
     profile.querySelector(`[data-form="${event.target.id}"]`).hidden = false;
