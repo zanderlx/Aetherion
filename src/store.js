@@ -65,7 +65,7 @@ export class GameStore {
           next.horses = next.horses.filter(h => h.id !== horse.id);
           next.sold.push({ ...horse, soldAt: new Date().toISOString(), soldFor: next.settings.sellingPrice });
           next.gold += next.settings.sellingPrice;
-          next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, amount: next.settings.sellingPrice, at: new Date().toISOString() });
+          next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, horseName:horse.name, species:horse.species, amount: next.settings.sellingPrice, at: new Date().toISOString() });
         }
         for (const key of Object.keys(next.encounters)) next.encounters[key] = next.encounters[key].filter(h => h.id !== horse.id);
       } else if (type === 'import-horse') {

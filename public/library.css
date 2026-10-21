@@ -68,3 +68,8 @@ select{text-transform:uppercase}
 .profile-id-footer{padding:0 24px 20px;text-align:right;overflow-wrap:anywhere}
 .palette-line .swatches{flex-wrap:wrap;gap:4px}.palette-line{min-height:28px}
 #profile>.dialog-top>.icon-button{margin-left:auto}
+
+#gold-form { margin-bottom:25px; }
+.sale-history { margin-top:25px; }
+.sale-history-scroll { overflow-x:auto; }
+.sale-history th,.sale-history td { white-space:nowrap; }

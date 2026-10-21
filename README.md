@@ -25,7 +25,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0 — current** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **57 passing tests**; browser visual QA remains pending.
+Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **59 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -130,7 +130,7 @@ Each horse independently draws a species with equal odds from its zone’s pool.
 
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 
-Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; **Starting Gold** is reserved for future new-game/reset functionality. Editing mutation and item descriptions does not execute their effects.
+Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; Economy Settings includes a sale history table (newest first). The header gold display is informational. **Starting Gold** is reserved for future new-game/reset functionality. Editing mutation and item descriptions does not execute their effects.
 
 ### Horse view and preview refinements
 

@@ -75,7 +75,7 @@ export function emptyState(title, description, link, linkLabel, symbol = 'stable
   return `<div class="empty-state"><div class="empty-symbol">${icon(symbol)}</div><h2>${title}</h2><p>${description}</p>${link ? `<a class="button primary" href="#${link}">${linkLabel} ${icon('arrow')}</a>` : ''}</div>`;
 }
 export function heading(kicker, title, description, extra = '') {
-  return `<div class="page-heading"><div><span class="eyebrow" data-copy-key="page.kicker" data-copy-label="Page eyebrow">${kicker}</span><h1 data-copy-key="page.title" data-copy-label="Page title">${title}</h1><p data-copy-key="page.description" data-copy-label="Page introduction">${description}</p></div>${extra}</div>`;
+  return `<div class="page-heading"><div>${kicker ? `<span class="eyebrow" data-copy-key="page.kicker" data-copy-label="Page eyebrow">${kicker}</span>` : ''}<h1 data-copy-key="page.title" data-copy-label="Page title">${title}</h1><p data-copy-key="page.description" data-copy-label="Page introduction">${description}</p></div>${extra}</div>`;
 }
 
 

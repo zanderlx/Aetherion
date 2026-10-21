@@ -12,6 +12,7 @@ import { libraryEditorPage, editorRoutes } from '../public/library-editor.js';
 import { keeperPage, avatarSVG } from '../public/keeper.js';
 import { roadmapPage } from '../public/roadmap.js';
 import { card } from '../public/ui.js';
+import {saleHistory} from '../public/economy.js';
 
 const catalog = normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json', import.meta.url), 'utf8')));
 const settings = JSON.parse(await readFile(new URL('../data/defaults/settings.json', import.meta.url), 'utf8'));
@@ -139,6 +140,10 @@ test('editor guidance is page-specific and the logo inherits theme colors', () =
 });
 test('economy and game settings display only their relevant fields', () => {
   const economy = settingsPage(state,true), game = settingsPage(state,false);
+  assert.doesNotMatch(economy,/THE KEEPER’S WORKBENCH|Website appearance & pastel themes/);
+  assert.match(economy,/Sale History/);
+  assert.match(economy,/No horses sold yet/);
+  assert.ok(economy.indexOf('sale-history') > economy.indexOf('id="settings-form"'));
   assert.match(economy,/name="sellingPrice"/);
   assert.doesNotMatch(economy,/name="horsesPerSearch"|name="stableCapacity"/);
   assert.match(game,/name="horsesPerSearch"/);
@@ -199,6 +204,22 @@ test('breadcrumb sections match sidebar group names and icons for every route', 
   assert.equal(navigationSection('wilds/my-custom-zone').icon,'compass');
 });
 
+test('sale history merges old archives with transactions without double-counting or balance edits', () => {
+  const populated = {...state,sold:[
+    {id:'one',name:'<img src=x>',species:'Unicorn',soldFor:100,soldAt:'2026-01-01T00:00:00Z'},
+    {id:'legacy',name:'Legacy',species:'Ghoulsteed',soldFor:50,soldAt:'2025-01-01T00:00:00Z'}
+  ],transactions:[
+    {type:'Horse sold',horseId:'one',amount:100,at:'2026-01-01T00:00:00Z'},
+    {type:'Horse sold',horseId:'removed',horseName:'Remembered',species:'Fae',amount:250,at:'2026-02-01T00:00:00Z'},
+    {type:'Gold adjustment',amount:999999,at:'2026-03-01T00:00:00Z'}
+  ]};
+  const rows = saleHistory(populated);
+  assert.deepEqual(rows.map(r => r.name),['Remembered','<img src=x>','Legacy']);
+  assert.deepEqual(rows.map(r => r.amount),[250,100,50]);
+  const page = settingsPage(populated,true);
+  assert.match(page,/&lt;img src=x&gt;/);
+  assert.doesNotMatch(page,/<img src=x>/);
+});
 test('active sidebar destination is exposed to assistive technology', () => {
   const html = sidebar('wilds/aetherion', state, new Set(['Wilds']));
   assert.match(html, /href="#wilds\/aetherion" aria-current="page"/);
