@@ -167,6 +167,7 @@ select{text-transform:uppercase}
 .personality-card-heading { display:flex; align-items:center; gap:4px; margin-bottom:12px; }
 .personality-card-heading h2 { font-size:24px; overflow-wrap:anywhere; }
 .personality-card-heading .icon-button { flex-shrink:0; }
+.personality-card-heading [data-action="edit-definition"] .icon { width:16px; height:16px; }
 .personality-card-description { text-transform:none; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.6; color:var(--muted); }
 .personality-emoji { font-family:var(--sans); }
 .personality-creation-dialog { width:min(560px,calc(100vw - 32px)); }
