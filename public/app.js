@@ -97,7 +97,7 @@ async function navigate() {
     route = available ? `wilds/${available.id}` : 'stable/all';
     history.replaceState(null,'',`#${route}`);
   }
-  const movedRoutes = {'stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
+  const movedRoutes = {'dev/economy':'dev/settings','stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
   if (movedRoutes[route]) { route = movedRoutes[route]; history.replaceState(null,'', '#' + route); }
   closeMenu();
   if (profile.open) profile.close();
@@ -331,13 +331,14 @@ document.addEventListener('click', async event => {
     return;
   }
   if (intent === 'defaults') {
-    const form = $('#settings-form');
+    const form = button.closest('form');
     for (const [name, value] of Object.entries(defaults)) {
       const input = form.elements.namedItem(name);
       if (!input) continue;
       if (input.type === 'checkbox') input.checked = value; else input.value = value;
     }
-    $('#settings-status').textContent = 'Defaults loaded into the form. Save settings to apply, or cancel to keep your current values.';
+    updateFormState(form);
+    form.querySelector('[role=status]').textContent = 'Defaults loaded into the form. Save settings to apply, or cancel to keep your current values.';
     return;
   }
   busy = true;
@@ -431,7 +432,7 @@ profile.addEventListener('keydown',event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'gold-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -473,14 +474,14 @@ document.addEventListener('submit', async event => {
       showZoneDraft(saved);
       $('#zone-status').textContent = saved.enabled ? 'Saved! Your zone is now in the Wilds navigation and the atlas below.' : 'Saved as a closed zone. Enable exploration whenever you are ready.';
       notify('Your new corner of the world is saved.');
-    } else if (form.id === 'settings-form') {
+    } else if (form.id === 'settings-form' || form.id === 'economy-form') {
       await action('settings', {
         horsesPerSearch: Number(values.horsesPerSearch ?? state.settings.horsesPerSearch), sellingPrice: Number(values.sellingPrice ?? state.settings.sellingPrice),
         startingGold: Number(values.startingGold ?? state.settings.startingGold), stableCapacity: Number(values.stableCapacity ?? state.settings.stableCapacity),
         ignoreStableLimit: form.elements.ignoreStableLimit?.checked ?? state.settings.ignoreStableLimit
       });
       render();
-      $('#settings-status').textContent = 'Settings saved. Your next search and future sales will use these values.';
+      $(`#${form.id === 'economy-form' ? 'economy' : 'settings'}-status`).textContent = 'Settings saved. Your next search and future sales will use these values.';
       notify('Your world, a little more your own. Settings saved.');
 
     }
@@ -521,7 +522,7 @@ document.addEventListener('reset', event => {
     profile.querySelector(`[data-form="${event.target.id}"]`).hidden = false;
   }
   setTimeout(() => { updateFormState(event.target); if (event.target.id === 'keeper-form') updateAvatarPreview(); },0);
-  if (event.target.id === 'settings-form') $('#settings-status').textContent = '';
+  if (['settings-form','economy-form'].includes(event.target.id)) event.target.querySelector('[role=status]').textContent = '';
   if (event.target.id === 'zone-form') {
     event.preventDefault();
     showZoneDraft(locationsFor(catalog, state).find(l => l.id === event.target.dataset.id) || newZoneDraft());

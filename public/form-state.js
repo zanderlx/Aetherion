@@ -13,7 +13,7 @@ export function updateFormState(form) {
   for (const button of form.querySelectorAll('button[type="submit"],button[type="reset"]')) button.hidden = !changed;
 }
 export function trackForms(root) {
-  for (const form of root.querySelectorAll('#settings-form,#gold-form,#keeper-form,#horse-description-form,#horse-notes-form,#definition-form,#zone-form')) {
+  for (const form of root.querySelectorAll('#settings-form,#economy-form,#gold-form,#keeper-form,#horse-description-form,#horse-notes-form,#definition-form,#zone-form')) {
     if (!baselines.has(form)) baselines.set(form,formSignature(form));
     updateFormState(form);
   }

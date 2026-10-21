@@ -9,7 +9,7 @@
 - Create/edit/duplicate/delete species, traits, palettes, eyes, personalities, mutations, items, item themes, atmospheres, and website themes.
 - Five supplied **Mutated Horse** palettes: Solar, Lunar, Astral, Heavenly, Void. All nine colors are preserved; old editable libraries receive missing entries without replacing custom data.
 - Nine website themes, dark/light variants, custom theme colors, and a crest that follows theme tokens.
-- Page-specific editor guidance; Economy and Game Settings show their relevant controls.
+- Game Settings groups gameplay controls and a separate Economy section with balance, prices, and sale history.
 - Dedicated text Edit Mode with section/page saves, drafts, resets, and shared website labels.
 - Profiles with display name, About Me, and twelve named avatar color choices. Random avatar generation has been removed; previously saved colors are preserved.
 - Alphabetized navigation grouped by setting type, scroll retention, uppercase option labels, horizontal Wilds tabs, and change-only Save/Cancel controls.
@@ -77,3 +77,5 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - Individual horse import/export uses versioned aetherion-horse JSON snapshots. Fresh IDs prevent overwrites; imports validate data and stable capacity. Export replaces Release Horse in owned profiles.
 
 - Header gold no longer links to Economy. Economy has separated balance/default cards and sale history with legacy archive support; future transactions preserve horse names.
+
+- Merged Economy navigation into Game Settings. Removed settings guide cards and Save Management transaction/guide panels; saved transaction records remain available to sale history.

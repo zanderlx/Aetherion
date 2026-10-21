@@ -138,16 +138,21 @@ test('editor guidance is page-specific and the logo inherits theme colors', () =
   assert.match(nav,/fill="var\(--gold\)"/);
   assert.match(nav,/fill="var\(--panel-deep\)"/);
 });
-test('economy and game settings display only their relevant fields', () => {
-  const economy = settingsPage(state,true), game = settingsPage(state,false);
-  assert.doesNotMatch(economy,/THE KEEPER’S WORKBENCH|Website appearance & pastel themes/);
-  assert.match(economy,/Sale History/);
-  assert.match(economy,/No horses sold yet/);
-  assert.ok(economy.indexOf('sale-history') > economy.indexOf('id="settings-form"'));
-  assert.match(economy,/name="sellingPrice"/);
-  assert.doesNotMatch(economy,/name="horsesPerSearch"|name="stableCapacity"/);
-  assert.match(game,/name="horsesPerSearch"/);
-  assert.doesNotMatch(game,/name="sellingPrice"|name="startingGold"/);
+test('Game Settings contains gameplay and a separate Economy section without guide cards', () => {
+  const game = settingsPage(state);
+  for (const field of ['gold','sellingPrice','startingGold','horsesPerSearch','stableCapacity','ignoreStableLimit']) assert.ok(game.includes(`name="${field}"`));
+  assert.match(game,/>Game Settings<\/h1>/);
+  assert.match(game,/id="economy-heading"/);
+  assert.match(game,/id="economy-form"/);
+  assert.match(game,/Sale History/);
+  assert.match(game,/No horses sold yet/);
+  assert.ok(game.indexOf('economy-settings') > game.indexOf('id="settings-form"'));
+  assert.doesNotMatch(game,/THE KEEPER’S WORKBENCH|Website appearance & pastel themes|Manage Your Economy|Make Room For Companions/);
+  assert.ok(!groups.flatMap(g => g.items).some(([path]) => path === 'dev/economy'));
+  const saves = savesPage(state);
+  assert.doesNotMatch(saves,/Transaction history|Keep the whole story|KEEP YOUR WORLD SAFE/);
+  assert.match(saves,/Create backup/);
+  assert.match(saves,/Export all data/);
 });
 test('edit mode has one dedicated page and economy exposes the actual gold balance', () => {
   assert.doesNotMatch(settingsPage(state), /toggle-copy-mode/);

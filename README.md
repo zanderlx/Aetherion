@@ -130,7 +130,7 @@ Each horse independently draws a species with equal odds from its zone’s pool.
 
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 
-Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; Economy Settings includes a sale history table (newest first). The header gold display is informational. **Starting Gold** is reserved for future new-game/reset functionality. Editing mutation and item descriptions does not execute their effects.
+Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; the Economy section within Game Settings includes a sale history table (newest first). The header gold display is informational. **Starting Gold** is reserved for future new-game/reset functionality. Editing mutation and item descriptions does not execute their effects.
 
 ### Horse view and preview refinements
 
@@ -153,7 +153,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | Navigation section | Contents |
 | --- | --- |
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
-| **Developer Settings** | Game Settings, Economy, Save Management, Remaining Features |
+| **Developer Settings** | Game Settings (including Economy), Save Management, Remaining Features |
 | **Horse Definitions** | Species & Traits, Horse Palettes, Eye Colors, Personalities, Mutations |
 | **Horse Tools** | Planned Horse Editor, Horse Generator, Spawn Rates |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
