@@ -56,11 +56,14 @@ export function eyeIndividualChance(eye,allEyes) {
 
 function eyeCards(eyes,allEyes,showPercent = true) { return eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-hex">${eye.colors.map(color => e(color.toUpperCase())).join(' · ')}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span><span class="eye-card-rarity">${e(eye.rarity)}${showPercent ? eyeIndividualChance(eye,allEyes) : ''}</span></button>`).join(''); }
 
+export const randomEyeColor = (rng = Math.random) => `#${Math.floor(rng()*16777216).toString(16).padStart(6,'0').toUpperCase()}`;
+
 export function randomEyeDraft(eyes,rng = Math.random) {
   const source = eyes[Math.floor(rng()*eyes.length)];
   let name = `${source.name.slice(0,60)} Variation`, suffix = 1;
   while (eyes.some(eye => eye.name.toLowerCase() === name.toLowerCase())) name = `${source.name.slice(0,60)} Variation ${++suffix}`;
-  return {...structuredClone(source),id:undefined,systemId:'',textureId:'',name};
+  const count = 1+Math.floor(rng()*3);
+  return {...structuredClone(source),id:undefined,systemId:'',textureId:'',layers:[],name,rarity:'Uncommon',colors:Array.from({length:count},() => randomEyeColor(rng))};
 }
 
 export function createEyeEditor(renderEditor,getEyes) {
@@ -114,6 +117,7 @@ export function createEyeEditor(renderEditor,getEyes) {
   const editor = {
     dialog,
     open(draft) {
+      if (!draft?.id && !draft?.name) draft = {...draft,rarity:'Uncommon',colors:[randomEyeColor()]};
       const template = document.createElement('template');
       template.innerHTML = renderEditor(draft);
       dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;

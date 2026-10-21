@@ -372,10 +372,14 @@ test('Horse mutations have numbered entries and a count including zero',()=>{
  assert.match(html,/<strong>Double Jump<\/strong><span class="mutation-description">: Jump higher\.<\/span>/);
 });
 
-test('Random eye drafts preserve saved colors without reusing internal IDs',()=>{
+test('Random eye drafts generate colors without reusing internal IDs',()=>{
  const eyes=[{id:'eye-a',systemId:'a',textureId:'t',name:'Amber',rarity:'Rare',colors:['#ABCDEF'],layers:[]}];
  const draft=randomEyeDraft(eyes,()=>0);
- assert.deepEqual(draft.colors,['#ABCDEF']);
+ assert.deepEqual(draft.colors,['#000000']);
+ assert.equal(draft.rarity,'Uncommon');
+ const three=randomEyeDraft(eyes,()=>0.99);
+ assert.equal(three.colors.length,3);
+ assert.ok(three.colors.every(color=>/^#[A-F0-9]{6}$/.test(color)));
  assert.equal(draft.id,undefined);
  assert.equal(draft.systemId,'');
  assert.equal(draft.textureId,'');
