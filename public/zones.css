@@ -37,3 +37,6 @@ main{scroll-margin-top:80px}
 .zone-collection .zone-card { padding:0; overflow:hidden; }
 .zone-card-actions { padding:18px; }
 .zone-card > .zone-preview { border:0; border-radius:0; }
+
+.zone-card-actions .form-actions { display:flex; align-items:center; }
+.zone-card-actions .zone-delete { margin-left:auto; }
