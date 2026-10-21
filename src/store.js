@@ -135,11 +135,15 @@ export class GameStore {
           if (next.settings.websiteTheme === id) next.settings.websiteTheme = 'default';
         }
         next.library = catalog;
-      } else if (type === 'current-gold') {
+      } else if (type === 'current-gold' || type === 'economy-settings') {
         if (!Number.isSafeInteger(payload.gold) || payload.gold < 0 || payload.gold > 1000000000) throw new Error('Gold must be a whole number between 0 and 1,000,000,000.');
+        if (type === 'economy-settings') {
+          if (!Number.isInteger(payload.sellingPrice) || payload.sellingPrice < 0 || payload.sellingPrice > 1000000) throw new Error('Selling price must be a whole number between 0 and 1,000,000.');
+          next.settings.sellingPrice = payload.sellingPrice;
+        }
         const amount = payload.gold - next.gold;
         next.gold = payload.gold;
-        next.transactions.push({ id:randomUUID(), type:'Developer balance adjustment', amount, at:new Date().toISOString() });
+        if (amount || type === 'current-gold') next.transactions.push({ id:randomUUID(), type:'Developer balance adjustment', amount, at:new Date().toISOString() });
       } else if (type === 'settings') {
         for (const [key, min, max] of [['horsesPerSearch', 1, 12], ['sellingPrice', 0, 1000000], ['startingGold', 0, 1000000], ['stableCapacity', 1, 10000]]) {
           if (!Number.isInteger(payload[key]) || payload[key] < min || payload[key] > max) throw new Error(`${key} must be a whole number between ${min} and ${max}.`);

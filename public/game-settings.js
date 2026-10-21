@@ -4,9 +4,10 @@ import {saleHistoryTable} from './economy.js';
 function settingForm(state,economy = false) {
   const s = state.settings;
   const id = economy ? 'economy' : 'settings';
-  return `<form id="${id}-form" class="panel"><div class="panel-heading">${icon(economy ? 'coin' : 'settings')}<div><h2>${economy ? 'Economy Defaults' : 'Encounter & Stable Settings'}</h2></div></div>
-  ${economy ? `<label class="setting-row"><span><strong>Horse selling price</strong><small>Gold earned for each future sale.</small></span><div class="input-suffix"><input name="sellingPrice" type="number" min="0" max="1000000" value="${s.sellingPrice}" required><span>gold</span></div></label>
-  <label class="setting-row"><span><strong>Starting gold</strong><small>Reserved for new games; does not change your current balance.</small></span><input name="startingGold" type="number" min="0" max="1000000" value="${s.startingGold}" required></label>` : `<label class="setting-row"><span><strong>Horses per search</strong><small>How many companions appear in a new clearing (1–12).</small></span><input name="horsesPerSearch" type="number" min="1" max="12" value="${s.horsesPerSearch}" required></label>
+  return `<form id="${id}-form" class="panel"><div class="panel-heading">${icon(economy ? 'coin' : 'settings')}<div><h2>${economy ? 'Gold & Selling Price' : 'Encounter & Stable Settings'}</h2></div></div>
+  ${economy ? `<label class="setting-row"><span><strong>Current Gold</strong><small>Your saved balance, shown in the header.</small></span><input name="gold" type="number" min="0" max="1000000000" step="1" value="${state.gold}" required></label>
+  <label class="setting-row"><span><strong>Horse selling price</strong><small>Gold earned for each future sale.</small></span><div class="input-suffix"><input name="sellingPrice" type="number" min="0" max="1000000" value="${s.sellingPrice}" required><span>gold</span></div></label>
+` : `<label class="setting-row"><span><strong>Horses per search</strong><small>How many companions appear in a new clearing (1–12).</small></span><input name="horsesPerSearch" type="number" min="1" max="12" value="${s.horsesPerSearch}" required></label>
   <label class="setting-row"><span><strong>Stable capacity</strong><small>Maximum companions when the limit is enabled.</small></span><input name="stableCapacity" type="number" min="1" max="10000" value="${s.stableCapacity}" required></label>
   <label class="setting-row"><span><strong>Ignore stable capacity</strong><small>Allow new horses beyond the stable limit.</small></span><input class="toggle" name="ignoreStableLimit" type="checkbox" ${s.ignoreStableLimit ? 'checked' : ''}></label>`}
   <div id="${id}-status" role="status" class="form-status"></div><div class="form-actions"><button class="button primary" type="submit">${icon('check')} Save Settings</button><button class="button secondary" type="reset">Cancel Changes</button><button class="text-button" type="button" data-action="defaults">Load Defaults</button></div></form>`;
@@ -16,6 +17,5 @@ export function gameSettingsPage(state) {
   return `${heading('','Game Settings','Changes are saved on this computer.')}
   ${settingForm(state)}
   <section class="economy-settings" aria-labelledby="economy-heading"><h2 id="economy-heading" data-copy-key="economy.heading">Economy Settings</h2>
-  <div class="economy-cards"><form id="gold-form" class="panel"><h2>Current Gold Balance</h2><p>Update your actual balance now. Starting Gold applies only to future new games.</p><label class="setting-row"><span><strong>Current gold</strong><small>Your saved balance, shown in the header.</small></span><input name="gold" type="number" min="0" max="1000000000" step="1" value="${state.gold}" required></label><div class="form-actions"><button class="button primary" type="submit">Save Current Gold</button><button class="button secondary" type="reset">Cancel Changes</button></div></form>
-  ${settingForm(state,true)}</div>${saleHistoryTable(state)}</section>`;
+  ${settingForm(state,true)}${saleHistoryTable(state)}</section>`;
 }

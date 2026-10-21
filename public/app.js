@@ -452,6 +452,11 @@ document.addEventListener('submit', async event => {
       await action('save-profile', {name:values.name,about:values.about,avatarSeed:Number(values.avatarSeed)});
       render();
       notify('Profile saved.');
+    } else if (form.id === 'economy-form') {
+      await action('economy-settings',{gold:Number(values.gold),sellingPrice:Number(values.sellingPrice)});
+      render();
+      $('#economy-status').textContent = 'Economy settings saved.';
+      notify('Economy settings saved.');
     } else if (form.id === 'gold-form') {
       await action('current-gold', { gold:Number(values.gold) });
       render();
@@ -474,7 +479,7 @@ document.addEventListener('submit', async event => {
       showZoneDraft(saved);
       $('#zone-status').textContent = saved.enabled ? 'Saved! Your zone is now in the Wilds navigation and the atlas below.' : 'Saved as a closed zone. Enable exploration whenever you are ready.';
       notify('Your new corner of the world is saved.');
-    } else if (form.id === 'settings-form' || form.id === 'economy-form') {
+    } else if (form.id === 'settings-form') {
       await action('settings', {
         horsesPerSearch: Number(values.horsesPerSearch ?? state.settings.horsesPerSearch), sellingPrice: Number(values.sellingPrice ?? state.settings.sellingPrice),
         startingGold: Number(values.startingGold ?? state.settings.startingGold), stableCapacity: Number(values.stableCapacity ?? state.settings.stableCapacity),

@@ -76,5 +76,3 @@ select{text-transform:uppercase}
 
 .economy-settings { margin-top:32px; }
 .economy-settings > h2 { margin-bottom:20px; }
-.economy-cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:25px; align-items:start; }
-@media(max-width:900px) { .economy-cards { grid-template-columns:1fr; } }

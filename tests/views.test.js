@@ -140,10 +140,14 @@ test('editor guidance is page-specific and the logo inherits theme colors', () =
 });
 test('Game Settings contains gameplay and a separate Economy section without guide cards', () => {
   const game = settingsPage(state);
-  for (const field of ['gold','sellingPrice','startingGold','horsesPerSearch','stableCapacity','ignoreStableLimit']) assert.ok(game.includes(`name="${field}"`));
+  for (const field of ['gold','sellingPrice','horsesPerSearch','stableCapacity','ignoreStableLimit']) assert.ok(game.includes(`name="${field}"`));
   assert.match(game,/>Game Settings<\/h1>/);
   assert.match(game,/id="economy-heading"/);
   assert.match(game,/id="economy-form"/);
+  assert.doesNotMatch(game,/name="startingGold"|id="gold-form"|Starting Gold applies/);
+  const economyForm = game.match(/<form id="economy-form"[\s\S]*?<\/form>/)[0];
+  assert.match(economyForm,/name="gold"/);
+  assert.match(economyForm,/name="sellingPrice"/);
   assert.match(game,/Sale History/);
   assert.match(game,/No horses sold yet/);
   assert.ok(game.indexOf('economy-settings') > game.indexOf('id="settings-form"'));

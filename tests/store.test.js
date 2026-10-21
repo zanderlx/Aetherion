@@ -113,6 +113,24 @@ test('horse JSON export imports copies with fresh IDs, capacity checks and atomi
   const restored = await new GameStore(directory,catalog,defaults).init();
   assert.deepEqual(restored.state.horses,store.state.horses);
 });
+test('combined Economy settings save gold and price atomically without changing Starting Gold', async t => {
+  const {directory,store} = await fixture(t);
+  const original = store.snapshot();
+  await assert.rejects(store.action('economy-settings',{gold:999,sellingPrice:-1}));
+  assert.deepEqual(store.snapshot(),original);
+  await assert.rejects(store.action('economy-settings',{gold:-1,sellingPrice:500}));
+  assert.deepEqual(store.snapshot(),original);
+  await store.action('economy-settings',{gold:999,sellingPrice:500});
+  assert.equal(store.state.gold,999);
+  assert.equal(store.state.settings.sellingPrice,500);
+  assert.equal(store.state.settings.startingGold,original.settings.startingGold);
+  const count = store.state.transactions.length;
+  await store.action('economy-settings',{gold:999,sellingPrice:600});
+  assert.equal(store.state.transactions.length,count);
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(restored.state.gold,999);
+  assert.equal(restored.state.settings.sellingPrice,600);
+});
 test('catch validates names atomically and saves the chosen name', async t => {
   const {directory,store} = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});
