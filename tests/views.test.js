@@ -376,7 +376,7 @@ test('Random eye drafts generate colors without reusing internal IDs',()=>{
  const eyes=[{id:'eye-a',systemId:'a',textureId:'t',name:'Amber',rarity:'Rare',colors:['#ABCDEF'],layers:[]}];
  const draft=randomEyeDraft(eyes,()=>0);
  assert.deepEqual(draft.colors,['#000000']);
- assert.equal(draft.rarity,'Uncommon');
+ assert.equal(draft.rarity,'Common');
  const three=randomEyeDraft(eyes,()=>0.99);
  assert.equal(three.colors.length,3);
  assert.ok(three.colors.every(color=>/^#[A-F0-9]{6}$/.test(color)));

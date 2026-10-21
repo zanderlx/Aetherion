@@ -54,7 +54,7 @@ export function catalogFor(original, state) {
   return catalog;
 }
 export function draftDefinition(kind) {
-  return { name: '', description: '', rarityTier:4,attributes:{},speciesIds:[],assetSkins:[],textureId:'',layers:[],behaviorTags:[],systemId:'',thresholds:{}, event: '', restriction: '', group: 'Custom', natural: false, rarity: kind === 'eyes' ? 'Uncommon' : 'Custom', type: kind === 'mutations' ? 'Standard' : 'Accessory', price: 0, theme: '', weight: 0, sizeShift:0, global:true,
+  return { name: '', description: '', rarityTier:4,attributes:{},speciesIds:[],assetSkins:[],textureId:'',layers:[],behaviorTags:[],systemId:'',thresholds:{}, event: '', restriction: '', group: 'Custom', natural: false, rarity: kind === 'eyes' ? 'Common' : 'Custom', type: kind === 'mutations' ? 'Standard' : 'Accessory', price: 0, theme: '', weight: 0, sizeShift:0, global:true,
     traits: Object.fromEntries(traitCategories.map(k => [k, []])),
     colors: kind === 'palettes' ? Object.fromEntries(regions.map(r => [r, '#d6b4df'])) : kind === 'siteThemes' ? { ...defaultThemes[1].colors } : ['#8a689e'],
     scheme: 'light', encounterTitle: 'A new companion awaits', tint: '#8c709f' };
