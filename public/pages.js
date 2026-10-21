@@ -5,8 +5,9 @@ export function wildPage(location, state, locations = [location], catalog) {
   const horses = state.encounters[location.id] || [];
   const atmosphere = location.atmosphere || (location.id === 'hallowhoof' ? 'autumn' : 'forest');
   const atmosphereDefinition = atmosphereFor(catalog, atmosphere);
-  return `<div class="location-tabs" aria-label="Locations">${locations.filter(l => l.enabled !== false).sort((a,b) => a.name.localeCompare(b.name)).map(l => `<a href="#wilds/${l.id}" ${location.id === l.id ? 'aria-current="page"' : ''}>${icon(l.custom || l.event ? 'spark' : 'leaf')}${e(l.name)}${l.event ? '<small>EVENT</small>' : ''}</a>`).join('')}</div>
+  return `<div class="location-tabs" aria-label="Locations">${locations.filter(l => l.enabled !== false).sort((a,b) => a.name.localeCompare(b.name)).map(l => `<a href="#wilds/${l.id}" ${location.id === l.id ? 'aria-current="page"' : ''}>${e(l.name)}${l.event ? '<small>EVENT</small>' : ''}</a>`).join('')}</div>
   <section class="hero ${['forest','autumn','moonlit','frost'].includes(atmosphere) ? atmosphere : 'atmosphere-custom'}" style="${atmosphereStyle(atmosphereDefinition)}" aria-labelledby="location-title"><div class="hero-content">
+  ${location.event ? '<span class="zone-event-label" data-copy-skip>EVENT</span>' : ''}
   <h1 id="location-title" data-copy-key="hero.title">${e(location.name)}</h1><p data-copy-key="hero.description">${e(location.description)}</p>
   <div class="hero-bottom">${zoneTags(location,catalog).map(tag => `<span>${e(tag)}</span>`).join('<span class="hero-divider" aria-hidden="true"></span>')}</div>
   </div><span class="hero-mark" aria-hidden="true">✧</span></section>

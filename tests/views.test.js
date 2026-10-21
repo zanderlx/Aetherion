@@ -39,6 +39,23 @@ test('zone tags render as safe text without icons and can be removed', () => {
   assert.equal((editor.match(/class="panel zone-card"/g) || []).length,locationsFor(catalog,state).length);
   assert.match(editor,/The evergreen realm\nFree exploration/);
 });
+test('custom Event zones are marked in navigation and Wilds without tab icons', () => {
+  const zone = {...newZoneDraft(),id:'event-grove',name:'Event Grove',description:'Seasonal.',custom:true,event:'Event'};
+  for (const enabled of [true,false]) {
+    const current = {...zone,event:enabled ? 'Event' : null};
+    const populated = {...state,customLocations:[current]};
+    const locations = locationsFor(catalog,populated);
+    const page = wildPage(current,populated,locations,catalog);
+    const tabs = page.match(/<div class="location-tabs"[^>]*>(.*?)<\/div>/s)[1];
+    assert.doesNotMatch(tabs,/<svg/);
+    const tab = tabs.match(/<a href="#wilds\/event-grove"[^>]*>(.*?)<\/a>/s)[1];
+    const nav = sidebar('wilds/event-grove',populated,new Set(['Wilds']),catalog);
+    const link = nav.match(/<a href="#wilds\/event-grove"[^>]*>(.*?)<\/a>/s)[1];
+    assert.equal(tab.includes('EVENT'),enabled);
+    assert.equal(link.includes('EVENT'),enabled);
+    assert.equal(page.includes('class="zone-event-label" data-copy-skip>EVENT'),enabled);
+  }
+});
 test('wild horses have no deletion control; owned horses can be released', () => {
   assert.doesNotMatch(profileContent(horses[0],state), /data-action="delete-horse"/);
   const owned = profileContent(horses[0],{...state,horses:[horses[0]]});
