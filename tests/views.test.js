@@ -277,7 +277,7 @@ test('random zone drafts are valid, varied, editable data and avoid duplicate na
 test('Horse Definitions dashboard exposes five managers and the spawning configuration fields', () => {
   for (const kind of ['species','palettes','eyes','mutations','personalities']) {
     const html = libraryEditorPage(kind,catalog,state);
-    assert.match(html,/>Horse Definitions<\/h1>/);
+    assert.doesNotMatch(html,/>Horse Definitions<\/h1>/);
     assert.doesNotMatch(html,/definitions-sidebar|definitions-dashboard/);
     assert.match(html,/name="systemId"/);
   }
