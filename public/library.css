@@ -175,8 +175,9 @@ select{text-transform:uppercase}
 .personality-name-row { display:grid; grid-template-columns:86px minmax(0,1fr); gap:14px; align-items:end; }
 .personality-name-row .zone-field { min-width:0; }
 .personality-emoji-field select { padding-inline:8px; font-size:20px; }
-.personality-card .personality-description-heading { font:600 14px/1.4 var(--sans); text-transform:none; margin:0 0 8px; color:var(--text); }
+.personality-card .personality-description-heading { font:600 16px/1.4 var(--sans); text-transform:none; margin:20px 0 10px; color:var(--text); }
 .personality-search { width:min(360px,100%); }
+.personality-manager-header .personality-search { margin:0 0 0 auto; align-self:center; }
 .personality-card-grid form.personality-card { display:flex; flex-direction:column; }
 .personality-card .personality-editor-close { margin-left:auto; }
 .personality-card > .form-actions { margin-top:auto; padding-top:16px; }
