@@ -93,18 +93,15 @@ select{text-transform:uppercase}
 
 .definitions-main { min-width:0; }
 .eye-definition-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px; }
-.eye-definition-card { position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
+.eye-definition-card { display:block; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
-.eye-definition-card h2 { font-size:22px; padding-right:30px; }
-.eye-definition-card p { color:var(--muted); margin:8px 0 18px; }
-.eye-edit { position:absolute; right:10px; top:10px; opacity:0; }
-.eye-definition-card:hover .eye-edit,.eye-definition-card:focus-within .eye-edit { opacity:1; }
+.eye-card-name { display:block; font-family:var(--serif); font-size:22px; }
+.eye-card-rarity { display:block; color:var(--muted); margin:8px 0 18px; }
 .eye-swatches { display:flex; height:72px; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
 .eye-swatches span { flex:1; }
 .eye-definition-dialog { width:min(760px,calc(100vw - 32px)); max-height:85vh; overflow-y:auto; }
 .eye-definition-dialog form { margin-top:16px; }
 .eye-definition-dialog > .dialog-top { position:sticky; top:0; z-index:2; background:var(--panel); }
-@media(hover:none) { .eye-edit { opacity:1; } }
 .definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
 .definitions-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
 .manager-heading { margin:0; }

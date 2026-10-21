@@ -2,7 +2,7 @@ import {escapeHTML as e,icon} from './ui.js';
 
 export function eyesManagerPage(catalog) {
   return `<div class="definitions-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">Create Eye Color</button><p class="configuration-path">data/config/eyes.json</p></div>
-    <div class="eye-definition-grid">${catalog.eyes.map(eye => `<article class="panel eye-definition-card"><button class="icon-button eye-edit" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}">${icon('edit')}</button><h2>${e(eye.name)}</h2><p>${e(eye.rarity)}</p><div class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</div></article>`).join('')}</div>`;
+    <div class="eye-definition-grid">${catalog.eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-rarity">${e(eye.rarity)}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span></button>`).join('')}</div>`;
 }
 
 export function createEyeEditor(renderEditor) {
