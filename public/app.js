@@ -97,7 +97,7 @@ async function navigate() {
     route = available ? `wilds/${available.id}` : 'stable/all';
     history.replaceState(null,'',`#${route}`);
   }
-  const movedRoutes = {'dev/economy':'dev/settings','stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
+  const movedRoutes = {'dev/editor':'dev/roadmap','dev/generator':'dev/roadmap','dev/spawn':'dev/roadmap','dev/economy':'dev/settings','stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
   if (movedRoutes[route]) { route = movedRoutes[route]; history.replaceState(null,'', '#' + route); }
   closeMenu();
   if (profile.open) profile.close();

@@ -155,7 +155,6 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
 | **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
 | **Horse Definitions** | Species & Traits, Horse Palettes, Eye Colors, Personalities, Mutations |
-| **Horse Tools** | Planned Horse Editor, Horse Generator, Spawn Rates |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
 | **Website & Profile** | Appearance & Themes, My Profile |
 
