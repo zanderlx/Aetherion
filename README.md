@@ -142,7 +142,7 @@ New preview adults receive a random birthday 3–20 years before creation, saved
 
 ### Horse names, notes, and details
 
-Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. The default name is grey until changed; the catch dialog has Save and Cancel, with no X or separate keep-name button. Click an owned horse’s name to rename it inline; clicking outside or pressing Esc saves it. Owned profiles show a personality description above Notes. Descriptions default to the captured personality and can be edited per horse. Notes use a fixed-size box with overflow scrolling and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
+Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. The default name is grey until changed; the catch dialog has Save and Cancel, with no X or separate keep-name button. Click an owned horse’s name to rename it inline; clicking outside or pressing Esc saves it. Owned profiles show a personality description above Notes. Descriptions default to the captured personality. Description and Notes display as text; click either to edit that horse, then save or cancel changes. Notes use a fixed-size box with overflow scrolling and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
 
 Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 

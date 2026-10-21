@@ -257,6 +257,14 @@ document.addEventListener('click', async event => {
   }
   if (intent === 'site-search') return openSiteSearch();
   if (intent === 'catch') return horseDialogs.open(id,'catch');
+  if (intent === 'edit-horse-text') {
+    const form = profile.querySelector('#' + button.dataset.form);
+    if (!form) return;
+    button.hidden = true;
+    form.hidden = false;
+    form.querySelector('textarea').focus();
+    return;
+  }
   if (intent === 'rename-horse') return startHorseRename(button,{horse:findHorse(id),save:action,onSaved:render,notify});
   if (intent === 'edit-horse-field') return horseDialogs.open(id,'field',button.dataset.field);
   if (intent === 'inspect') return inspect(id);
@@ -468,6 +476,10 @@ document.addEventListener('change', event => {
   if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value);
 });
 document.addEventListener('reset', event => {
+  if (['horse-description-form','horse-notes-form'].includes(event.target.id)) {
+    event.target.hidden = true;
+    profile.querySelector(`[data-form="${event.target.id}"]`).hidden = false;
+  }
   setTimeout(() => { updateFormState(event.target); if (event.target.id === 'keeper-form') updateAvatarPreview(); },0);
   if (event.target.id === 'settings-form') $('#settings-status').textContent = '';
   if (event.target.id === 'zone-form') {

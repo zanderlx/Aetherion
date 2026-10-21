@@ -24,6 +24,12 @@ test('wild horses have no deletion control; owned horses can be released', () =>
   assert.doesNotMatch(owned,/Delete Horse/);
   assert.match(owned,/data-action="rename-horse"/);
   assert.match(owned,/horse-notes-form/);
+  assert.match(owned,/class="horse-text-display"[^>]*data-form="horse-description-form"/);
+  assert.match(owned,/class="horse-text-display"[^>]*data-form="horse-notes-form"/);
+  assert.match(owned,/<form hidden id="horse-description-form"/);
+  assert.match(owned,/<form hidden id="horse-notes-form"/);
+  assert.match(owned,/>Description<\/h3>/);
+  assert.doesNotMatch(owned,/>Personality Description<\/h3>/);
   assert.ok(owned.indexOf('horse-notes-form') < owned.indexOf('profile-lower'));
   assert.ok(owned.indexOf('trait.eye-color') < owned.indexOf('trait.' + 'text-'));
   assert.doesNotMatch(owned,/personality-note|Horse notes|Horse ID/);
