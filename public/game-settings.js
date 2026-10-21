@@ -1,4 +1,4 @@
-import {heading,icon} from './ui.js';
+import {icon} from './ui.js';
 import {saleHistoryTable} from './economy.js';
 
 function settingForm(state,economy = false) {
@@ -14,7 +14,7 @@ function settingForm(state,economy = false) {
 }
 
 export function gameSettingsPage(state) {
-  return `${heading('','Encounter & Stable Settings','')}
+  return `<div class="settings-section-heading"><h1 data-copy-key="page.title">Encounter & Stable Settings</h1></div>
   ${settingForm(state)}
   <section class="economy-settings" aria-labelledby="economy-heading"><h2 id="economy-heading" data-copy-key="economy.heading">Economy Settings</h2>
   ${settingForm(state,true)}</section>${saleHistoryTable(state)}`;
