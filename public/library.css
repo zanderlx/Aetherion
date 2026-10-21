@@ -99,16 +99,12 @@ select{text-transform:uppercase}
 .horse-mutations-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
 .horse-mutation-count { font:400 25px/1.4 var(--serif); color:inherit; font-variant-numeric:tabular-nums; }
 .horse-mutations { margin:0; padding-left:26px; }
-.horse-mutations li { padding:14px 0 14px 6px; border-bottom:1px solid var(--border); }
-.horse-mutations li:first-child { padding-top:0; }
-.horse-mutations li:last-child { border-bottom:0; }
-.horse-mutations li::marker { color:var(--gold); font-weight:600; }
 .horse-mutations li p { margin:6px 0 0; color:var(--muted); line-height:1.6; }
 .mutation-slots { display:grid; grid-auto-rows:1fr; gap:12px; list-style:none; counter-reset:mutation-slot; padding:0; }
 .horse-mutations .mutation-slot { display:grid; grid-template-columns:24px minmax(0,1fr); column-gap:8px; row-gap:6px; align-content:start; padding:16px; border:1px solid var(--border); border-radius:5px; background:var(--panel-deep); }
 .mutation-slot::before { counter-increment:mutation-slot; content:counter(mutation-slot) "."; grid-column:1; grid-row:1; color:var(--gold); font-weight:600; }
 .mutation-slot > strong { grid-column:2; grid-row:1; }
-.horse-mutations .mutation-slot > p { grid-column:2; margin:0; overflow-wrap:anywhere; }
+.horse-mutations .mutation-slot > p { grid-column:2; margin:0; padding-left:16px; overflow-wrap:anywhere; }
 .horse-mutations .mutation-slot:last-child { border-bottom:1px solid var(--border); }
 .mutation-slot.is-empty { color:var(--muted); border-style:dashed; }
 .mutation-slot.is-empty strong { font-weight:400; }
