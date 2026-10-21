@@ -168,6 +168,7 @@ select{text-transform:uppercase}
 .personality-card-heading h2 { font-size:24px; overflow-wrap:anywhere; }
 .personality-card-heading .icon-button { flex-shrink:0; }
 .personality-card-heading [data-action="edit-definition"] .icon { width:16px; height:16px; }
+.personality-card-heading [data-action="edit-definition"] { width:28px; height:28px; padding:4px; }
 .personality-card-description { text-transform:none; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.6; color:var(--muted); }
 .personality-emoji { font-family:var(--sans); }
 .personality-creation-dialog { width:min(560px,calc(100vw - 32px)); }
@@ -178,7 +179,8 @@ select{text-transform:uppercase}
 .personality-emoji-field select { padding-inline:8px; font-size:20px; }
 .personality-card .personality-description-heading { font:600 16px/1.4 var(--sans); text-transform:none; margin:20px 0 10px; color:var(--text); }
 .personality-search { width:min(360px,100%); }
-.personality-manager-header .personality-search { margin:0 0 0 auto; align-self:center; }
+.personality-manager-header .personality-search { margin:0 0 0 auto; align-self:center; flex-direction:row; align-items:center; gap:12px; }
+.personality-manager-header .personality-search input { flex:1; min-width:0; }
 .personality-card-grid form.personality-card { display:flex; flex-direction:column; }
 .personality-card .personality-editor-close { margin-left:auto; }
 .personality-card > .form-actions { margin-top:auto; padding-top:16px; }
