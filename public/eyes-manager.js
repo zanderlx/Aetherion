@@ -118,7 +118,7 @@ export function createEyeEditor(renderEditor,getEyes) {
   const editor = {
     dialog,
     open(draft) {
-      if (!draft?.id && !draft?.name) draft = {...draft,rarity:'Uncommon',colors:[randomEyeColor()]};
+      if (!draft?.id && !draft?.name) draft = {...draft,name:'Custom Color',rarity:'Uncommon',colors:[randomEyeColor()]};
       const template = document.createElement('template');
       template.innerHTML = renderEditor(draft);
       dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
