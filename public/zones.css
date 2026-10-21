@@ -58,3 +58,5 @@ main{scroll-margin-top:80px}
 .wilds-search-ornament .icon { width:22px; height:22px; flex-shrink:0; }
 .wilds-search-ornament.mirror { transform:scaleX(-1); }
 @media(max-width:480px) { .wilds-search-row { gap:10px; } .wilds-search-ornament { gap:5px; } .wilds-search-ornament .icon { display:none; } }
+
+.hero + .encounters { margin-top:28px; }
