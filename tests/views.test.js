@@ -91,6 +91,9 @@ test('horse previews and details expose edit targets and the simplified nine-col
   const wild = wildPage(catalog.locations[0],state);
   assert.doesNotMatch(wild,/encounters.count|A CHANCE ENCOUNTER|wandered into the clearing/);
   assert.doesNotMatch(wild,/field-note|stable-shortcut|encounter-title|encounters.title|Foundation preview|Curated sample encounters/);
+  assert.ok(wild.indexOf('wilds-search-row') > wild.indexOf('horse-grid'));
+  assert.match(wild,/Search the Wilds/);
+  assert.equal((wild.match(/class="wilds-search-ornament[^"]*" aria-hidden="true"/g) || []).length,2);
 });
 test('every navigation destination renders content without undefined values', () => {
   for (const [route] of groups.flatMap(group => group.items)) {
