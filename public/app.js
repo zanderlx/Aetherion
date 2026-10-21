@@ -235,6 +235,7 @@ function syncResponsiveMenu() {
   $('.workspace').inert = mobile && opened;
 }
 function askToSell(id) {
+  confirmation.classList.remove('eye-delete-confirm');
   const horse = findHorse(id);
   confirmation.innerHTML = `<div class="dialog-top"><span class="eyebrow">A FOND FAREWELL</span><button class="icon-button" data-action="cancel-sell" aria-label="Cancel sale">${icon('close')}</button></div><h2 id="confirm-title">Sell ${e(horse.name || horse.species)}?</h2><p>You’ll receive <strong>${number(state.settings.sellingPrice)} gold</strong>. This horse will leave your care, and its full profile will be kept in your sold-horse history.</p><div class="form-actions"><button class="button secondary" data-action="cancel-sell" autofocus>Keep this horse</button><button class="button primary" data-action="confirm-sell" data-id="${id}">Sell horse</button></div>`;
   confirmation.showModal();
@@ -249,6 +250,7 @@ function updateAvatarPreview() {
 }
 function askToDelete(type, payload, name, detail, verb = type === 'delete-profile' ? 'Reset' : 'Delete') {
   pendingDeletion = {type,payload};
+  confirmation.classList.toggle('eye-delete-confirm',type === 'delete-definition' && payload.kind === 'eyes');
   confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
   confirmation.showModal();
 }
@@ -271,6 +273,7 @@ document.addEventListener('click', async event => {
   if (intent === 'delete-zone') return askToDelete('delete-zone',{id},locationsFor(catalog,state).find(z => z.id === id)?.name || 'Zone','Remove this zone and its wild encounters. Collected horses and sold records stay unchanged.');
   if (intent === 'delete-definition') {
     const kind = button.dataset.kind;
+    if (kind === 'eyes') return askToDelete('delete-definition',{kind,id},catalog.eyes.find(eye => eye.id === id)?.name || 'Eye Color','Remove this eye color from future spawns. Existing horses keep their saved eye colors.');
     return askToDelete('delete-definition',{kind,id},catalog[kind].find(d => d.id === id)?.name || 'Entry','Remove this option from future use. Existing horse details stay unchanged. Matching zone pools are updated; zones with empty pools close. Deleted atmospheres use a remaining atmosphere, item themes are cleared, and a deleted active website theme returns to Original.');
   }
   if (intent === 'import-horse') return horseTransfers.importHorse();
