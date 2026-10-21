@@ -87,9 +87,10 @@ select{text-transform:uppercase}
 .collection-toolbar > [data-action="import-horse"] { flex-shrink:0; }
 .collection-toolbar .sort-field { margin-left:auto; }
 
-.nav-section-link { display:flex; align-items:center; gap:11px; min-height:43px; margin-bottom:5px; padding:10px; border-radius:4px; font-size:15px; font-weight:500; color:var(--muted); }
+.nav-section-link { display:flex; align-items:center; gap:11px; min-height:43px; margin-bottom:5px; padding:10px; border-radius:4px; font-size:15px; font-weight:500; color:#d5c7b3; }
+.nav-section-link .icon { width:18px; height:18px; color:#b49b75; }
 .nav-section-link:hover { background:var(--panel-deep); color:var(--text); }
-.nav-section-link[aria-current] { background:var(--panel-deep); color:var(--gold); }
+.nav-section-link[aria-current] { background:var(--panel-deep); }
 
 .definitions-main { min-width:0; }
 .eye-definition-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px; }

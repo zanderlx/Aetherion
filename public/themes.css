@@ -9,8 +9,8 @@
   & input::placeholder,& textarea::placeholder { color:var(--muted) }
   & input[type=checkbox] { accent-color:var(--burgundy) }
   & .brand>span,& .card-title h3 button,& .field-note h3,& .stable-shortcut span,& .breadcrumb strong { color:var(--text) }
-  & .brand small,& .nav-caption,& nav summary,& .nav-items a,& .sidebar-foot,& .sidebar-foot small,& .breadcrumb>span,& .save-status { color:var(--muted) }
-  & nav summary .icon,& .chevron,& .nav-caption span { color:var(--gold) }
+  & .brand small,& .nav-caption,& nav summary,& .nav-section-link,& .nav-items a,& .sidebar-foot,& .sidebar-foot small,& .breadcrumb>span,& .save-status { color:var(--muted) }
+  & nav summary .icon,& .nav-section-link .icon,& .chevron,& .nav-caption span { color:var(--gold) }
   & .nav-items a:hover,& nav summary:hover { background:var(--panel-deep);color:var(--text) }
   & .nav-items a[aria-current] { background:var(--panel);color:var(--gold);box-shadow:inset 2px 0 var(--gold) }
   & .nav-items a[aria-current]:before { color:var(--gold) }
