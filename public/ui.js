@@ -42,6 +42,10 @@ groups.push(
   {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/edit-mode','Edit Mode'],['dev/profile','My Profile']]}
 );
 for (const group of groups) if (group.title !== 'Stables') group.items.sort((a,b) => a[1].localeCompare(b[1]));
+export function navigationSection(route) {
+  return groups.find(group => group.items.some(([path]) => path === route))
+    || (route.startsWith('wilds/') ? groups.find(group => group.title === 'Wilds') : {title:'Aetherion',icon:'compass'});
+}
 export function sidebar(route, state, openGroups, catalog) {
   const locations = catalog ? locationsFor(catalog,state) : [{id:'hallowhoof',event:true}];
   const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locations.filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:group.title === 'Stables' ? group.items : [...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));

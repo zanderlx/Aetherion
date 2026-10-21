@@ -1,7 +1,7 @@
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
 import { createHorseDialogs } from './horse-dialogs.js';
-import { icon, sidebar, groups, escapeHTML as e, number } from './ui.js';
+import { icon, sidebar, groups, navigationSection, escapeHTML as e, number } from './ui.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
 import { profileContent } from './profile.js';
 import { displayBirthday } from './dates.js';
@@ -61,7 +61,9 @@ function renderChrome() {
     if (details.open) openGroups.add(details.dataset.group);
     else openGroups.delete(details.dataset.group);
   }));
-  $('#topbar').innerHTML = `<div class="breadcrumb"><button class="icon-button mobile-menu" data-action="menu" aria-label="Open navigation" aria-expanded="${document.body.classList.contains('nav-open')}">${icon('menu')}</button>${icon(route.startsWith('wilds') ? 'compass' : route.startsWith('dev') ? 'settings' : 'stable')}<span>${route.startsWith('wilds') ? 'The Wilds' : route.startsWith('dev') ? 'The Workbench' : 'Your Sanctuary'}</span><span class="crumb-separator">/</span><strong>${e(routeTitle(route, locationsFor(catalog, state)))}</strong></div><div class="header-right"><button class="icon-button" data-action="site-search" aria-label="Search entire site" title="Search entire site (Ctrl+K)">${icon('search')}</button><span class="save-status"><span class="save-dot"></span>Saved locally</span><a class="gold-balance" href="#dev/economy" aria-label="${number(state.gold)} gold. Open economy settings.">${icon('coin')}<strong>${number(state.gold)}</strong><span>GOLD</span></a><a href="#dev/profile" class="keeper-avatar" aria-label="Open my profile">${avatarSVG(state.keeper?.avatarSeed ?? 11)}</a></div>`;
+  const section = navigationSection(route);
+  const sectionName = state.pageCopy?.site?.[`group-${section.title.toLowerCase()}`] ?? section.title;
+  $('#topbar').innerHTML = `<div class="breadcrumb"><button class="icon-button mobile-menu" data-action="menu" aria-label="Open navigation" aria-expanded="${document.body.classList.contains('nav-open')}">${icon('menu')}</button>${icon(section.icon)}<span>${e(sectionName)}</span><span class="crumb-separator">/</span><strong>${e(routeTitle(route, locationsFor(catalog, state)))}</strong></div><div class="header-right"><button class="icon-button" data-action="site-search" aria-label="Search entire site" title="Search entire site (Ctrl+K)">${icon('search')}</button><span class="save-status"><span class="save-dot"></span>Saved locally</span><a class="gold-balance" href="#dev/economy" aria-label="${number(state.gold)} gold. Open economy settings.">${icon('coin')}<strong>${number(state.gold)}</strong><span>GOLD</span></a><a href="#dev/profile" class="keeper-avatar" aria-label="Open my profile">${avatarSVG(state.keeper?.avatarSeed ?? 11)}</a></div>`;
 }
 function pageContent(pageRoute, pageState = state) {
   const state = pageState;

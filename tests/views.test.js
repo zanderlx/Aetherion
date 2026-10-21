@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { createEncounters } from '../src/encounters.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage } from '../public/pages.js';
 import { profileContent } from '../public/profile.js';
-import { groups, sidebar } from '../public/ui.js';
+import { groups, sidebar, navigationSection } from '../public/ui.js';
 import { locationsFor, newZoneDraft, randomZone, validateZone } from '../public/zones.js';
 import { zoneEditorPage } from '../public/zone-editor.js';
 import { normalizeCatalog, definitionKinds } from '../public/definitions.js';
@@ -190,6 +190,15 @@ test('collection search, sorting and favorites work with complete saved records'
   const sorted = collectionCards('all', populated, '', 'name');
   assert.ok(sorted.indexOf('>Ash<') < sorted.indexOf('>Willow<'));
 });
+test('breadcrumb sections match sidebar group names and icons for every route', () => {
+  for (const group of groups) for (const [route] of group.items) {
+    assert.equal(navigationSection(route).title,group.title);
+    assert.equal(navigationSection(route).icon,group.icon);
+  }
+  assert.equal(navigationSection('wilds/my-custom-zone').title,'Wilds');
+  assert.equal(navigationSection('wilds/my-custom-zone').icon,'compass');
+});
+
 test('active sidebar destination is exposed to assistive technology', () => {
   const html = sidebar('wilds/aetherion', state, new Set(['Wilds']));
   assert.match(html, /href="#wilds\/aetherion" aria-current="page"/);
