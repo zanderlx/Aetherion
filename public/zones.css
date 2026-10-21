@@ -44,3 +44,7 @@ main{scroll-margin-top:80px}
 .zone-preview { align-items:flex-start; }
 .zone-preview .hero-content { padding-top:18px; }
 .zone-preview h2 { margin-top:0; }
+
+.zone-preview { box-sizing:border-box; }
+.zone-preview .hero-content { display:flex; flex-direction:column; width:100%; box-sizing:border-box; min-height:310px; }
+.zone-preview .hero-bottom { margin-top:auto; padding-top:18px; }
