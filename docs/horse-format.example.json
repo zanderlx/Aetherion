@@ -1,0 +1,67 @@
+{
+  "format": "aetherion-horse",
+  "version": 1,
+  "exportedAt": "2026-10-20T00:00:00.000Z",
+  "horse": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "name": "Moonbeam",
+    "species": "Unicorn",
+    "age": "Adult",
+    "gender": "Female",
+    "origin": "Wild",
+    "size": "Normal",
+    "sizePercent": 100,
+    "birthday": "2020-05-12",
+    "personality": {
+      "name": "Anxious",
+      "description": "The mount emits the startled emote when being dismounted, player is idle, near a crowd or loud event. If the mount is near other mounts or the player walks away, the sweat drop emote is emitted."
+    },
+    "personalityDescription": "Patient and curious.",
+    "notes": "Enjoys quiet trails.",
+    "palette": {
+      "name": "Natural Gold",
+      "group": "Natural",
+      "natural": true,
+      "complete": true,
+      "colors": {
+        "Coat Top": "#FDDEAE",
+        "Coat Bottom": "#C39975",
+        "Hair": "#E0951D",
+        "Hoof": "#2B221D",
+        "Nose": "#E0951D",
+        "Sock": "#B67F2E",
+        "Keratin": "#FDCC6F",
+        "Paint": "#FFCE7F",
+        "Pattern": "#FFAC54"
+      }
+    },
+    "eye": {
+      "name": "Dark Brown",
+      "rarity": "Common",
+      "colors": [
+        "#734E49"
+      ]
+    },
+    "traits": {
+      "Mane": [
+        "Awaiting species data"
+      ],
+      "Tail": [
+        "Awaiting species data"
+      ],
+      "Pattern": [],
+      "Paint": [],
+      "Cosmetic": [],
+      "Keratin": [],
+      "Ears": [],
+      "Whiskers": []
+    },
+    "mutations": [],
+    "specialSpawn": null,
+    "favorite": false,
+    "preview": true,
+    "traitsComplete": false,
+    "locationId": "aetherion",
+    "createdAt": "2026-10-20T00:00:00.000Z"
+  }
+}

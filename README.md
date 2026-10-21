@@ -25,7 +25,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0 — current** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **55 passing tests**; browser visual QA remains pending.
+Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **57 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -105,7 +105,7 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 | 🌿 Explore & collect | ✨ Build & customize |
 | --- | --- |
 | Wilds encounters with inspectable horse profiles | Create, edit, randomize, and delete zones with editable tags |
-| Catch, rename, favorite, sell, and release owned horses | Define species, traits, palettes, eyes, and personalities |
+| Catch, rename, favorite, sell, import, and export horses | Define species, traits, palettes, eyes, and personalities |
 | Stable search, sorting, favorites, and preserved sale records | Maintain mutation, item, item-theme, and atmosphere definitions |
 | Nine-region color swatches and saved characteristics | Edit website wording without changing source code |
 | Current gold editor and transaction history | Nine website themes, plus custom theme editing |
@@ -146,7 +146,7 @@ Catch a horse to review its prefilled name, optionally change it, and select Sav
 
 Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
-Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to place those horses first. Release Horse asks for Yes/No confirmation. Wilds tabs and sidebar locations sort alphabetically. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
+Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to place those horses first. Owned profiles offer Export Horse instead of Release Horse. Wilds tabs and sidebar locations sort alphabetically. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
 
 ## Make It Yours
 
@@ -168,6 +168,12 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 **Edit Mode:** enable it from its dedicated page, visit a section, and use the pencils. Save one section immediately, or preview multiple changes and choose **Save Page**. Discard drafts or restore default wording. Text supports live values such as `{gold}`, `{horseCount}`, and `{sellingPrice}`.
 
 **My Profile:** click the avatar at the top right. Choose a named horse-crest color, enter a display name and About Me text, then save. Avatar selection is deterministic; there is no random avatar generator.
+
+### Horse import and export
+
+Choose **Import Horse** at the top right of My Horses to load a horse JSON file. Open an owned horse and choose **Export Horse** at the bottom right to download the same format. Exporting keeps the horse in your stable. Imports create new IDs, preserve supported horse details, respect stable capacity, and leave existing horses intact.
+
+See the [version 1 format specification](docs/HORSE-FORMAT.md) and [complete importable example](docs/horse-format.example.json). These individual horse files are separate from full save backups. Importing species, colors, and traits does not change your shared definition library.
 
 ## Backups
 
@@ -193,7 +199,7 @@ The same roadmap is available in **Developer Settings → Remaining Features**.
 
 | Remaining feature | Information or decisions needed |
 | --- | --- |
-| **Horse Editor & custom creator** | Birthday, age, origin, size, personality, and eye edits already work. Remaining: species/palette/trait/mutation editing, sandbox validation, duplicate IDs, and import behavior. |
+| **Horse Editor & custom creator** | Birthday, age, origin, size, personality, and eye edits already work. Remaining: species/palette/trait/mutation editing, sandbox validation, custom creation, duplicate handling, and advanced import options. |
 | **Horse Generator & Spawn Rates** | Equal species odds within each zone are implemented. Remaining: mutation weights (the supplied standard weights total 101.01%), special-spawn splits/order, age/gender/size distributions, palette/eye odds, and trait counts. |
 | **Mutation effects & exact artwork** | Stacking, repeats, wings, special-spawn slots, the two uses of “Astral,” base stats, and visual references/assets. The five fixed mutation palettes are now supplied. |
 | **Breeding & family history** | Parent eligibility, costs, timing, regional color mixing, trait/mutation inheritance, special-spawn inheritance, twins, and lineage restrictions. Cross-species 50/50 species inheritance is already confirmed. |

@@ -36,7 +36,7 @@ A basic Horse Editor can begin with the existing schema. Generator probabilities
 
 ## Verification
 
-**55 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**57 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -73,3 +73,5 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - Zone tags are editable as one tag per line, including empty lists, with legacy defaults and icon-free live/Wilds rendering.
 
 - My Zones uses trash-icon deletion, no Short Tagline field, simplified navigation visibility text, and persistent Event classification for original/custom zones.
+
+- Individual horse import/export uses versioned aetherion-horse JSON snapshots. Fresh IDs prevent overwrites; imports validate data and stable capacity. Export replaces Release Horse in owned profiles.
