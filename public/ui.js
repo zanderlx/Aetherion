@@ -4,6 +4,7 @@ import { locationsFor } from './zones.js';
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const number = value => Number(value).toLocaleString();
 export const icons = {
+  edit: '<path d="m15 4 5 5M4 20l4-1L20 7a2 2 0 0 0-5-5L3 14l-1 7Z"/>',
   compass: '<circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5Z"/>',
   stable: '<path d="m3 10 9-7 9 7v11H3Z M9 21v-9h6v9M3 10h18M9 12l6 9m0-9-6 9"/>',
   town: '<path d="M3 21V9l4-3 4 3v12m2 0V3h7v18M1 21h22M6 12h2m-2 4h2m8-10h1m-1 4h1m-1 4h1"/>',

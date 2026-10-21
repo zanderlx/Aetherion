@@ -1,3 +1,4 @@
+import {eyesManagerPage,createEyeEditor} from './eyes-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
@@ -25,6 +26,7 @@ const $ = selector => document.querySelector(selector);
 const main = $('#main');
 const profile = $('#profile');
 const confirmation = $('#confirm');
+const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft));
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
 
 const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() => 'horse/profile', save:action, notify, includeChrome:false, getValues:() => {
@@ -80,6 +82,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/profile') return keeperPage(state);
   else if (route === 'dev/edit-mode') return editModePage(state);
   else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
+  else if (section === 'dev' && page === 'eyes') return eyesManagerPage(catalog);
   else if (section === 'dev' && page === 'traits') return traitsEditorPage(catalog);
   else if (section === 'dev' && Object.hasOwn(editorRoutes, page)) return libraryEditorPage(editorRoutes[page], catalog, state);
   else return plannedPage(route, state);
@@ -107,6 +110,7 @@ async function navigate() {
   copyEditor.close();
   profileCopyEditor.close();
   horseDialogs.close();
+  eyeEditor.dialog.close();
   try {
     if (route.startsWith('wilds/') && !state.encounters[route.split('/')[1]] && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action('visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
@@ -197,6 +201,12 @@ function showZoneDraft(draft) {
   $('#zone-form').scrollIntoView({ block: 'start' });
 }
 function showDefinition(kind, draft) {
+  if (kind === 'eyes') {
+    eyeEditor.open(draft);
+    trackForms(eyeEditor.dialog);
+    if (!draft?.id) restoreBaseline(eyeEditor.dialog.querySelector('#definition-form'),'new-eye-draft');
+    return;
+  }
   main.innerHTML = libraryEditorPage(kind, catalog, state, draft);
   copyEditor.attach(main);
   trackForms(main);
@@ -356,6 +366,7 @@ document.addEventListener('click', async event => {
     if (intent === 'confirm-delete') {
       if (!pendingDeletion) return;
       await action(pendingDeletion.type,pendingDeletion.payload);
+      eyeEditor.dialog.close();
       pendingDeletion = null;
       confirmation.close();
       profile.close();
@@ -487,8 +498,9 @@ document.addEventListener('submit', async event => {
       await action('save-definition', payload);
       renderChrome();
       const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
-      showDefinition(payload.kind, saved);
-      $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
+      if (payload.kind === 'eyes') { eyeEditor.dialog.close(); render(); }
+      else showDefinition(payload.kind, saved);
+      if ($('#definition-status')) $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
       notify('Your new possibilities are saved.');
     } else if (form.id === 'zone-form') {
       const draft = readZoneForm(form);

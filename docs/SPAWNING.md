@@ -14,6 +14,8 @@ Open **Horse Definitions** and choose one of the five managers in the main navig
 
 Internal `id` values stay stable when an entry is renamed. `systemId` is an editable identifier and must be unique within a registry. Use the web forms for changes that affect zone references.
 
+Eye Color Manager displays a responsive card grid with names, rarities, and color swatches. Use the hover pencil (also available by keyboard or touch) to open the editing modal, or Create Eye Color near the header. Deletion from the modal requires confirmation.
+
 ## Traits
 
 The separate **Traits** navigation page selects a species and edits its appearance categories and options. Add or remove categories and trait names, then save. Traits stay linked to species in the same local species file; existing horse snapshots remain unchanged.

@@ -1,4 +1,5 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
+import {eyesManagerPage} from '../public/eyes-manager.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -309,6 +310,19 @@ test('all existing definitions and blank editor forms render without missing val
 });
 
 
+
+test('Eye Color Manager lists cards with colors and modal edit actions',()=>{
+  const html = eyesManagerPage(catalog);
+  assert.match(html,/Create Eye Color/);
+  assert.equal((html.match(/class="panel eye-definition-card"/g) || []).length,catalog.eyes.length);
+  for (const eye of catalog.eyes) {
+    assert.ok(html.includes(eye.name));
+    assert.ok(html.includes(eye.rarity));
+    assert.ok(html.includes(`data-id="${eye.id}"`));
+    for (const color of eye.colors) assert.ok(html.includes(color));
+  }
+  assert.doesNotMatch(html,/library-workbench/);
+});
 
 test('Traits has a separate species-linked editor outside Species settings',()=>{
  const html=traitsEditorPage(catalog);
