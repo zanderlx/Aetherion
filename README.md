@@ -25,7 +25,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0 — current** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **60 passing tests**; browser visual QA remains pending.
+Existing player saves remain compatible. Breeding and the full generator remain planned. The current automated suite has **62 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -138,13 +138,13 @@ Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wi
 
 Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color appears first in Traits & Little Details; Horse ID is tracked internally. Interface font sizes increased by two pixels.
 
-New preview adults receive a random birthday 3–20 years before creation, saved once in ISO date form and displayed as MM-DD-YYYY. The range is provisional for adult preview horses; existing saved birthdays are preserved.
+In horse profiles, Birthday is the date the horse entered your stable (MM-DD-YYYY), and Age counts calendar days since that date. Existing horses use their saved catch timestamp; newly imported horses start at 0 days. Uncaught horses show Not caught yet. Editing Birthday updates the acquisition date used by Age. The life-stage value (Adult/Foal/Elder) remains internal for compatibility.
 
 ### Horse names, notes, and details
 
 Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. The default name is grey until changed; the catch dialog has Save and Cancel, with no X or separate keep-name button. Click an owned horse’s name to rename it inline; clicking outside or pressing Esc saves it. Owned profiles show a personality description above Notes. Descriptions default to the captured personality. Description and Notes display as text; click either to edit that horse, then save or cancel changes. Notes use a fixed-size box with overflow scrolling and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
 
-Enable Edit Mode to change an individual horse's birthday, age, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
+Enable Edit Mode to change an individual horse's birthday, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
 Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to show only favorite horses, with an empty-state message when there are none. Owned profiles offer Export Horse instead of Release Horse. Wilds is a single sidebar link to Aetherion Wilds; switch locations using the alphabetized tabs at the top. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
 

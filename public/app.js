@@ -4,7 +4,7 @@ import { createHorseDialogs } from './horse-dialogs.js';
 import { icon, sidebar, groups, navigationSection, escapeHTML as e, number } from './ui.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
 import { profileContent } from './profile.js';
-import { displayBirthday } from './dates.js';
+import { displayBirthday, horseAcquisitionDate } from './dates.js';
 import { locationsFor, newZoneDraft, randomZone, validateZone } from './zones.js';
 import { zoneEditorPage, zonePreview } from './zone-editor.js';
 import { draftDefinition, validateDefinition } from './definitions.js';
@@ -28,7 +28,7 @@ const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route
 
 const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() => 'horse/profile', save:action, notify, includeChrome:false, getValues:() => {
   const horse = findHorse(profile.dataset.horseId);
-  return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:displayBirthday(horse.birthday),personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
+  return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:horseAcquisitionDate(horse) ? displayBirthday(horseAcquisitionDate(horse)) : 'Not caught yet',personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
 }});
 const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:(id,kind) => { render(); if (kind === 'catch') { profile.close(); main.focus(); } else inspect(id); }});
 const horseTransfers = createHorseTransfers({getState:() => state,save:action,notify,onImported:id => {render(); inspect(id);}});

@@ -1,3 +1,4 @@
+import {horseAcquisitionDate} from './dates.js';
 import {escapeHTML as e} from './ui.js';
 import {horseFieldOptions} from './horse-fields.js';
 
@@ -41,7 +42,7 @@ export function createHorseDialogs({getState,getCatalog,findHorse,save,onSaved,n
     const title = kind === 'catch' ? 'Name Your New Companion?' : kind === 'rename' ? 'Rename Horse' : `Edit ${field === 'eye' ? 'Eye Color' : field}`;
     let input;
     if (kind !== 'field') input = `<input class="${kind === 'catch' ? 'default-horse-name' : ''}" aria-label="Horse name" name="value" maxlength="60" value="${e(horse.name || horse.species)}">`;
-    else if (field === 'birthday') input = `<label>Birthday<input type="date" name="value" min="0001-01-01" max="${new Date().toISOString().slice(0,10)}" value="${e(horse.birthday)}" required></label>`;
+    else if (field === 'birthday') input = `<label>Birthday<input type="date" name="value" min="0001-01-01" max="${new Date().toISOString().slice(0,10)}" value="${e(horseAcquisitionDate(horse) || horse.birthday)}" required></label>`;
     else {
       const options = horseFieldOptions(field,getCatalog(),getState());
       const selected = ['personality','eye'].includes(field) ? options.find(option => option.value === horse[field]?.id || option.label === horse[field]?.name)?.value : horse[field];

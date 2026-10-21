@@ -25,7 +25,7 @@ This excerpt shows the envelope; the example file contains all required horse fi
 | --- | --- |
 | `name` | Text, up to 60 characters; empty uses the species as the display name. |
 | `species`, `origin` | Nonempty text, up to 100 characters. Imported species do not need an existing library definition. |
-| `age` | `Foal`, `Adult`, or `Elder`. |
+| `age` | Internal life-stage value: `Foal`, `Adult`, or `Elder`. The profile instead displays days since acquisition. |
 | `gender` | `Female` or `Male`. |
 | `size` | Mammoth, Draft, Giant, Huge, Big, Normal, Little, Small, Tiny, Teeny, or Teacup. |
 | `sizePercent` | Optional; must match the size: 125, 120, 115, 110, 105, 100, 95, 90, 85, 80, or 75 respectively. |
@@ -46,7 +46,7 @@ Palette `colors` requires these exact keys: `Coat Top`, `Coat Bottom`, `Hair`, `
 
 ## Import rules
 
-- Every import creates a fresh local horse ID and a new stable-arrival timestamp. Importing the same file again creates a separate copy; it never replaces an existing horse.
+- Every import creates a fresh local horse ID and a new stable-arrival timestamp and Birthday date. Profile Age starts at 0 days. Importing the same file again creates a separate copy; it never replaces an existing horse.
 - Stable capacity applies unless Ignore Stable Limit is enabled. Imports do not change gold, transactions, or encounters.
 - Horse appearance and personality are self-contained snapshots. Importing does not add or modify library definitions or zones.
 - Unknown fields are ignored; recognized fields are validated and normalized. Unsupported format versions, invalid dates/colors, or malformed records reject the entire import without saving.

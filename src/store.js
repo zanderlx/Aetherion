@@ -1,3 +1,4 @@
+import {localCalendarDate} from '../public/dates.js';
 import { readHorseDocument } from '../public/horse-transfer.js';
 import { validateHorseName, horseRecords, updateHorseField } from '../public/horse-fields.js';
 import { mkdir, readFile, writeFile, rename, copyFile } from 'node:fs/promises';
@@ -60,7 +61,8 @@ export class GameStore {
         if (type === 'catch') {
           if (isCollected) throw new Error('This horse is already in your stable.');
           if (!next.settings.ignoreStableLimit && next.horses.length >= next.settings.stableCapacity) throw new Error('Your stable is full. Adjust capacity in Game Settings.');
-          next.horses.push({ ...horse, personalityDescription: horse.personalityDescription ?? horse.personality.description ?? '', name: payload.name === undefined ? horse.name : validateHorseName(payload.name), caughtAt: new Date().toISOString() });
+          const caughtAt = new Date().toISOString();
+          next.horses.push({ ...horse, birthday:localCalendarDate(caughtAt), personalityDescription: horse.personalityDescription ?? horse.personality.description ?? '', name: payload.name === undefined ? horse.name : validateHorseName(payload.name), caughtAt });
         } else {
           next.horses = next.horses.filter(h => h.id !== horse.id);
           next.sold.push({ ...horse, soldAt: new Date().toISOString(), soldFor: next.settings.sellingPrice });
@@ -72,7 +74,8 @@ export class GameStore {
         if (JSON.stringify(payload).length > 524288) throw new Error('Horse files must be 512 KB or smaller.');
         const horse = readHorseDocument(payload);
         if (!next.settings.ignoreStableLimit && next.horses.length >= next.settings.stableCapacity) throw new Error('Your stable is full. Adjust capacity in Game Settings.');
-        next.horses.push({...horse,id:randomUUID(),caughtAt:new Date().toISOString()});
+        const caughtAt = new Date().toISOString();
+        next.horses.push({...horse,id:randomUUID(),birthday:localCalendarDate(caughtAt),caughtAt});
       } else if (type === 'rename' || type === 'favorite') {
         const horse = next.horses.find(h => h.id === payload.id);
         if (!horse) throw new Error('Horse not found in your stable.');

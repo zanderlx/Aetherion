@@ -36,7 +36,7 @@ A basic Horse Editor can begin with the existing schema. Generator probabilities
 
 ## Verification
 
-**60 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**62 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -81,3 +81,5 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - Merged Economy navigation into Game Settings. Removed settings guide cards and Save Management transaction/guide panels; saved transaction records remain available to sale history.
 
 - Economy uses one card for Current Gold and Horse Selling Price, saved together atomically. Starting Gold is hidden; existing internal values remain preserved.
+
+- Horse profiles show Birthday from the saved catch date and Age as elapsed calendar days. Uncaught horses show Not caught yet. Birthday edits update the catch date; Age is derived rather than separately editable.

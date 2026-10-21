@@ -73,15 +73,15 @@ test('wild horses have no export control; owned profiles export without release'
   assert.doesNotMatch(profileContent(horses[0],state),/data-action="rename-horse"/);
 });
 test('horse fields have individual edit controls only in edit mode and notes are escaped', () => {
-  const horse = {...horses[0],notes:'</textarea><script>bad</script>'};
+  const horse = {...horses[0],caughtAt:new Date().toISOString(),notes:'</textarea><script>bad</script>'};
   const html = profileContent(horse,{...state,horses:[horse],settings:{...settings,developerEditMode:true}});
-  for (const field of ['age','origin','size','birthday','personality','eye','gender']) assert.ok(html.includes(`data-field="${field}"`));
+  for (const field of ['origin','size','birthday','personality','eye','gender']) assert.ok(html.includes(`data-field="${field}"`));
   assert.doesNotMatch(profileContent(horse,state),/data-action="edit-horse-field"/);
-  assert.doesNotMatch(html,/data-copy-key="horse.subtitle"|data-field="species"/);
+  assert.doesNotMatch(html,/data-copy-key="horse.subtitle"|data-field="species"|data-field="age"/);
   assert.match(html,/&lt;\/textarea&gt;&lt;script&gt;/);
 });
 test('horse previews and details expose edit targets and the simplified nine-color layout', () => {
-  const horse = {...horses[0],birthday:'2020-02-29',palette:{...horses[0].palette,name:'HiddenPaletteName'}};
+  const horse = {...horses[0],birthday:'2010-01-01',caughtAt:new Date(2020,1,29,12).toISOString(),palette:{...horses[0].palette,name:'HiddenPaletteName'}};
   const html = profileContent(horse,state);
   assert.match(html,/id="profile-title"/);
   assert.match(html,/02-29-2020/);

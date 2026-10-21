@@ -1,3 +1,4 @@
+import {horseAcquisitionDate} from './dates.js';
 import {ages,sizes} from './horse-fields.js';
 
 export const horseFormat = 'aetherion-horse';
@@ -61,7 +62,7 @@ export function readHorseDocument(document) {
   };
 }
 export function createHorseDocument(horse) {
-  const data = {...horse,birthday:horse.birthday?.slice(0,10)};
+  const data = {...horse,birthday:horseAcquisitionDate(horse) || horse.birthday?.slice(0,10)};
   const snapshot = readHorseDocument({format:horseFormat,version:horseFormatVersion,horse:data});
   return {format:horseFormat,version:horseFormatVersion,exportedAt:new Date().toISOString(),horse:{id:horse.id,...snapshot}};
 }

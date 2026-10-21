@@ -18,6 +18,7 @@ export function updateHorseField(horse, field, value, catalog, state) {
     const date = new Date(`${value}T00:00:00Z`);
     if (!Number.isFinite(date.getTime()) || date.toISOString().slice(0,10) !== value || value > new Date().toISOString().slice(0,10) || value < '0001-01-01') throw new Error('Birthday must be a real date, no later than today.');
     horse.birthday = value;
+    if (horse.caughtAt) horse.caughtAt = new Date(`${value}T12:00:00`).toISOString();
     return;
   }
   if (!horseFieldOptions(field,catalog,state).some(option => option.value === value)) throw new Error('Choose an available option.');
