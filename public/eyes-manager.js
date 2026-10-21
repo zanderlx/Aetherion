@@ -1,4 +1,6 @@
 import {escapeHTML as e,icon} from './ui.js';
+import {colorControl} from './library-editor.js';
+import {trackForms,updateFormState,restoreBaseline} from './form-state.js';
 
 const rarityOrder = ['common','uncommon','rare','ultra rare','epic','legendary','mythic'];
 const eyeRarityChances = {common:60,uncommon:35,rare:5};
@@ -44,7 +46,14 @@ export function eyeIndividualChance(eye,allEyes) {
 
 function eyeCards(eyes,allEyes) { return eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-hex">${eye.colors.map(color => e(color.toUpperCase())).join(' · ')}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span><span class="eye-card-rarity">${e(eye.rarity)}${eyeIndividualChance(eye,allEyes)}</span></button>`).join(''); }
 
-export function createEyeEditor(renderEditor) {
+export function randomEyeDraft(eyes,rng = Math.random) {
+  const source = eyes[Math.floor(rng()*eyes.length)];
+  let name = `${source.name.slice(0,60)} Variation`, suffix = 1;
+  while (eyes.some(eye => eye.name.toLowerCase() === name.toLowerCase())) name = `${source.name.slice(0,60)} Variation ${++suffix}`;
+  return {...structuredClone(source),id:undefined,systemId:'',textureId:'',name};
+}
+
+export function createEyeEditor(renderEditor,getEyes) {
   const dialog = document.createElement('dialog');
   dialog.id = 'eye-definition-dialog';
   dialog.className = 'eye-definition-dialog';
@@ -53,8 +62,24 @@ export function createEyeEditor(renderEditor) {
   dialog.addEventListener('close',() => { if (!dialog.open) dialog.replaceChildren(); });
   dialog.addEventListener('click',event => {
     if (event.target.closest('[data-action="close-eye-editor"]')) dialog.close();
+    const button = event.target.closest('[data-eye-add]');
+    if (!button) return;
+    event.stopPropagation();
+    const rows = dialog.querySelector('#eye-color-rows');
+    if (rows.querySelectorAll('.eye-color-row').length >= 6) return;
+    const colors = getEyes().flatMap(eye => eye.colors);
+    const color = colors[Math.floor(Math.random()*colors.length)] || '#8A689E';
+    const row = document.createElement('div');
+    row.className = 'eye-color-row';
+    row.innerHTML = `${colorControl(crypto.randomUUID(),color,'Eye Color')}<button type="button" class="text-button" data-action="remove-eye-color">Remove Color</button>`;
+    rows.insertBefore(row,rows.querySelector('.eye-add-tile'));
+    rows.querySelector('.eye-add-tile').hidden = rows.querySelectorAll('.eye-color-row').length >= 6;
+    const picker = row.querySelector('[type="color"]');
+    picker.focus();
+    if (button.dataset.eyeAdd === 'manual') { if (picker.showPicker) picker.showPicker(); else picker.click(); }
+    updateFormState(dialog.querySelector('form'));
   });
-  return {
+  const editor = {
     dialog,
     open(draft) {
       const template = document.createElement('template');
@@ -62,6 +87,21 @@ export function createEyeEditor(renderEditor) {
       dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
       const form = template.content.querySelector('#definition-form');
       form.querySelector('.panel-heading')?.remove();
+      form.querySelector('[data-action="duplicate-definition"]')?.remove();
+      form.querySelector('[data-action="add-eye-color"]')?.remove();
+      const colors = form.querySelector('#eye-color-rows');
+      colors.insertAdjacentHTML('beforeend',`<div class="eye-add-tile" ${colors.children.length >= 6 ? 'hidden' : ''}><button type="button" class="icon-button" data-eye-add="manual" aria-label="Choose a new eye color">${icon('plus')}</button><button type="button" class="icon-button" data-eye-add="random" aria-label="Add a random eye color">${icon('refresh')}</button></div>`);
+      if (!draft?.id) {
+        const random = document.createElement('button');
+        random.type = 'button'; random.className = 'button secondary';
+        random.textContent = 'Randomize';
+        random.addEventListener('click',() => {
+          editor.open(randomEyeDraft(getEyes()));
+          trackForms(dialog);
+          restoreBaseline(dialog.querySelector('form'),'random-eye-draft');
+        });
+        form.querySelector('.form-actions').append(random);
+      }
       const fields = form.querySelector('.definition-fields');
       const name = fields.querySelector('[name="name"]').closest('label');
       const rarity = fields.querySelector('[name="rarity"]').closest('label');
@@ -75,4 +115,5 @@ export function createEyeEditor(renderEditor) {
       dialog.querySelector('[name="name"]').focus();
     }
   };
+  return editor;
 }

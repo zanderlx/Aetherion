@@ -26,7 +26,7 @@ const $ = selector => document.querySelector(selector);
 const main = $('#main');
 const profile = $('#profile');
 const confirmation = $('#confirm');
-const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft));
+const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft),() => catalog.eyes);
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
 
 const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() => 'horse/profile', save:action, notify, includeChrome:false, getValues:() => {
@@ -329,8 +329,10 @@ document.addEventListener('click', async event => {
     return;
   }
   if (intent === 'remove-eye-color') {
-    if ($('#eye-color-rows').children.length === 1) return notify('Keep at least one eye color.', true);
+    if ($('#eye-color-rows').querySelectorAll('.eye-color-row').length === 1) return notify('Keep at least one eye color.', true);
     button.closest('.eye-color-row').remove();
+    const tile = $('#eye-color-rows').querySelector('.eye-add-tile');
+    if (tile) tile.hidden = false;
     updateFormState($('#traits-form') || $('#definition-form'));
     return;
   }

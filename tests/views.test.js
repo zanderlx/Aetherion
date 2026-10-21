@@ -1,5 +1,5 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
-import {eyesManagerPage,filterEyes,eyeResults,eyeIndividualChance} from '../public/eyes-manager.js';
+import {eyesManagerPage,filterEyes,eyeResults,eyeIndividualChance,randomEyeDraft} from '../public/eyes-manager.js';
 
 test('individual eye percentages use all colors in the rarity',()=>{
   const eyes = [{rarity:'Common'},{rarity:'Common'},{rarity:'Rare'}];
@@ -370,4 +370,15 @@ test('Horse mutations have numbered entries and a count including zero',()=>{
  assert.equal((html.match(/<li class="mutation-slot /g)||[]).length,4);
  assert.equal((html.match(/aria-label="Locked mutation slot"/g)||[]).length,1);
  assert.match(html,/<strong>Double Jump<\/strong><span class="mutation-description">: Jump higher\.<\/span>/);
+});
+
+test('Random eye drafts preserve saved colors without reusing internal IDs',()=>{
+ const eyes=[{id:'eye-a',systemId:'a',textureId:'t',name:'Amber',rarity:'Rare',colors:['#ABCDEF'],layers:[]}];
+ const draft=randomEyeDraft(eyes,()=>0);
+ assert.deepEqual(draft.colors,['#ABCDEF']);
+ assert.equal(draft.id,undefined);
+ assert.equal(draft.systemId,'');
+ assert.equal(draft.textureId,'');
+ assert.notEqual(draft.name,'Amber');
+ assert.equal(eyes[0].name,'Amber');
 });

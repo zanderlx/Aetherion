@@ -127,6 +127,8 @@ select{text-transform:uppercase}
 .eye-definition-dialog form { margin-top:0; padding-top:0; }
 .eye-name-rarity { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
 .eye-name-rarity > .zone-field { margin-top:0; }
+.eye-add-tile { display:flex; align-items:center; justify-content:center; gap:8px; min-height:120px; border:1px dashed var(--border); border-radius:5px; }
+.eye-add-tile[hidden] { display:none; }
 @media(max-width:500px) { .eye-name-rarity { grid-template-columns:1fr; gap:8px; } }
 .eye-definition-dialog > .dialog-top { position:sticky; top:0; z-index:2; background:var(--panel); }
 .definitions-main .library-workbench { grid-template-columns:minmax(180px,.7fr) minmax(0,1.6fr); }
