@@ -79,7 +79,7 @@ test('every navigation destination renders content without undefined values', ()
   }
 });
 test('navigation groups have alphabetized links and profile content safely renders user text', () => {
-  assert.deepEqual(groups.find(g => g.title === 'Stables').items.map(item => item[1]),['My Horses','Favorites','Breeding']);
+  assert.deepEqual(groups.find(g => g.title === 'Stables').items.map(item => item[1]),['My Horses','Breeding']);
   assert.equal(groups.some(g => g.title === 'Breeding'),false);
   for (const group of groups.filter(g => g.title !== 'Stables')) assert.deepEqual(group.items.map(item => item[1]),group.items.map(item => item[1]).sort((a,b) => a.localeCompare(b)));
   const html = keeperPage({...state,keeper:{name:'<Keeper>',about:'</textarea><script>bad</script>',avatarSeed:27}});
@@ -139,6 +139,17 @@ test('collection search, sorting and favorites work with complete saved records'
   assert.doesNotMatch(filtered, /<h3><button[^>]*>Ash</);
   const favorites = collectionCards('favorites', populated);
   assert.equal((favorites.match(/class="horse-card"/g) || []).length, 1);
+  const favoriteSorted = collectionCards('all', populated, '', 'favorites');
+  assert.equal((favoriteSorted.match(/class="horse-card"/g) || []).length,3);
+  assert.ok(favoriteSorted.indexOf('>Ash<') < favoriteSorted.indexOf('>Willow<'));
+  assert.ok(favoriteSorted.indexOf('>Ash<') < favoriteSorted.indexOf('>Moss<'));
+  assert.match(card(collected[1],populated,'stable'),/aria-pressed="true"/);
+  assert.doesNotMatch(profileContent(collected[1],populated),/data-action="favorite"/);
+  const page = stablePage('all',populated);
+  assert.match(page,/>My Horses<\/h1>/);
+  assert.match(page,/<option value="favorites">Favorites<\/option>/);
+  assert.doesNotMatch(page,/A place to call home|A growing collection|Explore the wilds/);
+  assert.doesNotMatch(card(collected[0],populated),/picture-badge|Preview encounter/);
   const sorted = collectionCards('all', populated, '', 'name');
   assert.ok(sorted.indexOf('>Ash<') < sorted.indexOf('>Willow<'));
 });

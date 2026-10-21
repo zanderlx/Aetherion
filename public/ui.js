@@ -26,7 +26,7 @@ export const icons = {
 export const icon = name => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.spark}</svg>`;
 export const groups = [
   { title: 'Town', icon: 'town', items: [['town/gacha', 'Gacha Machine'], ['town/spirit', 'Spirit Tame'], ['town/plush', 'Plush Machine'], ['town/cave', 'Ancient Cave'], ['town/digsite', 'Digsite']] },
-  { title: 'Stables', icon: 'stable', open: true, items: [['stable/all', 'My Horses'], ['stable/favorites', 'Favorites'], ['stable/breeding', 'Breeding']] },
+  { title: 'Stables', icon: 'stable', open: true, items: [['stable/all', 'My Horses'], ['stable/breeding', 'Breeding']] },
   { title: 'Inventory', icon: 'bag', items: [['inventory/accessories', 'Accessories'], ['inventory/potions', 'Potions']] },
   { title: 'Wilds', icon: 'compass', open: true, items: [['wilds/aetherion', 'Aetherion Wilds'], ['wilds/hallowhoof', 'Hallowhoof']] },
   { title: 'Developer Settings', icon: 'settings', items: [['dev/settings', 'Game Settings'], ['dev/generator', 'Horse Generator'], ['dev/editor', 'Horse Editor'], ['dev/species', 'Species & Traits'], ['dev/colors', 'Colors & Palettes'], ['dev/mutations', 'Mutations'], ['dev/spawn', 'Spawn Rates'], ['dev/economy', 'Economy'], ['dev/items', 'Inventory & Items'], ['dev/locations', 'Events & Locations'], ['dev/saves', 'Save Management']] }
@@ -55,7 +55,7 @@ export function card(horse, state, mode = 'wild') {
   const collected = mode === 'stable';
   return `<article class="horse-card">
     <div class="card-picture"><button class="art-button" data-action="inspect" data-id="${horse.id}" aria-label="Inspect ${escapeHTML(title)}">${horseArt(horse)}</button>
-    <span class="badge picture-badge">${horse.locationId === 'hallowhoof' ? '✧ Halloween' : '◇ Preview encounter'}</span>
+
     ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}
     <span class="art-caption">ILLUSTRATIVE PLACEHOLDER</span></div>
     <div class="card-body"><div class="card-title"><div>${horse.name ? `<span class="eyebrow">${escapeHTML(horse.species)}</span>` : ''}<h3><button data-action="inspect" data-id="${horse.id}">${escapeHTML(title)}</button></h3></div><span class="gender" aria-label="${horse.gender}">${horse.gender === 'Female' ? '♀' : '♂'}</span></div>
