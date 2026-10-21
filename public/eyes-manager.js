@@ -9,6 +9,7 @@ export function labelEyeColors(root) {
     row.querySelector('.color-control > span').textContent = label;
     row.querySelector('[type="color"]').setAttribute('aria-label',`${label} color picker`);
     row.querySelector('[data-color-hex]').setAttribute('aria-label',`${label} hex value`);
+    row.querySelector('[data-action="remove-eye-color"]').hidden = rows.length === 1;
   });
 }
 
@@ -77,12 +78,6 @@ export function createEyeEditor(renderEditor,getEyes) {
   savePrompt.setAttribute('aria-labelledby','eye-save-title');
   savePrompt.innerHTML = `<div class="dialog-top"><h2 id="eye-save-title">Save Changes?</h2></div><p>You have unsaved eye color changes. Save them before closing?</p><div class="form-actions"><button type="button" class="button secondary" data-eye-decision="keep" autofocus>Keep Editing</button><button type="button" class="button secondary" data-eye-decision="discard">Discard Changes</button><button type="button" class="button primary" data-eye-decision="save">Save</button></div>`;
   document.body.append(savePrompt);
-  const minimumPrompt = document.createElement('dialog');
-  minimumPrompt.className = 'eye-save-confirm';
-  minimumPrompt.setAttribute('aria-labelledby','eye-minimum-title');
-  minimumPrompt.innerHTML = `<div class="dialog-top"><h2 id="eye-minimum-title">Eye Color Required</h2></div><p>There needs to be at least 1 eye color.</p><div class="form-actions"><button type="button" class="button primary" autofocus>OK</button></div>`;
-  minimumPrompt.querySelector('button').addEventListener('click',() => minimumPrompt.close());
-  document.body.append(minimumPrompt);
   function requestClose() {
     const form = dialog.querySelector('form');
     if (!form || formSignature(form) === formBaseline(form)) dialog.close();
@@ -122,7 +117,6 @@ export function createEyeEditor(renderEditor,getEyes) {
   });
   const editor = {
     dialog,
-    showMinimumColorMessage() { if (!minimumPrompt.open) minimumPrompt.showModal(); },
     open(draft) {
       if (!draft?.id && !draft?.name) draft = {...draft,rarity:'Uncommon',colors:[randomEyeColor()]};
       const template = document.createElement('template');
