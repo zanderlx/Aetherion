@@ -97,7 +97,7 @@ select{text-transform:uppercase}
 .eye-rarity-section > h2 { margin-bottom:16px; }
 .eye-rarity-chance { color:var(--muted); font-size:.75em; }
 .horse-mutations-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
-.horse-mutation-count { color:var(--muted); font-variant-numeric:tabular-nums; }
+.horse-mutation-count { font:400 25px/1.4 var(--serif); color:inherit; font-variant-numeric:tabular-nums; }
 .horse-mutations { margin:0; padding-left:26px; }
 .horse-mutations li { padding:14px 0 14px 6px; border-bottom:1px solid var(--border); }
 .horse-mutations li:first-child { padding-top:0; }
