@@ -82,3 +82,7 @@ select{text-transform:uppercase}
 .settings-section-heading { margin-bottom:20px; }
 
 .settings-section-heading h1 { font-size:30px; line-height:1.3; letter-spacing:normal; }
+
+.collection-toolbar { justify-content:flex-start; }
+.collection-toolbar > [data-action="import-horse"] { flex-shrink:0; }
+.collection-toolbar .sort-field { margin-left:auto; }
