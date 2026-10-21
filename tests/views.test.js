@@ -1,5 +1,5 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
-import {eyesManagerPage,filterEyes} from '../public/eyes-manager.js';
+import {eyesManagerPage,filterEyes,eyeResults} from '../public/eyes-manager.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -339,4 +339,13 @@ test('Eye card search combines name hex and rarity with alphabetical sorting',()
  assert.equal(filterEyes(eyes,'zinc aabb','Rare').length,1);
  assert.equal(filterEyes(eyes,'zinc','Common').length,0);
  assert.equal(filterEyes(eyes,'missing').length,0);
+});
+
+test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
+ const eyes=['Rare','Common','Uncommon'].map(rarity=>({id:rarity,name:rarity,rarity,colors:['#112233']}));
+ assert.deepEqual(filterEyes(eyes,'','','rarity').map(e=>e.rarity),['Common','Uncommon','Rare']);
+ const html=eyeResults(eyes,'rarity');
+ assert.ok(html.indexOf('<h2>Common</h2>') < html.indexOf('<h2>Uncommon</h2>'));
+ assert.ok(html.indexOf('<h2>Uncommon</h2>') < html.indexOf('<h2>Rare</h2>'));
+ assert.equal((html.match(/eye-rarity-section/g)||[]).length,3);
 });

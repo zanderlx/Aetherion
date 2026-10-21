@@ -1,13 +1,30 @@
 import {escapeHTML as e,icon} from './ui.js';
 
+const rarityOrder = ['common','uncommon','rare','ultra rare','epic','legendary','mythic'];
+const rarityRank = rarity => { const rank = rarityOrder.indexOf(rarity.toLowerCase()); return rank < 0 ? rarityOrder.length : rank; };
+const compareRarity = (a,b) => rarityRank(a)-rarityRank(b) || a.localeCompare(b);
+
 export function filterEyes(eyes,query = '',rarity = '',sort = 'az') {
   const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return eyes.filter(eye => (!rarity || eye.rarity === rarity) && words.every(word => [eye.name,eye.rarity,...eye.colors].join(' ').toLowerCase().includes(word))).sort((a,b) => sort === 'za' ? b.name.localeCompare(a.name) : sort === 'rarity' ? a.rarity.localeCompare(b.rarity) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
+  return eyes.filter(eye => (!rarity || eye.rarity === rarity) && words.every(word => [eye.name,eye.rarity,...eye.colors].join(' ').toLowerCase().includes(word))).sort((a,b) => sort === 'za' ? b.name.localeCompare(a.name) : sort === 'rarity' ? compareRarity(a.rarity,b.rarity) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
+}
+
+export function eyeResults(eyes,sort = 'az') {
+  if (sort !== 'rarity') return eyeCards(eyes);
+  const groups = new Map();
+  for (const eye of eyes) {
+    if (!groups.has(eye.rarity)) groups.set(eye.rarity,[]);
+    groups.get(eye.rarity).push(eye);
+  }
+  return [...groups].sort(([a],[b]) => compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}</h2><div class="eye-definition-grid">${eyeCards(entries)}</div></section>`).join('');
 }
 
 export function updateEyeGrid(root,catalog) {
   const eyes = filterEyes(catalog.eyes,root.querySelector('#eye-search').value,root.querySelector('#eye-rarity').value,root.querySelector('#eye-sort').value);
-  root.querySelector('#eye-grid').innerHTML = eyeCards(eyes);
+  const grid = root.querySelector('#eye-grid');
+  const sort = root.querySelector('#eye-sort').value;
+  grid.classList.toggle('eye-definition-grid',sort !== 'rarity');
+  grid.innerHTML = eyeResults(eyes,sort);
   root.querySelector('#eye-empty').hidden = eyes.length > 0;
 }
 
