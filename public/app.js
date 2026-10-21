@@ -93,7 +93,7 @@ async function navigate() {
     route = available ? `wilds/${available.id}` : 'stable/all';
     history.replaceState(null,'',`#${route}`);
   }
-  const movedRoutes = {'breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
+  const movedRoutes = {'stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
   if (movedRoutes[route]) { route = movedRoutes[route]; history.replaceState(null,'', '#' + route); }
   closeMenu();
   if (profile.open) profile.close();
@@ -231,7 +231,7 @@ function updateAvatarPreview() {
 }
 function askToDelete(type, payload, name, detail, verb = type === 'delete-profile' ? 'Reset' : 'Delete') {
   pendingDeletion = {type,payload};
-  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>Keep It</button><button class="button primary" data-action="confirm-delete">Confirm ${verb}</button></div>`;
+  confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)}\nThis is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
   confirmation.showModal();
 }
 document.addEventListener('click', async event => {
