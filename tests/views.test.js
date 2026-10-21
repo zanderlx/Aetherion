@@ -28,6 +28,10 @@ test('zone tags render as safe text without icons and can be removed', () => {
   assert.match(wildPage({...location,tags:[]},state),/<div class="hero-bottom"><\/div>/);
   const editor = zoneEditorPage(catalog,state);
   assert.match(editor,/name="tags"/);
+  assert.match(editor,/>My Zones<\/h1>/);
+  assert.ok(editor.indexOf('zone-collection') < editor.indexOf('id="zone-form"'));
+  assert.doesNotMatch(editor,/THE KEEPER’S WORLDBUILDER|Make room for a little wonder|Places to get a little lost|Let curiosity lead/);
+  assert.equal((editor.match(/class="panel zone-card"/g) || []).length,locationsFor(catalog,state).length);
   assert.match(editor,/The evergreen realm\nFree exploration/);
 });
 test('wild horses have no deletion control; owned horses can be released', () => {

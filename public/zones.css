@@ -16,7 +16,7 @@
 .zone-preview p{font-size:14px}
 .zone-preview .hero-bottom{margin-top:18px}
 .zone-preview{min-height:310px}
-.zone-collection{margin-top:30px}
+.zone-collection{margin:0 0 30px}
 .zone-card{min-width:0}
 .zone-card h3,.zone-card p,.hero h1,.hero h2,.hero p,.hero-bottom{overflow-wrap:anywhere}
 .hero.moonlit{background-color:#49375f;background-blend-mode:luminosity;border-color:#837399}
@@ -33,3 +33,7 @@ main{scroll-margin-top:80px}
 @media(max-width:480px){.zone-options{grid-template-columns:1fr}.zone-preview .hero-content{padding:24px}.zone-draft-actions>.button{width:100%}}
 
 .hero-bottom { flex-wrap:wrap; row-gap:10px; }
+
+.zone-collection .zone-card { padding:0; overflow:hidden; }
+.zone-card-actions { padding:18px; }
+.zone-card > .zone-preview { border:0; border-radius:0; }

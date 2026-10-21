@@ -187,7 +187,7 @@ function showZoneDraft(draft) {
   trackForms(main);
   if (!draft.id && draft.name) restoreBaseline($('#zone-form'),'unsaved-generated-draft');
   $('#zone-form input[name="name"]').focus({ preventScroll: true });
-  main.scrollIntoView({ block: 'start' });
+  $('#zone-form').scrollIntoView({ block: 'start' });
 }
 function showDefinition(kind, draft) {
   main.innerHTML = libraryEditorPage(kind, catalog, state, draft);
