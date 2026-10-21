@@ -332,7 +332,7 @@ document.addEventListener('click', async event => {
     return;
   }
   if (intent === 'remove-eye-color') {
-    if ($('#eye-color-rows').querySelectorAll('.eye-color-row').length === 1) return notify('Keep at least one eye color.', true);
+    if ($('#eye-color-rows').querySelectorAll('.eye-color-row').length === 1) return eyeEditor.showMinimumColorMessage();
     button.closest('.eye-color-row').remove();
     const tile = $('#eye-color-rows').querySelector('.eye-add-tile');
     if (tile) tile.hidden = false;
