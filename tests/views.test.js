@@ -239,14 +239,16 @@ test('sale history merges old archives with transactions without double-counting
 test('active sidebar destination is exposed to assistive technology', () => {
   const html = sidebar('wilds/aetherion', state, new Set(['Wilds']));
   assert.match(html, /href="#wilds\/aetherion" aria-current="page"/);
-  assert.match(html, /data-group="Wilds" open/);
+  assert.match(html,/class="nav-section-link" href="#wilds\/aetherion" aria-current="page"/);
+  assert.doesNotMatch(html,/<details data-group="Wilds"/);
 });
 test('custom zones appear in navigation and wild pages with safe text; disabled zones stay hidden', () => {
   const zone = { ...newZoneDraft(), id: 'zone-test', name: '<script>magic</script>', description: 'Moon & stars', custom: true, atmosphere: 'moonlit' };
   const populated = { ...state, customLocations: [zone, { ...zone, id: 'zone-hidden', name: 'Hidden', enabled: false }] };
   const locations = locationsFor(catalog, populated);
   const nav = sidebar('wilds/zone-test', populated, new Set(), catalog);
-  assert.match(nav, /href="#wilds\/zone-test" aria-current="page"/);
+  assert.match(nav,/class="nav-section-link" href="#wilds\/aetherion" aria-current="location"/);
+  assert.doesNotMatch(nav,/href="#wilds\/zone-test"/);
   assert.doesNotMatch(nav, /#wilds\/zone-hidden|<script>/);
   const html = wildPage(zone, populated, locations);
   assert.match(html, /hero moonlit/);

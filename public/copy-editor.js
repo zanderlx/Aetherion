@@ -130,6 +130,7 @@ export function createCopyEditor({ getState, getRoute, save, notify, includeChro
     }
     if (includeChrome) {
     for (const link of document.querySelectorAll('#sidebar .nav-items a')) add(link.querySelector('span'),'site',`nav-${link.hash.slice(1).replaceAll('/','-')}`);
+    for (const link of document.querySelectorAll('#sidebar .nav-section-link')) add(link.querySelector('span'),'site','group-wilds','Wilds section');
     for (const details of document.querySelectorAll('#sidebar details')) add(details.querySelector('summary>span'),'site',`group-${details.dataset.group.toLowerCase().replaceAll(' ','-')}`);
     document.querySelectorAll('footer>span').forEach((element,index) => add(element,'site',`footer-${index}`));
     add(document.querySelector('.brand-title'),'site','brand-title','Website name');

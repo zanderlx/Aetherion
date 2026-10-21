@@ -86,3 +86,7 @@ select{text-transform:uppercase}
 .collection-toolbar { justify-content:flex-start; }
 .collection-toolbar > [data-action="import-horse"] { flex-shrink:0; }
 .collection-toolbar .sort-field { margin-left:auto; }
+
+.nav-section-link { display:flex; align-items:center; gap:11px; min-height:43px; margin-bottom:5px; padding:10px; border-radius:4px; font-size:15px; font-weight:500; color:var(--muted); }
+.nav-section-link:hover { background:var(--panel-deep); color:var(--text); }
+.nav-section-link[aria-current] { background:var(--panel-deep); color:var(--gold); }
