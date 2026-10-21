@@ -39,6 +39,16 @@ test('zone tags render as safe text without icons and can be removed', () => {
   assert.equal((editor.match(/class="panel zone-card"/g) || []).length,locationsFor(catalog,state).length);
   assert.match(editor,/The evergreen realm\nFree exploration/);
 });
+test('top Wilds tabs mark saved custom Event zones without icons or extra hero labels', () => {
+  const zone = {...newZoneDraft(),id:'dreamwhisper',name:'Dreamwhisper Haven',custom:true,event:'Event'};
+  const populated = {...state,customLocations:[zone]};
+  const locations = locationsFor(catalog,populated);
+  const page = wildPage(locations[0],populated,locations,catalog);
+  const tabs = page.match(/<div class="location-tabs"[^>]*>(.*?)<\/div>/s)[1];
+  assert.match(tabs,/Dreamwhisper Haven<small>EVENT<\/small>/);
+  assert.doesNotMatch(tabs,/<svg/);
+  assert.doesNotMatch(page,/zone-event-label/);
+});
 test('wild horses have no deletion control; owned horses can be released', () => {
   assert.doesNotMatch(profileContent(horses[0],state), /data-action="delete-horse"/);
   const owned = profileContent(horses[0],{...state,horses:[horses[0]]});
