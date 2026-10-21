@@ -83,7 +83,7 @@ test('horse previews and details expose edit targets and the simplified nine-col
   assert.match(html,/id="profile-title"/);
   assert.match(html,/02-29-2020/);
   assert.doesNotMatch(html,/HiddenPaletteName|>Return |IN YOUR CARE|A WILD ACQUAINTANCE/);
-  assert.ok(html.indexOf('Eye color') > html.indexOf('Traits & little details'));
+  assert.ok(html.indexOf('Eye color') > html.indexOf('<h3>Traits</h3>'));
   assert.doesNotMatch(html,/profile-id-footer|Horse ID/);
   const preview = card(horse,state,'stable');
   assert.equal((preview.match(/--swatch:/g) || []).length,9);
