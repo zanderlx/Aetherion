@@ -43,8 +43,8 @@ export function updateEyeGrid(root,catalog) {
 
 export function eyesManagerPage(catalog) {
   return `<div class="definitions-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">Create Eye Color</button><p class="configuration-path">data/config/eyes.json</p></div>
-    <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search name, rarity, or hex…" aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field">Sort By<select id="eye-sort"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="rarity">Rarity</option></select></label></div>
-    <div id="eye-grid" class="eye-definition-grid">${eyeCards(filterEyes(catalog.eyes),catalog.eyes)}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
+    <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search name, rarity, or hex…" aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field">Sort By<select id="eye-sort"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="rarity" selected>Rarity</option></select></label></div>
+    <div id="eye-grid">${eyeResults(filterEyes(catalog.eyes,'','','rarity'),'rarity',catalog.eyes)}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
 }
 
 export function eyeIndividualChance(eye,allEyes) {
@@ -54,7 +54,7 @@ export function eyeIndividualChance(eye,allEyes) {
   return count ? ` · ${Number((chance/count).toFixed(4))}%` : '';
 }
 
-function eyeCards(eyes,allEyes) { return eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-hex">${eye.colors.map(color => e(color.toUpperCase())).join(' · ')}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span><span class="eye-card-rarity">${e(eye.rarity)}${eyeIndividualChance(eye,allEyes)}</span></button>`).join(''); }
+function eyeCards(eyes,allEyes) { return eyes.map(eye => `<button type="button" class="panel eye-definition-card" data-action="edit-definition" data-kind="eyes" data-id="${e(eye.id)}" aria-label="Edit ${e(eye.name)}"><span class="eye-card-name">${e(eye.name)}</span><span class="eye-card-hex">${eye.colors.map(color => e(color.toUpperCase())).join(' · ')}</span><span class="eye-swatches" aria-label="Eye colors">${eye.colors.map(color => `<span style="background:${e(color)}" title="${e(color)}"></span>`).join('')}</span><span class="eye-card-rarity">${e(eye.rarity)}</span>${eyeIndividualChance(eye,allEyes) ? `<span class="eye-card-chance">Chance: ${eyeIndividualChance(eye,allEyes).slice(3)}</span>` : ''}</button>`).join(''); }
 
 export function randomEyeDraft(eyes,rng = Math.random) {
   const source = eyes[Math.floor(rng()*eyes.length)];

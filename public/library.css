@@ -125,6 +125,7 @@ select{text-transform:uppercase}
 .eye-grid-controls .zone-field { flex:1 1 180px; margin:0; }
 .eye-grid-controls .zone-field:first-child { flex-grow:2; }
 .eye-card-rarity { display:block; color:var(--muted); margin-top:12px; }
+.eye-card-chance { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
 .eye-swatches { display:flex; flex-shrink:0; width:100%; height:72px; margin-top:auto; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
 .eye-swatches span { flex:1; }
 .eye-definition-dialog { width:min(760px,calc(100vw - 32px)); max-height:85vh; overflow-y:auto; }
