@@ -4,7 +4,7 @@ import {saleHistoryTable} from './economy.js';
 function settingForm(state,economy = false) {
   const s = state.settings;
   const id = economy ? 'economy' : 'settings';
-  return `<form id="${id}-form" class="panel"><div class="panel-heading">${icon(economy ? 'coin' : 'settings')}<div><h2>${economy ? 'Gold & Selling Price' : 'Encounter & Stable Settings'}</h2></div></div>
+  return `<form id="${id}-form" class="panel">
   ${economy ? `<label class="setting-row"><span><strong>Current Gold</strong><small>Your saved balance, shown in the header.</small></span><input name="gold" type="number" min="0" max="1000000000" step="1" value="${state.gold}" required></label>
   <label class="setting-row"><span><strong>Horse selling price</strong><small>Gold earned for each future sale.</small></span><div class="input-suffix"><input name="sellingPrice" type="number" min="0" max="1000000" value="${s.sellingPrice}" required><span>gold</span></div></label>
 ` : `<label class="setting-row"><span><strong>Horses per search</strong><small>How many companions appear in a new clearing (1–12).</small></span><input name="horsesPerSearch" type="number" min="1" max="12" value="${s.horsesPerSearch}" required></label>
@@ -14,8 +14,8 @@ function settingForm(state,economy = false) {
 }
 
 export function gameSettingsPage(state) {
-  return `${heading('','Game Settings','Changes are saved on this computer.')}
+  return `${heading('','Encounter & Stable Settings','Changes are saved on this computer.')}
   ${settingForm(state)}
   <section class="economy-settings" aria-labelledby="economy-heading"><h2 id="economy-heading" data-copy-key="economy.heading">Economy Settings</h2>
-  ${settingForm(state,true)}${saleHistoryTable(state)}</section>`;
+  ${settingForm(state,true)}</section>${saleHistoryTable(state)}`;
 }
