@@ -159,6 +159,7 @@ select{text-transform:uppercase}
 .definitions-header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
 .definitions-header > .button { align-self:center; }
 .manager-heading { margin:0; }
-.configuration-path { font-size:13px; margin:0 0 0 auto; text-align:right; overflow-wrap:anywhere; }
+.eye-manager-header { margin-bottom:34px; }
+.breadcrumb .breadcrumb-path { font-size:12px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-transform:none; }
 .spawn-settings { margin-bottom:24px; }
 @media(max-width:1400px) { .definitions-main .library-workbench { grid-template-columns:1fr; } .definitions-main .library-list-panel { position:static; } .definitions-main .definition-list { max-height:260px; } }
