@@ -294,7 +294,7 @@ dialog::backdrop{background:#0b0b0bd4;backdrop-filter:blur(5px)}
 #toast{position:fixed;z-index:50;bottom:24px;left:calc(50% + 132px);transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:14px 22px;border:1px solid #8a7851;background:#302b21;color:#f1dfba;border-radius:6px;box-shadow:0 5px 30px #0005;font-size:14px;transition:opacity .2s,transform .2s;max-width:calc(100vw - 40px)}
 #toast.visible{opacity:1;transform:translate(-50%,0)}
 #toast.error{background:#532d2e;border-color:#c6867d}
-#economy-form input[type="number"],#settings-form input[type="number"]{appearance:textfield;-moz-appearance:textfield}
+#economy-form input[type="number"],#settings-form input[type="number"]{appearance:textfield;-moz-appearance:textfield;text-align:right}
 #economy-form input[type="number"]::-webkit-inner-spin-button,#economy-form input[type="number"]::-webkit-outer-spin-button,#settings-form input[type="number"]::-webkit-inner-spin-button,#settings-form input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .scrim{display:none}
 .loading{padding:100px 20px;text-align:center;font-family:var(--serif);font-size:30px;color:var(--gold)}
