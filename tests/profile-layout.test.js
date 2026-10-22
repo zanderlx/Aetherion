@@ -17,6 +17,7 @@ test('horse profile separates overview from appearance and keeps unique portrait
  const overview=html.split('data-profile-panel="overview">')[1].split('data-profile-panel="appearance"')[0];
  const appearance=html.split('data-profile-panel="appearance"')[1];
  assert.match(overview,/horse-facts/);assert.match(overview,/>Equipment<\/h3>/);assert.match(overview,/>Skills<\/h3>/);
+ assert.doesNotMatch(overview,/Equipment is not available yet|Skill training is not available yet/);
  assert.doesNotMatch(overview,/class="color-regions"|class="horse-notes"/);
  assert.match(appearance,/class="color-regions"/);assert.match(appearance,/>Traits<\/h3>/);assert.match(appearance,/>Mutations<\/h3>/);
  assert.equal((html.match(/viewBox="240 25 135 145"/g)||[]).length,2);

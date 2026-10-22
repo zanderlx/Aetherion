@@ -8,10 +8,10 @@ function portrait(horse,suffix) {
   return `<div class="profile-portrait">${art}</div>`;
 }
 function equipment() {
-  return `<section class="profile-equipment"><h3>Equipment</h3><p class="muted profile-unavailable">Equipment is not available yet.</p><dl>${equipmentSlots.map(slot=>`<div><span class="equipment-slot" aria-hidden="true">${icon('bag')}</span><div><dt>${slot}</dt><dd>Not equipped</dd></div></div>`).join('')}</dl></section>`;
+  return `<section class="profile-equipment"><h3>Equipment</h3><dl>${equipmentSlots.map(slot=>`<div><span class="equipment-slot" aria-hidden="true">${icon('bag')}</span><div><dt>${slot}</dt><dd>Not equipped</dd></div></div>`).join('')}</dl></section>`;
 }
 function skills() {
-  return `<section class="profile-skills"><h3>Skills</h3><p class="muted profile-unavailable">Skill training is not available yet.</p><dl>${skillNames.map(name=>`<div><dt>${name}</dt><dd aria-label="Not available">—</dd></div>`).join('')}</dl></section>`;
+  return `<section class="profile-skills"><h3>Skills</h3><dl>${skillNames.map(name=>`<div><dt>${name}</dt><dd aria-label="Not available">—</dd></div>`).join('')}</dl></section>`;
 }
 export function profileLayout(horse,{header,info,notes,colors,traits,mutations,actions,importPreview}) {
   const prefix=importPreview ? 'import-horse' : 'horse-profile';
