@@ -1,4 +1,4 @@
-# Aetherion — Version 1.2 Progress
+# Aetherion — Version 1.3 Progress
 
 ## Implemented
 
@@ -36,7 +36,7 @@ The specified spawning pipeline is implemented; see SPAWNING.md. Full horse edit
 
 ## Verification
 
-**78 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
+**88 automated tests pass.** Tests use isolated save folders and a temporary local server; the user's save is not modified by tests. Coverage includes palette values and migration, deletion/reference cleanup, profiles, theme contrast, contextual templates, navigation, form state, persistence, export, backups, and same-origin API restrictions.
 
 Browser observation was blocked by the browser tool's localhost policy. No alternate browser workaround was used. Visual appearance and full interaction behavior are therefore not claimed as verified.
 
@@ -91,3 +91,11 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - Cosmic 0.325% split, uniform Cosmic species, weighted Wild species, chained mutation slots, duplicate lockout, 50/50 gender, and shifted/clamped eleven-step sizes.
 - Dynamic file reads on spawn, atomic writes, rollback/recovery journal, and dated pre-migration player backup. Existing horses remain unchanged.
 - Historical preview notes above describe earlier versions and are superseded by this update. Visual browser QA remains unverified.
+
+### Version 1.3 — definition managers and horse profiles
+
+- Separate Species and Traits navigation; definition paths in breadcrumbs.
+- Eye cards with filters, rarity groups, reference percentages, random color generation, and modal CRUD with unsaved-change protection.
+- Personality cards, emojis, modal create/edit, and compact search.
+- Horse profile essentials, counted optional trait groups, square palette swatches, four mutation slots and locks, and centered Catch.
+- See README for current behavior and remaining visual QA.

@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.2](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.3](docs/assets/aetherion-banner.svg)
 
-**Version 1.2.0 · Data-Driven Spawning & Local Configuration**
+**Version 1.3.0 · Definition Managers & Horse Profile Redesign**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1.2 adds the data-driven spawning pipeline and file-backed configuration managers.** Cosmic/Wild selection, weighted species, cascading mutations, sizes, gender, aesthetics, personalities, horse import/export, and local saves work today. Full horse creation, gameplay effects, breeding, inventory gameplay, and Town activities remain planned.
+> **Version 1.3 improves definition management and horse profiles, building on version 1.2’s data-driven spawning and local configuration.** Cosmic/Wild selection, weighted species, cascading mutations, sizes, gender, aesthetics, personalities, horse import/export, and local saves work today. Full horse creation, gameplay effects, breeding, inventory gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,11 +22,12 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.2.0 — current** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
+| **1.3.0 — current** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
+| **1.2.0** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **81 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **88 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -115,6 +116,15 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 
 Save and Cancel controls appear when a form has changes. Deletion requires confirmation. Existing horse snapshots are preserved when definitions change.
 
+
+### Definition manager and profile improvements in 1.3
+
+- **Eye Colors:** responsive clickable cards with names, hex values, swatches, search, rarity filters, and alphabetical or rarity sorting. Rarity groups are the default. Headers show the reference Common **60%**, Uncommon **35%**, and Rare **5%**; optional card percentages divide those totals equally among registered colors. These are reference display values: the current spawning pipeline still selects eye records uniformly.
+- **Eye editing:** create/edit modals with sticky headers, Name/Rarity fields, trash-icon deletion with confirmation, and unsaved-change prompts. New entries start as **Custom Color**, Common, with one random color. Randomize generates **1–3** colors while preserving text and rarity. Add-color tiles offer white or random additions; Remove Color is hidden for a single swatch. Saved visual layers remain metadata and are not rendered.
+- **Personalities:** equal-size readable cards, default personality emojis, italic descriptions, compact labeled search, and pencil editing. Create and edit use modals with emoji choices, a compact emoji/name row, edit-only deletion, and Save after changes. Newly saved entries append to the grid.
+- **Horse profiles:** essentials for Eye Color, Mane, and Tail; six optional trait groups with counts and tags for up to thirteen optional traits. Missing-data text remains unboxed. Four equal-size mutation slots show numbered name/description entries or centered locks, plus an assigned count out of four. Horse colors use a 3×3 grid of noninteractive square swatches with bold type labels and hex codes. Catch is wider and centered.
+- **Navigation and collection:** consistent Wilds colors, simplified definition headers, and clearer empty-stable wording.
+
 ### Mutated Horse palettes
 
 Available under **Horse Definitions → Palettes**:
@@ -127,7 +137,7 @@ Every supplied hex value is preserved. These are palette definitions; choosing o
 
 ### Data-driven spawning
 
-Horse Definitions is a parent dashboard with five managers: **Species**, **Palettes**, **Eye Color**, **Mutations**, and **Personalities**. CRUD overwrites local JSON configuration files. Species expose rarity tiers and zone checkboxes; palettes support species links and skin IDs; eyes support textures/layers; mutations expose tokens, thresholds, and duplicate control; personalities expose system IDs and behavior tags.
+Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, and **Personalities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
 
 Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects any registered species uniformly. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 
@@ -141,7 +151,7 @@ Starting gold and stable limits are provisional settings. **Current Gold** chang
 
 Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
 
-Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye color appears first in Traits & Little Details; Horse ID is tracked internally. Interface font sizes increased by two pixels.
+Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye Color appears in the primary Traits row; Horse ID is tracked internally. Interface font sizes increased by two pixels.
 
 In horse profiles, Birthday is the date the horse entered your stable (MM-DD-YYYY), and Age counts calendar days since that date. Existing horses use their saved catch timestamp; newly imported horses start at 0 days. Uncaught horses show Not caught yet. Editing Birthday updates the acquisition date used by Age. The life-stage value (Adult/Foal/Elder) remains internal for compatibility.
 
