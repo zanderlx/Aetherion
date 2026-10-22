@@ -1,4 +1,5 @@
 import {ConfigurationFiles} from './configuration.js';
+import {readHorseSkills} from '../public/skill-progress.js';
 import {synchronizeCosmicPalettes} from './cosmic-palettes.js';
 import {validateRaritySettings} from '../public/rarity-settings.js';
 import {horseSalePrice,saleModifiers,validateSaleModifiers} from '../public/sale-pricing.js';
@@ -89,6 +90,16 @@ export class GameStore {
       this.state = next;
     }
     const next = this.snapshot();
+    let skillsChanged = false;
+    for (const horse of horseRecords(next)) {
+      const skills = readHorseSkills(horse.skills);
+      if (JSON.stringify(skills) !== JSON.stringify(horse.skills)) {horse.skills=skills;skillsChanged=true;}
+    }
+    if (skillsChanged) {
+      await copyFile(this.file,join(this.directory,'backups',`pre-horse-skills-${Date.now()}-${randomUUID()}.json`));
+      await this.persist(next);
+      this.state = next;
+    }
     if (synchronizeCosmicPalettes(horseRecords(next),this.getCatalog(next))) {
       await copyFile(this.file,join(this.directory,'backups',`pre-cosmic-palettes-${Date.now()}-${randomUUID()}.json`));
       await this.persist(next);

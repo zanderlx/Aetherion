@@ -15,7 +15,7 @@ function skills(horse) {
   const values=readHorseSkills(horse.skills);
   return `<section class="profile-skills"><h3>Skills</h3><dl>${skillDefinitions.map(([name,symbol,color])=>{
     const progress=skillProgress(values[name.toLowerCase()]);
-    return `<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" style="--skill-progress:${progress.percent}%" aria-label="${name} level ${progress.level}"><span>Lv. ${progress.level}</span></dd><dd class="skill-xp">${progress.xp}/${progress.xpNeeded ?? '—'} XP</dd></div>`;
+    return `<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" style="--skill-progress:${progress.percent}%" aria-label="${name} ${progress.maxed ? 'maximum level' : `level ${progress.level}`}"><span>${progress.maxed ? 'MAX' : `Lv. ${progress.level}`}</span></dd><dd class="skill-xp">${progress.maxed ? 'MAX XP' : `${progress.xp}/${progress.xpNeeded} XP`}</dd></div>`;
   }).join('')}</dl></section>`;
 }
 export function profileLayout(horse,{header,info,notes,colors,traits,mutations,actions,importPreview}) {

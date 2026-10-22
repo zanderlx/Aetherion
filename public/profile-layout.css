@@ -38,7 +38,7 @@
 .profile-equipment h3,.profile-notes-skills h3{margin:0 0 8px;font-size:21px}
 .profile-equipment>h3,.profile-notes-skills>section>h3{text-align:center}
 .profile-unavailable{font-size:12px;line-height:1.5;margin:0 0 8px}
-.profile-equipment dl{display:grid;gap:6px;margin:0;padding-left:10px;flex:1;grid-auto-rows:minmax(36px,1fr);min-height:356px}
+.profile-equipment dl{display:grid;gap:6px;margin:0;padding-left:20px;flex:1;grid-auto-rows:minmax(36px,1fr);min-height:356px}
 .profile-equipment dl>div{display:flex;align-items:center;gap:12px;min-width:0}
 .equipment-slot{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--border);border-radius:5px;background:var(--panel-deep);color:var(--muted);flex-shrink:0}
 .equipment-slot .icon{width:16px;height:16px}
@@ -48,13 +48,14 @@
 .profile-notes-skills{display:flex;flex-direction:column;min-width:0}
 .horse-profile-shell .horse-notes{margin:0;flex:1;border-bottom:1px solid var(--border)}
 .horse-profile-shell .horse-notes .horse-text-display{height:90px;overflow-y:auto}
+.horse-profile-shell .horse-notes .horse-text-display:has(.empty-horse-notes){align-items:center;justify-content:center;text-align:center}
 .profile-skills{display:flex;flex-direction:column;flex:1}
-.profile-skills dl{display:grid;gap:6px;margin:0;flex:1;grid-auto-rows:minmax(30.4px,1fr);min-height:202px}
+.profile-skills dl{display:grid;gap:10px;margin:0;flex:1;grid-auto-rows:minmax(28px,1fr);min-height:202px}
 .profile-skills dl>div{display:grid;grid-template-columns:90px minmax(50px,1fr) max-content;align-items:center;gap:8px;padding:0;width:100%}
 .profile-skills dt{display:flex;justify-content:flex-end;align-items:center;gap:6px;white-space:nowrap}
 .profile-skills dt>span{text-align:right}
 .profile-skills dt .icon{width:17px;height:17px;flex-shrink:0;color:var(--skill-color)}
-.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:stretch;min-height:28px;border:1px solid var(--skill-color);border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--skill-color) 80%,var(--panel-deep)) var(--skill-progress),color-mix(in srgb,var(--skill-color) 50%,var(--panel-deep)) var(--skill-progress));font-size:13px;font-weight:600;color:var(--text)}
+.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:center;height:24px;border:1px solid var(--skill-color);border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--skill-color) 80%,var(--panel-deep)) var(--skill-progress),color-mix(in srgb,var(--skill-color) 50%,var(--panel-deep)) var(--skill-progress));font-size:13px;font-weight:600;color:var(--text)}
 .profile-skills .skill-xp{font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--muted)}
 .profile-skills dd{margin:0;color:var(--muted)}
 .horse-profile-shell .profile-palette{padding:14px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
@@ -69,7 +70,7 @@
 .horse-profile-shell .profile-lower>section{padding:12px 18px;border:0;border-bottom:1px solid var(--border)}
 .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(3,minmax(0,1fr))}
 .horse-profile-shell .horse-trait-essentials{margin-bottom:10px;padding-bottom:10px;gap:10px;border:0}
-.horse-profile-shell .horse-trait-essentials dt{text-align:center;justify-content:center}
+.horse-profile-shell .horse-trait-essentials dt{text-align:center;justify-content:center;color:var(--gold-soft)}
 .horse-profile-shell .horse-trait-essentials dd{justify-content:center;text-align:center}
 .horse-profile-shell .mutation-slots{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:0}
 .horse-profile-shell .mutation-slot{min-height:62px;padding:10px}

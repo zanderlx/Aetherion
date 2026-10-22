@@ -47,3 +47,14 @@ test('switching profile tabs hides inactive content and supports focus without r
  assert.equal(tabs[0].tabIndex,-1);assert.equal(panels[0].hidden,true);assert.equal(panels[1].hidden,false);
  selectProfileTab(root,'overview');assert.equal(panels[0].hidden,false);assert.equal(panels[1].hidden,true);
 });
+
+
+test('each profile renders its own skill progress and maxed skills use MAX',()=>{
+ const trained={...horse,skills:{agility:{level:10,xp:0},strength:{level:11,xp:100},jump:{level:2,xp:75}}};
+ const html=profileContent(trained,{...state,horses:[trained]},{catalog});
+ assert.equal((html.match(/>MAX<\/span>/g)||[]).length,2);
+ assert.match(html,/>75\/975 XP<\/dd>/);
+ assert.doesNotMatch(html,/>Lv\. 10|>Lv\. 11/);
+ const other=profileContent(horse,state,{catalog});
+ assert.equal((other.match(/>Lv\. 0<\/span>/g)||[]).length,5);
+});

@@ -453,3 +453,20 @@ test('mutation system identifiers are random on creation and preserved on rename
  const loaded=await new GameStore(directory,catalog,defaults).init();
  assert.equal(loaded.getCatalog().mutations.find(m=>m.id===mutation.id).systemId,mutation.systemId);
 });
+
+test('legacy horses receive separate persisted skills without overwriting existing progress',async t=>{
+ const {directory,store}=await fixture(t);
+ await store.action('visit',{locationId:'aetherion'});
+ const original=store.snapshot();
+ const [first,second]=original.encounters.aetherion;
+ original.horses=[{...first,id:'skill-a',skills:{agility:{level:5,xp:90}}},{...second,id:'skill-b'}];
+ delete original.horses[1].skills;
+ await writeFile(join(directory,'player','save.json'),JSON.stringify(original));
+ const migrated=await new GameStore(directory,catalog,defaults).init();
+ assert.deepEqual(migrated.state.horses[0].skills.agility,{level:5,xp:90});
+ assert.deepEqual(migrated.state.horses[1].skills.agility,{level:0,xp:0});
+ const loaded=await new GameStore(directory,catalog,defaults).init();
+ assert.deepEqual(loaded.state.horses[0].skills.agility,{level:5,xp:90});
+ assert.deepEqual(loaded.state.horses[1].skills.agility,{level:0,xp:0});
+ assert.ok((await readdir(join(directory,'backups'))).some(n=>n.startsWith('pre-horse-skills-')));
+});
