@@ -41,3 +41,10 @@ test('palette page matches manager controls and retains every palette editing fi
  assert.match(form,/data-action="duplicate-definition"/);
  assert.match(form,/data-action="delete-definition"/);
 });
+test('each palette segment has an instant tooltip with its region and uppercase hex',()=>{
+ const colors=Object.fromEntries(regions.map(region=>[region,'#ffffff']));
+ const html=paletteCards([{...entries[0],colors}]);
+ for(const region of regions) assert.ok(html.includes(`data-tooltip="${region} - #FFFFFF"`));
+ assert.equal((html.match(/data-tooltip=/g)||[]).length,9);
+ assert.doesNotMatch(html,/<span title=/);
+});
