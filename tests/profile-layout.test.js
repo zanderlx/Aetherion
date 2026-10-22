@@ -18,8 +18,11 @@ test('horse profile separates overview from appearance and keeps unique portrait
  const appearance=html.split('data-profile-panel="appearance"')[1];
  assert.match(overview,/horse-facts/);assert.match(overview,/>Equipment<\/h3>/);assert.match(overview,/>Skills<\/h3>/);
  assert.doesNotMatch(overview,/Equipment is not available yet|Skill training is not available yet/);
+ assert.equal((overview.match(/>Lv\. 0<\/dd>/g)||[]).length,5);
+ for (const color of ['#E5A052','#7EB77A','#89C8EA','#B38ADE','#E69DBE']) assert.ok(overview.includes(color));
  assert.doesNotMatch(overview,/class="color-regions"|class="horse-notes"/);
  assert.match(appearance,/class="color-regions"/);assert.match(appearance,/>Traits<\/h3>/);assert.match(appearance,/>Mutations<\/h3>/);
+ assert.match(appearance,/>Palette<\/h3>/);
  assert.equal((html.match(/viewBox="240 25 135 145"/g)||[]).length,2);
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(new Set(ids).size,ids.length);

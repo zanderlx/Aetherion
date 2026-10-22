@@ -7,6 +7,10 @@ import { locationsFor } from './zones.js';
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const number = value => Number(value).toLocaleString();
 export const icons = {
+  agility: '<path d="m13 2-9 12h7l-1 8 10-13h-8Z"/>',
+  strength: '<path d="M7 12h10M3 8v8m4-10v12m10-12v12m4-10v8M3 12h4m10 0h4"/>',
+  jump: '<path d="M12 20V4m-6 6 6-6 6 6M4 20h16"/>',
+  wing: '<path d="M3 19C3 8 13 3 21 3c-1 9-5 17-14 17H3Zm0 0L17 7m-9 8v-5m4 1 5 1"/>',
   plus: '<path d="M12 4v16M4 12h16"/>',
   edit: '<path d="m15 4 5 5M4 20l4-1L20 7a2 2 0 0 0-5-5L3 14l-1 7Z"/>',
   compass: '<circle cx="12" cy="12" r="9"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5Z"/>',

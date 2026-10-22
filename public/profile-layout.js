@@ -2,7 +2,7 @@ import {horseArt} from './art.js';
 import {icon} from './ui.js';
 
 const equipmentSlots=['Hat','Mouth','Bridle','Saddle','Sock','Side','Tail','Flair'];
-const skillNames=['Agility','Strength','Jump','Bond','Wing'];
+const skillDefinitions=[['Agility','agility','#E5A052'],['Strength','strength','#7EB77A'],['Jump','jump','#89C8EA'],['Bond','heart','#B38ADE'],['Wing','wing','#E69DBE']];
 function portrait(horse,suffix) {
   const art=horseArt({...horse,id:`${horse.id}-${suffix}`},true).replace('viewBox="0 0 460 310"','viewBox="240 25 135 145"');
   return `<div class="profile-portrait">${art}</div>`;
@@ -11,7 +11,7 @@ function equipment() {
   return `<section class="profile-equipment"><h3>Equipment</h3><dl>${equipmentSlots.map(slot=>`<div><span class="equipment-slot" aria-hidden="true">${icon('bag')}</span><div><dt>${slot}</dt><dd>Not equipped</dd></div></div>`).join('')}</dl></section>`;
 }
 function skills() {
-  return `<section class="profile-skills"><h3>Skills</h3><dl>${skillNames.map(name=>`<div><dt>${name}</dt><dd aria-label="Not available">—</dd></div>`).join('')}</dl></section>`;
+  return `<section class="profile-skills"><h3>Skills</h3><dl>${skillDefinitions.map(([name,symbol,color])=>`<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" aria-label="${name} level 0">Lv. 0</dd></div>`).join('')}</dl></section>`;
 }
 export function profileLayout(horse,{header,info,notes,colors,traits,mutations,actions,importPreview}) {
   const prefix=importPreview ? 'import-horse' : 'horse-profile';
