@@ -77,12 +77,12 @@ test('mutation card, section, and global toggles synchronize independently',()=>
  const root={querySelectorAll:selector=>selector==='[data-mutation-card]' ? cards.map(entry=>entry.card) : controls};
  toggleMutations(root,first[0].toggle);
  assert.equal(first[0].body.hidden,false);assert.equal(first[1].body.hidden,true);
- assert.equal(section.textContent,'Show All');
+ assert.equal(section.textContent,'Show');
  toggleMutations(root,section);
  assert.ok(first.every(entry=>!entry.body.hidden));assert.equal(second[0].body.hidden,true);
- assert.equal(section.textContent,'Hide All');assert.equal(global.textContent,'Show All');
+ assert.equal(section.textContent,'Hide');assert.equal(global.textContent,'Show All');
  toggleMutations(root,global);
  assert.ok(cards.every(entry=>!entry.body.hidden));assert.equal(global.textContent,'Hide All');
  toggleMutations(root,global);
- assert.ok(cards.every(entry=>entry.body.hidden));assert.equal(section.textContent,'Show All');
+ assert.ok(cards.every(entry=>entry.body.hidden));assert.equal(section.textContent,'Show');
 });

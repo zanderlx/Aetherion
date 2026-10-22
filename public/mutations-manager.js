@@ -3,6 +3,8 @@ import {definitionTransferControls} from './definition-transfer-controls.js';
 import {escapeHTML as e,icon} from './ui.js';
 import {formSignature,formBaseline} from './form-state.js';
 
+const mutationEmojis={'Springy Tendons':'🦘','Powerful Lungs':'🫁','Strong Muscles':'💪','Nimble Hooves':'🩰','Limber Tendons':'🏃','Chimera Mane':'🦁','Chimera Tail':'🐉','Harlequin Mane':'🎭','Harlequin Tail':'🎨','Dwarfism':'🐭','Gigantism':'🦣','Intelligence':'🧠','Double Stamina':'🔋','Close Bond':'💞','Double Jump':'🪽','Very Fertile':'🌱','Twins':'👯','Perfect Twins':'🪞','Mutated':'🧬','Solar':'☀️','Lunar':'🌙','Heavenly':'👼','Void':'🕳️','Astral':'🌌'};
+export const mutationEmoji=mutation=>mutationEmojis[mutation.name] || '✨';
 const typeOrder = ['Standard','Special','Mutated'];
 const compareType = (a,b) => (typeOrder.includes(a) ? typeOrder.indexOf(a) : typeOrder.length)-(typeOrder.includes(b) ? typeOrder.indexOf(b) : typeOrder.length) || a.localeCompare(b);
 export const mutationTypes = entries => [...new Set([...typeOrder,...entries.map(m=>m.type)])].sort(compareType);
@@ -15,12 +17,12 @@ export function mutationResults(entries,sort='type',showWeights=false,direction=
   if(sort!=='type') return mutationCards(entries,showWeights,expanded);
   const types=mutationTypes(entries).filter(type=>entries.some(m=>m.type===type));
   if(direction==='desc') types.reverse();
-  return types.map(type=>`<section class="eye-rarity-section" data-mutation-section><div class="mutation-section-heading"><h2>${e(type)}</h2><button type="button" class="button secondary" data-action="toggle-mutation-section" aria-expanded="false">Show All</button></div><div class="eye-definition-grid mutation-definition-grid personality-card-grid">${mutationCards(entries.filter(m=>m.type===type),showWeights,expanded)}</div></section>`).join('');
+  return types.map(type=>`<section class="eye-rarity-section" data-mutation-section><div class="mutation-section-heading"><h2>${e(type)}</h2><button type="button" class="button secondary" data-action="toggle-mutation-section" aria-expanded="false">Show</button></div><div class="eye-definition-grid mutation-definition-grid personality-card-grid">${mutationCards(entries.filter(m=>m.type===type),showWeights,expanded)}</div></section>`).join('');
 }
 export function mutationCards(entries,showWeights=false,expanded=new Set()) {
   return entries.map(m=>{
     const open=expanded.has(m.id);
-    return `<article class="panel personality-card mutation-collapse-card" data-mutation-card data-id="${e(m.id)}"><div class="personality-card-heading"><h2>${e(m.name)}</h2><button type="button" class="icon-button personality-toggle" data-action="toggle-mutation" data-name="${e(m.name)}" aria-label="${open ? 'Collapse' : 'Expand'} ${e(m.name)}" aria-expanded="${open}" aria-controls="mutation-body-${e(m.id)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="personality-card-body" id="mutation-body-${e(m.id)}" ${open ? '' : 'hidden inert'}><p class="personality-card-description" tabindex="0" aria-label="${e(m.name)} description">${e(m.description || 'No description yet.')}</p><div class="mutation-card-meta"><span>${e(m.type)}</span>${showWeights ? `<span>Weight: ${Math.abs(m.weight || 0).toLocaleString()}</span>` : ''}</div><div class="personality-card-actions"><button type="button" class="button secondary" data-action="edit-definition" data-kind="mutations" data-id="${e(m.id)}">${icon('edit')} Edit</button></div></div></article>`;
+    return `<article class="panel personality-card mutation-collapse-card" data-mutation-card data-id="${e(m.id)}"><div class="personality-card-heading"><h2><span class="personality-emoji" aria-hidden="true">${mutationEmoji(m)}</span> ${e(m.name)}</h2><button type="button" class="icon-button personality-toggle" data-action="toggle-mutation" data-name="${e(m.name)}" aria-label="${open ? 'Collapse' : 'Expand'} ${e(m.name)}" aria-expanded="${open}" aria-controls="mutation-body-${e(m.id)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="personality-card-body" id="mutation-body-${e(m.id)}" ${open ? '' : 'hidden inert'}><p class="personality-card-description" tabindex="0" aria-label="${e(m.name)} description">${e(m.description || 'No description yet.')}</p><div class="mutation-card-meta"><span>${e(m.type)}</span>${showWeights ? `<span>Weight: ${Math.abs(m.weight || 0).toLocaleString()}</span>` : ''}</div><div class="personality-card-actions"><button type="button" class="button secondary" data-action="edit-definition" data-kind="mutations" data-id="${e(m.id)}">${icon('edit')} Edit</button></div></div></article>`;
   }).join('');
 }
 function refreshMutationExpansion(root) {
@@ -28,7 +30,8 @@ function refreshMutationExpansion(root) {
     const scope=button.dataset.action==='toggle-mutation-section' ? button.closest('[data-mutation-section]') : root;
     const cards=[...scope.querySelectorAll('[data-mutation-card]')];
     const open=cards.length>0 && cards.every(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')==='true');
-    button.textContent=open ? 'Hide All' : 'Show All';button.setAttribute('aria-expanded',String(open));
+    const section=button.dataset.action==='toggle-mutation-section';
+    button.textContent=open ? (section ? 'Hide' : 'Hide All') : (section ? 'Show' : 'Show All');button.setAttribute('aria-expanded',String(open));
   }
 }
 export function toggleMutations(root,button) {
