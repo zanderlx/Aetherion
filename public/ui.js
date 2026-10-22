@@ -51,7 +51,7 @@ export function navigationSection(route) {
   return groups.find(group => group.items.some(([path]) => path === route))
     || (route.startsWith('wilds/') ? groups.find(group => group.title === 'Wilds') : {title:'Aetherion',icon:'compass'});
 }
-export function sidebar(route, state, openGroups, catalog) {
+export function sidebar(route, state, openGroups, catalog, appVersion = '') {
   const locations = catalog ? locationsFor(catalog,state) : [{id:'hallowhoof',event:true}];
   const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locations.filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:group.title === 'Stables' ? group.items : [...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));
   return `<a href="#wilds/aetherion" class="brand"><svg class="brand-logo" viewBox="0 0 80 80" aria-hidden="true"><rect width="80" height="80" rx="22" fill="var(--panel-deep)"/><path d="M40 7 65 22v28L40 73 15 50V22Z" fill="none" stroke="var(--gold)" stroke-width="1.5"/><path d="m28 57 2-16-7-5 6-11 8-3 5-10 4 12c13 3 15 17 10 32H28Z" fill="var(--gold)"/><path d="m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32" fill="none" stroke="var(--panel-deep)" stroke-width="2"/><circle cx="34" cy="29" r="1.5" fill="var(--panel-deep)"/></svg><span><span class="brand-title">AETHERION</span><small>A HORSEKEEPER’S CHRONICLE</small></span></a>
@@ -59,7 +59,7 @@ export function sidebar(route, state, openGroups, catalog) {
       <summary>${icon(group.icon)}<span>${group.title}</span><span class="chevron">⌄</span></summary>
       <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : path.startsWith('wilds/') && locations.some(l => l.id === path.split('/')[1] && l.event) ? '<span class="event-dot" title="Event zone"></span>' : ''}</a>`).join('')}</div>
     </details>`).join('')}</nav>
-    <div class="sidebar-foot"><span class="save-dot"></span><div>A sanctuary of your own<small>Local files · Phase 1 preview</small></div></div>`;
+    <div class="sidebar-foot" data-copy-skip>Aetherion${appVersion ? ` v${escapeHTML(appVersion)}` : ''}</div>`;
 }
 export function card(horse, state, mode = 'wild', catalog) {
   const title = horse.name || horse.species;

@@ -42,6 +42,9 @@ test('HTTP application serves all assets, persists actions, exports data and rej
   });
   assert.equal((await post('visit', { locationId: 'aetherion' }, 'https://example.com')).status, 403);
   const initial = await (await post('visit', { locationId: 'aetherion' })).json();
+  const startup = await (await fetch(url+'/api/state')).json();
+  const packageInfo = JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));
+  assert.equal(startup.appVersion,packageInfo.version);
   assert.equal(initial.state.encounters.aetherion.length, 3);
   const horse = initial.state.encounters.aetherion[0];
   assert.equal((await post('catch', { id: horse.id })).status, 200);

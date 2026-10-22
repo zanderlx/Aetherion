@@ -371,6 +371,12 @@ test('Eye card search combines name hex and rarity with alphabetical sorting',()
  assert.equal(filterEyes(eyes,'missing').length,0);
 });
 
+test('sidebar footer shows the supplied release version without old preview wording',()=>{
+ const html=sidebar('stable/all',state,new Set(),catalog,'1.3.0');
+ assert.match(html,/Aetherion v1\.3\.0/);
+ assert.doesNotMatch(html,/A sanctuary of your own|Local files · Phase 1 preview/);
+});
+
 test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
  const eyes=['Rare','Common','Uncommon'].map(rarity=>({id:rarity,name:rarity,rarity,colors:['#112233']}));
  assert.deepEqual(filterEyes(eyes,'','','rarity').map(e=>e.rarity),['Common','Uncommon','Rare']);

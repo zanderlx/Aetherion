@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { GameStore } from './src/store.js';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
+const {version:appVersion} = JSON.parse(await readFile(resolve(root,'package.json'),'utf8'));
 const catalog = JSON.parse(await readFile(resolve(root, 'data/definitions/catalog.json'), 'utf8'));
 const defaults = JSON.parse(await readFile(resolve(root, 'data/defaults/settings.json'), 'utf8'));
 const store = await new GameStore(process.env.HORSE_DATA_DIR || resolve(root, 'data'), catalog, defaults).init();
@@ -24,7 +25,7 @@ const server = createServer(async (req, res) => {
   if (!allowedHosts.has(req.headers.host)) return send(res, 403, { error: 'Local connections only.' });
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
-    if (req.method === 'GET' && url.pathname === '/api/state') { await store.refreshConfiguration(); return send(res,200,{state:store.snapshot(),catalog:store.getCatalog(),defaults}); }
+    if (req.method === 'GET' && url.pathname === '/api/state') { await store.refreshConfiguration(); return send(res,200,{state:store.snapshot(),catalog:store.getCatalog(),defaults,appVersion}); }
     if (req.method === 'GET' && url.pathname === '/api/export') {
       await store.refreshConfiguration();
       res.setHeader('Content-Disposition', 'attachment; filename="aetherion-backup.json"');

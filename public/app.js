@@ -26,7 +26,7 @@ import { keeperPage, avatarSVG } from './keeper.js';
 import { roadmapPage } from './roadmap.js';
 import { trackForms, updateFormState, formSignature, formBaseline, restoreBaseline } from './form-state.js';
 
-let state, catalog, defaults, busy = false, toastTimer;
+let state, catalog, defaults, appVersion, busy = false, toastTimer;
 let route = location.hash.slice(1) || 'wilds/aetherion';
 let routeVersion = 0, pendingDeletion;
 let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer, pendingSearchResult;
@@ -75,7 +75,7 @@ function renderChrome() {
   const navScroll = $('#sidebar nav')?.scrollTop || 0;
   for (const details of $('#sidebar').querySelectorAll('details')) { if (details.open) openGroups.add(details.dataset.group); else openGroups.delete(details.dataset.group); }
   applyWebsiteTheme(catalog, state);
-  $('#sidebar').innerHTML = sidebar(route, state, openGroups, catalog);
+  $('#sidebar').innerHTML = sidebar(route, state, openGroups, catalog, appVersion);
   $('#sidebar').querySelectorAll('details').forEach(details => details.addEventListener('toggle', () => {
     if (details.open) openGroups.add(details.dataset.group);
     else openGroups.delete(details.dataset.group);
@@ -695,7 +695,7 @@ for (const dialog of [profile, confirmation]) dialog.addEventListener('click', e
 matchMedia('(max-width: 900px)').addEventListener('change', syncResponsiveMenu);
 window.addEventListener('hashchange', navigate);
 try {
-  ({ state, catalog, defaults } = await request('/api/state'));
+  ({ state, catalog, defaults, appVersion } = await request('/api/state'));
   await navigate({refreshSpawns:true});
   syncResponsiveMenu();
 } catch (error) {
