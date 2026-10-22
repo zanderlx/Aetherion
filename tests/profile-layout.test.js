@@ -24,6 +24,9 @@ test('horse profile separates overview from appearance and keeps unique portrait
  assert.equal(new Set(ids).size,ids.length);
  const owned=profileContent({...horse,notes:'Keep this note'},{...state,horses:[horse]},{catalog});
  assert.match(owned,/horse-notes-form/);assert.match(owned,/Keep this note/);
+ assert.ok(owned.indexOf('profile-tab-rail')<owned.indexOf('profile-scroll-frame'));
+ assert.ok(owned.indexOf('profile-info')<owned.indexOf('class="horse-notes"'));
+ assert.ok(owned.indexOf('class="horse-notes"')<owned.indexOf('class="profile-skills"'));
  assert.match(owned,/data-action="sell"/);assert.match(owned,/data-action="export-horse"/);
  const preview=profileContent(horse,state,{catalog,importPreview:true});
  assert.match(preview,/id="import-horse-appearance"/);assert.match(preview,/data-action="confirm-import"/);

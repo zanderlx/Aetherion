@@ -1,21 +1,24 @@
 /* Two profile pages share the same frame and keep tabs clear of the content. */
-#profile:has(.horse-profile-shell),.horse-import-preview:has(.horse-profile-shell){width:min(1080px,calc(100vw - 24px))}
-.horse-profile-shell{position:relative;padding-right:76px;min-height:720px}
+#profile:has(.horse-profile-shell),.horse-import-preview:has(.horse-profile-shell){width:min(880px,calc(100vw - 100px));overflow:visible;transform:translateX(-20px)}
+.horse-profile-book{position:relative;--profile-columns:minmax(180px,.75fr) minmax(0,1.7fr)}
+.profile-scroll-frame{max-height:88dvh;overflow-y:auto;overflow-x:hidden;border-radius:7px;scrollbar-width:thin}
+.profile-scroll-frame>.dialog-top>.icon-button{margin-left:auto}
+.horse-profile-shell{position:relative;min-height:0}
 .horse-profile-shell .profile-tab-panel[hidden]{display:none}
-.profile-tab-rail{position:absolute;right:14px;top:26px;display:flex;flex-direction:column;gap:12px;width:62px;z-index:2}
+.profile-tab-rail{position:absolute;left:100%;top:66px;display:flex;flex-direction:column;gap:12px;width:62px;z-index:2}
 .profile-tab-rail button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:56px;min-height:76px;padding:10px 4px;border:1px solid var(--border);border-radius:0 8px 8px 0;background:var(--panel-deep);color:var(--muted);transition:transform .18s,background .18s;transform-origin:left center}
 .profile-tab-rail button .icon{width:24px;height:24px}
 .profile-tab-rail button span{font-size:11px}
-.profile-tab-rail button[aria-selected=true]{transform:translateX(10px);border-color:var(--profile-rarity-color,var(--gold));color:var(--gold);background:var(--panel);box-shadow:3px 3px 12px #0004}
+.profile-tab-rail button[aria-selected=true]{width:64px;border-color:var(--profile-rarity-color,var(--gold));color:var(--gold);background:var(--panel);box-shadow:3px 3px 12px #0004}
 .profile-tab-rail button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.horse-profile-shell .profile-grid{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.8fr);border-bottom:1px solid var(--border);align-items:stretch}
-.profile-portrait{display:flex;align-items:center;justify-content:center;background:var(--panel-deep);border-right:1px solid var(--border);overflow:hidden;min-height:240px}
-.profile-portrait .horse-art{width:100%;height:100%;min-height:240px;max-height:380px}
-.horse-profile-shell .profile-info{padding:22px;min-width:0}
+.horse-profile-shell .profile-grid{display:grid;grid-template-columns:var(--profile-columns);height:360px;border-bottom:1px solid var(--border);align-items:stretch}
+.profile-portrait{display:flex;align-items:center;justify-content:center;background:var(--panel-deep);border-right:1px solid var(--border);overflow:hidden;min-height:0;height:100%}
+.profile-portrait .horse-art{width:100%;height:100%;min-height:0;max-height:none}
+.horse-profile-shell .profile-info{padding:22px;min-width:0;min-height:0;overflow-y:auto}
 .horse-profile-shell .profile-info h2{margin:0}
 .horse-profile-shell .horse-facts{margin:14px 0;padding:16px 0;gap:16px 12px}
 .horse-profile-shell .horse-description{margin:0}
-.profile-overview-bottom{display:grid;grid-template-columns:1fr 1fr}
+.profile-overview-bottom{display:grid;grid-template-columns:var(--profile-columns)}
 .profile-equipment,.profile-notes-skills>section{padding:22px}
 .profile-equipment{border-right:1px solid var(--border)}
 .profile-equipment h3,.profile-notes-skills h3{margin:0 0 12px}
@@ -32,11 +35,13 @@
 .profile-skills dl{display:grid;gap:8px;margin:0}
 .profile-skills dl>div{display:flex;align-items:center;justify-content:space-between;background:var(--panel-deep);border-radius:4px;padding:9px 12px}
 .profile-skills dd{margin:0;color:var(--muted)}
-.horse-profile-shell .profile-palette{padding:24px;min-width:0;display:flex;flex-direction:column;justify-content:center}
-.horse-profile-shell .profile-palette>.eyebrow{padding:0;font-size:16px}
-.horse-profile-shell .color-regions{padding:0;margin:20px 0 0;gap:18px 10px;grid-template-columns:repeat(3,minmax(0,1fr))}
-.horse-profile-shell .color-regions>div{grid-template-columns:36px minmax(0,1fr)}
-.horse-profile-shell .color-regions small{font-size:12px;white-space:nowrap;overflow-wrap:normal}
+.horse-profile-shell .profile-palette{padding:24px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.horse-profile-shell .profile-palette>.eyebrow{padding:0;font-size:16px;text-align:center}
+.horse-profile-shell .color-regions{padding:0;margin:24px auto 0;width:100%;max-width:560px;gap:24px 14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.horse-profile-shell .color-regions>div{grid-template-columns:48px minmax(0,1fr);column-gap:10px}
+.horse-profile-shell .color-regions>div>span{width:48px;height:48px}
+.horse-profile-shell .color-regions small{font-size:14px;white-space:nowrap;overflow-wrap:normal}
+.horse-profile-shell .color-regions code{font-size:12px}
 .horse-profile-shell .profile-lower{display:block}
 .horse-profile-shell .profile-lower>section{padding:22px;border:0;border-bottom:1px solid var(--border)}
 .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -44,13 +49,13 @@
 .horse-profile-shell .mutation-slots{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:0}
 .horse-profile-shell .mutation-slot{min-height:100px}
 @media(max-width:760px){
- .horse-profile-shell{padding-right:58px;min-height:0}
- .profile-tab-rail{right:10px;width:42px}
+ .horse-profile-shell{min-height:0}
+ .profile-tab-rail{width:42px}
  .profile-tab-rail button{width:40px;min-height:68px}
- .profile-tab-rail button[aria-selected=true]{transform:translateX(6px)}
+ .profile-tab-rail button[aria-selected=true]{width:46px}
  .profile-tab-rail button span{font-size:9px}
- .horse-profile-shell .profile-grid{grid-template-columns:minmax(0,1fr)}
- .profile-portrait{border-right:0;border-bottom:1px solid var(--border);min-height:180px}
+ .horse-profile-shell .profile-grid{grid-template-columns:minmax(0,1fr);height:560px;grid-template-rows:200px 360px}
+ .profile-portrait{border-right:0;border-bottom:1px solid var(--border);min-height:0;height:200px}
  .profile-portrait .horse-art{height:200px;min-height:0}
  .horse-profile-shell .profile-info{border-top:0;padding:18px}
  .profile-overview-bottom{grid-template-columns:minmax(0,1fr)}

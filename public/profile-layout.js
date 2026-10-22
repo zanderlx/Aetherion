@@ -15,12 +15,12 @@ function skills() {
 }
 export function profileLayout(horse,{header,info,notes,colors,traits,mutations,actions,importPreview}) {
   const prefix=importPreview ? 'import-horse' : 'horse-profile';
-  return `${header}<div class="horse-profile-shell">
+  return `<div class="horse-profile-book">
     <div class="profile-tab-rail" role="tablist" aria-label="Horse profile pages" aria-orientation="vertical" data-copy-skip>
       <button type="button" role="tab" id="${prefix}-overview-tab" aria-controls="${prefix}-overview" aria-selected="true" data-profile-tab="overview" title="Horse Information">${icon('stable')}<span>Info</span></button>
       <button type="button" role="tab" id="${prefix}-appearance-tab" aria-controls="${prefix}-appearance" aria-selected="false" tabindex="-1" data-profile-tab="appearance" title="Colors, Traits & Mutations">${icon('spark')}<span>Traits</span></button>
     </div>
-    <section class="profile-tab-panel" id="${prefix}-overview" role="tabpanel" aria-labelledby="${prefix}-overview-tab" data-profile-panel="overview">
+    <div class="profile-scroll-frame">${header}<div class="horse-profile-shell"><section class="profile-tab-panel" id="${prefix}-overview" role="tabpanel" aria-labelledby="${prefix}-overview-tab" data-profile-panel="overview">
       <div class="profile-grid profile-overview-top">${portrait(horse,'overview')}<div class="profile-info">${info}</div></div>
       <div class="profile-overview-bottom">${equipment()}<div class="profile-notes-skills">${notes}${skills()}</div></div>
     </section>
@@ -28,7 +28,7 @@ export function profileLayout(horse,{header,info,notes,colors,traits,mutations,a
       <div class="profile-grid profile-appearance-top">${portrait(horse,'appearance')}<div class="profile-palette">${colors}</div></div>
       <div class="profile-lower"><section class="profile-traits"><h3>Traits</h3>${traits}</section><section class="profile-mutations">${mutations}</section></div>
     </section>
-  </div>${actions}`;
+  </div>${actions}</div></div>`;
 }
 
 export function selectProfileTab(root,key,{focus=false}={}) {
@@ -44,13 +44,13 @@ export function selectProfileTab(root,key,{focus=false}={}) {
 export function bindProfileTabs() {
   document.addEventListener('click',event=>{
     const tab=event.target.closest('[data-profile-tab]');
-    if (tab) selectProfileTab(tab.closest('.horse-profile-shell'),tab.dataset.profileTab);
+    if (tab) selectProfileTab(tab.closest('.horse-profile-book'),tab.dataset.profileTab);
   });
   document.addEventListener('keydown',event=>{
     const tab=event.target.closest('[data-profile-tab]');
     if (!tab || !['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
     event.preventDefault();
-    const root=tab.closest('.horse-profile-shell'),tabs=[...root.querySelectorAll('[data-profile-tab]')];
+    const root=tab.closest('.horse-profile-book'),tabs=[...root.querySelectorAll('[data-profile-tab]')];
     const index=tabs.indexOf(tab),previous=['ArrowUp','ArrowLeft'].includes(event.key);
     const next=event.key==='Home' ? 0 : event.key==='End' ? tabs.length-1 : (index+(previous ? -1 : 1)+tabs.length)%tabs.length;
     selectProfileTab(root,tabs[next].dataset.profileTab,{focus:true});
