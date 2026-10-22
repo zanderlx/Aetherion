@@ -126,6 +126,7 @@ function render() {
     $('#horse-grid-size').value = String(stableGridColumns);
     $('#horse-grid-size').setAttribute('aria-valuetext',`${stableGridColumns} horses per row`);
     $('#horse-grid-value').textContent = stableGridColumns;
+    $('#horse-grid-size').closest('.stable-grid-slider').style.setProperty('--grid-position',`${(stableGridColumns-3)/3*100}%`);
     $('#collection-grid').style.setProperty('--stable-grid-columns',stableGridColumns);
   }
   document.title = `${routeTitle(route, locationsFor(catalog, state))} · Aetherion`;
@@ -648,6 +649,7 @@ document.addEventListener('input', event => {
     if ([3,4,5,6].includes(count)) {
       stableGridColumns = count;
       $('#horse-grid-value').textContent = count;
+      event.target.closest('.stable-grid-slider').style.setProperty('--grid-position',`${(count-3)/3*100}%`);
       event.target.setAttribute('aria-valuetext',`${count} horses per row`);
       $('#collection-grid').style.setProperty('--stable-grid-columns',count);
     }
