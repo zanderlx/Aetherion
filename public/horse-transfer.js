@@ -58,8 +58,11 @@ export function readHorseDocument(document) {
   const size = choice(h.size,Object.keys(sizes),'size');
   if (h.sizePercent !== undefined && h.sizePercent !== sizes[size]) throw new Error('Size percentage must match the selected size.');
   for (const key of ['favorite','preview','traitsComplete']) if (h[key] !== undefined && typeof h[key] !== 'boolean') throw new Error(`${key} must be true or false.`);
+  if (h.rarityTier !== undefined && (!Number.isInteger(h.rarityTier) || h.rarityTier < 1 || h.rarityTier > 4)) throw new Error('Rarity tier must be an integer from 1 to 4.');
   return {
     ...identifiers,
+    ...(h.rarityTier === undefined ? {} : {rarityTier:h.rarityTier}),
+    ...(h.speciesEvent === undefined ? {} : {speciesEvent:h.speciesEvent === null ? null : text(h.speciesEvent,'Species event',100,true)}),
     name:text(h.name ?? '','Name',60,true),species:text(h.species,'Species'),
     age:choice(h.age,ages,'age'),gender:choice(h.gender,['Female','Male'],'gender'),
     origin:text(h.origin,'Origin'),size,sizePercent:sizes[size],birthday,

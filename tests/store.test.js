@@ -87,12 +87,15 @@ test('horse JSON export imports copies with fresh IDs, capacity checks and atomi
   await store.action('import-horse',document);
   const imported = store.state.horses.at(-1);
   assert.notEqual(imported.id,original.id);
+  assert.equal(imported.rarityTier,original.rarityTier);
+  assert.equal(imported.speciesEvent,original.speciesEvent);
   assert.deepEqual(readHorseDocument(createHorseDocument(imported)),readHorseDocument(document));
   assert.deepEqual(store.state.horses[0],before.horses[0]);
   assert.equal(store.state.gold,before.gold);
   await store.action('import-horse',document);
   assert.equal(new Set(store.state.horses.map(h => h.id)).size,3);
   const invalid = [
+    d => d.horse.rarityTier = 8,
     d => d.version = 99,
     d => d.horse.birthday = '2025-02-30',
     d => d.horse.palette.colors.Hair = '#fff" onload="alert(1)',

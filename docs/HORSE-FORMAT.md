@@ -48,6 +48,8 @@ Palette `colors` requires these exact keys: `Coat Top`, `Coat Bottom`, `Hair`, `
 
 Spawned horse files also preserve optional species/palette/eye/personality registry IDs, personality system ID and behavior tags, palette skin/scope metadata, selected skin ID, and eye texture/layer data. Older version-1 files remain valid.
 
+Optional `rarityTier` (integer 1–4) and `speciesEvent` (event name or null) preserve card-ranking metadata. Special mutation names or `specialSpawn` determine gold glows. Files without these fields remain valid and use matching local species data when available.
+
 ## Import rules
 
 - Every import creates a fresh local horse ID and a new stable-arrival timestamp and Birthday date. Profile Age starts at 0 days. Importing the same file again creates a separate copy; it never replaces an existing horse.
