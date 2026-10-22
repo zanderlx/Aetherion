@@ -37,14 +37,18 @@ export function bindHorseArtViewer() {
     stage.append(art);
     dialog.style.height='94dvh';
     dialog.showModal();
-    // Preserve the rendered horse scale, then shrink away vertical letterboxing.
+    // Trim empty artwork above the ears and below the hooves without enlarging the horse.
     const bounds=art.getBoundingClientRect();
     const scale=Math.min(bounds.width/460,bounds.height/310);
+    const imageHeight=258*scale;
+    art.setAttribute('viewBox','0 32 460 258');
     art.style.width=`${460*scale}px`;
-    art.style.height=`${310*scale}px`;
+    art.style.height=`${imageHeight}px`;
     art.style.maxWidth='100%';
-    stage.style.paddingBlock='8px';
-    dialog.style.height='auto';
+    stage.style.paddingBlock='4px';
+    stage.style.height=`${imageHeight+8}px`;
+    const headerHeight=dialog.querySelector('.horse-art-viewer-header').getBoundingClientRect().height;
+    dialog.style.height=`${headerHeight+imageHeight+8+dialog.offsetHeight-dialog.clientHeight}px`;
   });
   return {close:()=>dialog?.close()};
 }
