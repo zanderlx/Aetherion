@@ -463,7 +463,7 @@ test('Personalities uses a compact search and header add button',()=>{
  assert.match(html,/<form id="definition-form"/);
  assert.doesNotMatch(html,/Your collection of options|Find an entry|Behavior Tags|System ID|data-action="duplicate-definition"/);
  assert.match(html,/placeholder="Search\.\.\."/);
- assert.match(html,/>Search<input/);
+ assert.doesNotMatch(html,/>Search<input/);
  assert.match(html,/personality-manager-header/);
  assert.match(html,/type="hidden" name="systemId"/);
 });
