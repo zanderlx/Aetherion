@@ -187,6 +187,15 @@ select{text-transform:uppercase}
 .mutation-slot-lock .icon { width:24px; height:24px; }
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
+.mutation-definition-grid{grid-auto-rows:1fr}
+.mutation-definition-card{gap:14px;min-height:210px}
+.mutation-card-description{display:block;flex:1;text-transform:none;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font:14px/1.6 var(--sans)}
+.mutation-card-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+.mutation-definition-dialog #mutation-editor-title{margin:0 12px 0 0}
+.mutation-definition-dialog>.dialog-top>[data-mutation-close]{margin-left:auto;flex-shrink:0}
+.mutation-definition-dialog .definition-fields{min-width:0}
+.mutation-definition-dialog .eye-name-rarity label{min-width:0;margin:0}
+.mutation-definition-dialog .eye-name-rarity input{width:100%;min-width:0}
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }
 .eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:2px 0 16px; }
 .eye-grid-controls { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:20px; }

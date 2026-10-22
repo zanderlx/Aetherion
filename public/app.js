@@ -6,6 +6,7 @@ import {horseSalePrice,defaultSaleModifiers} from './sale-pricing.js';
 import {personalityForm} from './personalities-manager.js';
 import {closePersonalityEditor} from './personality-editor.js';
 import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
+import {mutationsManagerPage,createMutationEditor,updateMutationGrid} from './mutations-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
@@ -40,6 +41,7 @@ document.body.append(personalityCreation);
 personalityCreation.addEventListener('close',()=>{if (!personalityCreation.open) personalityCreation.replaceChildren();});
 personalityCreation.addEventListener('cancel',event=>{event.preventDefault();closePersonalityEditor(personalityCreation.querySelector('form'),()=>personalityCreation.close());});
 const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft),() => catalog.eyes);
+const mutationEditor = createMutationEditor(draft => libraryEditorPage('mutations',catalog,state,draft));
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
 
 const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() => 'horse/profile', save:action, notify, includeChrome:false, getValues:() => {
@@ -99,6 +101,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
   else if (section === 'dev' && page === 'rarities') return raritiesManagerPage(catalog);
   else if (section === 'dev' && page === 'eyes') return eyesManagerPage(catalog);
+  else if (section === 'dev' && page === 'mutations') return mutationsManagerPage(catalog);
   else if (section === 'dev' && page === 'traits') return traitsEditorPage(catalog);
   else if (section === 'dev' && Object.hasOwn(editorRoutes, page)) return libraryEditorPage(editorRoutes[page], catalog, state);
   else return plannedPage(route, state);
@@ -127,6 +130,7 @@ async function navigate({refreshSpawns = false} = {}) {
   profileCopyEditor.close();
   horseDialogs.close();
   eyeEditor.dialog.close();
+  mutationEditor.dialog.close();
   try {
     if (route.startsWith('wilds/') && (refreshSpawns || !state.encounters[route.split('/')[1]]) && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action(refreshSpawns ? 'search' : 'visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
@@ -217,6 +221,11 @@ function showZoneDraft(draft) {
   $('#zone-form').scrollIntoView({ block: 'start' });
 }
 function showDefinition(kind, draft) {
+  if (kind === 'mutations') {
+    mutationEditor.open(draft);
+    trackForms(mutationEditor.dialog);
+    return;
+  }
   if (kind === 'personalities') {
     render();
     personalityCreation.setAttribute('aria-label',draft.id ? 'Edit Personality' : 'Create Personality');
@@ -280,7 +289,7 @@ function updateAvatarPreview() {
 }
 function askToDelete(type, payload, name, detail, verb = type === 'delete-profile' ? 'Reset' : 'Delete') {
   pendingDeletion = {type,payload};
-  confirmation.classList.toggle('eye-delete-confirm',type === 'delete-definition' && payload.kind === 'eyes');
+  confirmation.classList.toggle('eye-delete-confirm',type === 'delete-definition' && ['eyes','mutations'].includes(payload.kind));
   confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)} This is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
   confirmation.showModal();
 }
@@ -313,6 +322,7 @@ document.addEventListener('click', async event => {
   if (intent === 'delete-zone') return askToDelete('delete-zone',{id},locationsFor(catalog,state).find(z => z.id === id)?.name || 'Zone','Remove this zone and its wild encounters. Collected horses and sold records stay unchanged.');
   if (intent === 'delete-definition') {
     const kind = button.dataset.kind;
+    if (kind === 'mutations') return askToDelete('delete-definition',{kind,id},catalog.mutations.find(m => m.id === id)?.name || 'Mutation','Remove this mutation from future spawns. Existing horses keep their saved mutations.');
     if (kind === 'eyes') return askToDelete('delete-definition',{kind,id},catalog.eyes.find(eye => eye.id === id)?.name || 'Eye Color','Remove this eye color from future spawns. Existing horses keep their saved eye colors.');
     return askToDelete('delete-definition',{kind,id},catalog[kind].find(d => d.id === id)?.name || 'Entry','Remove this option from future use. Existing horse details stay unchanged. Matching zone pools are updated; zones with empty pools close. Deleted atmospheres use a remaining atmosphere, item themes are cleared, and a deleted active website theme returns to Original.');
   }
@@ -427,6 +437,7 @@ document.addEventListener('click', async event => {
       await action(pendingDeletion.type,pendingDeletion.payload);
       personalityCreation.close();
       eyeEditor.dialog.close();
+      mutationEditor.dialog.close();
       pendingDeletion = null;
       confirmation.close();
       profile.close();
@@ -564,6 +575,7 @@ document.addEventListener('submit', async event => {
       renderChrome();
       const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
       if (payload.kind === 'eyes') { eyeEditor.dialog.close(); render(); }
+      else if (payload.kind === 'mutations') {mutationEditor.dialog.close();render();}
       else if (payload.kind === 'personalities') {personalityCreation.close();render();}
       else showDefinition(payload.kind, saved);
       if ($('#definition-status')) $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
@@ -615,8 +627,10 @@ document.addEventListener('input', event => {
   }
   if (event.target.closest('#zone-form')) $('#zone-preview').innerHTML = zonePreview(readZoneForm($('#zone-form')), catalog);
   if (event.target.id === 'horse-search') updateStableSort();
+  if (event.target.id === 'mutation-search') updateMutationGrid(main,catalog);
 });
 document.addEventListener('change', event => {
+  if (['mutation-type','mutation-sort'].includes(event.target.id)) updateMutationGrid(main,catalog);
   if (['eye-rarity','eye-sort','eye-percent'].includes(event.target.id)) updateEyeGrid(main,catalog);
   if (event.target.id === 'traits-species') {main.innerHTML = traitsEditorPage(catalog,event.target.value); trackForms(main); return;}
   updateFormState(event.target.form);
