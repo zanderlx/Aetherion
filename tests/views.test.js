@@ -65,13 +65,14 @@ test('zone tags render as safe text without icons and can be removed', () => {
   assert.equal((editor.match(/class="panel zone-card"/g) || []).length,locationsFor(catalog,state).length);
   assert.match(editor,/The evergreen realm\nFree exploration/);
 });
-test('top Wilds tabs mark saved custom Event zones without icons or extra hero labels', () => {
+test('top Wilds tabs list saved custom zones without event identifiers or icons', () => {
   const zone = {...newZoneDraft(),id:'dreamwhisper',name:'Dreamwhisper Haven',custom:true,event:'Event'};
   const populated = {...state,customLocations:[zone]};
   const locations = locationsFor(catalog,populated);
   const page = wildPage(locations[0],populated,locations,catalog);
   const tabs = page.match(/<div class="location-tabs"[^>]*>(.*?)<\/div>/s)[1];
-  assert.match(tabs,/Dreamwhisper Haven<small>EVENT<\/small>/);
+  assert.match(tabs,/Dreamwhisper Haven/);
+  assert.doesNotMatch(tabs,/<small>EVENT<\/small>/);
   assert.doesNotMatch(tabs,/<svg/);
   assert.doesNotMatch(page,/zone-event-label/);
 });
@@ -281,16 +282,16 @@ test('sale history merges old archives with transactions without double-counting
 test('active sidebar destination is exposed to assistive technology', () => {
   const html = sidebar('wilds/aetherion', state, new Set(['Wilds']));
   assert.match(html, /href="#wilds\/aetherion" aria-current="page"/);
-  assert.match(html,/class="nav-section-link" href="#wilds\/aetherion" aria-current="page"/);
-  assert.doesNotMatch(html,/<details data-group="Wilds"/);
+  assert.match(html,/<details data-group="Wilds" open>/);
+  assert.doesNotMatch(html,/nav-section-link|event-dot/);
 });
 test('custom zones appear in navigation and wild pages with safe text; disabled zones stay hidden', () => {
   const zone = { ...newZoneDraft(), id: 'zone-test', name: '<script>magic</script>', description: 'Moon & stars', custom: true, atmosphere: 'moonlit' };
   const populated = { ...state, customLocations: [zone, { ...zone, id: 'zone-hidden', name: 'Hidden', enabled: false }] };
   const locations = locationsFor(catalog, populated);
   const nav = sidebar('wilds/zone-test', populated, new Set(), catalog);
-  assert.match(nav,/class="nav-section-link" href="#wilds\/aetherion" aria-current="location"/);
-  assert.doesNotMatch(nav,/href="#wilds\/zone-test"/);
+  assert.match(nav,/<details data-group="Wilds" open>/);
+  assert.match(nav,/href="#wilds\/zone-test" aria-current="page"/);
   assert.doesNotMatch(nav, /#wilds\/zone-hidden|<script>/);
   const html = wildPage(zone, populated, locations);
   assert.match(html, /hero moonlit/);
