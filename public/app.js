@@ -87,7 +87,7 @@ function pageContent(pageRoute, pageState = state) {
   const locations = locationsFor(catalog, state);
   if (section === 'wilds' && locations.some(l => l.id === page && l.enabled)) return wildPage(locations.find(l => l.id === page), state, locations, catalog);
   else if (route === 'stable/breeding') return plannedPage(route,state);
-  else if (section === 'stable') return stablePage(page, state);
+  else if (section === 'stable') return stablePage(page, state,catalog);
   else if (route === 'dev/settings' || route === 'dev/economy') return settingsPage(state, page === 'economy');
   else if (route === 'dev/saves') return savesPage(state);
   else if (route === 'dev/roadmap') return roadmapPage();
@@ -432,7 +432,7 @@ document.addEventListener('click', async event => {
       if ($('#horse-search')) {
         $('#horse-search').value = search;
         $('#horse-sort').value = sort;
-        $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, search, sort);
+        $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, search, sort,catalog);
       }
       if (profile.open) {
         inspect(id);
@@ -579,13 +579,13 @@ document.addEventListener('input', event => {
     $('#definition-no-results').hidden = matches > 0;
   }
   if (event.target.closest('#zone-form')) $('#zone-preview').innerHTML = zonePreview(readZoneForm($('#zone-form')), catalog);
-  if (event.target.id === 'horse-search') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, event.target.value, $('#horse-sort').value);
+  if (event.target.id === 'horse-search') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, event.target.value, $('#horse-sort').value,catalog);
 });
 document.addEventListener('change', event => {
   if (['eye-rarity','eye-sort','eye-percent'].includes(event.target.id)) updateEyeGrid(main,catalog);
   if (event.target.id === 'traits-species') {main.innerHTML = traitsEditorPage(catalog,event.target.value); trackForms(main); return;}
   updateFormState(event.target.form);
-  if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value);
+  if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value,catalog);
 });
 document.addEventListener('reset', event => {
   if (event.target.id === 'traits-form') {

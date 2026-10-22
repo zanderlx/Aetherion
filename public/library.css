@@ -116,6 +116,12 @@ select{text-transform:uppercase}
 .trait-list .horse-eye-value { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
 .horse-eye-swatch { display:inline-flex; width:18px; height:18px; flex-shrink:0; border:1px solid var(--border); border-radius:3px; overflow:hidden; pointer-events:none; }
 .horse-eye-swatch > span { flex:1; }
+.horse-card[data-card-rank="uncommon"] { --horse-rank-color:#58B878; }
+.horse-card[data-card-rank="rare"] { --horse-rank-color:#B378EA; }
+.horse-card[data-card-rank="mutated"] { --horse-rank-color:#E6BC57; }
+#main .horse-card[data-card-rank="none"] { border-color:transparent; box-shadow:none; }
+#main .horse-card[data-card-rank]:not([data-card-rank="none"]) { border-color:var(--horse-rank-color); box-shadow:0 0 0 1px color-mix(in srgb,var(--horse-rank-color) 50%,transparent),0 0 16px color-mix(in srgb,var(--horse-rank-color) 30%,transparent); }
+#main .horse-card[data-card-rank]:not([data-card-rank="none"]):hover { box-shadow:0 0 0 1px var(--horse-rank-color),0 0 22px color-mix(in srgb,var(--horse-rank-color) 45%,transparent); }
 .horse-eye-label { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
 .profile-palette > .eyebrow { padding-left:18px; }
 .profile-palette .color-regions { grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px 10px; width:100%; padding-left:18px; margin-inline:auto; justify-items:center; }

@@ -1,4 +1,5 @@
 import { horseArt } from './art.js';
+import {horseCardRank} from './horse-rank.js';
 import { locationsFor } from './zones.js';
 
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -60,12 +61,13 @@ export function sidebar(route, state, openGroups, catalog) {
     </details>`).join('')}</nav>
     <div class="sidebar-foot"><span class="save-dot"></span><div>A sanctuary of your own<small>Local files · Phase 1 preview</small></div></div>`;
 }
-export function card(horse, state, mode = 'wild') {
+export function card(horse, state, mode = 'wild', catalog) {
   const title = horse.name || horse.species;
   const characters = Array.from(title);
   const cardTitle = characters.length > 13 ? `${characters.slice(0,13).join('')}…` : title;
   const collected = mode === 'stable';
-  return `<article class="horse-card">
+  const rank = horseCardRank(horse,catalog);
+  return `<article class="horse-card" data-card-rank="${rank.key}" aria-label="${escapeHTML(title)} · ${rank.label}">
     <div class="card-picture"><button class="art-button" data-action="inspect" data-id="${horse.id}" aria-label="Inspect ${escapeHTML(title)}">${horseArt(horse)}</button>
 
     ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}

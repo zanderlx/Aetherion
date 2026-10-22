@@ -12,25 +12,25 @@ export function wildPage(location, state, locations = [location], catalog) {
   <div class="hero-bottom">${zoneTags(location,catalog).map(tag => `<span>${e(tag)}</span>`).join('<span class="hero-divider" aria-hidden="true"></span>')}</div>
   </div><span class="hero-mark" aria-hidden="true">✧</span></section>
   <section class="encounters" aria-label="Wild horses">
-  <div class="horse-grid">${horses.map(h => card(h, state)).join('')}</div>
+  <div class="horse-grid">${horses.map(h => card(h, state, 'wild', catalog)).join('')}</div>
   ${horses.length === 0 ? emptyState('A little further down the trail…', 'Search the wilds below to discover your next companions.', null, null, 'leaf') : ''}
   <div class="wilds-search-row"><span class="wilds-search-ornament" aria-hidden="true">${icon('leaf')}<span>✧</span></span><button class="button primary search-button" data-action="search">${icon('refresh')} Search the Wilds</button><span class="wilds-search-ornament mirror" aria-hidden="true">${icon('leaf')}<span>✧</span></span></div>
   </section>`;
 }
-export function stablePage(kind, state) {
+export function stablePage(kind, state, catalog) {
   const sold = kind === 'sold';
   return `${heading('', sold ? 'Horse management' : 'My Horses', sold ? 'A complete record of the companions you have sold.' : '')}
 
   <div class="collection-toolbar"><label class="search-field">${icon('search')}<input id="horse-search" type="search" placeholder="Search name, species, or personality…" aria-label="Search horses"></label>${sold ? '' : `<button type="button" class="button secondary" data-action="import-horse">${icon('download')} Import Horse</button>`}<label class="sort-field">Sort by <select id="horse-sort"><option value="recent">Newest first</option><option value="name">Name</option><option value="species">Species</option><option value="favorites">Favorites</option></select></label></div>
-  <div id="collection-grid" class="horse-grid">${collectionCards(kind, state)}</div>
+  <div id="collection-grid" class="horse-grid">${collectionCards(kind, state, '', 'recent', catalog)}</div>
   `;
 }
-export function collectionCards(kind, state, query = '', sort = 'recent') {
+export function collectionCards(kind, state, query = '', sort = 'recent', catalog) {
   const favorites = kind === 'favorites' || sort === 'favorites';
   const horses = (kind === 'sold' ? state.sold : state.horses).filter(h => (!favorites || h.favorite) && `${h.name} ${h.species} ${h.personality.name}`.toLowerCase().includes(query.toLowerCase()));
   horses.sort((a, b) => sort === 'favorites' ? Number(!!b.favorite) - Number(!!a.favorite) || (b.caughtAt || '').localeCompare(a.caughtAt || '') : sort === 'recent' ? (b.soldAt || b.caughtAt).localeCompare(a.soldAt || a.caughtAt) : String(sort === 'name' ? a.name || a.species : a[sort]).localeCompare(String(sort === 'name' ? b.name || b.species : b[sort])));
   if (favorites && !horses.length) return `<div class="grid-empty" role="status"><p>${query ? 'No favorite horses match your search.' : 'No favorite horses yet. Use the heart on a horse card to add one.'}</p></div>`;
-  return horses.length ? horses.map(h => card(h, state, kind === 'sold' ? 'sold' : 'stable')).join('') : `<div class="grid-empty">${emptyState(query ? 'No hoofprints here' : kind === 'sold' ? 'No goodbyes just yet' : kind === 'favorites' ? 'Keep your favorites close' : 'Catch a horse in the wilds to welcome your first companion.', query ? 'Try a different name, species, or personality.' : kind === 'sold' ? 'Sold horses will remain here with their complete profiles.' : kind === 'favorites' ? 'Use the heart on a collected horse to find it here.' : '', 'wilds/aetherion', 'Visit the wilds')}</div>`;
+  return horses.length ? horses.map(h => card(h, state, kind === 'sold' ? 'sold' : 'stable',catalog)).join('') : `<div class="grid-empty">${emptyState(query ? 'No hoofprints here' : kind === 'sold' ? 'No goodbyes just yet' : kind === 'favorites' ? 'Keep your favorites close' : 'Catch a horse in the wilds to welcome your first companion.', query ? 'Try a different name, species, or personality.' : kind === 'sold' ? 'Sold horses will remain here with their complete profiles.' : kind === 'favorites' ? 'Use the heart on a collected horse to find it here.' : '', 'wilds/aetherion', 'Visit the wilds')}</div>`;
 }
 export const settingsPage = gameSettingsPage;
 export function libraryPage(kind, catalog) {
