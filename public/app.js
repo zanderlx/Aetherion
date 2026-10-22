@@ -1,3 +1,4 @@
+import {createDefinitionTransfers} from './definition-transfer.js';
 import {createPaletteTransfers} from './palette-transfer.js';
 import {palettesManagerPage,createPaletteEditor,updatePaletteGrid} from './palettes-manager.js';
 import {defaultSpawnSettings} from './spawn-config.js';
@@ -50,6 +51,7 @@ document.body.append(personalityCreation);
 personalityCreation.addEventListener('close',()=>{if (!personalityCreation.open) personalityCreation.replaceChildren();});
 personalityCreation.addEventListener('cancel',event=>{event.preventDefault();closePersonalityEditor(personalityCreation.querySelector('form'),()=>personalityCreation.close());});
 const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft),() => catalog.eyes);
+const definitionTransfers = Object.fromEntries(['eyes','mutations'].map(kind=>[kind,createDefinitionTransfers(kind,{getCatalog:()=>catalog,openDraft:draft=>showDefinition(kind,draft),notify})]));
 const paletteTransfers = createPaletteTransfers({getCatalog:()=>catalog,openDraft:draft=>showDefinition('palettes',{...draft,imported:true}),notify});
 const paletteEditor = createPaletteEditor(draft => libraryEditorPage('palettes',catalog,state,draft));
 const mutationEditor = createMutationEditor(draft => libraryEditorPage('mutations',catalog,state,draft));
@@ -258,6 +260,7 @@ function showDefinition(kind, draft) {
   if (kind === 'mutations') {
     mutationEditor.open(draft);
     trackForms(mutationEditor.dialog);
+    if (draft?.imported) restoreBaseline(mutationEditor.dialog.querySelector('#definition-form'),'imported-mutation');
     return;
   }
   if (kind === 'personalities') {
@@ -343,6 +346,8 @@ document.addEventListener('click', async event => {
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
   if (['toggle-personality','toggle-all-personalities'].includes(intent)) return togglePersonalities(main,button);
+  if (intent === 'import-definition') return definitionTransfers[button.dataset.kind]?.importDefinition();
+  if (intent === 'export-definition') {try {definitionTransfers[button.dataset.kind]?.exportDefinition(id);} catch(error) {notify(error.message,true);} return;}
   if (intent === 'import-palette') return paletteTransfers.importPalette();
   if (intent === 'export-palette') {try {paletteTransfers.exportPalette(id);} catch(error) {notify(error.message,true);} return;}
   if (intent === 'wilds-home') {

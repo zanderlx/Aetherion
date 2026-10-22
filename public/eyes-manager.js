@@ -1,3 +1,4 @@
+import {definitionTransferControls} from './definition-transfer-controls.js';
 import {escapeHTML as e,icon} from './ui.js';
 import {colorControl} from './library-editor.js';
 import {trackForms,updateFormState,restoreBaseline,formSignature,formBaseline} from './form-state.js';
@@ -47,7 +48,7 @@ export function updateEyeGrid(root,catalog) {
 }
 
 export function eyesManagerPage(catalog) {
-  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">${icon('spark')} Create Eye Color</button></div>
+  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Eye Color Manager</h1><button type="button" class="button secondary definition-import" data-action="import-definition" data-kind="eyes" title="Import Eye Color" aria-label="Import Eye Color">${icon('download')}</button><button class="button primary" data-action="new-definition" data-kind="eyes">${icon('spark')} Create Eye Color</button></div>
     <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search..." aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field eye-percent-control"><span><input id="eye-percent" type="checkbox"> Show Percentages</span></label><div class="definition-sort-controls"><label class="zone-field">Sort By<select id="eye-sort"><option value="rarity" selected>Rarity</option><option value="name">Name</option></select></label><button type="button" class="icon-button sort-direction" data-action="eye-sort-direction" data-direction="asc" aria-label="Ascending order. Switch to descending" title="Ascending order. Switch to descending">${icon('arrow')}</button></div></div>
     <div id="eye-grid">${eyeResults(filterEyes(catalog.eyes,'','','rarity'),'rarity',catalog.eyes,false)}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
 }
@@ -125,17 +126,10 @@ export function createEyeEditor(renderEditor,getEyes) {
       if (!draft?.id && !draft?.name) draft = {...draft,name:'Custom Color',rarity:'Common',colors:[randomEyeColor()]};
       const template = document.createElement('template');
       template.innerHTML = renderEditor(draft);
-      dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
+      dialog.innerHTML = `<div class="dialog-top"><h2 id="eye-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : draft?.imported ? 'Import Eye Color' : 'Create Eye Color'}</h2><button type="button" class="icon-button" data-action="close-eye-editor" aria-label="Close eye color editor">${icon('close')}</button></div>`;
       const form = template.content.querySelector('#definition-form');
       form.querySelector('.panel-heading')?.remove();
-      const deleteButton = form.querySelector('[data-action="delete-definition"]');
-      if (deleteButton) {
-        deleteButton.className = 'icon-button eye-header-delete';
-        deleteButton.innerHTML = icon('trash');
-        deleteButton.setAttribute('aria-label',`Delete ${draft.name}`);
-        deleteButton.title = 'Delete Eye Color';
-        dialog.querySelector('#eye-editor-title').after(deleteButton);
-      }
+    definitionTransferControls(form,dialog,draft,'eyes','Eye Color');
       form.querySelector('[data-action="duplicate-definition"]')?.remove();
       form.querySelector('[data-action="add-eye-color"]')?.remove();
       const colors = form.querySelector('#eye-color-rows');

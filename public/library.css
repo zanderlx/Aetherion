@@ -382,8 +382,11 @@ select{text-transform:uppercase}
 
 .palette-definition-dialog .palette-delete-actions{display:flex;justify-content:center;margin-top:16px}
 .palette-definition-dialog :is(.palette-delete,.palette-export){width:43px;min-width:43px;min-height:43px;padding:0;display:inline-flex;align-items:center;justify-content:center}
-.eye-manager-header:has(.palette-import){align-items:center;justify-content:flex-start;gap:20px}
-.eye-manager-header .palette-import{width:43px;min-width:43px;padding:0;margin-top:0;flex-shrink:0}
-.eye-manager-header:has(.palette-import)>[data-action="new-definition"]{margin-left:auto}
+.eye-manager-header:has(.definition-import){align-items:center;justify-content:flex-start;gap:20px}
+.eye-manager-header .definition-import{width:43px;min-width:43px;padding:0;margin-top:0;flex-shrink:0}
+.eye-manager-header:has(.definition-import)>[data-action="new-definition"]{margin-left:auto}
 
 #definition-form[data-kind="palettes"] .zone-choice:has([name="global"]){background:transparent}
+
+.definition-delete-actions{display:flex;justify-content:center;margin-top:16px}
+.eye-definition-dialog .definition-transfer-button{width:43px;min-width:43px;min-height:43px;padding:0;display:inline-flex;align-items:center;justify-content:center}

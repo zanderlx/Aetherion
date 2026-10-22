@@ -1,3 +1,4 @@
+import {definitionTransferControls} from './definition-transfer-controls.js';
 import {escapeHTML as e,icon} from './ui.js';
 import {formSignature,formBaseline} from './form-state.js';
 
@@ -19,7 +20,7 @@ export function mutationCards(entries,showWeights=false) {
   return entries.map(m=>`<button type="button" class="panel eye-definition-card mutation-definition-card" data-action="edit-definition" data-kind="mutations" data-id="${e(m.id)}" aria-label="Edit ${e(m.name)}"><span class="eye-card-name">${e(m.name)}</span><span class="mutation-card-description">${e(m.description || 'No description yet.')}</span><span class="mutation-card-meta"><span>${e(m.type)}</span>${showWeights ? `<span>Weight: ${Math.abs(m.weight || 0).toLocaleString()}</span>` : ''}</span></button>`).join('');
 }
 export function mutationsManagerPage(catalog) {
-  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Mutations Manager</h1><button class="button primary" data-action="new-definition" data-kind="mutations">${icon('spark')} Create Mutation</button></div>
+  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Mutations Manager</h1><button type="button" class="button secondary definition-import" data-action="import-definition" data-kind="mutations" title="Import Mutation" aria-label="Import Mutation">${icon('download')}</button><button class="button primary" data-action="new-definition" data-kind="mutations">${icon('spark')} Create Mutation</button></div>
   <section class="mutation-instructions" aria-label="Adding mutations and weights">
     <p>Click <strong>Create Mutation</strong> to add one, or click a card to edit it. Save when finished.</p>
     <p><strong>Types:</strong> Standard can appear naturally. Mutated means Cosmic and uses separate chances. Special is for other methods.</p>
@@ -77,14 +78,8 @@ export function createMutationEditor(renderEditor) {
     const form=template.content.querySelector('#definition-form');
     form.querySelector('.panel-heading')?.remove();
     form.querySelector('[data-action="duplicate-definition"]')?.remove();
-    dialog.innerHTML=`<div class="dialog-top"><h2 id="mutation-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Mutation'}</h2><button type="button" class="icon-button" data-mutation-close aria-label="Close mutation editor">${icon('close')}</button></div>`;
-    const remove=form.querySelector('[data-action="delete-definition"]');
-    if (remove) {
-      remove.className='icon-button eye-header-delete';
-      remove.innerHTML=icon('trash');
-      remove.title='Delete Mutation';remove.setAttribute('aria-label',`Delete ${draft.name}`);
-      dialog.querySelector('h2').after(remove);
-    }
+    dialog.innerHTML=`<div class="dialog-top"><h2 id="mutation-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : draft?.imported ? 'Import Mutation' : 'Create Mutation'}</h2><button type="button" class="icon-button" data-mutation-close aria-label="Close mutation editor">${icon('close')}</button></div>`;
+    definitionTransferControls(form,dialog,draft,'mutations','Mutation');
     const fields=form.querySelector('.definition-fields');
     const row=document.createElement('div');row.className='eye-name-rarity';
     row.append(fields.querySelector('[name="name"]').closest('label'),fields.querySelector('[name="type"]').closest('label'));
