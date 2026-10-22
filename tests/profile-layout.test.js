@@ -33,6 +33,8 @@ test('horse profile separates overview from appearance and keeps unique portrait
  assert.ok(owned.indexOf('profile-info')<owned.indexOf('class="horse-notes"'));
  assert.ok(owned.indexOf('class="horse-notes"')<owned.indexOf('class="profile-skills"'));
  assert.match(owned,/data-action="sell"/);assert.match(owned,/data-action="export-horse"/);
+ assert.ok(owned.indexOf('data-action="export-horse"')<owned.indexOf('data-action="sell"'));
+ assert.match(owned,/title="Export Horse" aria-label="Export Horse">\s*<svg/);
  const preview=profileContent(horse,state,{catalog,importPreview:true});
  assert.match(preview,/id="import-horse-appearance"/);assert.match(preview,/data-action="confirm-import"/);
  assert.doesNotMatch(preview,/data-action="sell"|data-action="export-horse"/);
