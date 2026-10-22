@@ -51,7 +51,7 @@
 .horse-profile-shell .horse-notes .horse-text-display:has(.empty-horse-notes){align-items:center;justify-content:center;text-align:center}
 .profile-skills{display:flex;flex-direction:column;flex:1}
 .profile-skills dl{display:grid;gap:10px;margin:0;flex:1;grid-auto-rows:minmax(28px,1fr);min-height:202px}
-.profile-skills dl>div{display:grid;grid-template-columns:90px minmax(50px,1fr) max-content;align-items:center;gap:8px;padding:0;width:100%}
+.profile-skills dl>div{display:grid;grid-template-columns:minmax(0,90px) minmax(50px,1fr) minmax(0,90px);align-items:center;gap:8px;padding:0;width:100%}
 .profile-skills dt{display:flex;justify-content:flex-end;align-items:center;gap:6px;white-space:nowrap}
 .profile-skills dt>span{text-align:right}
 .profile-skills dt .icon{width:17px;height:17px;flex-shrink:0;color:var(--skill-color)}
@@ -94,7 +94,7 @@
  .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:420px){
- .profile-skills dl>div{grid-template-columns:68px minmax(36px,1fr) max-content;gap:4px}
+ .profile-skills dl>div{grid-template-columns:minmax(0,68px) minmax(36px,1fr) minmax(0,68px);gap:4px}
  .profile-skills dt{font-size:12px;gap:4px}
  .profile-skills dt .icon{width:14px;height:14px}
  .profile-skills .skill-level-bar{padding-inline:5px;font-size:11px}
