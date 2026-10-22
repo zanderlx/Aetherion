@@ -28,6 +28,7 @@
 #main .horse-card .gender-male{color:#70A9F4}
 #main .horse-card .gender-female{color:#F19BC2}
 .horse-gender,.horse-gender-label{display:inline-flex;align-items:center;gap:5px;vertical-align:middle}
+.horse-species-gender{display:flex;align-items:center;flex-wrap:wrap;gap:6px;line-height:1.4}
 .horse-gender-label .gender-symbol{width:20px;height:20px;flex-shrink:0}
 svg.gender-symbol.gender-male{color:#70A9F4}
 svg.gender-symbol.gender-female{color:#F19BC2}
