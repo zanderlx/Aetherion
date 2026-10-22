@@ -321,6 +321,7 @@ document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action]');
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
+  if (intent === 'wilds-home') {button.closest('details').open=true;openGroups.add('Wilds');return;}
   if (intent === 'sort-direction') {updateStableSort(button.dataset.direction === 'asc' ? 'desc' : 'asc'); return;}
   if (intent === 'eye-sort-direction') {
     button.dataset.direction = button.dataset.direction === 'asc' ? 'desc' : 'asc';

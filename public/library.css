@@ -20,6 +20,17 @@
 .color-inputs input[type=color]{width:100%;height:42px;padding:4px;cursor:pointer}
 .color-inputs input[data-color-hex]{width:100%;font-size:14px;font-family:monospace}
 .theme-picker{margin-bottom:32px}
+nav summary .nav-group-home{display:flex;align-items:center;gap:11px;flex:1;color:inherit;text-decoration:none}
+#collection-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+#collection-grid .card-body{padding:12px}
+#collection-grid .card-title{gap:7px}
+#collection-grid .card-title h3{font-size:clamp(18px,1.5vw,24px);flex:1}
+#collection-grid .horse-card-open{display:block;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#collection-grid .gender .icon{width:21px;height:21px}
+@media(max-width:1200px){#collection-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:900px){#collection-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){#collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){#collection-grid{grid-template-columns:1fr}}
 .horse-card{position:relative}
 .horse-card .card-title{justify-content:flex-start;gap:10px}
 .horse-card .card-title h3{margin:0;min-width:0}
