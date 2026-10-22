@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {filterMutations,mutationCards,mutationResults,mutationsManagerPage,toggleMutations} from '../public/mutations-manager.js';
+import {filterMutations,mutationCards,mutationResults,mutationsManagerPage,toggleMutations,mutationEmoji} from '../public/mutations-manager.js';
 import {libraryEditorPage} from '../public/library-editor.js';
 import {catalogFor} from '../public/definitions.js';
 import {readFile} from 'node:fs/promises';
@@ -85,4 +85,11 @@ test('mutation card, section, and global toggles synchronize independently',()=>
  assert.ok(cards.every(entry=>!entry.body.hidden));assert.equal(global.textContent,'Hide All');
  toggleMutations(root,global);
  assert.ok(cards.every(entry=>entry.body.hidden));assert.equal(section.textContent,'Show');
+});
+test('all supplied Special mutations use a specific thematic emoji',async()=>{
+ const catalog=JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8'));
+ for(const mutation of catalog.mutations.filter(m=>m.type==='Special')) assert.notEqual(mutationEmoji(mutation),'✨',mutation.name);
+ assert.equal(mutationEmoji({name:'Alien',type:'Special'}),'👽');
+ assert.equal(mutationEmoji({name:'Flowering Sakura',type:'Special'}),'🌸');
+ assert.match(mutationCards(mutations),/mutation-card-name/);
 });
