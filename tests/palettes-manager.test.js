@@ -37,7 +37,7 @@ test('palette page matches manager controls and retains every palette editing fi
  assert.match(page,/class="eye-grid-controls"/);
  assert.match(page,/data-action="palette-sort-direction"/);
  const form=libraryEditorPage('palettes',catalog,{settings:{},customLocations:[]},catalog.palettes.find(p=>p.complete));
- for(const name of ['name','description','systemId','global','speciesIds','assetSkins','group','natural',...regions.map(r=>`color:${r}`)]) assert.ok(form.includes(`name="${name}"`),name);
+ for(const name of ['name','description','systemId','global','speciesIds','assetSkins','group',...regions.map(r=>`color:${r}`)]) assert.ok(form.includes(`name="${name}"`),name);
  assert.match(form,/data-action="duplicate-definition"/);
  assert.match(form,/data-action="delete-definition"/);
 });
@@ -76,4 +76,13 @@ test('palette forms preserve unused internal identifiers without exposing editor
  assert.match(form,/skin-one/);
  assert.match(form,/skin-two/);
  assert.doesNotMatch(form,/>System ID|Asset Skin IDs/);
+});
+
+test('palette forms use a Type dropdown and place scope after colors without Natural logic',async()=>{
+ const catalog=normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')));
+ const form=libraryEditorPage('palettes',catalog,{settings:{},customLocations:[]},catalog.palettes.find(p=>p.complete));
+ assert.match(form,/>Type<select name="group" required>/);
+ assert.doesNotMatch(form,/name="natural"|Natural palette|Palette type or event/);
+ assert.ok(form.indexOf('color-editor-grid')<form.indexOf('name="global"'));
+ assert.ok(form.indexOf('name="global"')<form.indexOf('palette-species-links'));
 });

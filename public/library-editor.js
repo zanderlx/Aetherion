@@ -56,9 +56,11 @@ export function libraryEditorPage(kind, catalog, state, draft) {
       textField('Acquisition or rarity notes (optional)', 'restriction', draft.restriction) +
       `<p class="preview-note">Selected zones receive this species ID and rarity weight. Manage appearance traits in the Traits section.</p>`;
   }
-  if (kind === 'palettes') fields = checkbox('Global palette (available to all species)','global',draft.global ?? !draft.speciesIds?.length) +
-    `<fieldset class="zone-pool palette-species-links"><legend>Species Linked</legend>${catalog.species.map(sp => `<label class="zone-choice"><input type="checkbox" name="speciesIds" value="${e(sp.id)}" ${(draft.speciesIds || []).includes(sp.id) ? 'checked' : ''}><span>${e(sp.name)}</span></label>`).join('')}</fieldset>` + `<input type="hidden" name="assetSkins" value="${e((draft.assetSkins || []).join('\n'))}">` + textField('Palette type or event', 'group', draft.group, true, catalog.palettes.map(p => p.group)) + checkbox('Natural palette', 'natural', draft.natural) +
-    `<div class="color-editor-grid">${regions.map(r => colorControl(r, draft.colors?.[r] || '#D6B4DF')).join('')}</div>`;
+  if (kind === 'palettes') fields = `<label class="zone-field">Type<select name="group" required>${[...new Set([...catalog.palettes.map(p=>p.group),draft.group || 'Custom'])].filter(Boolean).sort((a,b)=>a.localeCompare(b)).map(group=>`<option value="${e(group)}" ${group===draft.group ? 'selected' : ''}>${e(group)}</option>`).join('')}</select></label>
+    <div class="color-editor-grid">${regions.map(r=>colorControl(r,draft.colors?.[r] || '#D6B4DF')).join('')}</div>
+    ${checkbox('Global Palette (available to all species)','global',draft.global ?? !draft.speciesIds?.length)}
+    <fieldset class="zone-pool palette-species-links"><legend>Species Linked</legend>${catalog.species.map(sp=>`<label class="zone-choice"><input type="checkbox" name="speciesIds" value="${e(sp.id)}" ${(draft.speciesIds || []).includes(sp.id) ? 'checked' : ''}><span>${e(sp.name)}</span></label>`).join('')}</fieldset>
+    <input type="hidden" name="assetSkins" value="${e((draft.assetSkins || []).join('\n'))}">`;
   if (kind === 'eyes') fields =  `<input type="hidden" name="textureId" value="${e(draft.textureId || '')}">` + `<input type="hidden" name="layers" value="${e(JSON.stringify(draft.layers || []))}">` + `<label class="zone-field">Rarity<select name="rarity">${[...new Set(['Common','Uncommon','Rare',...catalog.eyes.map(d => d.rarity),draft.rarity].filter(rarity => rarity && rarity.toLowerCase() !== 'custom'))].map(rarity => `<option value="${e(rarity)}" ${rarity === draft.rarity ? 'selected' : ''}>${e(rarity)}</option>`).join('')}</select></label>` +
     `<div id="eye-color-rows" class="color-editor-grid">${(draft.colors || ['#8A689E']).map((c, i) => `<div class="eye-color-row">${colorControl(String(i), c, `Eye color ${i + 1}`)}<button class="text-button" type="button" data-action="remove-eye-color">Remove color</button></div>`).join('')}</div><button class="button secondary" type="button" data-action="add-eye-color">Add eye color</button>`;
   if (kind === 'mutations') fields = `<label class="zone-field">Type<select name="type">${mutationTypes([...catalog.mutations,...(draft.type ? [{type:draft.type}] : [])]).map(type => `<option value="${e(type)}" ${type === draft.type ? 'selected' : ''}>${e(type)}</option>`).join('')}</select></label>` +
@@ -107,7 +109,7 @@ export function readDefinitionForm(form) {
   if (kind === 'eyes') {values.layers = json('layers');}
   if (kind === 'mutations') {values.thresholds = json('thresholds'); values.sizeShift = Number(values.sizeShift);}
   if (kind === 'palettes') {values.global = form.elements.global.checked; values.speciesIds = data.getAll('speciesIds'); values.assetSkins = lines('assetSkins');}
-  if (kind === 'palettes') values.natural = form.elements.natural.checked;
+
   if (kind === 'mutations') values.weight = values.weight === '' ? null : Number(values.weight);
   if (kind === 'items') values.price = Number(values.price);
   if (kind === 'atmospheres') values.tint = values['color:tint'];
