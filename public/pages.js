@@ -71,7 +71,7 @@ export function plannedPage(route, state) {
 export const routeTitle = (route, locations = []) => locations.find(l => route === `wilds/${l.id}`)?.name || groups.flatMap(g => g.items).find(([path]) => path === route)?.[1] || 'Aetherion';
 
 export function editModePage(state) {
-  return `${heading('THE KEEPER’S WORKBENCH', 'Edit Mode', 'Manage website wording from one dedicated place.')}
+  return `${heading('', 'Edit Mode', 'Manage website wording from one dedicated place.')}
   <section class="panel" data-copy-ui><h2>Page Text Editing</h2><p>Current status: <strong>${state.settings.developerEditMode ? 'Enabled' : 'Disabled'}</strong>. Enable editing, then visit any page and use its pencils to change headings, section text, sidebar labels, or footer wording.</p><p>Save one section immediately, or preview several edits and use Save Page. Restore defaults and discard controls are available in the editing toolbar. All saved wording is included in backups and exports.</p><button class="button primary" data-action="toggle-copy-mode" aria-pressed="${Boolean(state.settings.developerEditMode)}">${state.settings.developerEditMode ? 'Disable' : 'Enable'} Edit Mode</button></section>`;
 }
 
