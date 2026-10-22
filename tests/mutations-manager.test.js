@@ -83,7 +83,10 @@ test('mutation card, section, and global toggles synchronize independently',()=>
  assert.equal(section.textContent,'Show');
  toggleMutations(root,section);
  assert.ok(first.every(entry=>!entry.body.hidden));assert.equal(second[0].body.hidden,true);
- assert.equal(section.textContent,'Hide');assert.equal(global.textContent,'Show All');
+ assert.equal(section.textContent,'Hide');assert.equal(global.textContent,'Hide All');
+ toggleMutations(root,global);
+ assert.ok(cards.every(entry=>entry.body.hidden));
+ assert.equal(global.textContent,'Show All');
  toggleMutations(root,global);
  assert.ok(cards.every(entry=>!entry.body.hidden));assert.equal(global.textContent,'Hide All');
  toggleMutations(root,global);
