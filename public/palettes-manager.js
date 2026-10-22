@@ -74,13 +74,15 @@ export function createPaletteEditor(renderEditor) {
     const duplicate=form.querySelector('[data-action="duplicate-definition"]');
     if(remove) {
       duplicate?.remove();
-      remove.className='icon-button palette-delete';
+      remove.className='button secondary palette-delete';
       remove.innerHTML=icon('trash');remove.title='Delete Palette';remove.setAttribute('aria-label',`Delete ${draft.name}`);
       const exportButton=document.createElement('button');
-      exportButton.type='button';exportButton.className='icon-button eye-header-delete';
+      exportButton.type='button';exportButton.className='button secondary eye-header-delete palette-export';
       exportButton.dataset.action='export-palette';exportButton.dataset.id=draft.id;
       exportButton.innerHTML=icon('upload');exportButton.title='Export Palette';exportButton.setAttribute('aria-label','Export Palette');
       dialog.querySelector('h2').after(exportButton);
+      const deleteActions=document.createElement('div');deleteActions.className='palette-delete-actions';
+      deleteActions.append(remove);form.append(deleteActions);
     }
     const fields=form.querySelector('.definition-fields');
     const row=document.createElement('div');row.className='eye-name-rarity';

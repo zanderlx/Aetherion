@@ -58,7 +58,7 @@ export function libraryEditorPage(kind, catalog, state, draft) {
   }
   if (kind === 'palettes') fields = `<label class="zone-field">Type<select name="group" required>${[...new Set([...catalog.palettes.map(p=>p.group),draft.group || 'Custom'])].filter(Boolean).sort((a,b)=>a.localeCompare(b)).map(group=>`<option value="${e(group)}" ${group===draft.group ? 'selected' : ''}>${e(group)}</option>`).join('')}</select></label>
     <div class="color-editor-grid">${regions.map(r=>colorControl(r,draft.colors?.[r] || '#D6B4DF')).join('')}</div>
-    ${checkbox('Global Palette (available to all species)','global',draft.global ?? !draft.speciesIds?.length)}
+    ${checkbox('Global (available to all species)','global',draft.global ?? !draft.speciesIds?.length)}
     <fieldset class="zone-pool palette-species-links"><legend>Species Linked</legend>${catalog.species.map(sp=>`<label class="zone-choice"><input type="checkbox" name="speciesIds" value="${e(sp.id)}" ${(draft.speciesIds || []).includes(sp.id) ? 'checked' : ''}><span>${e(sp.name)}</span></label>`).join('')}</fieldset>
     <input type="hidden" name="assetSkins" value="${e((draft.assetSkins || []).join('\n'))}">`;
   if (kind === 'eyes') fields =  `<input type="hidden" name="textureId" value="${e(draft.textureId || '')}">` + `<input type="hidden" name="layers" value="${e(JSON.stringify(draft.layers || []))}">` + `<label class="zone-field">Rarity<select name="rarity">${[...new Set(['Common','Uncommon','Rare',...catalog.eyes.map(d => d.rarity),draft.rarity].filter(rarity => rarity && rarity.toLowerCase() !== 'custom'))].map(rarity => `<option value="${e(rarity)}" ${rarity === draft.rarity ? 'selected' : ''}>${e(rarity)}</option>`).join('')}</select></label>` +
