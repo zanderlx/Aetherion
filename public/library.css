@@ -432,3 +432,6 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .personality-card-grid article.mutation-collapse-card .personality-card-heading h2{display:flex;align-items:center;gap:8px;font-size:20px;line-height:1.3;white-space:nowrap;overflow:hidden}
 .mutation-collapse-card .personality-emoji{flex-shrink:0}
 .mutation-card-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.mutation-collapse-card .personality-emoji{display:inline-flex;align-items:center;justify-content:center;align-self:center;width:26px;height:26px;font-size:20px;line-height:1}
+.mutation-collapse-card .mutation-card-name{display:block;align-self:center;line-height:26px}
