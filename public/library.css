@@ -20,6 +20,16 @@
 .color-inputs input[type=color]{width:100%;height:42px;padding:4px;cursor:pointer}
 .color-inputs input[data-color-hex]{width:100%;font-size:14px;font-family:monospace}
 .theme-picker{margin-bottom:32px}
+.horse-card{position:relative}
+.horse-card .card-title{justify-content:flex-start;gap:10px}
+.horse-card .card-title h3{margin:0;min-width:0}
+.horse-card .card-title .gender{display:flex;align-self:center;flex-shrink:0}
+.horse-card .gender .icon{width:25px;height:25px}
+#main .horse-card .gender-male{color:#70A9F4}
+#main .horse-card .gender-female{color:#F19BC2}
+.horse-card-open::after{content:"";position:absolute;inset:0;z-index:1;cursor:pointer}
+.horse-card:has(.horse-card-open:focus-visible){outline:2px solid var(--gold);outline-offset:4px}
+.horse-card .favorite{z-index:2}
 .sidebar-foot{justify-content:center;text-align:center;text-transform:uppercase}
 .gold-balance{flex-direction:row;flex-wrap:nowrap;white-space:nowrap;flex-shrink:0}
 .gold-balance .icon{display:block;flex-shrink:0;align-self:center}

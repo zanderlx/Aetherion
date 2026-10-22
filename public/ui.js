@@ -68,16 +68,12 @@ export function card(horse, state, mode = 'wild', catalog) {
   const collected = mode === 'stable';
   const rank = horseCardRank(horse,catalog);
   const rankColor = raritySettings(catalog).colors[rank.key];
+  const female = horse.gender === 'Female';
+  const genderIcon = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${female ? '<circle cx="12" cy="8" r="5"/><path d="M12 13v9m-4-4h8"/>' : '<circle cx="9" cy="15" r="5"/><path d="m13 11 8-8m-6 0h6v6"/>'}</svg>`;
   return `<article class="horse-card" data-card-rank="${rankColor ? rank.key : 'none'}" ${rankColor ? `style="--horse-rank-color:${rankColor}"` : ''} aria-label="${escapeHTML(title)} · ${rank.label}">
-    <div class="card-picture"><button class="art-button" data-action="inspect" data-id="${horse.id}" aria-label="Inspect ${escapeHTML(title)}">${horseArt(horse)}</button>
-
-    ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}
-    <span class="art-caption">ILLUSTRATIVE PLACEHOLDER</span></div>
-    <div class="card-body"><div class="card-title"><div>${horse.name ? `<span class="eyebrow">${escapeHTML(horse.species)}</span>` : ''}<h3><button data-action="inspect" data-id="${horse.id}" title="${escapeHTML(title)}" aria-label="Inspect ${escapeHTML(title)}">${escapeHTML(cardTitle)}</button></h3></div><span class="gender" aria-label="${horse.gender}">${horse.gender === 'Female' ? '♀' : '♂'}</span></div>
-    <p class="horse-meta">${escapeHTML(horse.age)} <span>·</span> ${escapeHTML(horse.size)} <span>·</span> ${escapeHTML(horse.personality.name)}</p>
-    <div class="palette-line"><div class="swatches" aria-label="All nine horse colors">${Object.entries(horse.palette.colors).map(([region,c]) => `<span style="--swatch:${c}" title="${escapeHTML(region)}: ${c}"></span>`).join('')}</div></div>
-    <div class="card-actions"><button class="button secondary" data-action="inspect" data-id="${horse.id}">View horse ${icon('arrow')}</button>
-    ${mode === 'wild' ? `<button class="button primary" data-action="catch" data-id="${horse.id}">${icon('stable')} Catch</button>` : mode === 'sold' ? `<span class="sold-label">Sold · ${number(horse.soldFor)} gold</span>` : ''}</div></div></article>`;
+    <div class="card-picture">${horseArt(horse)}
+    ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}</div>
+    <div class="card-body"><div class="card-title"><span class="gender ${female ? 'gender-female' : 'gender-male'}" role="img" aria-label="${female ? 'Female' : 'Male'}">${genderIcon}</span><h3><button class="horse-card-open" data-action="inspect" data-id="${horse.id}" title="${escapeHTML(title)}" aria-label="View ${escapeHTML(title)}">${escapeHTML(cardTitle)}</button></h3></div></div></article>`;
 }
 export function emptyState(title, description, link, linkLabel, symbol = 'stable') {
   return `<div class="empty-state"><div class="empty-symbol">${icon(symbol)}</div><h2>${title}</h2><p>${description}</p>${link ? `<a class="button primary" href="#${link}">${linkLabel} ${icon('arrow')}</a>` : ''}</div>`;

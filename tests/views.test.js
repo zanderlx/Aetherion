@@ -114,7 +114,8 @@ test('horse previews and details expose edit targets and the simplified nine-col
   assert.ok(html.indexOf('Eye Color') > html.indexOf('<h3>Traits</h3>'));
   assert.doesNotMatch(html,/profile-id-footer|Horse ID/);
   const preview = card(horse,state,'stable');
-  assert.equal((preview.match(/--swatch:/g) || []).length,9);
+  assert.equal((preview.match(/--swatch:/g) || []).length,0);
+  assert.doesNotMatch(preview,/horse-meta|palette-line|card-actions|View horse|data-action="catch"/);
   assert.doesNotMatch(preview,/HiddenPaletteName|A NEW ACQUAINTANCE|In your care/);
   const wild = wildPage(catalog.locations[0],state);
   assert.doesNotMatch(wild,/encounters.count|A CHANCE ENCOUNTER|wandered into the clearing/);
@@ -192,11 +193,23 @@ test('edit mode has one dedicated page and economy exposes the actual gold balan
   assert.match(editModePage(state), /data-action="toggle-copy-mode"/);
   assert.match(settingsPage({...state,gold:12345},true), /name="gold"[^>]+value="12345"/);
 });
-test('wild view has three inspectable illustrations and explicit preview labeling', () => {
+test('wild view has three inspectable illustrations without preview captions', () => {
   const html = wildPage(catalog.locations[0], state);
   assert.equal((html.match(/class="horse-card"/g) || []).length, 3);
   assert.doesNotMatch(html, /not final spawn odds/);
-  assert.match(html, /ILLUSTRATIVE PLACEHOLDER/);
+  assert.doesNotMatch(html, /ILLUSTRATIVE PLACEHOLDER/);
+  assert.equal((html.match(/class="horse-card-open"/g) || []).length,3);
+});
+
+test('simplified horse previews place gender before name and keep taming in the profile',()=>{
+ for (const gender of ['Male','Female']) {
+  const horse={...horses[0],name:'Willow',gender};
+  const preview=card(horse,state,'wild');
+  assert.match(preview,new RegExp(`gender-${gender.toLowerCase()}`));
+  assert.ok(preview.indexOf('class="gender ')<preview.indexOf('<h3>'));
+  assert.doesNotMatch(preview,/horse-meta|palette-line|card-actions|art-caption|eyebrow/);
+  assert.match(profileContent(horse,state),/data-action="catch"[^>]*>.* Tame<\/button>/);
+ }
 });
 test('horse profile escapes names and preserves source traits and all nine color regions', () => {
   const horse = { ...horses[0], name: '<img src=x onerror=alert(1)>', caughtAt: new Date().toISOString() };
