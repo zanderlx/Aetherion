@@ -109,7 +109,19 @@ export class GameStore {
           next.gold += next.settings.sellingPrice;
           next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, horseName:horse.name, species:horse.species, amount: next.settings.sellingPrice, at: new Date().toISOString() });
         }
-        for (const key of Object.keys(next.encounters)) next.encounters[key] = next.encounters[key].filter(h => h.id !== horse.id);
+        for (const key of Object.keys(next.encounters)) {
+          const containedHorse = next.encounters[key].some(h => h.id === horse.id);
+          next.encounters[key] = next.encounters[key].filter(h => h.id !== horse.id);
+          if (type === 'catch' && containedHorse) {
+            const location = locationsFor(catalog,next).find(l => l.id === key && l.enabled);
+            if (location) {
+              const searchNumber = next.searches[key] || 0;
+              // Save the capture and its replacement encounters in the same transaction.
+              next.encounters[key] = createEncounters(catalog,key,next.settings.horsesPerSearch,searchNumber,location,this.rng);
+              next.searches[key] = searchNumber+1;
+            }
+          }
+        }
       } else if (type === 'import-horse') {
         if (JSON.stringify(payload).length > 524288) throw new Error('Horse files must be 512 KB or smaller.');
         const horse = readHorseDocument(payload);

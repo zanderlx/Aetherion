@@ -30,7 +30,8 @@ test('owned personality descriptions default on catch, persist, and reject inval
   const description = 'Loves quiet trails.\n<script>plain text</script>';
   await store.action('horse-description',{id:first.id,description});
   await assert.rejects(store.action('horse-description',{id:first.id,description:'a'.repeat(4001)}));
-  assert.equal(store.state.encounters.aetherion.find(h => h.id === second.id).personalityDescription,second.personality.description);
+  assert.ok(store.state.encounters.aetherion.every(h => h.personalityDescription === h.personality.description));
+  assert.ok(!store.state.encounters.aetherion.some(h => h.id === second.id));
   const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.horses[0].personalityDescription,description);
   assert.equal(restored.state.horses[0].personality.description,first.personality.description);
@@ -183,8 +184,8 @@ test('zone and horse deletion persist without awarding gold or removing unrelate
   const { directory, store } = await fixture(t);
   await store.action('visit',{locationId:'aetherion'});
   const first = store.state.encounters.aetherion[0].id;
-  const second = store.state.encounters.aetherion[1].id;
   await store.action('catch',{id:first});
+  const second = store.state.encounters.aetherion[1].id;
   await store.action('sell',{id:second});
   const gold = store.state.gold;
   await store.action('save-zone',{...newZoneDraft(),name:'Delete Me',description:'Temporary.',speciesPool:['Unicorn'],palettePool:['Natural Gold']});
@@ -250,7 +251,8 @@ test('visit is stable; catching, naming and favoriting survive reload', async t 
   assert.equal(restarted.state.horses[0].name, 'Moon & Marigold');
   assert.equal(restarted.state.horses[0].favorite, true);
   assert.deepEqual(restarted.state.horses[0].palette, initial.encounters.aetherion[0].palette);
-  assert.equal(restarted.state.encounters.aetherion.length, 2);
+  assert.equal(restarted.state.encounters.aetherion.length,defaults.horsesPerSearch);
+  assert.ok(restarted.state.encounters.aetherion.every(h => !initial.encounters.aetherion.some(old => old.id === h.id)));
 });
 test('selling retains complete horse history and concurrent duplicate sales cannot award gold twice', async t => {
   const { store } = await fixture(t);
@@ -289,7 +291,7 @@ test('invalid settings and full stable fail without mutating the save', async t 
   const [a, b] = store.state.encounters.aetherion;
   await store.action('catch', { id: a.id });
   const before = store.snapshot();
-  await assert.rejects(store.action('catch', { id: b.id }), /full/);
+  await assert.rejects(store.action('catch', { id: store.state.encounters.aetherion[0].id }), /full/);
   assert.deepEqual(store.state, before);
 });
 test('backups retain preceding save and malformed save is not replaced', async t => {
