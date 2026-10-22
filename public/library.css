@@ -313,7 +313,7 @@ select{text-transform:uppercase}
 .personality-creation-dialog .personality-card-heading { justify-content:space-between; }
 .personality-name-row { display:grid; grid-template-columns:64px minmax(0,1fr); gap:14px; align-items:end; }
 .personality-name-row .zone-field { min-width:0; }
-.personality-emoji-field select { padding-inline:4px; font-size:20px; text-align:center; text-align-last:center; }
+.personality-emoji-field select { font-size:20px; text-align:left; text-align-last:left; }
 .personality-card .personality-description-heading { font:600 16px/1.4 var(--sans); text-transform:none; margin:20px 0 10px; color:var(--text); }
 .personality-search { width:min(360px,100%); }
 .personality-manager-header .personality-search { flex:1 1 240px; width:auto; min-width:min(240px,100%); max-width:360px; margin:0 0 0 auto; align-self:center; flex-direction:row; align-items:center; gap:12px; }
@@ -403,5 +403,6 @@ select{text-transform:uppercase}
 .eye-grid-controls .eye-percent-control>span{min-height:48px}
 /* Inset single-select arrows consistently instead of using edge-hugging native arrows. */
 select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23938679' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px 14px}
-.personality-emoji-field select:not([multiple]){padding-inline:16px;background-position:right 6px center;background-size:10px 10px}
+.personality-emoji-field select:not([multiple]){padding-left:8px;padding-right:20px;background-position:right 6px center;background-size:10px 10px}
 @media(forced-colors:active){select:not([multiple]){appearance:auto;background-image:none}}
+.personality-name-row :is(input,select){height:48px;min-height:48px;box-sizing:border-box}
