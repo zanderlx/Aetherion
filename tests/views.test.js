@@ -85,6 +85,8 @@ test('wild horses have no export control; owned profiles export without release'
   assert.doesNotMatch(owned,/horse-description-form/);
   assert.match(owned,/class="horse-text-display"[^>]*data-form="horse-notes-form"/);
   assert.match(owned,/<form hidden id="horse-notes-form"/);
+  const notesForm = owned.match(/<form hidden id="horse-notes-form"[\s\S]*?<\/form>/)[0];
+  assert.doesNotMatch(notesForm,/<button|Save Notes|Cancel Changes/);
   assert.doesNotMatch(owned,/>Description<\/h3>/);
   assert.match(profileContent(horses[0],state),/horse-wild-description/);
   assert.doesNotMatch(owned,/>Personality Description<\/h3>/);

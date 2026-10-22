@@ -536,7 +536,14 @@ function savedHorseText(form) {
   input.defaultValue = input.value;
   restoreBaseline(form,formSignature(form));
   const display = profile.querySelector(`[data-form="${form.id}"]`);
-  display.textContent = input.value || (form.id === 'horse-notes-form' ? 'Click to add notes' : 'Click to add a description');
+  display.replaceChildren();
+  if (input.value.trim()) display.textContent = input.value;
+  else {
+    const placeholder = document.createElement('span');
+    placeholder.className = 'muted empty-horse-notes';
+    placeholder.textContent = form.id === 'horse-notes-form' ? 'Click to add notes' : 'Click to add a description';
+    display.append(placeholder);
+  }
   closeHorseText(form);
 }
 function finishHorseText(form) {
@@ -565,7 +572,7 @@ document.addEventListener('submit', async event => {
   if (busy) return;
   busy = true;
   const submit = form.querySelector('[type="submit"]');
-  submit.disabled = true;
+  if (submit) submit.disabled = true;
   try {
     if (['economy-form','settings-form'].includes(form.id)) validateSettingsNumbers(form);
     const values = Object.fromEntries(new FormData(form));
@@ -641,7 +648,7 @@ document.addEventListener('submit', async event => {
     if (form.id === 'definition-form' && $('#definition-status')) $('#definition-status').textContent = error.message;
     notify(error.message, true);
   }
-  finally { busy = false; submit.disabled = false; }
+  finally { busy = false; if (submit) submit.disabled = false; }
 });
 document.addEventListener('input', event => {
   if (event.target.id === 'horse-grid-size') {
