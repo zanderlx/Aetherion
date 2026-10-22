@@ -403,7 +403,7 @@ select{text-transform:uppercase}
 .eye-grid-controls .eye-percent-control>span{min-height:48px}
 /* Inset single-select arrows consistently instead of using edge-hugging native arrows. */
 select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23938679' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px 14px}
-.personality-emoji-field select:not([multiple]){padding-left:8px;padding-right:20px;background-position:right 6px center;background-size:10px 10px}
+.personality-emoji-field select:not([multiple]){padding-left:8px;padding-right:8px;background-position:right 6px center;background-size:10px 10px}
 @media(forced-colors:active){select:not([multiple]){appearance:auto;background-image:none}}
 .personality-name-row :is(input,select){height:48px;min-height:48px;box-sizing:border-box}
 
