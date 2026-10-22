@@ -1494,12 +1494,6 @@
       "description": "Covers your horse in a bright artisan design."
     },
     {
-      "name": "Astral",
-      "type": "Special",
-      "weight": null,
-      "description": "Causes your horse to gain a veil of cosmic energy."
-    },
-    {
       "name": "Crystallized",
       "type": "Special",
       "weight": null,
