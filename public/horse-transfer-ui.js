@@ -1,9 +1,42 @@
 import {createHorseDocument,readHorseDocument} from './horse-transfer.js';
+import {profileContent} from './profile.js';
 
 export function createHorseTransfers({getState,save,notify,onImported}) {
   let picker, importing = false;
+  let pendingDocument, previewDialog, saving = false;
+  function showImportPreview(document,horse) {
+    pendingDocument = document;
+    if (!previewDialog) {
+      previewDialog = window.document.createElement('dialog');
+      previewDialog.className = 'horse-import-preview';
+      previewDialog.setAttribute('aria-labelledby','import-preview-title');
+      window.document.body.append(previewDialog);
+      previewDialog.addEventListener('close',() => {pendingDocument = null; previewDialog.replaceChildren();});
+      previewDialog.addEventListener('cancel',event => {if (saving) event.preventDefault();});
+      previewDialog.addEventListener('click',async event => {
+        const intent = event.target.closest('[data-action]')?.dataset.action;
+        if (!intent) return;
+        event.stopPropagation();
+        if (saving) return;
+        if (intent === 'cancel-import' || intent === 'close-profile') return previewDialog.close();
+        if (intent !== 'confirm-import' || !pendingDocument) return;
+        saving = true;
+        previewDialog.querySelectorAll('button').forEach(button => {button.disabled = true;});
+        try {
+          const state = await save('import-horse',pendingDocument);
+          previewDialog.close();
+          onImported(state.horses.at(-1).id);
+          notify('Horse imported to My Horses.');
+        } catch(error) {notify(error.message,true);}
+        finally {saving = false; previewDialog.querySelectorAll('button').forEach(button => {button.disabled = false;});}
+      });
+    }
+    const state = getState();
+    previewDialog.innerHTML = profileContent({...horse,id:'import-preview'},{...state,horses:[],sold:[],settings:{...state.settings,developerEditMode:false}},{importPreview:true}).replace('id="profile-title"','id="import-preview-title"');
+    previewDialog.showModal();
+  }
   function importHorse() {
-    if (importing) return;
+    if (importing || pendingDocument) return;
     if (!picker) {
       picker = document.createElement('input');
       picker.type = 'file';
@@ -20,10 +53,8 @@ export function createHorseTransfers({getState,save,notify,onImported}) {
           let document;
           try { document = JSON.parse(await file.text()); }
           catch { throw new Error('This file is not valid JSON.'); }
-          readHorseDocument(document);
-          const state = await save('import-horse',document);
-          onImported(state.horses.at(-1).id);
-          notify('Horse imported to My Horses.');
+          const horse = readHorseDocument(document);
+          showImportPreview(document,horse);
         } catch (error) { notify(error.message,true); }
         finally { importing = false; picker.value = ''; }
       });

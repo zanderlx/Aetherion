@@ -2,6 +2,8 @@
 
 Use **My Horses → Import Horse** to select a `.json` file. Open an owned horse and choose **Export Horse** to download the same format as `<name>.horse.json`. Exporting keeps the horse in your stable.
 
+Selecting a valid file opens a read-only preview. Only **Confirm Import** saves the horse. **Cancel Import**, X, or Esc closes the preview without changing your stable. Sell and Export are unavailable in this preview.
+
 See [the complete importable example](horse-format.example.json).
 
 ```json

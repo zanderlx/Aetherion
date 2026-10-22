@@ -385,6 +385,15 @@ test('Horse mutations have numbered entries and a count including zero',()=>{
  assert.match(html,/<strong>Double Jump<\/strong><span class="mutation-description">: Jump higher\.<\/span>/);
 });
 
+test('Horse import preview offers only confirmation and cancellation actions',()=>{
+ const horse = {...horses[0],notes:'Imported notes'};
+ const html = profileContent(horse,{...state,horses:[],sold:[],settings:{...state.settings,developerEditMode:false}},{importPreview:true});
+ assert.match(html,/data-action="confirm-import"/);
+ assert.match(html,/data-action="cancel-import"/);
+ assert.doesNotMatch(html,/data-action="(?:sell|export-horse|catch|rename-horse|edit-horse-field)"/);
+ assert.match(html,/Imported notes/);
+});
+
 test('Random eye drafts generate colors without reusing internal IDs',()=>{
  const eyes=[{id:'eye-a',systemId:'a',textureId:'t',name:'Amber',rarity:'Rare',colors:['#ABCDEF'],layers:[]}];
  const draft=randomEyeDraft(eyes,()=>0);

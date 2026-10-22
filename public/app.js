@@ -42,7 +42,7 @@ const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() =
   return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:horseAcquisitionDate(horse) ? displayBirthday(horseAcquisitionDate(horse)) : 'Not caught yet',personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
 }});
 const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:(id,kind) => { render(); if (kind === 'catch') { profile.close(); main.focus(); } else inspect(id); }});
-const horseTransfers = createHorseTransfers({getState:() => state,save:action,notify,onImported:id => {render(); inspect(id);}});
+const horseTransfers = createHorseTransfers({getState:() => state,save:action,notify,onImported:() => {render();}});
 async function request(path, body) {
   const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
   const result = await response.json();

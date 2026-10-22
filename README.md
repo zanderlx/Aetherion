@@ -185,7 +185,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 
 ### Horse import and export
 
-Choose **Import Horse** at the top right of My Horses to load a horse JSON file. Open an owned horse and choose **Export Horse** at the bottom right to download the same format. Exporting keeps the horse in your stable. Imports create new IDs, preserve supported horse details, respect stable capacity, and leave existing horses intact.
+Choose **Import Horse** beside the My Horses search field to select a horse JSON file. Review the preview, then choose **Confirm Import** to save it or **Cancel Import** to leave your stable unchanged. Closing the preview also cancels. Open an owned horse and choose **Export Horse** at the bottom right to download the same format. Exporting keeps the horse in your stable. Confirmed imports create new IDs, preserve supported horse details, respect stable capacity, and leave existing horses intact.
 
 See the [version 1 format specification](docs/HORSE-FORMAT.md) and [complete importable example](docs/horse-format.example.json). These individual horse files are separate from full save backups. Importing species, colors, and traits does not change your shared definition library.
 
