@@ -188,6 +188,11 @@ select{text-transform:uppercase}
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
 .mutation-definition-grid{grid-auto-rows:1fr}
+.mutation-instructions{margin:-12px 0 28px;color:var(--muted);font:14px/1.7 var(--sans);text-transform:none}
+.mutation-instructions ol{margin:0;padding-left:22px}
+.mutation-instructions li+li{margin-top:6px}
+.mutation-instructions p{margin-top:12px}
+.mutation-instructions strong,.mutation-instructions a{color:var(--text)}
 .definition-sort-controls{display:flex;align-items:flex-end;gap:10px;flex:1 1 180px;min-width:0}
 .definition-sort-controls .zone-field{min-width:0}
 .definition-sort-controls .sort-direction{margin-bottom:2px}
