@@ -35,6 +35,7 @@ export function bindHorseArtViewer() {
     dialog.innerHTML=`<div class="horse-art-viewer-header"><button type="button" class="icon-button" data-close-horse-art aria-label="Close full horse illustration">${icon('close')}</button></div><div class="horse-art-viewer-stage"></div>`;
     const stage=dialog.querySelector('.horse-art-viewer-stage');
     stage.append(art);
+    dialog.style.width='';
     dialog.style.height='94dvh';
     dialog.showModal();
     // Trim empty artwork above the ears and below the hooves without enlarging the horse.
@@ -47,6 +48,7 @@ export function bindHorseArtViewer() {
     art.style.maxWidth='100%';
     stage.style.padding='12px';
     stage.style.height=`${imageHeight+24}px`;
+    dialog.style.width=`${460*scale+24+dialog.offsetWidth-dialog.clientWidth}px`;
     dialog.style.height=`${imageHeight+24+dialog.offsetHeight-dialog.clientHeight}px`;
   });
   return {close:()=>dialog?.close()};
