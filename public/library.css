@@ -295,7 +295,7 @@ select{text-transform:uppercase}
 .definitions-header > .button { align-self:center; }
 .manager-heading { margin:0; }
 .eye-manager-header { margin-bottom:34px; }
-.personality-manager-header { justify-content:flex-start; align-items:center; gap:16px 24px; margin-bottom:36px; }
+.personality-manager-header { justify-content:flex-start; align-items:center; gap:16px 24px; margin-bottom:34px; }
 .personality-manager-header .manager-heading { min-width:0; }
 .personality-manager-header > .button { flex-shrink:0; }
 .personality-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); grid-auto-rows:1fr; gap:20px; }
@@ -410,7 +410,8 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .personality-name-row .personality-emoji-field select{padding-top:0;padding-bottom:0;line-height:46px;text-align:left;text-align-last:left}
 
 .personality-grid-controls .personality-search{width:auto;max-width:480px;min-width:min(180px,100%)}
-.personality-grid-controls>[data-action="toggle-all-personalities"]{height:48px;min-height:48px;margin-left:auto}
+.personality-grid-controls>[data-action="toggle-all-personalities"]{height:48px;min-height:48px;margin-left:0}
+.personality-grid-controls>[data-action="new-definition"]{height:48px;min-height:48px;margin-left:auto}
 
 .eye-grid-controls>.zone-field:has(input[type="search"]){flex:0 1 240px;width:240px;max-width:100%;min-width:0}
 .library-list-panel>.zone-field:has(input[type="search"]){width:240px;max-width:100%;min-width:0}
