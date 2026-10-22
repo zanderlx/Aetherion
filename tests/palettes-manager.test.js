@@ -57,3 +57,13 @@ test('palette notes stay editable but are hidden on preview cards',async()=>{
  assert.match(form,/>Notes<textarea name="description"/);
  assert.doesNotMatch(form,/Description & notes/);
 });
+
+test('themed placeholder palettes have all nine valid colors and previews omit natural status',async()=>{
+ const catalog=JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8'));
+ for(const name of ['Mushroom','Raven','Peppermint','Gingerbread','Frozen','Carrot','Lettuce','Tomato','Clown','Ruby','Sapphire','Topaz']) {
+  const palette=catalog.palettes.find(p=>p.name===name);
+  assert.equal(palette.complete,true,name);
+  for(const region of regions) assert.match(palette.colors[region],/^#[0-9A-F]{6}$/i,`${name} ${region}`);
+ }
+ assert.doesNotMatch(paletteCards([{...entries[0],group:'Test',natural:true}]),/· Natural|· Unnatural/);
+});

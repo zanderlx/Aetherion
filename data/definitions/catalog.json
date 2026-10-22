@@ -414,8 +414,18 @@
       "name": "Mushroom",
       "group": "Halloween",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#A85943",
+        "Coat Bottom": "#E8D8BD",
+        "Hair": "#6C483B",
+        "Hoof": "#45392F",
+        "Nose": "#DDB5A0",
+        "Sock": "#F5EBDD",
+        "Keratin": "#B79876",
+        "Paint": "#F8F2DF",
+        "Pattern": "#F1C975"
+      },
+      "complete": true
     },
     {
       "name": "Ghoulish",
@@ -455,8 +465,18 @@
       "name": "Raven",
       "group": "Halloween",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#252633",
+        "Coat Bottom": "#414354",
+        "Hair": "#171922",
+        "Hoof": "#171820",
+        "Nose": "#646177",
+        "Sock": "#333143",
+        "Keratin": "#A2A4B5",
+        "Paint": "#576380",
+        "Pattern": "#78619A"
+      },
+      "complete": true
     },
     {
       "name": "Chocolate Mint",
@@ -530,22 +550,52 @@
       "name": "Peppermint",
       "group": "Christmas",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#FFF7ED",
+        "Coat Bottom": "#F6DEDD",
+        "Hair": "#C93449",
+        "Hoof": "#842538",
+        "Nose": "#F1ADB5",
+        "Sock": "#FFFFFF",
+        "Keratin": "#E3D6C7",
+        "Paint": "#DF4354",
+        "Pattern": "#88BFA1"
+      },
+      "complete": true
     },
     {
       "name": "Gingerbread",
       "group": "Christmas",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#AD6B35",
+        "Coat Bottom": "#D69C5A",
+        "Hair": "#6D3D27",
+        "Hoof": "#4B2C21",
+        "Nose": "#E6B486",
+        "Sock": "#FFF2D7",
+        "Keratin": "#C99562",
+        "Paint": "#F7E8CD",
+        "Pattern": "#B9443E"
+      },
+      "complete": true
     },
     {
       "name": "Frozen",
       "group": "Christmas",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#A6D8EB",
+        "Coat Bottom": "#D8EFF5",
+        "Hair": "#EAFBFF",
+        "Hoof": "#648DAF",
+        "Nose": "#C2D5E5",
+        "Sock": "#F7FCFF",
+        "Keratin": "#B7C5ED",
+        "Paint": "#81B8DC",
+        "Pattern": "#E3E7FC"
+      },
+      "complete": true
     },
     {
       "name": "Enchanted",
@@ -619,8 +669,18 @@
       "name": "Carrot",
       "group": "Easter",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#E97F29",
+        "Coat Bottom": "#FFBC6B",
+        "Hair": "#54974F",
+        "Hoof": "#6B432C",
+        "Nose": "#F2AC72",
+        "Sock": "#F9D39C",
+        "Keratin": "#A7BF79",
+        "Paint": "#6DBD5C",
+        "Pattern": "#C55E22"
+      },
+      "complete": true
     },
     {
       "name": "Pastel",
@@ -643,22 +703,52 @@
       "name": "Lettuce",
       "group": "Easter",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#80B862",
+        "Coat Bottom": "#C7DEA0",
+        "Hair": "#447A45",
+        "Hoof": "#48623D",
+        "Nose": "#C8DBAF",
+        "Sock": "#ECF3C8",
+        "Keratin": "#A4BF84",
+        "Paint": "#E5ECC2",
+        "Pattern": "#5E9954"
+      },
+      "complete": true
     },
     {
       "name": "Tomato",
       "group": "Easter",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#D94C3F",
+        "Coat Bottom": "#F68C64",
+        "Hair": "#40824D",
+        "Hoof": "#59352D",
+        "Nose": "#F2B191",
+        "Sock": "#FAE1C1",
+        "Keratin": "#A8B77A",
+        "Paint": "#69A154",
+        "Pattern": "#A92E35"
+      },
+      "complete": true
     },
     {
       "name": "Clown",
       "group": "Carnival",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#F5D66E",
+        "Coat Bottom": "#F2EEE0",
+        "Hair": "#CF3E63",
+        "Hoof": "#7046A0",
+        "Nose": "#ED747E",
+        "Sock": "#F7F6EE",
+        "Keratin": "#7ABEDB",
+        "Paint": "#52ACBD",
+        "Pattern": "#DE5C87"
+      },
+      "complete": true
     },
     {
       "name": "Scene",
@@ -698,15 +788,35 @@
       "name": "Ruby",
       "group": "Royal",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#9B244B",
+        "Coat Bottom": "#D65B73",
+        "Hair": "#501D3E",
+        "Hoof": "#392234",
+        "Nose": "#ED9AA4",
+        "Sock": "#7B294C",
+        "Keratin": "#D5A2B6",
+        "Paint": "#F3C7C8",
+        "Pattern": "#C73B62"
+      },
+      "complete": true
     },
     {
       "name": "Sapphire",
       "group": "Royal",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#2459A0",
+        "Coat Bottom": "#6F9ED2",
+        "Hair": "#1F2D63",
+        "Hoof": "#1D2640",
+        "Nose": "#A8C3DF",
+        "Sock": "#485585",
+        "Keratin": "#B7C9E3",
+        "Paint": "#D2E8F0",
+        "Pattern": "#637ECD"
+      },
+      "complete": true
     },
     {
       "name": "Amethyst",
@@ -729,8 +839,18 @@
       "name": "Topaz",
       "group": "Royal",
       "natural": false,
-      "colors": {},
-      "complete": false
+      "colors": {
+        "Coat Top": "#D39435",
+        "Coat Bottom": "#F0C979",
+        "Hair": "#925125",
+        "Hoof": "#5A3A26",
+        "Nose": "#F0C69E",
+        "Sock": "#C08242",
+        "Keratin": "#F8DE9B",
+        "Paint": "#FFEBC2",
+        "Pattern": "#BD6C2F"
+      },
+      "complete": true
     },
     {
       "id": "mutated-palette-solar",

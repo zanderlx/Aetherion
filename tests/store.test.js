@@ -377,7 +377,7 @@ test('custom zones persist, use selected pools, and edits preserve old encounter
 test('invalid, empty, duplicate and unknown zone edits are rejected without saving', async t => {
   const { store } = await fixture(t);
   const valid = { ...newZoneDraft(), name: 'A new zone', description: 'A lovely place.' };
-  for (const patch of [{ name: '' }, { name: 'x'.repeat(61) }, { description: '' }, { atmosphere: 'unknown' }, { speciesPool: [] }, { speciesPool: ['Unknown horse'] }, { palettePool: [] }, { palettePool: ['Mushroom'] }, { id: 'missing-zone' }, { name: 'aetherion wilds' }]) {
+  for (const patch of [{ name: '' }, { name: 'x'.repeat(61) }, { description: '' }, { atmosphere: 'unknown' }, { speciesPool: [] }, { speciesPool: ['Unknown horse'] }, { palettePool: [] }, { palettePool: ['Unknown palette'] }, { id: 'missing-zone' }, { name: 'aetherion wilds' }]) {
     const before = store.snapshot();
     await assert.rejects(store.action('save-zone', { ...valid, ...patch }));
     assert.deepEqual(store.state, before);
