@@ -55,7 +55,7 @@
 .profile-skills dt{display:flex;justify-content:flex-end;align-items:center;gap:6px;white-space:nowrap}
 .profile-skills dt>span{text-align:right}
 .profile-skills dt .icon{width:17px;height:17px;flex-shrink:0;color:var(--skill-color)}
-.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:center;height:24px;border:1px solid var(--skill-color);border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--skill-color) 80%,var(--panel-deep)) var(--skill-progress),color-mix(in srgb,var(--skill-color) 50%,var(--panel-deep)) var(--skill-progress));font-size:13px;font-weight:600;color:var(--text)}
+.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:center;height:24px;border:1px solid var(--skill-color);border-radius:4px;background:linear-gradient(90deg,var(--skill-color) var(--skill-progress),color-mix(in srgb,var(--skill-color) 20%,var(--panel-deep)) var(--skill-progress));font-size:13px;font-weight:600;color:var(--text)}
 .profile-skills .skill-xp{font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--muted)}
 .profile-skills dd{margin:0;color:var(--muted)}
 .horse-profile-shell .profile-palette{--palette-swatch-size:clamp(40px,5dvh,46px);padding:8px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}

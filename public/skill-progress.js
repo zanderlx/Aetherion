@@ -13,5 +13,5 @@ export function readHorseSkills(input = {}) {
 export function skillProgress(value) {
   const maxed = value.level > 10 || (value.level === 10 && value.xp >= skillXPRequirements[10]);
   const xpNeeded = maxed ? null : skillXPRequirements[value.level];
-  return {...value,maxed,xpNeeded,percent:maxed ? 100 : Math.min(100,value.xp/xpNeeded*100)};
+  return {...value,maxed,xpNeeded,percent:maxed ? 100 : Math.min(100,Math.floor(value.xp/xpNeeded*100))};
 }
