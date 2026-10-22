@@ -235,6 +235,10 @@ test('collection search, sorting and favorites work with complete saved records'
   assert.doesNotMatch(card(collected[0],populated),/picture-badge|Preview encounter/);
   const sorted = collectionCards('all', populated, '', 'name');
   assert.ok(sorted.indexOf('>Ash<') < sorted.indexOf('>Willow<'));
+  const descending = collectionCards('all',populated,'','name',undefined,'desc');
+  assert.ok(descending.indexOf('>Willow<') < descending.indexOf('>Ash<'));
+  assert.match(page,/Sort By/);
+  assert.match(page,/data-action="sort-direction" data-direction="desc"/);
 });
 test('breadcrumb sections match sidebar group names and icons for every route', () => {
   for (const group of groups) for (const [route] of group.items) {

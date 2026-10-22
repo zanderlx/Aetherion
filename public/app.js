@@ -284,10 +284,20 @@ function askToDelete(type, payload, name, detail, verb = type === 'delete-profil
   confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)} This is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
   confirmation.showModal();
 }
+function updateStableSort(direction = $('[data-action="sort-direction"]')?.dataset.direction) {
+  const toggle = $('[data-action="sort-direction"]');
+  toggle.dataset.direction = direction;
+  const label = direction === 'asc' ? 'Ascending order. Switch to descending' : 'Descending order. Switch to ascending';
+  toggle.setAttribute('aria-label',label);
+  toggle.title = label;
+  $('#collection-grid').innerHTML = collectionCards(route.split('/')[1],state,$('#horse-search').value,$('#horse-sort').value,catalog,direction);
+}
+
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action]');
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
+  if (intent === 'sort-direction') {updateStableSort(button.dataset.direction === 'asc' ? 'desc' : 'asc'); return;}
   if (intent === 'choose-avatar') {
     $('#keeper-form').elements.avatarSeed.value = button.dataset.seed;
     updateAvatarPreview();
@@ -447,12 +457,13 @@ document.addEventListener('click', async event => {
     } else if (intent === 'favorite') {
       const search = $('#horse-search')?.value || '';
       const sort = $('#horse-sort')?.value || 'recent';
+      const direction = $('[data-action="sort-direction"]')?.dataset.direction;
       await action('favorite', { id });
       render();
       if ($('#horse-search')) {
         $('#horse-search').value = search;
         $('#horse-sort').value = sort;
-        $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, search, sort,catalog);
+        updateStableSort(direction);
       }
       if (profile.open) {
         inspect(id);
@@ -603,13 +614,13 @@ document.addEventListener('input', event => {
     $('#definition-no-results').hidden = matches > 0;
   }
   if (event.target.closest('#zone-form')) $('#zone-preview').innerHTML = zonePreview(readZoneForm($('#zone-form')), catalog);
-  if (event.target.id === 'horse-search') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, event.target.value, $('#horse-sort').value,catalog);
+  if (event.target.id === 'horse-search') updateStableSort();
 });
 document.addEventListener('change', event => {
   if (['eye-rarity','eye-sort','eye-percent'].includes(event.target.id)) updateEyeGrid(main,catalog);
   if (event.target.id === 'traits-species') {main.innerHTML = traitsEditorPage(catalog,event.target.value); trackForms(main); return;}
   updateFormState(event.target.form);
-  if (event.target.id === 'horse-sort') $('#collection-grid').innerHTML = collectionCards(route.split('/')[1], state, $('#horse-search').value, event.target.value,catalog);
+  if (event.target.id === 'horse-sort') updateStableSort(['recent','rarity','favorites'].includes(event.target.value) ? 'desc' : 'asc');
 });
 document.addEventListener('reset', event => {
   if (event.target.id === 'traits-form') {

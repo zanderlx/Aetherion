@@ -22,15 +22,17 @@ export function stablePage(kind, state, catalog) {
   const sold = kind === 'sold';
   return `${heading('', sold ? 'Horse management' : 'My Horses', sold ? 'A complete record of the companions you have sold.' : '')}
 
-  <div class="collection-toolbar"><label class="search-field">${icon('search')}<input id="horse-search" type="search" placeholder="Search name, species, or personality…" aria-label="Search horses"></label>${sold ? '' : `<button type="button" class="button secondary" data-action="import-horse">${icon('download')} Import Horse</button>`}<label class="sort-field">Sort by <select id="horse-sort"><option value="recent">Newest first</option><option value="name">Name</option><option value="species">Species</option><option value="rarity">Rarity</option><option value="favorites">Favorites</option></select></label></div>
+  <div class="collection-toolbar"><label class="search-field">${icon('search')}<input id="horse-search" type="search" placeholder="Search name, species, or personality…" aria-label="Search horses"></label>${sold ? '' : `<button type="button" class="button secondary" data-action="import-horse">${icon('download')} Import Horse</button>`}<div class="stable-sort-controls"><label class="sort-field">Sort By <select id="horse-sort"><option value="recent">Newest first</option><option value="name">Name</option><option value="species">Species</option><option value="rarity">Rarity</option><option value="favorites">Favorites</option></select></label><button type="button" class="icon-button sort-direction" data-action="sort-direction" data-direction="desc" aria-label="Descending order. Switch to ascending" title="Descending order. Switch to ascending">${icon('arrow')}</button></div></div>
   <div id="collection-grid" class="horse-grid">${collectionCards(kind, state, '', 'recent', catalog)}</div>
   `;
 }
-export function collectionCards(kind, state, query = '', sort = 'recent', catalog) {
+export function collectionCards(kind, state, query = '', sort = 'recent', catalog, direction = ['recent','rarity','favorites'].includes(sort) ? 'desc' : 'asc') {
   const favorites = kind === 'favorites' || sort === 'favorites';
   const horses = (kind === 'sold' ? state.sold : state.horses).filter(h => (!favorites || h.favorite) && `${h.name} ${h.species} ${h.personality.name}`.toLowerCase().includes(query.toLowerCase()));
   const rarityOrder = {cosmic:0,'ultra-rare':1,rare:2,uncommon:3,common:4,none:5};
   horses.sort((a, b) => sort === 'rarity' ? rarityOrder[horseCardRank(a,catalog).key]-rarityOrder[horseCardRank(b,catalog).key] || String(a.name || a.species).localeCompare(String(b.name || b.species)) : sort === 'favorites' ? Number(!!b.favorite) - Number(!!a.favorite) || (b.caughtAt || '').localeCompare(a.caughtAt || '') : sort === 'recent' ? (b.soldAt || b.caughtAt).localeCompare(a.soldAt || a.caughtAt) : String(sort === 'name' ? a.name || a.species : a[sort]).localeCompare(String(sort === 'name' ? b.name || b.species : b[sort])));
+  const defaultDirection = ['recent','rarity','favorites'].includes(sort) ? 'desc' : 'asc';
+  if (direction !== defaultDirection) horses.reverse();
   if (favorites && !horses.length) return `<div class="grid-empty" role="status"><p>${query ? 'No favorite horses match your search.' : 'No favorite horses yet. Use the heart on a horse card to add one.'}</p></div>`;
   return horses.length ? horses.map(h => card(h, state, kind === 'sold' ? 'sold' : 'stable',catalog)).join('') : `<div class="grid-empty">${emptyState(query ? 'No hoofprints here' : kind === 'sold' ? 'No goodbyes just yet' : kind === 'favorites' ? 'Keep your favorites close' : 'Catch a horse in the wilds to welcome your first companion.', query ? 'Try a different name, species, or personality.' : kind === 'sold' ? 'Sold horses will remain here with their complete profiles.' : kind === 'favorites' ? 'Use the heart on a collected horse to find it here.' : '', 'wilds/aetherion', 'Visit the wilds')}</div>`;
 }

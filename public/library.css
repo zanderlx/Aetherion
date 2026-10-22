@@ -90,7 +90,12 @@ select{text-transform:uppercase}
 
 .collection-toolbar { justify-content:flex-start; }
 .collection-toolbar > [data-action="import-horse"] { flex-shrink:0; }
-.collection-toolbar .sort-field { margin-left:auto; }
+.collection-toolbar .stable-sort-controls { display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-left:auto; }
+.stable-sort-controls .sort-field { white-space:nowrap; }
+.sort-direction { flex-shrink:0; border:1px solid var(--border); border-radius:4px; }
+.sort-direction .icon { transform:rotate(90deg); transition:transform .2s ease; }
+.sort-direction[data-direction="asc"] .icon { transform:rotate(-90deg); }
+@media(prefers-reduced-motion:reduce) { .sort-direction .icon { transition:none; } }
 
 .nav-section-link { display:flex; align-items:center; gap:11px; min-height:43px; margin-bottom:5px; padding:10px; border-radius:4px; font-size:15px; font-weight:500; color:#d5c7b3; }
 .nav-section-link .icon { width:18px; height:18px; color:#b49b75; }
