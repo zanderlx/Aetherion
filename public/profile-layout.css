@@ -65,7 +65,7 @@
 .horse-profile-shell .color-regions>div>span{width:var(--palette-swatch-size);height:var(--palette-swatch-size)}
 .horse-profile-shell .color-regions small{font-size:14px;white-space:nowrap;overflow-wrap:normal}
 .horse-profile-shell .color-regions code{font-size:12px}
-.horse-profile-shell .profile-lower{display:flex;flex-direction:column;flex:1}
+.horse-profile-shell .profile-lower{display:flex;flex-direction:column;flex:1;border-top:0}
 .horse-profile-shell .profile-traits{flex:1}
 .horse-profile-shell .profile-lower>section{padding:12px 18px;border:0;border-bottom:1px solid var(--border)}
 .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -110,6 +110,7 @@
 @media(prefers-reduced-motion:reduce){.profile-tab-rail button{transition:none}}
 
 .horse-profile-shell .profile-traits>h3,.horse-profile-shell .horse-mutations-heading{justify-content:center;text-align:center;margin:0 0 8px}
+.horse-profile-shell .profile-traits>h3{margin-bottom:16px}
 .horse-profile-shell .horse-mutations-heading h3{margin:0}
 .horse-profile-shell .horse-mutations-heading{padding-block:5px}
 .horse-profile-shell .profile-lower h3{font-size:22px}
@@ -123,8 +124,11 @@
 .horse-profile-shell .mutation-slot-text{font-size:13px;line-height:1.4}
 .profile-scroll-frame>.dialog-top{padding:8px 16px}
 .profile-scroll-frame>.profile-actions{padding:12px 18px}
-.profile-scroll-frame .profile-actions .horse-export{width:43px;min-width:43px;padding:0;flex-shrink:0;margin-left:auto}
+.profile-scroll-frame .profile-actions:has([data-action="sell"]){display:grid;grid-template-columns:minmax(43px,1fr) auto minmax(43px,1fr);align-items:center}
+.profile-scroll-frame .profile-actions .horse-export{width:43px;min-width:43px;padding:0;flex-shrink:0;margin-left:0;grid-column:1;justify-self:start}
+.profile-scroll-frame .profile-actions [data-action="sell"]{grid-column:2;justify-self:center}
 .profile-scroll-frame [data-action="sell"]{margin-left:0}
+@media(max-width:600px){.profile-scroll-frame .profile-actions:has([data-action="sell"]){grid-template-columns:43px minmax(0,1fr)}}
 .horse-profile-shell .horse-wild-description .horse-text-display{margin:0;white-space:pre-wrap;font-size:14px;line-height:1.5}
 @media(min-width:761px) and (max-height:800px){
  .profile-equipment dl{min-height:336px;grid-auto-rows:minmax(33.4px,1fr)}
