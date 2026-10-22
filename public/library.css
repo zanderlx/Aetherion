@@ -463,3 +463,4 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .personality-card-grid article.mutation-collapse-card{--mutation-name-size:clamp(15px,1.15vw,18px);--mutation-emoji-width:22px;--mutation-name-gap:6px}
 .personality-card-grid article.mutation-collapse-card .personality-card-heading h2{font-size:var(--mutation-name-size);gap:var(--mutation-name-gap)}
 .mutation-title-block .mutation-preview-type{left:calc(var(--mutation-emoji-width) + var(--mutation-name-gap));right:0;text-align:left;font-size:calc(var(--mutation-name-size) - 2px)}
+.mutation-collapse-card .personality-card-body .personality-card-description{padding-left:calc(var(--mutation-emoji-width) + var(--mutation-name-gap));font-size:calc(var(--mutation-name-size) - 2px);line-height:1.6}
