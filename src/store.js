@@ -1,4 +1,5 @@
 import {ConfigurationFiles} from './configuration.js';
+import {horseSalePrice,saleModifiers,validateSaleModifiers} from '../public/sale-pricing.js';
 import {registryKinds,defaultSpawnSettings,validateSpawnSettings,zoneCreatures,validateCreatures} from '../public/spawn-config.js';
 import {localCalendarDate} from '../public/dates.js';
 import { readHorseDocument } from '../public/horse-transfer.js';
@@ -36,6 +37,7 @@ export class GameStore {
       await this.persist(this.state, false);
     }
     this.state.customLocations ??= [];
+    this.state.settings.saleModifiers = validateSaleModifiers(saleModifiers(this.state.settings));
     await this.files.recover(this.state);
     if (!await this.files.exists()) {
       if (existingSave) await copyFile(this.file,join(this.directory,'backups',`pre-spawning-${Date.now()}-${randomUUID()}.json`));
@@ -105,9 +107,11 @@ export class GameStore {
           next.horses.push({ ...horse, birthday:localCalendarDate(caughtAt), personalityDescription: horse.personalityDescription ?? horse.personality.description ?? '', name: payload.name === undefined ? horse.name : validateHorseName(payload.name), caughtAt });
         } else {
           next.horses = next.horses.filter(h => h.id !== horse.id);
-          next.sold.push({ ...horse, soldAt: new Date().toISOString(), soldFor: next.settings.sellingPrice });
-          next.gold += next.settings.sellingPrice;
-          next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, horseName:horse.name, species:horse.species, amount: next.settings.sellingPrice, at: new Date().toISOString() });
+          const salePricing = horseSalePrice(horse,next.settings);
+          if (!Number.isSafeInteger(next.gold+salePricing.total)) throw new Error('This sale would exceed the supported gold balance.');
+          next.sold.push({ ...horse, soldAt: new Date().toISOString(), soldFor:salePricing.total, salePricing });
+          next.gold += salePricing.total;
+          next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, horseName:horse.name, species:horse.species, amount:salePricing.total, salePricing, at: new Date().toISOString() });
         }
         for (const key of Object.keys(next.encounters)) {
           const containedHorse = next.encounters[key].some(h => h.id === horse.id);
@@ -201,6 +205,8 @@ export class GameStore {
         if (type === 'economy-settings') {
           if (!Number.isInteger(payload.sellingPrice) || payload.sellingPrice < 0 || payload.sellingPrice > 1000000) throw new Error('Selling price must be a whole number between 0 and 1,000,000.');
           next.settings.sellingPrice = payload.sellingPrice;
+          if (payload.saleModifiers !== undefined) validateSaleModifiers(payload.saleModifiers);
+          next.settings.saleModifiers = validateSaleModifiers(payload.saleModifiers === undefined ? saleModifiers(next.settings) : {...saleModifiers(next.settings),...payload.saleModifiers});
         }
         const amount = payload.gold - next.gold;
         next.gold = payload.gold;

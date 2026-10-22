@@ -4,5 +4,14 @@
   "startingGold": 0,
   "stableCapacity": 50,
   "ignoreStableLimit": true,
-  "note": "Phase 1 preview defaults. Starting gold, capacity, and free guaranteed catches are provisional interface settings, not confirmed gameplay rules."
+  "note": "Phase 1 preview defaults. Starting gold, capacity, and free guaranteed catches are provisional interface settings, not confirmed gameplay rules.",
+  "saleModifiers": {
+    "traitBonus": 15,
+    "mutationBonus": 50,
+    "solarMultiplier": 10,
+    "lunarMultiplier": 15,
+    "heavenlyMultiplier": 20,
+    "voidMultiplier": 25,
+    "astralMultiplier": 30
+  }
 }

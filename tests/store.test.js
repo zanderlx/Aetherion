@@ -261,11 +261,35 @@ test('selling retains complete horse history and concurrent duplicate sales cann
   await store.action('catch', { id: horse.id });
   const results = await Promise.allSettled([store.action('sell', { id: horse.id }), store.action('sell', { id: horse.id })]);
   assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
-  assert.equal(store.state.gold, 300);
+  assert.equal(store.state.gold, 350);
   assert.equal(store.state.horses.length, 0);
   assert.equal(store.state.sold.length, 1);
   assert.deepEqual(store.state.sold[0].traits, horse.traits);
   assert.equal(store.state.transactions.length, 1);
+});
+
+test('sale modifiers persist, quote imported features, and retain the sale-time breakdown',async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const source = {...store.state.encounters.aetherion[0],traits:{Mane:['Long'],Tail:['Long'],Pattern:['Spots','Stripes'],Paint:['Socks']},mutations:['Solar','Double Jump'],specialSpawn:'Solar'};
+  await store.action('import-horse',createHorseDocument(source));
+  const id = store.state.horses.at(-1).id;
+  const before = store.snapshot();
+  await assert.rejects(store.action('economy-settings',{gold:100,sellingPrice:300,saleModifiers:{traitBonus:-1}}));
+  assert.deepEqual(store.snapshot(),before);
+  await store.action('economy-settings',{gold:0,sellingPrice:300,saleModifiers:{traitBonus:20,mutationBonus:60,solarMultiplier:12}});
+  const restored = await new GameStore(directory,catalog,defaults,{rng:()=>0.5}).init();
+  assert.equal(restored.state.settings.saleModifiers.solarMultiplier,12);
+  await restored.action('sell',{id});
+  // (300 + 3*20 + 2*60) * 12 = 5,760.
+  assert.equal(restored.state.gold,5760);
+  assert.equal(restored.state.sold[0].soldFor,5760);
+  assert.equal(restored.state.sold[0].salePricing.traitCount,3);
+  assert.equal(restored.state.sold[0].salePricing.mutationCount,2);
+  assert.equal(restored.state.transactions.at(-1).amount,5760);
+  await restored.action('economy-settings',{gold:5760,sellingPrice:1,saleModifiers:{solarMultiplier:1}});
+  assert.equal(restored.state.sold[0].salePricing.multiplier,12);
+  assert.equal(restored.state.sold[0].soldFor,5760);
 });
 test('settings persist and affect new searches and sales, never existing horses', async t => {
   const { directory, store } = await fixture(t);
@@ -278,7 +302,7 @@ test('settings persist and affect new searches and sales, never existing horses'
   assert.equal(store.state.encounters.aetherion.length, 5);
   assert.deepEqual(store.state.horses[0], original);
   await store.action('sell', { id: horse.id });
-  assert.equal(store.state.gold, 420);
+  assert.equal(store.state.gold, 470);
   const restarted = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restarted.state.settings.horsesPerSearch, 5);
 });
