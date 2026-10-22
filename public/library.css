@@ -21,16 +21,16 @@
 .color-inputs input[data-color-hex]{width:100%;font-size:14px;font-family:monospace}
 .theme-picker{margin-bottom:32px}
 nav summary .nav-group-home{display:flex;align-items:center;gap:11px;flex:1;color:inherit;text-decoration:none}
-#collection-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+#collection-grid{--stable-grid-limit:6;grid-template-columns:repeat(min(var(--stable-grid-columns,5),var(--stable-grid-limit)),minmax(0,1fr))}
 #collection-grid .card-body{padding:12px}
 #collection-grid .card-title{gap:7px}
 #collection-grid .card-title h3{font-size:clamp(18px,1.5vw,24px);flex:1}
 #collection-grid .horse-card-open{display:block;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #collection-grid .gender .icon{width:21px;height:21px}
-@media(max-width:1200px){#collection-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:900px){#collection-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){#collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:420px){#collection-grid{grid-template-columns:1fr}}
+@media(max-width:1200px){#collection-grid{--stable-grid-limit:4}}
+@media(max-width:900px){#collection-grid{--stable-grid-limit:3}}
+@media(max-width:650px){#collection-grid{--stable-grid-limit:2}}
+@media(max-width:420px){#collection-grid{--stable-grid-limit:1}}
 .horse-card{position:relative}
 .horse-card .card-title{justify-content:flex-start;gap:10px}
 .horse-card .card-title h3{margin:0;min-width:0}
@@ -119,7 +119,8 @@ select{text-transform:uppercase}
 
 .settings-section-heading h1 { font-size:30px; line-height:1.3; letter-spacing:normal; }
 
-.collection-toolbar { justify-content:flex-start; }
+.collection-toolbar { justify-content:flex-start;flex-wrap:wrap }
+.stable-grid-control{white-space:nowrap}
 .collection-toolbar > [data-action="import-horse"] { flex-shrink:0; }
 .collection-toolbar .stable-sort-controls { display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-left:auto; }
 .stable-sort-controls .sort-field { white-space:nowrap; }

@@ -29,6 +29,7 @@ import { roadmapPage } from './roadmap.js';
 import { trackForms, updateFormState, formSignature, formBaseline, restoreBaseline } from './form-state.js';
 
 let state, catalog, defaults, appVersion, busy = false, toastTimer;
+let stableGridColumns = 5;
 let route = location.hash.slice(1) || 'wilds/aetherion';
 let routeVersion = 0, pendingDeletion;
 let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer, pendingSearchResult;
@@ -121,6 +122,10 @@ function pageContent(pageRoute, pageState = state) {
 function render() {
   renderChrome();
   main.innerHTML = pageContent(route);
+  if ($('#horse-grid-size')) {
+    $('#horse-grid-size').value = String(stableGridColumns);
+    $('#collection-grid').style.setProperty('--stable-grid-columns',stableGridColumns);
+  }
   document.title = `${routeTitle(route, locationsFor(catalog, state))} · Aetherion`;
   copyEditor.attach(main);
   trackForms(main);
@@ -658,6 +663,13 @@ document.addEventListener('input', event => {
   if (event.target.id === 'mutation-search') updateMutationGrid(main,catalog);
 });
 document.addEventListener('change', event => {
+  if (event.target.id === 'horse-grid-size') {
+    const count = Number(event.target.value);
+    if ([3,4,5,6].includes(count)) {
+      stableGridColumns = count;
+      $('#collection-grid').style.setProperty('--stable-grid-columns',count);
+    }
+  }
   if (event.target.id === 'mutation-sort') main.querySelector('[data-action="mutation-sort-direction"]').dataset.direction = event.target.value === 'weight' ? 'desc' : 'asc';
   if (['mutation-type','mutation-sort','mutation-weights'].includes(event.target.id)) updateMutationGrid(main,catalog);
   if (event.target.id === 'eye-sort') main.querySelector('[data-action="eye-sort-direction"]').dataset.direction = 'asc';
