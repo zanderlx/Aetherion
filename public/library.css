@@ -364,6 +364,6 @@ select{text-transform:uppercase}
 .personality-toggle svg{display:block;width:20px;height:20px;transition:transform .15s}
 .personality-toggle[aria-expanded=true] svg{transform:rotate(180deg)}
 .personality-card-body{padding-top:16px}
-.personality-card-body .personality-card-description{box-sizing:border-box;height:160px;overflow-y:auto;scrollbar-width:thin;margin:0;line-height:1.6;padding-right:6px}
+.personality-card-body .personality-card-description{box-sizing:border-box;height:240px;overflow-y:auto;scrollbar-width:thin;margin:0;line-height:1.6;padding-right:6px}
 .personality-card-actions{display:flex;justify-content:center;margin-top:18px}
 .personality-card-actions .button{min-height:42px}
