@@ -27,6 +27,10 @@
 .horse-card .gender .icon{width:25px;height:25px}
 #main .horse-card .gender-male{color:#70A9F4}
 #main .horse-card .gender-female{color:#F19BC2}
+.horse-gender,.horse-gender-label{display:inline-flex;align-items:center;gap:5px;vertical-align:middle}
+.horse-gender-label .gender-symbol{width:20px;height:20px;flex-shrink:0}
+svg.gender-symbol.gender-male{color:#70A9F4}
+svg.gender-symbol.gender-female{color:#F19BC2}
 .horse-card-open::after{content:"";position:absolute;inset:0;z-index:1;cursor:pointer}
 .horse-card:has(.horse-card-open:focus-visible){outline:2px solid var(--gold);outline-offset:4px}
 .horse-card .favorite{z-index:2}

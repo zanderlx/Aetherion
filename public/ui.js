@@ -1,3 +1,4 @@
+import {horseGenderIcon} from './gender-icon.js';
 import { horseArt } from './art.js';
 import {horseCardRank} from './horse-rank.js';
 import {raritySettings} from './rarity-settings.js';
@@ -69,11 +70,11 @@ export function card(horse, state, mode = 'wild', catalog) {
   const rank = horseCardRank(horse,catalog);
   const rankColor = raritySettings(catalog).colors[rank.key];
   const female = horse.gender === 'Female';
-  const genderIcon = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${female ? '<circle cx="12" cy="8" r="5"/><path d="M12 13v9m-4-4h8"/>' : '<circle cx="9" cy="15" r="5"/><path d="m13 11 8-8m-6 0h6v6"/>'}</svg>`;
+
   return `<article class="horse-card" data-card-rank="${rankColor ? rank.key : 'none'}" ${rankColor ? `style="--horse-rank-color:${rankColor}"` : ''} aria-label="${escapeHTML(title)} · ${rank.label}">
     <div class="card-picture">${horseArt(horse)}
     ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}</div>
-    <div class="card-body"><div class="card-title"><span class="gender ${female ? 'gender-female' : 'gender-male'}" role="img" aria-label="${female ? 'Female' : 'Male'}">${genderIcon}</span><h3><button class="horse-card-open" data-action="inspect" data-id="${horse.id}" title="${escapeHTML(title)}" aria-label="View ${escapeHTML(title)}">${escapeHTML(cardTitle)}</button></h3></div></div></article>`;
+    <div class="card-body"><div class="card-title"><span class="gender ${female ? 'gender-female' : 'gender-male'}" role="img" aria-label="${female ? 'Female' : 'Male'}">${horseGenderIcon(horse.gender)}</span><h3><button class="horse-card-open" data-action="inspect" data-id="${horse.id}" title="${escapeHTML(title)}" aria-label="View ${escapeHTML(title)}">${escapeHTML(cardTitle)}</button></h3></div></div></article>`;
 }
 export function emptyState(title, description, link, linkLabel, symbol = 'stable') {
   return `<div class="empty-state"><div class="empty-symbol">${icon(symbol)}</div><h2>${title}</h2><p>${description}</p>${link ? `<a class="button primary" href="#${link}">${linkLabel} ${icon('arrow')}</a>` : ''}</div>`;
