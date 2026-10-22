@@ -436,3 +436,19 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .mutation-collapse-card .personality-emoji{display:inline-flex;align-items:center;justify-content:center;align-self:center;width:26px;height:26px;font-size:20px;line-height:1}
 .mutation-collapse-card .mutation-card-name{display:block;align-self:center;line-height:26px}
 .mutation-collapse-card .personality-card-body .personality-card-description{height:var(--mutation-description-height,auto)}
+
+.mutation-definition-grid.personality-card-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.mutation-section-heading{justify-content:center}
+.mutation-section-heading h2{font-size:28px;font-weight:600;color:var(--gold)}
+.personality-card-grid article.mutation-collapse-card{padding:14px 12px}
+.personality-card-grid article.mutation-collapse-card .personality-card-heading{gap:6px;height:48px;min-height:48px}
+.mutation-title-block{flex:1;min-width:0}
+.personality-card-grid article.mutation-collapse-card .personality-card-heading h2{gap:6px;font-size:16px;line-height:22px}
+.mutation-collapse-card .personality-emoji{width:22px;height:22px;font-size:18px}
+.mutation-collapse-card .mutation-card-name{line-height:22px}
+.mutation-collapse-card .personality-toggle{width:28px;height:28px;flex-basis:28px;padding:4px}
+.mutation-preview-type{display:block;margin:1px 0 0;padding:0;text-align:center;font:600 13px/1.2 var(--sans);color:var(--gold)}
+@media(max-width:1200px){.mutation-definition-grid.personality-card-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1000px){.mutation-definition-grid.personality-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.mutation-definition-grid.personality-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.mutation-definition-grid.personality-card-grid{grid-template-columns:minmax(0,1fr)}}

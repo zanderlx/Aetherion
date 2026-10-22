@@ -93,3 +93,11 @@ test('all supplied Special mutations use a specific thematic emoji',async()=>{
  assert.equal(mutationEmoji({name:'Flowering Sakura',type:'Special'}),'🌸');
  assert.match(mutationCards(mutations),/mutation-card-name/);
 });
+
+test('mutation type is close beneath the name only outside grouped type sorting',()=>{
+ const expanded=new Set(['springy']);
+ const byName=mutationResults(mutations,'name',false,'asc',expanded);
+ assert.match(byName,/mutation-preview-type/);
+ assert.match(byName,/aria-expanded="true"/);
+ assert.doesNotMatch(mutationResults(mutations,'type',false,'asc',expanded),/mutation-preview-type/);
+});
