@@ -72,6 +72,7 @@ select{text-transform:uppercase}
 .profile-id-footer{padding:0 24px 20px;text-align:right;overflow-wrap:anywhere}
 .palette-line .swatches{flex-wrap:wrap;gap:4px}.palette-line{min-height:28px}
 #profile>.dialog-top>.icon-button{margin-left:auto}
+#profile[data-rarity-border]{border:2px solid var(--profile-rarity-color)}
 
 
 .sale-history { margin-top:48px; }

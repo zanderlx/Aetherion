@@ -1,5 +1,6 @@
 import {raritiesManagerPage,readRaritySettings} from './rarities-manager.js';
-import {defaultRaritySettings,rarityNames} from './rarity-settings.js';
+import {defaultRaritySettings,rarityNames,raritySettings} from './rarity-settings.js';
+import {horseCardRank} from './horse-rank.js';
 import {saleQuoteBreakdown} from './sale-quote.js';
 import {horseSalePrice,defaultSaleModifiers} from './sale-pricing.js';
 import {personalityForm} from './personalities-manager.js';
@@ -241,6 +242,11 @@ function inspect(id) {
   const horse = findHorse(id);
   if (!horse) return;
   profile.dataset.horseId = id;
+  const rankColor = raritySettings(catalog).colors[horseCardRank(horse,catalog).key];
+  // Reapply on every horse so an unranked profile cannot inherit the previous border.
+  profile.toggleAttribute('data-rarity-border',Boolean(rankColor));
+  if (rankColor) profile.style.setProperty('--profile-rarity-color',rankColor);
+  else profile.style.removeProperty('--profile-rarity-color');
   profile.innerHTML = profileContent(horse, state);
   profileCopyEditor.attach(profile);
   trackForms(profile);
