@@ -149,6 +149,14 @@ Only Ghoulsteed has a complete supplied species-specific trait list. Other speci
 
 Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; the Economy section within Game Settings includes a sale history table (newest first). The header gold display is informational. The internal Starting Gold value is reserved for future new-game/reset functionality and is hidden from settings. Mutation selection, thresholds, and size shifts are active. Speed, stamina, fertility, item effects, and exact asset rendering remain separate gameplay work.
 
+### Horse sale pricing
+
+Economy Settings exposes a base selling price and seven editable modifiers. A sale uses **(Base Price + Trait Count × Trait Bonus + Mutation Count × Mutation Bonus) × Special Multiplier**, rounded to whole gold. Defaults are **+15 per optional trait**, **+50 per assigned mutation**, Solar **×10**, Lunar **×15**, Heavenly **×20**, Void **×25**, and Astral **×30**.
+
+Mane, Tail, Eye Color, empty values, and missing-data placeholders do not earn trait bonuses. Cosmic mutations also count toward the mutation bonus. Special types are identified from the horse's saved special-spawn/mutation data; palette names alone do not activate multipliers. If an imported horse has several special types, the strongest applicable multiplier is used once. Use a multiplier of 1 for no special increase, or a bonus of 0 to disable that bonus.
+
+The profile sale button and confirmation show the calculated price. Confirmation includes a breakdown; the server recalculates from the horse and current settings when selling. The archived horse and sale transaction retain the amount and modifier breakdown used at sale time. Changing settings affects future sales only.
+
 ### Horse view and preview refinements
 
 Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.

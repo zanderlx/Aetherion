@@ -1,3 +1,5 @@
+import {saleQuoteBreakdown} from './sale-quote.js';
+import {horseSalePrice,defaultSaleModifiers} from './sale-pricing.js';
 import {personalityForm} from './personalities-manager.js';
 import {closePersonalityEditor} from './personality-editor.js';
 import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
@@ -256,7 +258,7 @@ function syncResponsiveMenu() {
 function askToSell(id) {
   confirmation.classList.remove('eye-delete-confirm');
   const horse = findHorse(id);
-  confirmation.innerHTML = `<div class="dialog-top"><span class="eyebrow">A FOND FAREWELL</span><button class="icon-button" data-action="cancel-sell" aria-label="Cancel sale">${icon('close')}</button></div><h2 id="confirm-title">Sell ${e(horse.name || horse.species)}?</h2><p>You’ll receive <strong>${number(state.settings.sellingPrice)} gold</strong>. This horse will leave your care, and its full profile will be kept in your sold-horse history.</p><div class="form-actions"><button class="button secondary" data-action="cancel-sell" autofocus>Keep this horse</button><button class="button primary" data-action="confirm-sell" data-id="${id}">Sell horse</button></div>`;
+  confirmation.innerHTML = `<div class="dialog-top"><span class="eyebrow">A FOND FAREWELL</span><button class="icon-button" data-action="cancel-sell" aria-label="Cancel sale">${icon('close')}</button></div><h2 id="confirm-title">Sell ${e(horse.name || horse.species)}?</h2><p>You’ll receive <strong>${number(horseSalePrice(horse,state.settings).total)} gold</strong>. This horse will leave your care, and its full profile will be kept in your sold-horse history.</p>${saleQuoteBreakdown(horseSalePrice(horse,state.settings))}<div class="form-actions"><button class="button secondary" data-action="cancel-sell" autofocus>Keep this horse</button><button class="button primary" data-action="confirm-sell" data-id="${id}">Sell horse</button></div>`;
   confirmation.showModal();
 }
 function updateAvatarPreview() {
@@ -382,6 +384,7 @@ document.addEventListener('click', async event => {
       if (!input) continue;
       if (input.type === 'checkbox') input.checked = value; else input.value = value;
     }
+    if (form.id === 'economy-form') for (const [key,value] of Object.entries(defaults.saleModifiers || defaultSaleModifiers)) form.elements.namedItem(`saleModifier:${key}`).value = value;
     updateFormState(form);
     form.querySelector('[role=status]').textContent = 'Defaults loaded into the form. Save settings to apply, or cancel to keep your current values.';
     return;
@@ -420,7 +423,7 @@ document.addEventListener('click', async event => {
       profile.close();
       render();
       main.focus({ preventScroll: true });
-      notify(`A fond farewell. ${number(state.settings.sellingPrice)} gold added.`);
+      notify(`A fond farewell. ${number(state.sold.find(h => h.id === id).soldFor)} gold added.`);
     } else if (intent === 'favorite') {
       const search = $('#horse-search')?.value || '';
       const sort = $('#horse-sort')?.value || 'recent';
@@ -510,7 +513,7 @@ document.addEventListener('submit', async event => {
       render();
       notify('Profile saved.');
     } else if (form.id === 'economy-form') {
-      await action('economy-settings',{gold:Number(values.gold),sellingPrice:Number(values.sellingPrice)});
+      await action('economy-settings',{gold:Number(values.gold),sellingPrice:Number(values.sellingPrice),saleModifiers:Object.fromEntries(Object.keys(defaultSaleModifiers).map(key => [key,Number(values[`saleModifier:${key}`])]))});
       render();
       $('#economy-status').textContent = 'Economy settings saved.';
       notify('Economy settings saved.');
