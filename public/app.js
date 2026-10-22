@@ -11,7 +11,7 @@ import {horseSalePrice,defaultSaleModifiers} from './sale-pricing.js';
 import {personalityForm,togglePersonalities} from './personalities-manager.js';
 import {closePersonalityEditor} from './personality-editor.js';
 import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
-import {mutationsManagerPage,createMutationEditor,updateMutationGrid} from './mutations-manager.js';
+import {mutationsManagerPage,createMutationEditor,updateMutationGrid,toggleMutations} from './mutations-manager.js';
 import {traitsEditorPage,readTraitsForm} from './traits-editor.js';
 import { createHorseTransfers } from './horse-transfer-ui.js';
 import { startHorseRename } from './horse-inline-name.js';
@@ -345,6 +345,7 @@ document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action]');
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
+  if (['toggle-mutation','toggle-all-mutations','toggle-mutation-section'].includes(intent)) return toggleMutations(main,button);
   if (['toggle-personality','toggle-all-personalities'].includes(intent)) return togglePersonalities(main,button);
   if (intent === 'cancel-definition-import') return button.closest('dialog')?.close();
   if (intent === 'import-definition') return definitionTransfers[button.dataset.kind]?.importDefinition();

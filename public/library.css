@@ -424,3 +424,7 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .eye-grid-controls>.zone-field:has(select){order:2;margin-left:auto}
 .eye-grid-controls>.zone-field:has(select)~.zone-field:has(select){margin-left:0}
 .eye-grid-controls>.definition-sort-controls{order:3}
+.mutation-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.mutation-section-heading h2{margin:0}
+.mutation-collapse-card .mutation-card-meta{margin-top:12px}
+.eye-grid-controls>[data-action="toggle-all-mutations"]{height:48px;min-height:48px}

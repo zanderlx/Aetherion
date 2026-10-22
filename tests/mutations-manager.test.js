@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {filterMutations,mutationCards,mutationResults,mutationsManagerPage} from '../public/mutations-manager.js';
+import {filterMutations,mutationCards,mutationResults,mutationsManagerPage,toggleMutations} from '../public/mutations-manager.js';
 import {libraryEditorPage} from '../public/library-editor.js';
 import {catalogFor} from '../public/definitions.js';
 import {readFile} from 'node:fs/promises';
@@ -21,7 +21,7 @@ test('mutation types form a dropdown and sort into separate named sections',asyn
  for (const type of ['Standard','Special','Mutated']) assert.match(form,new RegExp(`value="${type}"`));
  assert.doesNotMatch(form,/<input name="type"/);
  assert.doesNotMatch(form,/name="systemId"|System ID/);
- assert.match(form,/Selection Weight \(0 = disabled\)/);
+ assert.match(form,/Selection Weight \(0 = disabled, higher = more common, lower = less common\)/);
 });
 test('mutation grid searches descriptions and combines type and sort filters',()=>{
  assert.deepEqual(filterMutations(mutations,'stamina','Standard').map(m=>m.id),['lungs']);
@@ -50,6 +50,39 @@ test('mutation manager shows its card grid without gameplay settings or inline e
  assert.doesNotMatch(html,/value="az"|value="za"|Tokens|Weight: /);
  assert.match(mutationCards(mutations,true),/Weight: 2,333/);
  assert.deepEqual(filterMutations(mutations,'','','weight','asc').map(m=>m.id),['solar','lungs','springy']);
- assert.equal((html.match(/class="panel eye-definition-card/g) || []).length,3);
+ assert.equal((html.match(/data-mutation-card data-id=/g) || []).length,3);
  assert.doesNotMatch(html,/id="definition-form"|Your collection of options/);
+});
+
+test('mutation card, section, and global toggles synchronize independently',()=>{
+ const controls=[];
+ const makeCard=()=>{
+  const attributes={'aria-expanded':'false'};
+  const body={hidden:true};
+  const toggle={dataset:{action:'toggle-mutation',name:'Mutation'},getAttribute:key=>attributes[key],setAttribute:(key,value)=>attributes[key]=value};
+  const card={querySelector:selector=>selector==='.personality-toggle'?toggle:body};
+  toggle.closest=()=>card;
+  return {card,toggle,body};
+ };
+ const first=[makeCard(),makeCard()],second=[makeCard()];
+ const cards=[...first,...second];
+ const makeSection=(entries)=>{
+  const section={querySelectorAll:()=>entries.map(entry=>entry.card)};
+  const button={dataset:{action:'toggle-mutation-section'},closest:()=>section,setAttribute(){}};
+  controls.push(button);return button;
+ };
+ const section=makeSection(first);makeSection(second);
+ const global={dataset:{action:'toggle-all-mutations'},setAttribute(){}};
+ controls.push(global);
+ const root={querySelectorAll:selector=>selector==='[data-mutation-card]' ? cards.map(entry=>entry.card) : controls};
+ toggleMutations(root,first[0].toggle);
+ assert.equal(first[0].body.hidden,false);assert.equal(first[1].body.hidden,true);
+ assert.equal(section.textContent,'Show All');
+ toggleMutations(root,section);
+ assert.ok(first.every(entry=>!entry.body.hidden));assert.equal(second[0].body.hidden,true);
+ assert.equal(section.textContent,'Hide All');assert.equal(global.textContent,'Show All');
+ toggleMutations(root,global);
+ assert.ok(cards.every(entry=>!entry.body.hidden));assert.equal(global.textContent,'Hide All');
+ toggleMutations(root,global);
+ assert.ok(cards.every(entry=>entry.body.hidden));assert.equal(section.textContent,'Show All');
 });
