@@ -393,3 +393,26 @@ test('old saves without custom zones load without changing existing data', async
   assert.deepEqual(JSON.parse(await readFile(join(directory, 'player', 'save.json'), 'utf8')), legacy);
 });
 
+
+test('Cosmic palette migration backs up stable sold and encounter records and persists once', async t => {
+  const {directory,store} = await fixture(t);
+  await store.action('visit',{locationId:'aetherion'});
+  const original = store.snapshot();
+  const horse = original.encounters.aetherion[0];
+  original.horses = [{...horse,id:'owned-cosmic',specialSpawn:'Lunar',notes:'Preserve notes'}];
+  original.sold = [{...horse,id:'sold-cosmic',specialSpawn:'Solar',soldFor:789}];
+  original.encounters.aetherion[0].mutations = [{name:'Astral'}];
+  await writeFile(join(directory,'player','save.json'),JSON.stringify(original));
+  const migrated = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(migrated.state.horses[0].palette.name,'Lunar');
+  assert.equal(migrated.state.horses[0].notes,'Preserve notes');
+  assert.equal(migrated.state.sold[0].palette.name,'Solar');
+  assert.equal(migrated.state.sold[0].soldFor,789);
+  assert.equal(migrated.state.encounters.aetherion[0].palette.name,'Astral');
+  const backups = (await readdir(join(directory,'backups'))).filter(n => n.startsWith('pre-cosmic-palettes-'));
+  assert.equal(backups.length,1);
+  assert.deepEqual(JSON.parse(await readFile(join(directory,'backups',backups[0]),'utf8')),original);
+  const saved = await readFile(join(directory,'player','save.json'),'utf8');
+  await migrated.refreshConfiguration();
+  assert.equal(await readFile(join(directory,'player','save.json'),'utf8'),saved);
+});

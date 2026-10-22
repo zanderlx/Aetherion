@@ -1,4 +1,5 @@
 import {randomInt,randomUUID} from 'node:crypto';
+import {cosmicPalette} from './cosmic-palettes.js';
 import {defaultSpawnSettings,zoneCreatures} from '../public/spawn-config.js';
 
 export const randomFloat = () => randomInt(0,4294967296)/4294967296;
@@ -67,8 +68,9 @@ export function spawnHorse(catalog,location,rng = randomFloat) {
   const gender = rng()*100 < settings.maleChance ? 'Male' : 'Female';
   const size = rollSize(mutations,settings,rng);
   const palettes = catalog.palettes.filter(p => p.complete && (p.global !== false || p.speciesIds?.includes(species.id)) && (cosmic || location.palettePool.includes(p.name)));
-  if (!palettes.length) throw new Error(`No eligible palette for ${species.name} in ${location.name || location.id}.`);
-  const palette = structuredClone(pickUniform(palettes,rng));
+  const matchedPalette = cosmicPalette({specialSpawn:cosmic?.name,mutations},catalog);
+  if (!matchedPalette && !palettes.length) throw new Error(`No eligible palette for ${species.name} in ${location.name || location.id}.`);
+  const palette = structuredClone(matchedPalette || pickUniform(palettes,rng));
   const eye = structuredClone(pickUniform(catalog.eyes,rng));
   const personality = structuredClone(pickUniform(catalog.personalities,rng));
   const availableTraits = species.traits || catalog.traits?.[species.name] || {};

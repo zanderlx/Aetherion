@@ -1,4 +1,5 @@
 import {ConfigurationFiles} from './configuration.js';
+import {synchronizeCosmicPalettes} from './cosmic-palettes.js';
 import {validateRaritySettings} from '../public/rarity-settings.js';
 import {horseSalePrice,saleModifiers,validateSaleModifiers} from '../public/sale-pricing.js';
 import {registryKinds,defaultSpawnSettings,validateSpawnSettings,zoneCreatures,validateCreatures} from '../public/spawn-config.js';
@@ -78,6 +79,12 @@ export class GameStore {
     const overrides = new Set(this.state.customLocations.map(z => z.id));
     this.state.customLocations = configuration.zones.filter(z => z.custom || overrides.has(z.id)).map(z => structuredClone(z));
     this.configuration = configuration;
+    const next = this.snapshot();
+    if (synchronizeCosmicPalettes(horseRecords(next),this.getCatalog(next))) {
+      await copyFile(this.file,join(this.directory,'backups',`pre-cosmic-palettes-${Date.now()}-${randomUUID()}.json`));
+      await this.persist(next);
+      this.state = next;
+    }
   }
   refreshConfiguration() {
     const run = this.queue.then(() => this.readConfiguration());
@@ -303,6 +310,7 @@ export class GameStore {
       } else if (type === 'backup') {
         await writeFile(join(this.directory, 'backups', `save-${Date.now()}-${randomUUID().slice(0, 8)}.json`), JSON.stringify(next, null, 2) + '\n', { flag: 'wx' });
       } else throw new Error('Unknown action.');
+      synchronizeCosmicPalettes(horseRecords(next),catalog);
       if (['rarity-settings','save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
         const settings = catalog.spawning || defaultSpawnSettings;
         const zones = locationsFor(catalog,next).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
