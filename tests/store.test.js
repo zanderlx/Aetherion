@@ -416,3 +416,16 @@ test('Cosmic palette migration backs up stable sold and encounter records and pe
   await migrated.refreshConfiguration();
   assert.equal(await readFile(join(directory,'player','save.json'),'utf8'),saved);
 });
+
+test('legacy zone Cosmic palettes are removed from local files on load', async t => {
+  const {directory} = await fixture(t);
+  const path = join(directory,'config','zones','aetherion.json');
+  const zone = JSON.parse(await readFile(path,'utf8'));
+  zone.palettePool.push('Solar','Lunar','Astral','Heavenly','Void');
+  await writeFile(path,JSON.stringify(zone));
+  const loaded = await new GameStore(directory,catalog,defaults).init();
+  const saved = JSON.parse(await readFile(path,'utf8'));
+  assert.deepEqual(saved.palettePool,zone.palettePool.slice(0,-5));
+  assert.deepEqual(loaded.getCatalog().locations.find(z => z.id === 'aetherion').palettePool,saved.palettePool);
+  assert.ok((await readdir(join(directory,'backups'))).some(n => n.startsWith('pre-cosmic-zone-cleanup-')));
+});

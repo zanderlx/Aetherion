@@ -1,3 +1,4 @@
+import {isCosmicPalette} from '../public/cosmic-types.js';
 import {mkdir,readFile,writeFile,rename,unlink} from 'node:fs/promises';
 import {resolve,sep} from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -84,12 +85,16 @@ export class ConfigurationFiles {
     const personalityIDs = catalog.personalities.map(p => p.systemId);
     if (new Set(personalityIDs).size !== personalityIDs.length) throw new Error('Personality system IDs must be unique.');
     const zones = [];
+    let needsPaletteCleanup = false;
     for (const id of index.zoneIds) {
       const z = await this.json(`zones/${id}.json`);
       if (z.id !== id || typeof z.name !== 'string' || !z.name.trim() || typeof z.enabled !== 'boolean' || !Array.isArray(z.palettePool) || z.palettePool.some(n => !catalog.palettes.some(p => p.name === n && p.complete))) throw new Error(`Invalid zone file: ${id}.json.`);
+      const normalPool = z.palettePool.filter(name => !isCosmicPalette({name}));
+      needsPaletteCleanup ||= normalPool.length !== z.palettePool.length;
+      z.palettePool = normalPool;
       const creatures = validateCreatures(z.creatures,catalog);
       const names = creatures.map(c => catalog.species.find(s => s.id === c.speciesId).name);
-      const metadata = validateZone({...z,speciesPool:names.length ? names : [catalog.species[0].name],palettePool:z.palettePool.length ? z.palettePool : [catalog.palettes.find(p => p.complete).name]},catalog);
+      const metadata = validateZone({...z,speciesPool:names.length ? names : [catalog.species[0].name],palettePool:z.palettePool.length ? z.palettePool : [catalog.palettes.find(p => p.complete && !isCosmicPalette(p))?.name]},catalog);
       zones.push({...z,...metadata,custom:z.custom,event:z.event,creatures,speciesPool:names,palettePool:z.palettePool,enabled:z.enabled && creatures.some(c => Math.abs(c.weight)>0) && z.palettePool.length>0});
     }
     catalog.locations = zones;
@@ -97,7 +102,7 @@ export class ConfigurationFiles {
     catalog.spawning = settings;
     try {catalog.rarities = validateRaritySettings(await this.json('rarities.json'));}
     catch(error) {if (error.code !== 'ENOENT') throw error; catalog.rarities = structuredClone(defaultRaritySettings);}
-    return {catalog,zones,settings};
+    return {catalog,zones,settings,needsPaletteCleanup};
   }
   documents({catalog,zones,settings}) {
     const files = Object.fromEntries(registryKinds.map(kind => [`${kind}.json`,catalog[kind]]));

@@ -109,16 +109,13 @@ test('all five Mutated Horse palettes preserve the supplied nine-region colors',
     assert.deepEqual(catalog.palettes.find(p => p.id === entry.id).colors,entry.colors);
   }
 });
-test('new mutation palettes upgrade old libraries, work in zones, and respect edits and deletion', async t => {
+test('Cosmic palettes remain editable but cannot be selected as zone palettes', async t => {
   const { directory, store } = await fixture(t);
   await add(store,'personalities',{name:'Migration Test'});
   store.state.library.palettes = store.state.library.palettes.filter(p => !p.id.startsWith('mutated-palette-'));
   assert.equal(store.getCatalog().palettes.filter(p => p.group === 'Mutated Horse').length,5);
   const solar = store.getCatalog().palettes.find(p => p.name === 'Solar');
-  await store.action('save-zone',{...newZoneDraft(),name:'Solar Test',description:'Sunlit.',speciesPool:['Unicorn'],palettePool:['Solar']});
-  const zone = store.state.customLocations.at(-1);
-  await store.action('visit',{locationId:zone.id});
-  assert.deepEqual(store.state.encounters[zone.id][0].palette.colors,solar.colors);
+  await assert.rejects(store.action('save-zone',{...newZoneDraft(),name:'Solar Test',description:'Sunlit.',speciesPool:['Unicorn'],palettePool:['Solar']}),/palette/);
   await store.action('save-definition',{kind:'palettes',id:solar.id,values:{...solar,colors:{...solar.colors,Hair:'#123456'}}});
   assert.equal(store.getCatalog().palettes.find(p => p.id === solar.id).colors.Hair,'#123456');
   await store.action('delete-definition',{kind:'palettes',id:solar.id});

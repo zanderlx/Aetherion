@@ -1,3 +1,4 @@
+import {isCosmicPalette} from './cosmic-types.js';
 import {defaultSpeciesTiers} from './spawn-config.js';
 import { baseAtmospheres } from './definitions.js';
 // Shared zone definitions and validation, used by both the editor and local server.
@@ -42,7 +43,7 @@ export function validateZone(input, catalog) {
   };
   return { name, subtitle, description, tags:[...new Set(tags.map(tag => tag.trim()))], atmosphere: input.atmosphere, enabled: input.enabled,
     speciesPool: pool('speciesPool', catalog.species.map(s => s.name)),
-    palettePool: pool('palettePool', catalog.palettes.filter(p => p.complete).map(p => p.name)), custom: true, event };
+    palettePool: pool('palettePool', catalog.palettes.filter(p => p.complete && !isCosmicPalette(p)).map(p => p.name)), custom: true, event };
 }
 export function newZoneDraft() {
   return { name: '', subtitle: '', description: '', tags:['The evergreen realm','Free exploration'], event:false, atmosphere: 'forest', enabled: true, speciesPool: ['Unicorn', 'Peryton', 'Fae'], palettePool: ['Natural Gold'] };
@@ -69,6 +70,6 @@ export function randomZone(catalog, existing = [], rng = Math.random) {
     description: `${settings.detail} Follow the trail and meet the companions who call this place home.`,
     atmosphere, enabled: true, event:false, tags:[atmosphere === 'forest' ? 'The evergreen realm' : atmosphereFor(catalog,atmosphere).name,'Free exploration'],
     speciesPool: sample(catalog.species.map(s => s.name), 3 + Math.floor(rng() * 4)),
-    palettePool: sample(catalog.palettes.filter(p => p.complete).map(p => p.name), 2 + Math.floor(rng() * 3))
+    palettePool: sample(catalog.palettes.filter(p => p.complete && !isCosmicPalette(p)).map(p => p.name), 2 + Math.floor(rng() * 3))
   };
 }

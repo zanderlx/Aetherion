@@ -79,6 +79,15 @@ export class GameStore {
     const overrides = new Set(this.state.customLocations.map(z => z.id));
     this.state.customLocations = configuration.zones.filter(z => z.custom || overrides.has(z.id)).map(z => structuredClone(z));
     this.configuration = configuration;
+    if (configuration.needsPaletteCleanup) {
+      const next = this.snapshot();
+      await copyFile(this.file,join(this.directory,'backups',`pre-cosmic-zone-cleanup-${Date.now()}-${randomUUID()}.json`));
+      await this.files.commit(configuration,async revision => {
+        next.configurationRevision = revision;
+        await this.persist(next);
+      });
+      this.state = next;
+    }
     const next = this.snapshot();
     if (synchronizeCosmicPalettes(horseRecords(next),this.getCatalog(next))) {
       await copyFile(this.file,join(this.directory,'backups',`pre-cosmic-palettes-${Date.now()}-${randomUUID()}.json`));
