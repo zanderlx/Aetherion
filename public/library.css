@@ -378,3 +378,4 @@ select{text-transform:uppercase}
 
 .palette-definition-card{min-height:0;padding:20px;gap:14px}
 .palette-definition-card .palette-card-swatches{margin-top:0}
+#definition-form[data-kind="palettes"]:has([name="global"]:checked) .palette-species-links{display:none}

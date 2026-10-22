@@ -81,6 +81,8 @@ export function createPaletteEditor(renderEditor) {
     const row=document.createElement('div');row.className='eye-name-rarity';
     row.append(fields.querySelector('[name="name"]').closest('label'),fields.querySelector('[name="group"]').closest('label'));
     fields.prepend(row);
+    // Keep notes last, after all nine color controls and palette options.
+    fields.append(fields.querySelector('[name="description"]').closest('label'));
     dialog.append(form);dialog.scrollTop=0;
     if (!dialog.open) dialog.showModal();
     form.elements.name.focus();
