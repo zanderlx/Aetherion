@@ -48,3 +48,12 @@ test('each palette segment has an instant tooltip with its region and uppercase 
  assert.equal((html.match(/data-tooltip=/g)||[]).length,9);
  assert.doesNotMatch(html,/<span title=/);
 });
+
+test('palette notes stay editable but are hidden on preview cards',async()=>{
+ const html=paletteCards([{...entries[0],description:'Private keeper notes'}]);
+ assert.doesNotMatch(html,/Private keeper notes|mutation-card-description/);
+ const catalog=normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')));
+ const form=libraryEditorPage('palettes',catalog,{settings:{},customLocations:[]},catalog.palettes.find(p=>p.complete));
+ assert.match(form,/>Notes<textarea name="description"/);
+ assert.doesNotMatch(form,/Description & notes/);
+});
