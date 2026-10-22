@@ -82,11 +82,11 @@ test('wild horses have no export control; owned profiles export without release'
   assert.doesNotMatch(owned,/Delete Horse/);
   assert.match(owned,/data-action="rename-horse"/);
   assert.match(owned,/horse-notes-form/);
-  assert.match(owned,/class="horse-text-display"[^>]*data-form="horse-description-form"/);
+  assert.doesNotMatch(owned,/horse-description-form/);
   assert.match(owned,/class="horse-text-display"[^>]*data-form="horse-notes-form"/);
-  assert.match(owned,/<form hidden id="horse-description-form"/);
   assert.match(owned,/<form hidden id="horse-notes-form"/);
-  assert.match(owned,/>Description<\/h3>/);
+  assert.doesNotMatch(owned,/>Description<\/h3>/);
+  assert.match(profileContent(horses[0],state),/horse-wild-description/);
   assert.doesNotMatch(owned,/>Personality Description<\/h3>/);
   assert.ok(owned.indexOf('horse-notes-form') < owned.indexOf('profile-lower'));
   assert.ok(owned.indexOf('trait.eye-color') < owned.indexOf('trait.' + 'text-'));
@@ -407,12 +407,12 @@ test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
  assert.doesNotMatch(page,/Name A–Z|Name Z–A/);
 });
 
-test('Horse mutations have numbered entries and a count including zero',()=>{
+test('Horse mutations keep four slots without a mutation counter',()=>{
  const empty=profileContent({...horses[0],mutations:[]},state);
- assert.match(empty,/>0\/4<\/span>/);
+ assert.doesNotMatch(empty,/horse-mutation-count/);
  assert.equal((empty.match(/aria-label="Locked mutation slot"/g)||[]).length,4);
  const html=profileContent({...horses[0],mutations:['Springy Tendons',{name:'Double Jump',description:'Jump higher.'},'Twins']},state);
- assert.match(html,/>3\/4<\/span>/);
+ assert.doesNotMatch(html,/horse-mutation-count/);
  assert.match(html,/<ol class="horse-mutations mutation-slots"/);
  assert.equal((html.match(/<li class="mutation-slot /g)||[]).length,4);
  assert.equal((html.match(/aria-label="Locked mutation slot"/g)||[]).length,1);
