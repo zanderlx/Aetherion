@@ -15,6 +15,7 @@ import { createHorseDialogs } from './horse-dialogs.js';
 import { icon, sidebar, groups, navigationSection, escapeHTML as e, number } from './ui.js';
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
 import { profileContent } from './profile.js';
+import {bindProfileTabs,selectProfileTab} from './profile-layout.js';
 import { displayBirthday, horseAcquisitionDate } from './dates.js';
 import { locationsFor, newZoneDraft, randomZone, validateZone } from './zones.js';
 import { zoneEditorPage, zonePreview } from './zone-editor.js';
@@ -33,6 +34,7 @@ let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer
 const openGroups = new Set(groups.filter(g => g.open).map(g => g.title));
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
+bindProfileTabs();
 const profile = $('#profile');
 const confirmation = $('#confirm');
 const personalityCreation = document.createElement('dialog');
@@ -258,6 +260,7 @@ function showDefinition(kind, draft) {
 function inspect(id) {
   const horse = findHorse(id);
   if (!horse) return;
+  const currentTab = profile.dataset.horseId === id ? profile.querySelector('[data-profile-tab][aria-selected="true"]')?.dataset.profileTab : 'overview';
   profile.dataset.horseId = id;
   const rankColor = raritySettings(catalog).colors[horseCardRank(horse,catalog).key];
   // Reapply on every horse so an unranked profile cannot inherit the previous border.
@@ -265,6 +268,7 @@ function inspect(id) {
   if (rankColor) profile.style.setProperty('--profile-rarity-color',rankColor);
   else profile.style.removeProperty('--profile-rarity-color');
   profile.innerHTML = profileContent(horse, state, {catalog});
+  selectProfileTab(profile,currentTab || 'overview');
   profileCopyEditor.attach(profile);
   trackForms(profile);
   if (!profile.open) profile.showModal();
