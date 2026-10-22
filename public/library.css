@@ -163,8 +163,8 @@ select{text-transform:uppercase}
 .eye-rarity-chance { color:var(--muted); font-size:.75em; }
 .horse-mutations-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
 .horse-mutation-count { font:400 25px/1.4 var(--serif); color:inherit; font-variant-numeric:tabular-nums; }
-.sale-modifiers-heading { margin-top:64px; }
-.sale-price-formula { margin:10px 0 16px; color:var(--muted); font-size:13px; line-height:1.6; }
+.sale-modifiers-heading { margin:32px 0 4px; }
+.sale-price-formula { margin:4px 0 8px; color:var(--muted); font-size:13px; line-height:1.6; }
 .sale-quote-breakdown { margin:18px 25px 0; padding:14px; background:var(--panel-deep); border:1px solid var(--border); border-radius:5px; font-size:13px; }
 .sale-quote-breakdown > div { display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:5px 0; }
 .sale-quote-breakdown dt { color:var(--muted); }
