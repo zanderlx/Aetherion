@@ -855,7 +855,7 @@
     {
       "id": "mutated-palette-solar",
       "name": "Solar",
-      "group": "Mutated Horse",
+      "group": "Mutated",
       "natural": false,
       "complete": true,
       "description": "Fixed Solar colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
@@ -874,7 +874,7 @@
     {
       "id": "mutated-palette-lunar",
       "name": "Lunar",
-      "group": "Mutated Horse",
+      "group": "Mutated",
       "natural": false,
       "complete": true,
       "description": "Fixed Lunar colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
@@ -893,7 +893,7 @@
     {
       "id": "mutated-palette-astral",
       "name": "Astral",
-      "group": "Mutated Horse",
+      "group": "Mutated",
       "natural": false,
       "complete": true,
       "description": "Fixed Astral colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
@@ -912,7 +912,7 @@
     {
       "id": "mutated-palette-heavenly",
       "name": "Heavenly",
-      "group": "Mutated Horse",
+      "group": "Mutated",
       "natural": false,
       "complete": true,
       "description": "Fixed Heavenly colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",
@@ -931,7 +931,7 @@
     {
       "id": "mutated-palette-void",
       "name": "Void",
-      "group": "Mutated Horse",
+      "group": "Mutated",
       "natural": false,
       "complete": true,
       "description": "Fixed Void colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.",

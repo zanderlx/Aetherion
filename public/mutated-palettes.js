@@ -7,7 +7,7 @@ export const mutatedPalettes = [
   ['Heavenly',Array(9).fill('#FFFFFF')],
   ['Void',Array(9).fill('#000000')]
 ].map(([name,colors]) => ({
-  id:`mutated-palette-${name.toLowerCase()}`, name, group:'Mutated Horse', natural:false, complete:true,
+  id:`mutated-palette-${name.toLowerCase()}`, name, group:'Mutated', natural:false, complete:true,
   description:`Fixed ${name} colors across all nine horse regions. Special-spawn rolls and mutation effects are not enabled by selecting this palette.`,
   colors:Object.fromEntries(regions.map((region,index) => [region,colors[index]]))
 }));
