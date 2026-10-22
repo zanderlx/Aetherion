@@ -4,7 +4,8 @@ import {emojiChoices,filterEmojiChoices} from '../public/emoji-picker.js';
 import {mutationEmoji} from '../public/mutations-manager.js';
 import {createDefinitionDocument,readDefinitionDocument} from '../public/definition-transfer.js';
 test('emoji picker has broad searchable choices with category filters',()=>{
- assert.ok(emojiChoices.length>140);
+ assert.ok(emojiChoices.length>=304);
+ assert.ok(filterEmojiChoices('peppermint').some(entry=>entry.emoji==='🍭'));
  assert.ok(filterEmojiChoices('lungs').some(entry=>entry.emoji==='🫁'));
  assert.ok(filterEmojiChoices('jump','Animals').some(entry=>entry.emoji==='🐰'));
  assert.equal(filterEmojiChoices('not-a-real-emoji-name').length,0);
