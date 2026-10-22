@@ -202,6 +202,7 @@ select{text-transform:uppercase}
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }
 .eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:2px 0 16px; }
 .eye-grid-controls { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:20px; }
+.eye-grid-controls:has(#mutation-search){margin-bottom:36px}
 .eye-grid-controls .zone-field { flex:1 1 180px; margin:0; }
 .eye-grid-controls .zone-field:first-child { flex-grow:2; }
 .eye-percent-control > span { display:flex; align-items:center; gap:8px; min-height:44px; font-size:14px; color:var(--text); }
