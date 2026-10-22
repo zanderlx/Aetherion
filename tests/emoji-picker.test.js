@@ -20,3 +20,11 @@ test('chosen mutation emojis override defaults and round-trip through imports',(
  assert.equal(readDefinitionDocument('mutations',document,{mutations:[]}).emoji,'🐴');
  assert.equal(mutationEmoji({...value,name:'Other mutation'}),'🐴');
 });
+test('the shared picker retains every previous Personality emoji option',async()=>{
+ const {personalityEmojis,personalityForm}=await import('../public/personalities-manager.js');
+ for(const emoji of personalityEmojis) assert.ok(emojiChoices.some(choice=>choice.emoji===emoji),emoji);
+ const form=personalityForm({name:'Curious',emoji:'🧐'});
+ assert.match(form,/data-action="choose-personality-emoji"/);
+ assert.match(form,/type="hidden" name="emoji" value="🧐"/);
+ assert.doesNotMatch(form,/<select name="emoji"/);
+});

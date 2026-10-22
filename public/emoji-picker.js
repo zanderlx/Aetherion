@@ -13,6 +13,9 @@ Object.assign(groups,{
 });
 
 groups['Body Parts']='💪 arm biceps muscle strength|🦾 mechanical arm prosthetic|🦵 leg limb|🦿 mechanical leg prosthetic|🦶 foot feet hoof|🖐️ hand fingers|✋ raised hand palm|🤚 back hand|👋 waving hand|👌 okay fingers|🤏 pinching hand|✌️ victory fingers|🤞 crossed fingers luck|🤟 love gesture|🤘 horns hand|🤙 call hand|👈 left pointing finger|👉 right pointing finger|👆 up pointing finger|👇 down pointing finger|☝️ index finger|👍 thumb up|👎 thumb down|✊ fist|👊 punch fist|🤛 left fist|🤜 right fist|👏 clap hands|🙌 raised hands|👐 open hands|🤲 palms together|🤝 handshake bond|🙏 folded hands|💅 nails polish|🦻 hearing aid ear|👂 ear hearing|👃 nose smell|👀 eyes sight|👁️ eye vision|👅 tongue|👄 lips mouth|🫦 biting lip|🦷 tooth teeth|🦴 bone skeleton|🧠 brain intelligence|🫀 anatomical heart|🫁 lungs breath|🩸 blood|🧬 dna genetics';
+const personalityFavorites=[['🙂','friendly smile'],['😰','anxious'],['🥰','affectionate'],['🫂','clingy hug'],['🧐','curious'],['⚡','energetic'],['😠','grumpy'],['😴','lazy'],['😜','playful wink'],['😊','warm smile'],['😎','cool'],['🤔','thoughtful'],['😇','innocent'],['🥺','pleading'],['😈','mischievous'],['🤗','hugging'],['🦄','unicorn'],['🐴','horse'],['🌟','glowing star'],['🌸','blossom'],['🔥','fire'],['💖','sparkling heart'],['🍀','lucky'],['🌙','moon']];
+const registeredEmojis=new Set(Object.values(groups).flatMap(list=>list.split('|').map(item=>item.split(' ')[0])));
+groups['Personality Favorites']=personalityFavorites.filter(([emoji])=>!registeredEmojis.has(emoji)).map(([emoji,name])=>emoji+' '+name).join('|');
 export const emojiChoices=Object.entries(groups).flatMap(([category,list])=>list.split('|').map(item=>{const [emoji,...words]=item.split(' ');return {emoji,name:words.join(' '),category};}));
 export function filterEmojiChoices(query='',category='') {
  const words=query.toLowerCase().trim().split(/\s+/).filter(Boolean);

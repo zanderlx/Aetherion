@@ -1,3 +1,4 @@
+import {openEmojiPicker} from './emoji-picker.js';
 import {fitMutationDescriptions,watchMutationCardWidths} from './mutation-card-layout.js';
 import {createDefinitionTransfers} from './definition-transfer.js';
 import {createPaletteTransfers} from './palette-transfer.js';
@@ -355,6 +356,11 @@ document.addEventListener('click', async event => {
   if (intent === 'export-definition') {try {definitionTransfers[button.dataset.kind]?.exportDefinition(id);} catch(error) {notify(error.message,true);} return;}
   if (intent === 'import-palette') return paletteTransfers.importPalette();
   if (intent === 'export-palette') {try {paletteTransfers.exportPalette(id);} catch(error) {notify(error.message,true);} return;}
+  if (intent === 'choose-personality-emoji') {
+    const input=button.closest('form').elements.emoji;
+    openEmojiPicker({value:input.value,onSelect:emoji=>{input.value=emoji;button.textContent=emoji;input.dispatchEvent(new Event('input',{bubbles:true}));}});
+    return;
+  }
   if (intent === 'wilds-home') {
     event.preventDefault();
     const group = button.closest('details');
