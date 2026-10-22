@@ -33,6 +33,19 @@ test('invalid modifiers are rejected',()=>{
   for (const value of [null,[],{traitBonus:-1},{mutationBonus:0.5},{solarMultiplier:Infinity},{voidMultiplier:1001},{unknown:4}]) assert.throws(()=>validateSaleModifiers(value));
 });
 
+test('skill and wing levels add separate configurable bonuses before cosmic multipliers',()=>{
+  const trained = {...horse,skills:{bond:{level:2,xp:0},agility:{level:1,xp:0},wing:{level:3,xp:0}}};
+  const quote = horseSalePrice(trained,settings);
+  assert.equal(quote.skillLevelBonus,24);
+  assert.equal(quote.wingLevelBonus,24);
+  assert.equal(quote.total,443);
+  const custom = horseSalePrice({...trained,specialSpawn:'Solar'},{...settings,saleModifiers:{skillLevelBonus:10,wingLevelBonus:2}});
+  assert.equal(custom.total,(395+30+6)*10);
+  assert.match(saleQuoteBreakdown(quote),/Skill Levels \(3 × 8\)/);
+  assert.match(saleQuoteBreakdown(quote),/Wing Levels \(3 × 8\)/);
+  for (const modifiers of [{skillLevelBonus:-1},{wingLevelBonus:0.5}]) assert.throws(()=>validateSaleModifiers(modifiers));
+});
+
 test('sale confirmation explains counted bonuses and the special multiplier',()=>{
   const html = saleQuoteBreakdown(horseSalePrice({...horse,specialSpawn:'Solar'},settings));
   assert.match(html,/Traits \(3 × 15\)/);

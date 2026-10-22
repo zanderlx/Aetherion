@@ -1,8 +1,12 @@
-export const defaultSaleModifiers = {traitBonus:15,mutationBonus:50,solarMultiplier:10,lunarMultiplier:15,heavenlyMultiplier:20,voidMultiplier:25,astralMultiplier:30};
+import {readHorseSkills} from './skill-progress.js';
+
+export const defaultSaleModifiers = {traitBonus:15,mutationBonus:50,skillLevelBonus:8,wingLevelBonus:8,solarMultiplier:10,lunarMultiplier:15,heavenlyMultiplier:20,voidMultiplier:25,astralMultiplier:30};
 export const saleModifierFields = [
   ['traitBonus','Gold Per Trait','Excludes Mane, Tail, Eye Color, and missing-data placeholders.'],
   ['mutationBonus','Gold Per Mutation','Includes each assigned mutation, including a Cosmic mutation.'],
-  ...['Solar','Lunar','Heavenly','Void','Astral'].map(name => [`${name.toLowerCase()}Multiplier`,`${name} Multiplier`,'Applied after the base price and trait/mutation bonuses.'])
+  ['skillLevelBonus','Gold Per Skill Level','Adds gold for each Agility, Strength, Jump, and Bond level above 0.'],
+  ['wingLevelBonus','Gold Per Wing Level','Adds gold for each Wing level above 0.'],
+  ...['Solar','Lunar','Heavenly','Void','Astral'].map(name => [`${name.toLowerCase()}Multiplier`,`${name} Multiplier`,'Applied after the base price and all bonuses.'])
 ];
 export const saleModifiers = settings => ({...defaultSaleModifiers,...settings.saleModifiers});
 
@@ -11,7 +15,7 @@ export function validateSaleModifiers(input) {
   const result = {...defaultSaleModifiers,...input};
   for (const [key,value] of Object.entries(result)) {
     const bonus = key.endsWith('Bonus');
-    if (!Number.isFinite(value) || value < 0 || value > (bonus ? 1000000 : 1000) || (bonus && !Number.isInteger(value))) throw new Error(bonus ? 'Trait and mutation bonuses must be whole numbers from 0 to 1,000,000.' : 'Sale multipliers must be numbers from 0 to 1,000.');
+    if (!Number.isFinite(value) || value < 0 || value > (bonus ? 1000000 : 1000) || (bonus && !Number.isInteger(value))) throw new Error(bonus ? 'Sale bonuses must be whole numbers from 0 to 1,000,000.' : 'Sale multipliers must be numbers from 0 to 1,000.');
   }
   return result;
 }
@@ -36,8 +40,13 @@ export function horseSalePrice(horse,settings) {
   const basePrice = settings.sellingPrice;
   const traitBonus = traitCount*modifiers.traitBonus;
   const mutationBonus = mutationCount*modifiers.mutationBonus;
-  const subtotal = basePrice+traitBonus+mutationBonus;
+  const skills = readHorseSkills(horse.skills);
+  const skillLevels = ['agility','strength','jump','bond'].reduce((sum,name) => sum+skills[name].level,0);
+  const wingLevels = skills.wing.level;
+  const skillLevelBonus = skillLevels*modifiers.skillLevelBonus;
+  const wingLevelBonus = wingLevels*modifiers.wingLevelBonus;
+  const subtotal = basePrice+traitBonus+mutationBonus+skillLevelBonus+wingLevelBonus;
   const total = Math.round(subtotal*multiplier);
   if (!Number.isSafeInteger(total) || total < 0) throw new Error('The calculated sale price is too large. Reduce the sale modifiers.');
-  return {basePrice,traitCount,mutationCount,traitBonus,mutationBonus,subtotal,special,multiplier,total,modifiers};
+  return {basePrice,traitCount,mutationCount,traitBonus,mutationBonus,skillLevels,wingLevels,skillLevelBonus,wingLevelBonus,subtotal,special,multiplier,total,modifiers};
 }
