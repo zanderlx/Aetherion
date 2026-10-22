@@ -72,3 +72,12 @@ test('Cosmic ignores the zone species pool; Wild retains it and assigns profile 
     assert.equal(h.personalityId,'curious');
   }
 });
+
+test('Aetherion restricts both Cosmic and Wild encounters to its configured whitelist',()=>{
+  const aetherion = {...location,id:'aetherion'};
+  const cosmic = spawnHorse(catalog,aetherion,sequence([0.003,0.99,0,0.99]));
+  assert.equal(cosmic.spawnPath,'Cosmic');
+  assert.equal(cosmic.speciesId,'pony');
+  const wild = spawnHorse(catalog,aetherion,sequence([0.5,0.99,0.99]));
+  assert.equal(wild.speciesId,'pony');
+});

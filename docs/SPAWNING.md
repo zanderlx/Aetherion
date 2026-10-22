@@ -52,6 +52,8 @@ The five registries are JSON arrays. Each zone stores its metadata, tags, palett
 
 The excerpt shows the creature list, not a complete zone file. The matching `speciesPool` name list is maintained for the UI; spawning uses the IDs and absolute weights. Zero-weight entries are excluded. In **My Zones → Creatures Per Zone**, weights can be adjusted independently.
 
+Aetherion’s default species list and tiers are documented in the README. The other registered species remain available to other zones.
+
 Species zone checkboxes append/remove the ID in each selected zone file. Changing a species rarity tier updates its assigned zone weights. Saving other species fields preserves manually adjusted weights. Deleting a species removes its references; deleting a zone removes its JSON file. Empty zones close to exploration.
 
 Every spawn trigger rereads the master and zone files. Editing a file directly also affects future spawns; invalid files reject the request without replacing existing encounters. Refreshing the page reloads valid configuration into the managers.
@@ -59,7 +61,7 @@ Every spawn trigger rereads the master and zone files. Editing a file directly a
 ## Pipeline
 
 1. Roll `0–100`. A result **≤ 0.325** enters the Cosmic path. Cosmic intervals are Solar **0.1%**, Lunar **0.1%**, Heavenly **0.05%**, Void **0.05%**, and Astral **0.025%**.
-2. Cosmic species are uniform across the entire registry, regardless of zone. Wild species use the zone's absolute ticket sum. Initial tier weights are **1: 40**, **2: 100**, **3: 250**, **4: 500**.
+2. Cosmic species are uniform across the registry, except Aetherion Wilds: its explicit 25-species whitelist also restricts Cosmic spawns. Wild species use the zone's absolute ticket sum. Initial tier weights are **1: 40**, **2: 100**, **3: 250**, **4: 500**.
 3. Cascade up to four mutation slots, accepting rolls **≤** each chance. Failure ends the chain immediately:
 
    | Path | Slot 1 | Slot 2 | Slot 3 | Slot 4 |

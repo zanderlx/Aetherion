@@ -54,18 +54,19 @@ test('first startup seeds nineteen integer mutation weights and all local config
   assert.ok(!(await read('mutations.json')).some(m => m.id === solar.id));
 });
 
-test('Aetherion defaults include all species with four Uncommon and three Rare species',async t => {
+test('Aetherion defaults use the exact twenty-five species whitelist and supplied tiers',async t => {
   const {read} = await fixture(t);
   const species = await read('species.json');
   const zone = await read('zones/aetherion.json');
-  assert.equal(zone.creatures.length,46);
-  assert.deepEqual(species.filter(s=>s.rarityTier===3).map(s=>s.name).sort(),['Akhal Teke','Clydesdale','Felorse','Friesan']);
-  assert.deepEqual(species.filter(s=>s.rarityTier===2).map(s=>s.name).sort(),['Caniquine','Nephyrian','Serpentine']);
+  assert.equal(zone.creatures.length,25);
+  assert.deepEqual(species.filter(s=>s.rarityTier===3).map(s=>s.name).sort(),['Akhal Teke','Clydesdale','Donkey','Fjord','Flora','Gargoyle','Lusitano','Marwari']);
+  assert.deepEqual(species.filter(s=>s.rarityTier===2).map(s=>s.name).sort(),['Anticorn','Cactaline','Fae','Felorse','Hippocampus','Kelpie','Unicorn']);
   for (const creature of zone.creatures) {
     const entry=species.find(s=>s.id===creature.speciesId);
     assert.equal(creature.weight,{1:40,2:100,3:250,4:500}[entry.rarityTier]);
   }
-  assert.equal(zone.creatures.reduce((n,c)=>n+c.weight,0),20800);
+  assert.deepEqual(species.filter(s=>s.rarityTier===1).map(s=>s.name).sort(),['Caniquine','Nephyrian','Serpentine']);
+  assert.equal(zone.creatures.reduce((n,c)=>n+c.weight,0),6320);
 });
 test('species CRUD synchronizes selected zone IDs and tier weights without altering existing horses',async t => {
   const {store,read} = await fixture(t);

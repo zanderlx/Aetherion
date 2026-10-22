@@ -27,7 +27,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **100 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **101 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -139,13 +139,25 @@ Every supplied hex value is preserved. These are palette definitions; choosing o
 
 Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, and **Personalities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
 
-Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects any registered species uniformly. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
+Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects species uniformly, using Aetherion’s whitelist in that zone and the full registry elsewhere. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 
 See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file paths, thresholds, assets, migration, and recovery. Existing horses retain their snapshots; new searches use saved configuration changes.
 
 Catching a wild horse immediately refreshes that zone's full encounter group. Reloading a Wilds page also generates fresh encounters, as does Search the Wilds. Switching sections without reloading preserves existing encounters.
 
-Horse cards use rarity glows in Wilds and Stables: **Uncommon → green**, **Rare/Ultra Rare → purple**, and **Solar/Lunar/Heavenly/Void/Astral → gold**. Common and event species have no outline or glow; those five special mutations override event status. Event status belongs to the species, not merely the zone it spawned in. Species Manager already controls rarity tiers, so no separate ranking dashboard is needed for these rules. New horses retain their tier/event snapshot through capture and JSON transfer; older records resolve against a matching species when available. Unknown legacy species receive no glow. The default Aetherion pool includes all 46 species: 39 Common at 500 tickets each, Felorse/Friesan/Clydesdale/Akhal Teke as Uncommon at 250 each, and Nephyrian/Caniquine/Serpentine as Rare at 100 each. No species is currently assigned Ultra Rare (40 tickets). These are per-species ticket weights, not fixed rarity percentages.
+Horse cards use rarity glows in Wilds and Stables: **Uncommon → green**, **Rare → purple**, and **Ultra Rare or Solar/Lunar/Heavenly/Void/Astral → gold**. Common and event species have no outline or glow; the five special mutations override event status. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
+
+Aetherion Wilds uses this **25-species whitelist** as its source of truth. Both Wild and Cosmic encounters in Aetherion must use the listed species. The other 21 species remain registered for other zones. Other zones retain registry-wide uniform Cosmic species selection.
+
+| Tier | Weight per species | Aetherion species |
+| --- | ---: | --- |
+| 4 · Common | 500 | Bisorse, Caprine, Equus, Friesan, Horse, Peryton, Pony |
+| 3 · Uncommon | 250 | Akhal Teke, Clydesdale, Donkey, Fjord, Flora, Gargoyle, Lusitano, Marwari |
+| 2 · Rare | 100 | Anticorn, Cactaline, Fae, Felorse, Hippocampus, Kelpie, Unicorn |
+| 1 · Ultra Rare | 40 | Caniquine, Nephyrian, Serpentine |
+
+The Wild pool totals **6,320 tickets**. Weights are relative per-species tickets, not fixed rarity percentages. Edit rarity assignments in Species Manager and zone membership in My Zones.
+
 
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 

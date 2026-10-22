@@ -1,3 +1,4 @@
+import {defaultSpeciesTiers} from './spawn-config.js';
 import { baseAtmospheres } from './definitions.js';
 // Shared zone definitions and validation, used by both the editor and local server.
 export const atmospheres = {
@@ -9,7 +10,7 @@ export const atmospheres = {
 export function locationsFor(catalog, state = {}) {
   const defaults = catalog.locations.map(l => ({
       ...l, enabled: true, custom: false, atmosphere: l.id === 'hallowhoof' ? 'autumn' : 'forest',
-      speciesPool: l.id === 'hallowhoof' ? ['Ghoulsteed', 'Hauntmare', 'Calaverita'] : catalog.species.map(s => s.name),
+      speciesPool: l.id === 'hallowhoof' ? ['Ghoulsteed', 'Hauntmare', 'Calaverita'] : catalog.species.filter(s => l.id !== 'aetherion' || Object.hasOwn(defaultSpeciesTiers,s.name.toLowerCase())).map(s => s.name),
       palettePool: l.id === 'hallowhoof' ? ['Pumpkin', 'Ghoulish', 'Monochrome'] : ['Natural Gold', 'Amethyst', 'Emerald'],
       ...l
     }));

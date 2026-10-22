@@ -48,7 +48,7 @@ Palette `colors` requires these exact keys: `Coat Top`, `Coat Bottom`, `Hair`, `
 
 Spawned horse files also preserve optional species/palette/eye/personality registry IDs, personality system ID and behavior tags, palette skin/scope metadata, selected skin ID, and eye texture/layer data. Older version-1 files remain valid.
 
-Optional `rarityTier` (integer 1–4) and `speciesEvent` (event name or null) preserve card-ranking metadata. Special mutation names or `specialSpawn` determine gold glows. Files without these fields remain valid and use matching local species data when available.
+Optional `rarityTier` (integer 1–4) and `speciesEvent` (event name or null) preserve fallback card-ranking metadata. Matching local species definitions take precedence so corrected rarity assignments also update existing card glows. Ultra Rare and special mutation types use gold glows. Files without these fields remain valid.
 
 ## Import rules
 

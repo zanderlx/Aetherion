@@ -1,4 +1,4 @@
-import {rarityTier,systemID,validateThresholds} from './spawn-config.js';
+import {rarityTier,systemID,validateThresholds,defaultSpeciesTiers} from './spawn-config.js';
 import { mutatedPalettes } from './mutated-palettes.js';
 export const regions = ['Coat Top', 'Coat Bottom', 'Hair', 'Hoof', 'Nose', 'Sock', 'Keratin', 'Paint', 'Pattern'];
 export const traitCategories = ['Mane', 'Tail', 'Pattern', 'Paint', 'Cosmetic', 'Keratin', 'Ears', 'Whiskers'];
@@ -42,7 +42,7 @@ export function normalizeCatalog(source) {
   catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name, s.traits]));
   catalog.locations = catalog.locations.map(l => ({
     ...l, atmosphere: l.atmosphere || (l.id === 'hallowhoof' ? 'autumn' : 'forest'),
-    speciesPool: l.speciesPool || (l.id === 'hallowhoof' ? ['Ghoulsteed','Hauntmare','Calaverita'] : catalog.species.map(s => s.name)),
+    speciesPool: l.speciesPool || (l.id === 'hallowhoof' ? ['Ghoulsteed','Hauntmare','Calaverita'] : catalog.species.filter(s => l.id !== 'aetherion' || Object.hasOwn(defaultSpeciesTiers,s.name.toLowerCase())).map(s => s.name)),
     palettePool: l.palettePool || (l.id === 'hallowhoof' ? ['Pumpkin','Ghoulish','Monochrome'] : ['Natural Gold','Amethyst','Emerald'])
   }));
   return catalog;

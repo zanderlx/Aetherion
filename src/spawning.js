@@ -57,7 +57,11 @@ export function spawnHorse(catalog,location,rng = randomFloat) {
   const settings = catalog.spawning || defaultSpawnSettings;
   const cosmic = cosmicForRoll(rng()*100,settings);
   const creature = cosmic ? null : pickWeighted(zoneCreatures(location,catalog,settings),c => c.weight,rng);
-  const species = cosmic ? pickUniform(catalog.species,rng) : catalog.species.find(s => s.id === creature.speciesId);
+  // Aetherion's explicit species whitelist also applies to Cosmic encounters.
+  // Other zones retain the original uniform, registry-wide Cosmic selection.
+  const allowed = location.id === 'aetherion' ? new Set(zoneCreatures(location,catalog,settings).filter(c => Math.abs(c.weight)>0).map(c => c.speciesId)) : null;
+  const cosmicSpecies = allowed ? catalog.species.filter(s => allowed.has(s.id)) : catalog.species;
+  const species = cosmic ? pickUniform(cosmicSpecies,rng) : catalog.species.find(s => s.id === creature.speciesId);
   if (!species) throw new Error('The zone references an unknown species.');
   const mutations = rollMutations(catalog,species,cosmic,settings,rng);
   const gender = rng()*100 < settings.maleChance ? 'Male' : 'Female';
