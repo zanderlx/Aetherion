@@ -354,3 +354,10 @@ select{text-transform:uppercase}
 .palette-card-swatches>span:hover::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:3;width:max-content;max-width:80vw;padding:7px 10px;border:1px solid var(--border);border-radius:5px;background:var(--panel-deep);color:var(--text);box-shadow:0 3px 12px #0005;white-space:nowrap;text-transform:none;font:12px/1.4 var(--sans);pointer-events:none}
 .palette-card-swatches>span:first-child:hover::after{left:0;transform:none}
 .palette-card-swatches>span:last-child:hover::after{left:auto;right:0;transform:none}
+
+.personality-card-grid article.personality-card{position:relative}
+.personality-card-grid article .personality-card-heading{padding-right:30px}
+.personality-card-heading [data-action="edit-definition"]{position:absolute;top:16px;right:16px;width:34px;height:34px;padding:6px;opacity:0;pointer-events:none;transition:opacity .15s}
+.personality-card-heading [data-action="edit-definition"] .icon{width:20px;height:20px}
+.personality-card:hover [data-action="edit-definition"],.personality-card:focus-within [data-action="edit-definition"]{opacity:1;pointer-events:auto}
+@media(hover:none){.personality-card [data-action="edit-definition"]{opacity:1;pointer-events:auto}}

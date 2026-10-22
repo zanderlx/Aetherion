@@ -455,7 +455,7 @@ test('Random eye drafts generate colors without reusing internal IDs',()=>{
 test('Personalities uses a compact search and header add button',()=>{
  const initial=libraryEditorPage('personalities',catalog,state);
  assert.doesNotMatch(initial,/<form id="definition-form"/);
- assert.match(initial,/personality-card-description/);
+ assert.doesNotMatch(initial,/personality-card-description|personality-description-heading/);
  const html=libraryEditorPage('personalities',catalog,state,catalog.personalities[0]);
  assert.match(html,/data-action="close-personality-editor"/);
  assert.match(html,/Delete Entry/);
