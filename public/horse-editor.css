@@ -27,6 +27,6 @@
 .horse-notes .horse-text-display { height:140px; }
 .horse-text-display[hidden] { display:none; }
 
-.profile-actions .horse-export { margin-left:auto; }
+.profile-actions .horse-export { margin-left:0; }
 
 .horse-gender.is-editable { display:inline-flex; align-items:center; border:1px dotted var(--gold); border-radius:4px; padding:3px 6px; }

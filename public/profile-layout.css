@@ -112,6 +112,7 @@
 .horse-profile-shell .profile-traits>h3,.horse-profile-shell .horse-mutations-heading{justify-content:center;text-align:center;margin:0 0 8px}
 .horse-profile-shell .horse-mutations-heading h3{margin:0}
 .horse-profile-shell .profile-lower h3{font-size:22px}
+.horse-profile-shell :is(.profile-palette,.profile-traits,.horse-mutations-heading,.profile-skills,.profile-equipment,.horse-notes)>h3{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
 .horse-profile-shell .horse-trait-group{padding:9px}
 .horse-profile-shell .horse-trait-group dt{margin-bottom:7px;font-size:13px}
 .horse-profile-shell .horse-trait-categories{gap:9px}
