@@ -2,9 +2,17 @@ import {escapeHTML as e,icon} from './ui.js';
 import {defaultSpawnSettings} from './spawn-config.js';
 import {formSignature,formBaseline} from './form-state.js';
 
+const typeOrder = ['Standard','Special','Mutated'];
+const compareType = (a,b) => (typeOrder.includes(a) ? typeOrder.indexOf(a) : typeOrder.length)-(typeOrder.includes(b) ? typeOrder.indexOf(b) : typeOrder.length) || a.localeCompare(b);
+export const mutationTypes = entries => [...new Set([...typeOrder,...entries.map(m=>m.type)])].sort(compareType);
+
 export function filterMutations(entries,query='',type='',sort='az') {
   const words=query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return entries.filter(m=>(!type || m.type===type) && words.every(word=>`${m.name} ${m.type} ${m.description || ''}`.toLowerCase().includes(word))).sort((a,b)=>sort==='za' ? b.name.localeCompare(a.name) : sort==='weight' ? Math.abs(b.weight || 0)-Math.abs(a.weight || 0) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
+  return entries.filter(m=>(!type || m.type===type) && words.every(word=>`${m.name} ${m.type} ${m.description || ''}`.toLowerCase().includes(word))).sort((a,b)=>sort==='za' ? b.name.localeCompare(a.name) : sort==='type' ? compareType(a.type,b.type) || a.name.localeCompare(b.name) : sort==='weight' ? Math.abs(b.weight || 0)-Math.abs(a.weight || 0) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
+}
+export function mutationResults(entries,sort='type') {
+  if (sort !== 'type') return mutationCards(entries);
+  return mutationTypes(entries).filter(type=>entries.some(m=>m.type===type)).map(type=>`<section class="eye-rarity-section"><h2>${e(type)}</h2><div class="eye-definition-grid mutation-definition-grid">${mutationCards(entries.filter(m=>m.type===type))}</div></section>`).join('');
 }
 export function mutationCards(entries) {
   return entries.map(m=>`<button type="button" class="panel eye-definition-card mutation-definition-card" data-action="edit-definition" data-kind="mutations" data-id="${e(m.id)}" aria-label="Edit ${e(m.name)}"><span class="eye-card-name">${e(m.name)}</span><span class="mutation-card-description">${e(m.description || 'No description yet.')}</span><span class="mutation-card-meta"><span>${e(m.type)}</span><span>${Math.abs(m.weight || 0).toLocaleString()} Tokens</span></span></button>`).join('');
@@ -13,12 +21,16 @@ export function mutationsManagerPage(catalog) {
   const standards=catalog.mutations.filter(m=>m.type==='Standard');
   return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Mutations Manager</h1><button class="button primary" data-action="new-definition" data-kind="mutations">${icon('spark')} Create Mutation</button></div>
   <form id="spawn-settings-form" class="panel spawn-settings"><p data-copy-skip>Standard pool: ${standards.length} mutations · ${standards.reduce((n,m)=>n+Math.abs(m.weight || 0),0).toLocaleString()} tickets</p><label class="setting-row"><span><strong>ALLOW_DUPLICATE_MUTATIONS</strong><small>Allow the same standard mutation in multiple slots on one horse.</small></span><input type="checkbox" class="toggle" name="ALLOW_DUPLICATE_MUTATIONS" ${(catalog.spawning || defaultSpawnSettings).ALLOW_DUPLICATE_MUTATIONS ? 'checked' : ''}></label><div class="form-actions"><button class="button primary" type="submit">Save Configuration</button><button class="button secondary" type="reset">Cancel Changes</button></div></form>
-  <div class="eye-grid-controls"><label class="zone-field">Search<input id="mutation-search" type="search" placeholder="Search..." aria-label="Search mutations"></label><label class="zone-field">Type<select id="mutation-type"><option value="">All Types</option>${[...new Set(catalog.mutations.map(m=>m.type))].sort().map(type=>`<option value="${e(type)}">${e(type)}</option>`).join('')}</select></label><label class="zone-field">Sort By<select id="mutation-sort"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="weight">Weight: Highest First</option></select></label></div>
-  <div id="mutation-grid" class="eye-definition-grid mutation-definition-grid">${mutationCards(filterMutations(catalog.mutations))}</div><p id="mutation-empty" role="status" ${catalog.mutations.length ? 'hidden' : ''}>No mutations match your filters.</p>`;
+  <div class="eye-grid-controls"><label class="zone-field">Search<input id="mutation-search" type="search" placeholder="Search..." aria-label="Search mutations"></label><label class="zone-field">Type<select id="mutation-type"><option value="">All Types</option>${mutationTypes(catalog.mutations).map(type=>`<option value="${e(type)}">${e(type)}</option>`).join('')}</select></label><label class="zone-field">Sort By<select id="mutation-sort"><option value="type" selected>Type</option><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="weight">Weight: Highest First</option></select></label></div>
+  <div id="mutation-grid">${mutationResults(filterMutations(catalog.mutations,'','','type'))}</div><p id="mutation-empty" role="status" ${catalog.mutations.length ? 'hidden' : ''}>No mutations match your filters.</p>`;
 }
 export function updateMutationGrid(root,catalog) {
   const entries=filterMutations(catalog.mutations,root.querySelector('#mutation-search').value,root.querySelector('#mutation-type').value,root.querySelector('#mutation-sort').value);
-  root.querySelector('#mutation-grid').innerHTML=mutationCards(entries);
+  const sort=root.querySelector('#mutation-sort').value;
+  const grid=root.querySelector('#mutation-grid');
+  grid.classList.toggle('eye-definition-grid',sort!=='type');
+  grid.classList.toggle('mutation-definition-grid',sort!=='type');
+  grid.innerHTML=mutationResults(entries,sort);
   root.querySelector('#mutation-empty').hidden=entries.length>0;
 }
 

@@ -1,11 +1,26 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {filterMutations,mutationCards,mutationsManagerPage} from '../public/mutations-manager.js';
+import {filterMutations,mutationCards,mutationResults,mutationsManagerPage} from '../public/mutations-manager.js';
+import {libraryEditorPage} from '../public/library-editor.js';
+import {catalogFor} from '../public/definitions.js';
+import {readFile} from 'node:fs/promises';
 const mutations=[
  {id:'solar',name:'Solar',type:'Cosmic',description:'Sunlit coat',weight:0},
  {id:'springy',name:'Springy Tendons',type:'Standard',description:'Jump higher',weight:2333},
  {id:'lungs',name:'Powerful Lungs',type:'Standard',description:'More stamina',weight:1675}
 ];
+test('mutation types form a dropdown and sort into separate named sections',async()=>{
+ const entries=[...mutations,{id:'special',name:'Zeta',type:'Special'},{id:'mutated',name:'Alpha',type:'Mutated'}];
+ const html=mutationResults(filterMutations(entries,'','','type'));
+ assert.ok(html.indexOf('<h2>Standard</h2>')<html.indexOf('<h2>Special</h2>'));
+ assert.ok(html.indexOf('<h2>Special</h2>')<html.indexOf('<h2>Mutated</h2>'));
+ assert.doesNotMatch(mutationResults(entries,'az'),/<section/);
+ const catalog=catalogFor(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')),{});
+ const form=libraryEditorPage('mutations',catalog,{settings:{}},catalog.mutations[0]);
+ assert.match(form,/<select name="type">/);
+ for (const type of ['Standard','Special','Mutated']) assert.match(form,new RegExp(`value="${type}"`));
+ assert.doesNotMatch(form,/<input name="type"/);
+});
 test('mutation grid searches descriptions and combines type and sort filters',()=>{
  assert.deepEqual(filterMutations(mutations,'stamina','Standard').map(m=>m.id),['lungs']);
  assert.deepEqual(filterMutations(mutations,'','Standard','weight').map(m=>m.id),['springy','lungs']);

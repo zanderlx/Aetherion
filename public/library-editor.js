@@ -1,3 +1,4 @@
+import {mutationTypes} from './mutations-manager.js';
 import {registryKinds,defaultSpawnSettings} from './spawn-config.js';
 import {personalitiesManagerPage} from './personalities-manager.js';
 import {locationsFor} from './zones.js';
@@ -60,7 +61,7 @@ export function libraryEditorPage(kind, catalog, state, draft) {
     `<div class="color-editor-grid">${regions.map(r => colorControl(r, draft.colors?.[r] || '#D6B4DF')).join('')}</div><p class="preview-note">Each palette needs all nine regions. Choose it in a zone to use it for new horses.</p>`;
   if (kind === 'eyes') fields =  `<input type="hidden" name="textureId" value="${e(draft.textureId || '')}">` + `<input type="hidden" name="layers" value="${e(JSON.stringify(draft.layers || []))}">` + `<label class="zone-field">Rarity<select name="rarity">${[...new Set(['Common','Uncommon','Rare',...catalog.eyes.map(d => d.rarity),draft.rarity].filter(rarity => rarity && rarity.toLowerCase() !== 'custom'))].map(rarity => `<option value="${e(rarity)}" ${rarity === draft.rarity ? 'selected' : ''}>${e(rarity)}</option>`).join('')}</select></label>` +
     `<div id="eye-color-rows" class="color-editor-grid">${(draft.colors || ['#8A689E']).map((c, i) => `<div class="eye-color-row">${colorControl(String(i), c, `Eye color ${i + 1}`)}<button class="text-button" type="button" data-action="remove-eye-color">Remove color</button></div>`).join('')}</div><button class="button secondary" type="button" data-action="add-eye-color">Add eye color</button>`;
-  if (kind === 'mutations') fields = textField('Mutation category (choose or type your own)', 'type', draft.type, true, catalog.mutations.map(d => d.type)) +
+  if (kind === 'mutations') fields = `<label class="zone-field">Type<select name="type">${mutationTypes([...catalog.mutations,...(draft.type ? [{type:draft.type}] : [])]).map(type => `<option value="${e(type)}" ${type === draft.type ? 'selected' : ''}>${e(type)}</option>`).join('')}</select></label>` +
     `<label class="zone-field">Selection Weight Tokens<input type="number" min="0" max="1000000" step="1" name="weight" value="${draft.weight ?? 0}"></label>` + jsonField('Attribute Thresholds (JSON: {"stamina":{"min":10,"max":100}})','thresholds',draft.thresholds || {}) + `<label class="zone-field">Size Index Shift<input type="number" name="sizeShift" min="-10" max="10" step="1" value="${draft.sizeShift ?? (draft.name === 'Dwarfism' ? -1 : draft.name === 'Gigantism' ? 1 : 0)}"></label>`;
   if (kind === 'personalities') fields = `<input type="hidden" name="behaviorTags" value="${e(JSON.stringify(draft.behaviorTags || []))}">`;
   if (kind === 'items') fields = textField('Item type (choose or type your own)', 'type', draft.type || 'Accessory', true, catalog.items.map(d => d.type || 'Accessory')) +

@@ -195,7 +195,7 @@ select{text-transform:uppercase}
 .mutation-definition-dialog>.dialog-top>[data-mutation-close]{margin-left:auto;flex-shrink:0}
 .mutation-definition-dialog .definition-fields{min-width:0}
 .mutation-definition-dialog .eye-name-rarity label{min-width:0;margin:0}
-.mutation-definition-dialog .eye-name-rarity input{width:100%;min-width:0}
+.mutation-definition-dialog .eye-name-rarity :is(input,select){width:100%;min-width:0}
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }
 .eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:2px 0 16px; }
 .eye-grid-controls { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:20px; }
