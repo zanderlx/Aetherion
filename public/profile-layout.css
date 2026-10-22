@@ -1,5 +1,7 @@
 /* Two profile pages share the same frame and keep tabs clear of the content. */
 #profile:has(.horse-profile-shell),.horse-import-preview:has(.horse-profile-shell){width:min(880px,calc(100vw - 100px));overflow:visible;transform:translateX(-20px)}
+#profile,.horse-import-preview{--profile-border-width:1px}
+#profile[data-rarity-border]{--profile-border-width:2px}
 .horse-profile-book{position:relative;--profile-columns:minmax(180px,.75fr) minmax(0,1.7fr)}
 .profile-scroll-frame{max-height:88dvh;overflow-y:auto;overflow-x:hidden;border-radius:7px;scrollbar-width:thin}
 .profile-scroll-frame>.dialog-top>.icon-button{margin-left:auto}
@@ -12,9 +14,9 @@
 .profile-tab-rail button .icon{width:24px;height:24px}
 .profile-tab-rail button span{font-size:11px}
 .profile-tab-rail button[aria-selected=true]{position:relative;width:64px;border-color:var(--profile-rarity-color,var(--gold));border-left:0;color:var(--gold);background:var(--panel);box-shadow:3px 3px 12px #0004}
-.profile-tab-rail button[aria-selected=true]::before{content:"";position:absolute;left:-3px;top:0;bottom:0;width:5px;background:var(--panel)}
+.profile-tab-rail button[aria-selected=true]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--profile-border-width);background:var(--panel)}
 .profile-tab-rail button[aria-selected=false]{position:relative}
-.profile-tab-rail button[aria-selected=false]::before{content:"";position:absolute;left:-2px;top:-1px;bottom:-1px;width:2px;background:var(--profile-rarity-color,var(--border))}
+.profile-tab-rail button[aria-selected=false]::before{content:"";position:absolute;left:-1px;top:-1px;bottom:-1px;width:var(--profile-border-width);background:var(--profile-rarity-color,var(--border))}
 .profile-tab-rail button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .horse-profile-shell .profile-grid{display:grid;grid-template-columns:var(--profile-columns);height:clamp(190px,27dvh,240px);border-bottom:1px solid var(--border);align-items:stretch;flex-shrink:0}
 .profile-portrait{display:flex;align-items:center;justify-content:center;background:var(--panel-deep);border-right:1px solid var(--border);overflow:hidden;min-height:0;height:100%}
@@ -45,9 +47,10 @@
 .profile-skills{display:flex;flex-direction:column;flex:1}
 .profile-skills dl{display:grid;gap:6px;margin:0;flex:1;grid-auto-rows:minmax(30.4px,1fr);min-height:202px}
 .profile-skills dl>div{display:grid;grid-template-columns:minmax(94px,.9fr) minmax(0,1.5fr);align-items:center;gap:10px;padding:0}
-.profile-skills dt{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.profile-skills dt{display:grid;grid-template-columns:17px minmax(0,1fr);align-items:center;gap:6px;white-space:nowrap}
+.profile-skills dt>span{text-align:right}
 .profile-skills dt .icon{width:17px;height:17px;flex-shrink:0;color:var(--skill-color)}
-.profile-skills .skill-level-bar{display:grid;place-items:center;align-self:stretch;min-height:28px;border:1px solid var(--skill-color);border-radius:4px;background:color-mix(in srgb,var(--skill-color) 40%,var(--panel-deep));font-size:13px;font-weight:600;color:var(--text)}
+.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:stretch;min-height:28px;border:1px solid var(--skill-color);border-radius:4px;background:color-mix(in srgb,var(--skill-color) 40%,var(--panel-deep));font-size:13px;font-weight:600;color:var(--text)}
 .profile-skills dd{margin:0;color:var(--muted)}
 .horse-profile-shell .profile-palette{padding:14px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
 .horse-profile-shell .profile-palette>.profile-palette-heading{padding:0;margin:0;font:400 22px/1.4 var(--serif);color:var(--text);text-align:center}
@@ -61,6 +64,8 @@
 .horse-profile-shell .profile-lower>section{padding:12px 18px;border:0;border-bottom:1px solid var(--border)}
 .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(3,minmax(0,1fr))}
 .horse-profile-shell .horse-trait-essentials{margin-bottom:10px;padding-bottom:10px;gap:10px;border:0}
+.horse-profile-shell .horse-trait-essentials dt{text-align:center;justify-content:center}
+.horse-profile-shell .horse-trait-essentials dd{justify-content:center;text-align:center}
 .horse-profile-shell .mutation-slots{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:0}
 .horse-profile-shell .mutation-slot{min-height:62px;padding:10px}
 @media(max-width:760px){
