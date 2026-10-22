@@ -116,10 +116,15 @@ select{text-transform:uppercase}
 .trait-list .horse-eye-value { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
 .horse-eye-swatch { display:inline-flex; width:18px; height:18px; flex-shrink:0; border:1px solid var(--border); border-radius:3px; overflow:hidden; pointer-events:none; }
 .horse-eye-swatch > span { flex:1; }
-.horse-card[data-card-rank="uncommon"] { --horse-rank-color:#58B878; --rank-glow-blur:9px; --rank-glow-opacity:18%; --rank-ring-opacity:30%; --rank-hover-blur:13px; --rank-hover-opacity:28%; }
-.horse-card[data-card-rank="rare"] { --horse-rank-color:#B378EA; --rank-glow-blur:16px; --rank-glow-opacity:32%; --rank-ring-opacity:50%; --rank-hover-blur:22px; --rank-hover-opacity:45%; }
-.horse-card[data-card-rank="ultra-rare"] { --horse-rank-color:#E6BC57; --rank-glow-blur:23px; --rank-glow-opacity:46%; --rank-ring-opacity:70%; --rank-hover-blur:29px; --rank-hover-opacity:60%; }
-.horse-card[data-card-rank="mutated"] { --horse-rank-color:#E6BC57; --rank-glow-blur:28px; --rank-glow-opacity:56%; --rank-ring-opacity:85%; --rank-hover-blur:34px; --rank-hover-opacity:70%; }
+.horse-card[data-card-rank="common"] { --rank-glow-blur:6px; --rank-glow-opacity:12%; --rank-ring-opacity:22%; --rank-hover-blur:9px; --rank-hover-opacity:20%; }
+.horse-card[data-card-rank="uncommon"] { --rank-glow-blur:9px; --rank-glow-opacity:18%; --rank-ring-opacity:30%; --rank-hover-blur:13px; --rank-hover-opacity:28%; }
+.horse-card[data-card-rank="rare"] { --rank-glow-blur:16px; --rank-glow-opacity:32%; --rank-ring-opacity:50%; --rank-hover-blur:22px; --rank-hover-opacity:45%; }
+.horse-card[data-card-rank="ultra-rare"] { --rank-glow-blur:34px; --rank-glow-opacity:62%; --rank-ring-opacity:85%; --rank-hover-blur:42px; --rank-hover-opacity:78%; }
+.horse-card[data-card-rank="cosmic"] { --rank-glow-blur:44px; --rank-glow-opacity:78%; --rank-ring-opacity:100%; --rank-hover-blur:54px; --rank-hover-opacity:92%; }
+.rarity-settings-note { margin-bottom:24px; color:var(--muted); line-height:1.6; }
+.rarity-settings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:20px; }
+.rarity-settings-card h2 { font-size:25px; }
+.rarity-settings-card .zone-choice { margin-top:18px; }
 #main .horse-card[data-card-rank="none"] { border-color:transparent; box-shadow:none; }
 #main .horse-card[data-card-rank]:not([data-card-rank="none"]) { border-color:var(--horse-rank-color); box-shadow:0 0 0 1px color-mix(in srgb,var(--horse-rank-color) var(--rank-ring-opacity),transparent),0 0 var(--rank-glow-blur) color-mix(in srgb,var(--horse-rank-color) var(--rank-glow-opacity),transparent); }
 #main .horse-card[data-card-rank]:not([data-card-rank="none"]):hover { box-shadow:0 0 0 1px var(--horse-rank-color),0 0 var(--rank-hover-blur) color-mix(in srgb,var(--horse-rank-color) var(--rank-hover-opacity),transparent); }

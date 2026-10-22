@@ -16,6 +16,10 @@ Internal `id` values stay stable when an entry is renamed. `systemId` is an edit
 
 Eye Color Manager displays a responsive card grid with names, rarities, and color swatches. Click a card (also available by keyboard or touch) to open the editing modal, or Create Eye Color near the header. Deletion from the modal requires confirmation.
 
+## Rarity display settings
+
+Horse Definitions → Rarities edits Common, Uncommon, Rare, Ultra Rare, and Cosmic card colors. Defaults are no border, green, blue, purple, and gold. Each rank can disable its border/glow; intensity increases through Ultra Rare and Cosmic. Cosmic is a display rank for the five special mutations, not a fifth species/spawn tier. Event species remain borderless unless Cosmic. Colors save in rarities.json using the same recoverable configuration transactions as the other managers.
+
 ## Traits
 
 The separate **Traits** navigation page selects a species and edits its appearance categories and options. Add or remove categories and trait names, then save. Traits stay linked to species in the same local species file; existing horse snapshots remain unchanged.
@@ -33,6 +37,7 @@ data/config/
   mutations.json
   personalities.json
   spawn-settings.json
+  rarities.json             # five display ranks and editable border colors
   zones/
     aetherion.json
     hallowhoof.json

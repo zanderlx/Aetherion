@@ -13,7 +13,7 @@ export function updateFormState(form) {
   for (const button of form.querySelectorAll('button[type="submit"],button[type="reset"]')) button.hidden = !changed;
 }
 export function trackForms(root) {
-  for (const form of root.querySelectorAll('#traits-form,#settings-form,#spawn-settings-form,#economy-form,#gold-form,#keeper-form,#horse-description-form,#horse-notes-form,#definition-form,#zone-form')) {
+  for (const form of root.querySelectorAll('#rarity-settings-form,#traits-form,#settings-form,#spawn-settings-form,#economy-form,#gold-form,#keeper-form,#horse-description-form,#horse-notes-form,#definition-form,#zone-form')) {
     if (!baselines.has(form)) baselines.set(form,formSignature(form));
     updateFormState(form);
   }

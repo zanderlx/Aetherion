@@ -27,7 +27,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **101 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **103 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -137,7 +137,7 @@ Every supplied hex value is preserved. These are palette definitions; choosing o
 
 ### Data-driven spawning
 
-Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, and **Personalities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
+Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, **Personalities**, and **Rarities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
 
 Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects species uniformly, using Aetherion’s whitelist in that zone and the full registry elsewhere. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 
@@ -145,7 +145,7 @@ See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file p
 
 Catching a wild horse immediately refreshes that zone's full encounter group. Reloading a Wilds page also generates fresh encounters, as does Search the Wilds. Switching sections without reloading preserves existing encounters.
 
-Horse cards use rarity glows in Wilds and Stables: **Uncommon → green**, **Rare → purple**, and **Ultra Rare or Solar/Lunar/Heavenly/Void/Astral → gold**. Common and event species have no outline or glow; the five special mutations override event status. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
+Horse Definitions → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change the four species spawn tiers, weights, or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
 
 Aetherion Wilds uses this **25-species whitelist** as its source of truth. Both Wild and Cosmic encounters in Aetherion must use the listed species. The other 21 species remain registered for other zones. Other zones retain registry-wide uniform Cosmic species selection.
 
@@ -193,7 +193,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | --- | --- |
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
 | **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
-| **Horse Definitions** | Species, Traits, Palettes, Eye Colors, Mutations, and Personalities with local files |
+| **Horse Definitions** | Species, Traits, Palettes, Eye Colors, Mutations, Personalities, and Rarities with local files |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
 | **Website & Profile** | Appearance & Themes, My Profile |
 

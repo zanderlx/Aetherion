@@ -1,5 +1,6 @@
 import { horseArt } from './art.js';
 import {horseCardRank} from './horse-rank.js';
+import {raritySettings} from './rarity-settings.js';
 import { locationsFor } from './zones.js';
 
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -39,7 +40,7 @@ export const groups = [
 const workbench = groups.find(g => g.title === 'Developer Settings');
 workbench.items = [['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
 groups.push(
-  {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species'],['dev/traits','Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations']]},
+  {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species'],['dev/traits','Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations'],['dev/rarities','Rarities']]},
   {title:'World & Items',icon:'compass',items:[['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]},
   {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}
 );
@@ -67,7 +68,8 @@ export function card(horse, state, mode = 'wild', catalog) {
   const cardTitle = characters.length > 13 ? `${characters.slice(0,13).join('')}…` : title;
   const collected = mode === 'stable';
   const rank = horseCardRank(horse,catalog);
-  return `<article class="horse-card" data-card-rank="${rank.key}" aria-label="${escapeHTML(title)} · ${rank.label}">
+  const rankColor = raritySettings(catalog).colors[rank.key];
+  return `<article class="horse-card" data-card-rank="${rankColor ? rank.key : 'none'}" ${rankColor ? `style="--horse-rank-color:${rankColor}"` : ''} aria-label="${escapeHTML(title)} · ${rank.label}">
     <div class="card-picture"><button class="art-button" data-action="inspect" data-id="${horse.id}" aria-label="Inspect ${escapeHTML(title)}">${horseArt(horse)}</button>
 
     ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}

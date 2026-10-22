@@ -1,3 +1,5 @@
+import {raritiesManagerPage,readRaritySettings} from './rarities-manager.js';
+import {defaultRaritySettings,rarityNames} from './rarity-settings.js';
 import {saleQuoteBreakdown} from './sale-quote.js';
 import {horseSalePrice,defaultSaleModifiers} from './sale-pricing.js';
 import {personalityForm} from './personalities-manager.js';
@@ -76,7 +78,7 @@ function renderChrome() {
   }));
   const section = navigationSection(route);
   const sectionName = state.pageCopy?.site?.[`group-${section.title.toLowerCase()}`] ?? section.title;
-  const definitionKind = route === 'dev/traits' ? 'species' : editorRoutes[route.split('/')[1]];
+  const definitionKind = route === 'dev/rarities' ? 'rarities' : route === 'dev/traits' ? 'species' : editorRoutes[route.split('/')[1]];
   const definitionPath = section.title === 'Horse Definitions' && definitionKind ? `data/config/${definitionKind}.json` : '';
   $('#topbar').innerHTML = `<div class="breadcrumb"><button class="icon-button mobile-menu" data-action="menu" aria-label="Open navigation" aria-expanded="${document.body.classList.contains('nav-open')}">${icon('menu')}</button>${icon(section.icon)}<span>${e(sectionName)}</span><span class="crumb-separator">/</span><strong>${e(routeTitle(route, locationsFor(catalog, state)))}</strong>${definitionPath ? `<span class="breadcrumb-path" title="${e(definitionPath)}">— ${e(definitionPath)}</span>` : ''}</div><div class="header-right"><button class="icon-button" data-action="site-search" aria-label="Search entire site" title="Search entire site (Ctrl+K)">${icon('search')}</button><span class="save-status"><span class="save-dot"></span>Saved locally</span><div class="gold-balance" role="group" aria-label="Current gold balance">${icon('coin')}<strong>${number(state.gold)}</strong><span>GOLD</span></div><a href="#dev/profile" class="keeper-avatar" aria-label="Open my profile">${avatarSVG(state.keeper?.avatarSeed ?? 11)}</a></div>`;
 }
@@ -94,6 +96,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/profile') return keeperPage(state);
   else if (route === 'dev/edit-mode') return editModePage(state);
   else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
+  else if (section === 'dev' && page === 'rarities') return raritiesManagerPage(catalog);
   else if (section === 'dev' && page === 'eyes') return eyesManagerPage(catalog);
   else if (section === 'dev' && page === 'traits') return traitsEditorPage(catalog);
   else if (section === 'dev' && Object.hasOwn(editorRoutes, page)) return libraryEditorPage(editorRoutes[page], catalog, state);
@@ -317,6 +320,17 @@ document.addEventListener('click', async event => {
   if (intent === 'sell') return askToSell(id);
   if (intent === 'new-zone') return showZoneDraft(newZoneDraft());
   if (intent === 'edit-zone') return showZoneDraft(locationsFor(catalog, state).find(l => l.id === id));
+  if (intent === 'default-rarity-colors') {
+    const form = $('#rarity-settings-form');
+    for (const key of Object.keys(rarityNames)) {
+      form.elements.namedItem(`enabled:${key}`).checked = !!defaultRaritySettings.colors[key];
+      const color = defaultRaritySettings.colors[key] || '#8D949E';
+      form.elements.namedItem(`color:${key}`).value = color;
+      form.querySelector(`[data-color-picker="${key}"]`).value = color;
+    }
+    updateFormState(form);
+    return;
+  }
   if (intent === 'close-personality-editor') return closePersonalityEditor($('#definition-form'),()=>{if (personalityCreation.open) personalityCreation.close(); else render();});
   if (intent === 'new-definition') return showDefinition(button.dataset.kind, draftDefinition(button.dataset.kind));
   if (intent === 'edit-definition') return showDefinition(button.dataset.kind, catalog[button.dataset.kind].find(d => d.id === id));
@@ -482,7 +496,7 @@ profile.addEventListener('keydown',event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form', 'rarity-settings-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -490,7 +504,11 @@ document.addEventListener('submit', async event => {
   submit.disabled = true;
   try {
     const values = Object.fromEntries(new FormData(form));
-    if (form.id === 'traits-form') {
+    if (form.id === 'rarity-settings-form') {
+      await action('rarity-settings',readRaritySettings(form));
+      render();
+      notify('Rarity colors saved.');
+    } else if (form.id === 'traits-form') {
       const payload = readTraitsForm(form);
       await action('save-traits',payload);
       main.innerHTML = traitsEditorPage(catalog,payload.id);

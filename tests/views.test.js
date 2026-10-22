@@ -1,4 +1,6 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
+import {raritiesManagerPage} from '../public/rarities-manager.js';
+import {defaultRaritySettings} from '../public/rarity-settings.js';
 
 
 import {horseTraits} from '../public/horse-traits.js';
@@ -433,4 +435,15 @@ test('Horse cards truncate names after thirteen characters while profiles retain
  assert.match(html,/title="ABCDEFGHIJKLMNO"/);
  const profile=profileContent(horse,state);
  assert.match(profile,/id="profile-title" tabindex="0">ABCDEFGHIJKLMNO/);
+});
+
+test('Rarity settings show five editable ranks and apply colors to horse cards',()=>{
+ const html=raritiesManagerPage(catalog);
+ for(const label of ['Common','Uncommon','Rare','Ultra Rare','Cosmic'])assert.ok(html.includes(label));
+ assert.match(html,/id="rarity-settings-form"/);
+ const custom={...catalog,rarities:{version:1,colors:{...defaultRaritySettings.colors,rare:'#123456'}}};
+ const horse={...horses[0],rarityTier:2,speciesId:'unregistered',species:'Unregistered',speciesEvent:null,mutations:[],specialSpawn:null};
+ assert.match(card(horse,state,'stable',custom),/--horse-rank-color:#123456/);
+ assert.match(card({...horse,specialSpawn:'Solar'},state,'stable',custom),/data-card-rank="cosmic"/);
+ assert.match(card({...horse,rarityTier:4},state,'stable',custom),/data-card-rank="none"/);
 });
