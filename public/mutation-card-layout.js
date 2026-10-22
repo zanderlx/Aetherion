@@ -1,6 +1,7 @@
-// Measure wrapped text without opening cards or changing their visible state.
+// Measure only expanded cards; collapsed descriptions do not reserve space.
 export function fitMutationDescriptions(root) {
- const cards=[...root.querySelectorAll('[data-mutation-card]')];
+ if(typeof getComputedStyle!=='function') return;
+ const cards=[...root.querySelectorAll('[data-mutation-card]')].filter(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')==='true');
  if(!cards.length) return;
  let longest=0;
  for(const card of cards) {

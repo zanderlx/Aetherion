@@ -1,8 +1,8 @@
 const cardAnimations=new WeakMap();
-export function animateCardBody(body,expand) {
+export function animateCardBody(body,expand,startHeight) {
   const reducedMotion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if(!body.animate || reducedMotion) {body.hidden=!expand;body.inert=!expand;return;}
-  const initialHeight=body.hidden ? 0 : body.getBoundingClientRect().height;
+  const initialHeight=startHeight ?? (body.hidden ? 0 : body.getBoundingClientRect().height);
   cardAnimations.get(body)?.cancel();
   body.hidden=false;body.inert=!expand;
   const fullHeight=body.scrollHeight;

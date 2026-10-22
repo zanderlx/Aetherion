@@ -41,11 +41,13 @@ export function toggleMutations(root,button) {
   const scope=button.dataset.action==='toggle-mutation-section' ? button.closest('[data-mutation-section]') : root;
   const cards=individual ? [button.closest('[data-mutation-card]')] : [...scope.querySelectorAll('[data-mutation-card]')];
   const expand=cards.some(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')!=='true');
+  const bodies=cards.map(card=>{const body=card.querySelector('.personality-card-body');return {body,height:body.animate ? (body.hidden ? 0 : body.getBoundingClientRect().height) : undefined};});
   for(const card of cards) {
     const toggle=card.querySelector('.personality-toggle');
-    animateCardBody(card.querySelector('.personality-card-body'),expand);
     toggle.setAttribute('aria-expanded',String(expand));toggle.setAttribute('aria-label',`${expand ? 'Collapse' : 'Expand'} ${toggle.dataset.name}`);
   }
+  fitMutationDescriptions(root);
+  for(const {body,height} of bodies) animateCardBody(body,expand,height);
   refreshMutationExpansion(root);
 }
 export function mutationsManagerPage(catalog) {
