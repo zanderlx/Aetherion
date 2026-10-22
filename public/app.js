@@ -104,7 +104,7 @@ function render() {
   copyEditor.attach(main);
   trackForms(main);
 }
-async function navigate() {
+async function navigate({refreshSpawns = false} = {}) {
   const version = ++routeVersion;
   route = location.hash.slice(1) || 'wilds/aetherion';
   if (route.startsWith('wilds/') && !locationsFor(catalog,state).some(zone => zone.enabled && route === `wilds/${zone.id}`)) {
@@ -122,7 +122,7 @@ async function navigate() {
   horseDialogs.close();
   eyeEditor.dialog.close();
   try {
-    if (route.startsWith('wilds/') && !state.encounters[route.split('/')[1]] && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action('visit', { locationId: route.split('/')[1] });
+    if (route.startsWith('wilds/') && (refreshSpawns || !state.encounters[route.split('/')[1]]) && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action(refreshSpawns ? 'search' : 'visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
     render();
     if (pendingSearchResult?.route === route) {
@@ -629,7 +629,7 @@ matchMedia('(max-width: 900px)').addEventListener('change', syncResponsiveMenu);
 window.addEventListener('hashchange', navigate);
 try {
   ({ state, catalog, defaults } = await request('/api/state'));
-  await navigate();
+  await navigate({refreshSpawns:true});
   syncResponsiveMenu();
 } catch (error) {
   main.innerHTML = `<section class="panel"><h1>The sanctuary couldn’t open</h1><p>${e(error.message)}</p><p>Check that the local server is running, then reload this page. Existing save files have been preserved.</p><button class="button primary" id="retry-load">Try again</button></section>`;

@@ -143,6 +143,8 @@ Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects any 
 
 See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file paths, thresholds, assets, migration, and recovery. Existing horses retain their snapshots; new searches use saved configuration changes.
 
+Catching a wild horse immediately refreshes that zone's full encounter group. Reloading a Wilds page also generates fresh encounters, as does Search the Wilds. Switching sections without reloading preserves existing encounters.
+
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 
 Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; the Economy section within Game Settings includes a sale history table (newest first). The header gold display is informational. The internal Starting Gold value is reserved for future new-game/reset functionality and is hidden from settings. Mutation selection, thresholds, and size shifts are active. Speed, stamina, fertility, item effects, and exact asset rendering remain separate gameplay work.
