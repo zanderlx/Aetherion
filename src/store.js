@@ -1,4 +1,5 @@
 import {ConfigurationFiles} from './configuration.js';
+import {validateRaritySettings} from '../public/rarity-settings.js';
 import {horseSalePrice,saleModifiers,validateSaleModifiers} from '../public/sale-pricing.js';
 import {registryKinds,defaultSpawnSettings,validateSpawnSettings,zoneCreatures,validateCreatures} from '../public/spawn-config.js';
 import {localCalendarDate} from '../public/dates.js';
@@ -68,6 +69,7 @@ export class GameStore {
       catalog.locations = structuredClone(this.configuration.zones);
       catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name,s.traits]));
       catalog.spawning = structuredClone(this.configuration.settings);
+      catalog.rarities = structuredClone(this.configuration.catalog.rarities);
     }
     return catalog;
   }
@@ -197,6 +199,8 @@ export class GameStore {
           if (next.settings.websiteTheme === id) next.settings.websiteTheme = 'default';
         }
         next.library = catalog;
+      } else if (type === 'rarity-settings') {
+        catalog.rarities = validateRaritySettings(payload);
       } else if (type === 'spawn-settings') {
         const settings = {...catalog.spawning,...payload};
         catalog.spawning = validateSpawnSettings(settings);
@@ -299,7 +303,7 @@ export class GameStore {
       } else if (type === 'backup') {
         await writeFile(join(this.directory, 'backups', `save-${Date.now()}-${randomUUID().slice(0, 8)}.json`), JSON.stringify(next, null, 2) + '\n', { flag: 'wx' });
       } else throw new Error('Unknown action.');
-      if (['save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
+      if (['rarity-settings','save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
         const settings = catalog.spawning || defaultSpawnSettings;
         const zones = locationsFor(catalog,next).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
         let committed;

@@ -6,6 +6,7 @@ import {join,resolve,dirname,basename} from 'node:path';
 import {GameStore} from '../src/store.js';
 import {draftDefinition} from '../public/definitions.js';
 import {newZoneDraft} from '../public/zones.js';
+import {defaultRaritySettings} from '../public/rarity-settings.js';
 const catalog = JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8'));
 const defaults = JSON.parse(await readFile(new URL('../data/defaults/settings.json',import.meta.url),'utf8'));
 async function fixture(t) {
@@ -67,6 +68,29 @@ test('Aetherion defaults use the exact twenty-five species whitelist and supplie
   }
   assert.deepEqual(species.filter(s=>s.rarityTier===1).map(s=>s.name).sort(),['Caniquine','Nephyrian','Serpentine']);
   assert.equal(zone.creatures.reduce((n,c)=>n+c.weight,0),6320);
+});
+
+test('rarity display colors migrate, save locally, and never change spawn configuration',async t => {
+  const {directory,store,read} = await fixture(t);
+  assert.deepEqual(await read('rarities.json'),defaultRaritySettings);
+  await unlink(store.files.path('rarities.json'));
+  await store.refreshConfiguration();
+  assert.deepEqual(store.getCatalog().rarities,defaultRaritySettings);
+  const spawning = await read('spawn-settings.json');
+  const species = store.getCatalog().species;
+  const zones = await read('zones/aetherion.json');
+  const custom = {version:1,colors:{...defaultRaritySettings.colors,common:'#AABBCC',rare:'#123456',cosmic:null}};
+  await store.action('rarity-settings',custom);
+  assert.deepEqual(await read('rarities.json'),custom);
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.deepEqual(restored.getCatalog().rarities,custom);
+  assert.deepEqual(await read('spawn-settings.json'),spawning);
+  assert.deepEqual(await read('species.json'),species);
+  assert.deepEqual(await read('zones/aetherion.json'),zones);
+  const before = restored.snapshot();
+  await assert.rejects(restored.action('rarity-settings',{...custom,colors:{...custom.colors,rare:'red;url(bad)'}}));
+  assert.deepEqual(restored.snapshot(),before);
+  assert.deepEqual(await read('rarities.json'),custom);
 });
 test('species CRUD synchronizes selected zone IDs and tier weights without altering existing horses',async t => {
   const {store,read} = await fixture(t);

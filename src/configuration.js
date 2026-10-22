@@ -1,6 +1,7 @@
 import {mkdir,readFile,writeFile,rename,unlink} from 'node:fs/promises';
 import {resolve,sep} from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {defaultRaritySettings,validateRaritySettings} from '../public/rarity-settings.js';
 import {normalizeCatalog,validateDefinition} from '../public/definitions.js';
 import {locationsFor,validateZone} from '../public/zones.js';
 import {registryKinds,defaultSpawnSettings,standardTokens,rarityTier,systemID,validateSpawnSettings,zoneCreatures,validateCreatures} from '../public/spawn-config.js';
@@ -94,11 +95,14 @@ export class ConfigurationFiles {
     catalog.locations = zones;
     catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name,s.traits]));
     catalog.spawning = settings;
+    try {catalog.rarities = validateRaritySettings(await this.json('rarities.json'));}
+    catch(error) {if (error.code !== 'ENOENT') throw error; catalog.rarities = structuredClone(defaultRaritySettings);}
     return {catalog,zones,settings};
   }
   documents({catalog,zones,settings}) {
     const files = Object.fromEntries(registryKinds.map(kind => [`${kind}.json`,catalog[kind]]));
     files['spawn-settings.json'] = settings;
+    files['rarities.json'] = validateRaritySettings(catalog.rarities || defaultRaritySettings);
     files['index.json'] = {version:1,zoneIds:zones.map(z => z.id)};
     for (const zone of zones) {
       if (!safeID(zone.id)) throw new Error('Invalid zone ID.');
