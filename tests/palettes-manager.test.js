@@ -38,7 +38,7 @@ test('palette page matches manager controls and retains every palette editing fi
  assert.match(page,/data-action="palette-sort-direction"/);
  const form=libraryEditorPage('palettes',catalog,{settings:{},customLocations:[]},catalog.palettes.find(p=>p.complete));
  for(const name of ['name','description','systemId','global','speciesIds','assetSkins','group',...regions.map(r=>`color:${r}`)]) assert.ok(form.includes(`name="${name}"`),name);
- assert.match(form,/data-action="duplicate-definition"/);
+ assert.doesNotMatch(form,/data-action="duplicate-definition"/);
  assert.match(form,/data-action="delete-definition"/);
 });
 test('each palette segment has an instant tooltip with its region and uppercase hex',()=>{

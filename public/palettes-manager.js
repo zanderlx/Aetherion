@@ -17,7 +17,7 @@ export function paletteResults(entries,sort='group',direction='asc') {
   return groups.map(group=>`<section class="eye-rarity-section"><h2>${e(group)}</h2><div class="eye-definition-grid mutation-definition-grid">${paletteCards(entries.filter(p=>(p.group || 'Custom')===group))}</div></section>`).join('');
 }
 export function palettesManagerPage(catalog) {
-  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Palettes Manager</h1><button class="button primary" data-action="new-definition" data-kind="palettes">${icon('spark')} Create Palette</button></div>
+  return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Palettes Manager</h1><button type="button" class="icon-button palette-import" data-action="import-palette" aria-label="Import Palette" title="Import Palette">${icon('download')}</button><button class="button primary" data-action="new-definition" data-kind="palettes">${icon('spark')} Create Palette</button></div>
   <div class="eye-grid-controls"><label class="zone-field">Search<input id="palette-search" type="search" placeholder="Search..." aria-label="Search palettes"></label><label class="zone-field">Type<select id="palette-group"><option value="">All Types</option>${paletteGroups(catalog.palettes).map(group=>`<option value="${e(group)}">${e(group)}</option>`).join('')}</select></label><label class="zone-field">Scope<select id="palette-scope"><option value="">All Scopes</option><option value="global">Global</option><option value="linked">Species Linked</option></select></label><div class="definition-sort-controls"><label class="zone-field">Sort By<select id="palette-sort"><option value="group">Type</option><option value="name">Name</option></select></label><button type="button" class="icon-button sort-direction" data-action="palette-sort-direction" data-direction="asc" aria-label="Ascending order. Switch to descending" title="Ascending order. Switch to descending">${icon('arrow')}</button></div></div>
   <div id="palette-grid">${paletteResults(filterPalettes(catalog.palettes))}</div><p id="palette-empty" role="status" ${catalog.palettes.length ? 'hidden' : ''}>No palettes match your filters.</p>`;
 }
@@ -69,13 +69,18 @@ export function createPaletteEditor(renderEditor) {
     template.innerHTML=renderEditor(draft);
     const form=template.content.querySelector('#definition-form');
     form.querySelector('.panel-heading')?.remove();
-    dialog.innerHTML=`<div class="dialog-top"><h2 id="palette-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : 'Create Palette'}</h2><button type="button" class="icon-button" data-palette-close aria-label="Close palette editor">${icon('close')}</button></div>`;
+    dialog.innerHTML=`<div class="dialog-top"><h2 id="palette-editor-title">${draft?.id ? `Edit ${e(draft.name)}` : draft?.imported ? 'Import Palette' : 'Create Palette'}</h2><button type="button" class="icon-button" data-palette-close aria-label="Close palette editor">${icon('close')}</button></div>`;
     const remove=form.querySelector('[data-action="delete-definition"]');
-    if (remove) {
-      remove.className='icon-button eye-header-delete';
-      remove.innerHTML=icon('trash');
-      remove.title='Delete Palette';remove.setAttribute('aria-label',`Delete ${draft.name}`);
-      dialog.querySelector('h2').after(remove);
+    const duplicate=form.querySelector('[data-action="duplicate-definition"]');
+    if(remove) {
+      duplicate?.remove();
+      remove.className='icon-button palette-delete';
+      remove.innerHTML=icon('trash');remove.title='Delete Palette';remove.setAttribute('aria-label',`Delete ${draft.name}`);
+      const exportButton=document.createElement('button');
+      exportButton.type='button';exportButton.className='icon-button eye-header-delete';
+      exportButton.dataset.action='export-palette';exportButton.dataset.id=draft.id;
+      exportButton.innerHTML=icon('upload');exportButton.title='Export Palette';exportButton.setAttribute('aria-label','Export Palette');
+      dialog.querySelector('h2').after(exportButton);
     }
     const fields=form.querySelector('.definition-fields');
     const row=document.createElement('div');row.className='eye-name-rarity';
