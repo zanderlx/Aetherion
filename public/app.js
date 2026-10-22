@@ -1,4 +1,5 @@
 import {defaultSpawnSettings} from './spawn-config.js';
+import {validateSettingsNumbers} from './game-settings.js';
 import {raritiesManagerPage,readRaritySettings} from './rarities-manager.js';
 import {defaultRaritySettings,rarityNames,raritySettings} from './rarity-settings.js';
 import {horseCardRank} from './horse-rank.js';
@@ -566,6 +567,7 @@ document.addEventListener('submit', async event => {
   const submit = form.querySelector('[type="submit"]');
   submit.disabled = true;
   try {
+    if (['economy-form','settings-form'].includes(form.id)) validateSettingsNumbers(form);
     const values = Object.fromEntries(new FormData(form));
     if (form.id === 'rarity-settings-form') {
       await action('rarity-settings',readRaritySettings(form));
