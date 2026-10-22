@@ -130,7 +130,8 @@
 .profile-scroll-frame .profile-actions [data-action="sell"]{grid-column:2;justify-self:center}
 .profile-scroll-frame [data-action="sell"]{margin-left:0}
 @media(max-width:600px){.profile-scroll-frame .profile-actions:has([data-action="sell"]){grid-template-columns:43px minmax(0,1fr)}}
-.horse-profile-shell .horse-wild-description .horse-text-display{margin:0;white-space:pre-wrap;font-size:14px;line-height:1.5}
+.horse-profile-shell .horse-wild-description{display:flex;flex-direction:column;min-height:0}
+.horse-profile-shell .horse-notes.horse-wild-description .horse-text-display{height:auto;flex:1;min-height:0;margin:0;white-space:pre-wrap;font-size:14px;line-height:1.5}
 @media(min-width:761px) and (max-height:800px){
  .profile-mutations{--mutation-section-inset:10px}
  .profile-equipment dl{min-height:336px;grid-auto-rows:minmax(33.4px,1fr)}
