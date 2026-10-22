@@ -1,3 +1,4 @@
+import {emojiNames} from './emoji-names.js';
 import {escapeHTML as e,icon} from './ui.js';
 const groups={
  'Faces':'😀 happy smile|😃 cheerful|😁 grin|😂 laugh joy|🥰 affection love|😍 heart eyes|😎 cool|🤓 clever nerd|🧐 curious|🤔 thinking|😴 sleepy lazy|😠 angry grumpy|😰 anxious|😈 mischievous devil|👽 alien|👻 ghost|🤖 robot|💀 skull|🤡 clown|🧟 zombie|👼 angel|🥳 party|😇 innocent|🤩 amazed|🥺 pleading',
@@ -16,10 +17,10 @@ groups['Body Parts']='💪 arm biceps muscle strength|🦾 mechanical arm prosth
 const personalityFavorites=[['🙂','friendly smile'],['😰','anxious'],['🥰','affectionate'],['🫂','clingy hug'],['🧐','curious'],['⚡','energetic'],['😠','grumpy'],['😴','lazy'],['😜','playful wink'],['😊','warm smile'],['😎','cool'],['🤔','thoughtful'],['😇','innocent'],['🥺','pleading'],['😈','mischievous'],['🤗','hugging'],['🦄','unicorn'],['🐴','horse'],['🌟','glowing star'],['🌸','blossom'],['🔥','fire'],['💖','sparkling heart'],['🍀','lucky'],['🌙','moon']];
 const registeredEmojis=new Set(Object.values(groups).flatMap(list=>list.split('|').map(item=>item.split(' ')[0])));
 groups['Personality Favorites']=personalityFavorites.filter(([emoji])=>!registeredEmojis.has(emoji)).map(([emoji,name])=>emoji+' '+name).join('|');
-export const emojiChoices=Object.entries(groups).flatMap(([category,list])=>list.split('|').map(item=>{const [emoji,...words]=item.split(' ');return {emoji,name:words.join(' '),category};}));
+export const emojiChoices=Object.entries(groups).flatMap(([category,list])=>list.split('|').map(item=>{const [emoji,...words]=item.split(' ');return {emoji,name:emojiNames[emoji],keywords:words.join(' '),category};}));
 export function filterEmojiChoices(query='',category='') {
  const words=query.toLowerCase().trim().split(/\s+/).filter(Boolean);
- return emojiChoices.filter(choice=>(!category || choice.category===category) && words.every(word=>`${choice.emoji} ${choice.name} ${choice.category}`.toLowerCase().includes(word)));
+ return emojiChoices.filter(choice=>(!category || choice.category===category) && words.every(word=>`${choice.emoji} ${choice.name} ${choice.keywords} ${choice.category}`.toLowerCase().includes(word)));
 }
 let dialog,choose;
 export function openEmojiPicker({value,onSelect}) {

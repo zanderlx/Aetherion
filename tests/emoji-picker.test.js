@@ -28,3 +28,10 @@ test('the shared picker retains every previous Personality emoji option',async()
  assert.match(form,/type="hidden" name="emoji" value="🧐"/);
  assert.doesNotMatch(form,/<select name="emoji"/);
 });
+
+test('picker tooltips use official Unicode names while search retains friendly keywords',()=>{
+ assert.equal(emojiChoices.find(choice=>choice.emoji==='😀').name,'grinning face');
+ assert.equal(emojiChoices.find(choice=>choice.emoji==='💪').name,'flexed biceps');
+ assert.ok(emojiChoices.every(choice=>typeof choice.name==='string' && choice.name.length>0));
+ assert.ok(filterEmojiChoices('strength').some(choice=>choice.emoji==='💪'));
+});
