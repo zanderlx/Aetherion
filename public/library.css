@@ -361,3 +361,6 @@ select{text-transform:uppercase}
 .personality-card-heading [data-action="edit-definition"] .icon{width:20px;height:20px}
 .personality-card:hover [data-action="edit-definition"],.personality-card:focus-within [data-action="edit-definition"]{opacity:1;pointer-events:auto}
 @media(hover:none){.personality-card [data-action="edit-definition"]{opacity:1;pointer-events:auto}}
+
+.personality-card-grid article .personality-card-heading{position:relative;padding-right:42px}
+.personality-card-grid article .personality-card-heading [data-action="edit-definition"]{top:50%;right:0;transform:translateY(-50%)}
