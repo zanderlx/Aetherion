@@ -440,7 +440,7 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .mutation-definition-grid.personality-card-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
 .mutation-section-heading{justify-content:flex-start}
 .mutation-section-heading h2{font-size:24px;font-weight:400;color:var(--text)}
-.personality-card-grid article.mutation-collapse-card{padding:14px 12px}
+.personality-card-grid article.mutation-collapse-card{padding:10px 12px}
 .personality-card-grid article.mutation-collapse-card .personality-card-heading{gap:6px;height:48px;min-height:48px}
 .mutation-title-block{flex:1;min-width:0}
 .personality-card-grid article.mutation-collapse-card .personality-card-heading h2{gap:6px;font-size:16px;line-height:22px}
