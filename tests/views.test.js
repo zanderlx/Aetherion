@@ -65,15 +65,13 @@ test('zone tags render as safe text without icons and can be removed', () => {
   assert.equal((editor.match(/class="panel zone-card"/g) || []).length,locationsFor(catalog,state).length);
   assert.match(editor,/The evergreen realm\nFree exploration/);
 });
-test('top Wilds tabs list saved custom zones without event identifiers or icons', () => {
+test('Wilds pages begin with the zone banner without duplicate zone tabs', () => {
   const zone = {...newZoneDraft(),id:'dreamwhisper',name:'Dreamwhisper Haven',custom:true,event:'Event'};
   const populated = {...state,customLocations:[zone]};
   const locations = locationsFor(catalog,populated);
   const page = wildPage(locations[0],populated,locations,catalog);
-  const tabs = page.match(/<div class="location-tabs"[^>]*>(.*?)<\/div>/s)[1];
-  assert.match(tabs,/Dreamwhisper Haven/);
-  assert.doesNotMatch(tabs,/<small>EVENT<\/small>/);
-  assert.doesNotMatch(tabs,/<svg/);
+  assert.match(page,/^<section class="hero /);
+  assert.doesNotMatch(page,/location-tabs|href="#wilds\/dreamwhisper"/);
   assert.doesNotMatch(page,/zone-event-label/);
 });
 test('wild horses have no export control; owned profiles export without release', () => {
