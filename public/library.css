@@ -20,6 +20,7 @@
 .color-inputs input[type=color]{width:100%;height:42px;padding:4px;cursor:pointer}
 .color-inputs input[data-color-hex]{width:100%;font-size:14px;font-family:monospace}
 .theme-picker{margin-bottom:32px}
+.sidebar-foot{justify-content:center;text-align:center;text-transform:uppercase}
 .gold-balance{flex-direction:row;flex-wrap:nowrap;white-space:nowrap;flex-shrink:0}
 .gold-balance .icon{display:block;flex-shrink:0;align-self:center}
 .gold-balance strong,.gold-balance>span{display:block;line-height:1;align-self:center}
