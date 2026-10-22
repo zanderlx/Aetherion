@@ -468,3 +468,4 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 
 .mutation-title-block.mutation-title-with-type{display:flex;flex-direction:column;justify-content:center;align-items:stretch;text-align:left}
 .mutation-title-with-type .mutation-preview-type{position:static;margin:1px 0 0;padding-left:calc(var(--mutation-emoji-width) + var(--mutation-name-gap));text-align:left}
+.mutation-collapse-card .personality-card-body .personality-card-description{padding-inline:calc(var(--mutation-emoji-width) + var(--mutation-name-gap))}
