@@ -1,3 +1,4 @@
+import {fitMutationDescriptions} from './mutation-card-layout.js';
 import {animateCardBody} from './collapsible-cards.js';
 import {definitionTransferControls} from './definition-transfer-controls.js';
 import {escapeHTML as e,icon} from './ui.js';

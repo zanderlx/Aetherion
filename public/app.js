@@ -1,3 +1,4 @@
+import {fitMutationDescriptions,watchMutationCardWidths} from './mutation-card-layout.js';
 import {createDefinitionTransfers} from './definition-transfer.js';
 import {createPaletteTransfers} from './palette-transfer.js';
 import {palettesManagerPage,createPaletteEditor,updatePaletteGrid} from './palettes-manager.js';
@@ -40,6 +41,7 @@ let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer
 const openGroups = new Set();
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
+watchMutationCardWidths(main);
 bindProfileTabs();
 const horseArtViewer = bindHorseArtViewer();
 const profile = $('#profile');
@@ -130,6 +132,7 @@ function pageContent(pageRoute, pageState = state) {
 function render() {
   renderChrome();
   main.innerHTML = pageContent(route);
+  fitMutationDescriptions(main);
   if ($('#horse-grid-size')) {
     $('#horse-grid-size').value = String(stableGridColumns);
     $('#horse-grid-size').setAttribute('aria-valuetext',`${stableGridColumns} horses per row`);

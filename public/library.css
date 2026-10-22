@@ -435,3 +435,4 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 
 .mutation-collapse-card .personality-emoji{display:inline-flex;align-items:center;justify-content:center;align-self:center;width:26px;height:26px;font-size:20px;line-height:1}
 .mutation-collapse-card .mutation-card-name{display:block;align-self:center;line-height:26px}
+.mutation-collapse-card .personality-card-body .personality-card-description{height:var(--mutation-description-height,auto)}
