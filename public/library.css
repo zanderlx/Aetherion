@@ -420,3 +420,7 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .eye-grid-controls .definition-sort-controls{flex:0 1 auto;max-width:100%}
 .eye-grid-controls .definition-sort-controls .zone-field{flex:0 1 auto;min-width:0}
 .eye-grid-controls .zone-field>select{width:auto;max-width:100%}
+.eye-grid-controls>.eye-percent-control{order:1}
+.eye-grid-controls>.zone-field:has(select){order:2;margin-left:auto}
+.eye-grid-controls>.zone-field:has(select)~.zone-field:has(select){margin-left:0}
+.eye-grid-controls>.definition-sort-controls{order:3}
