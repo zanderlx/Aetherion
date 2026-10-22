@@ -67,3 +67,13 @@ test('themed placeholder palettes have all nine valid colors and previews omit n
  }
  assert.doesNotMatch(paletteCards([{...entries[0],group:'Test',natural:true}]),/· Natural|· Unnatural/);
 });
+test('palette forms preserve unused internal identifiers without exposing editor fields',async()=>{
+ const catalog=normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')));
+ const draft={...catalog.palettes.find(p=>p.complete),systemId:'keep-palette-id',assetSkins:['skin-one','skin-two']};
+ const form=libraryEditorPage('palettes',catalog,{settings:{},customLocations:[]},draft);
+ assert.match(form,/type="hidden" name="systemId" value="keep-palette-id"/);
+ assert.match(form,/type="hidden" name="assetSkins"/);
+ assert.match(form,/skin-one/);
+ assert.match(form,/skin-two/);
+ assert.doesNotMatch(form,/>System ID|Asset Skin IDs/);
+});
