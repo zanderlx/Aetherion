@@ -119,8 +119,12 @@ select{text-transform:uppercase}
 @media(min-width:701px) {
   .profile-grid:has(.horse-notes) > .profile-art { align-self:stretch; display:flex; flex-direction:column; min-width:0; }
   .profile-grid:has(.horse-notes) .profile-art > .horse-art { flex-shrink:0; }
-  .profile-grid:has(.horse-notes) .profile-palette { flex:1; display:flex; flex-direction:column; }
+  .profile-grid:has(.horse-notes) .profile-palette { flex:1; display:flex; flex-direction:column; container-type:inline-size; }
   .profile-grid:has(.horse-notes) .color-regions { flex:1; grid-template-rows:repeat(3,minmax(36px,1fr)); }
+  .profile-grid:has(.horse-notes) .color-regions > div { grid-template-columns:clamp(36px,12cqw,56px) minmax(0,1fr); column-gap:8px; row-gap:4px; }
+  .profile-grid:has(.horse-notes) .color-regions > div > span { width:clamp(36px,12cqw,56px); height:clamp(36px,12cqw,56px); border-radius:6px; }
+  .profile-grid:has(.horse-notes) .color-regions small { font-size:clamp(12px,3.3cqw,15px); }
+  .profile-grid:has(.horse-notes) .color-regions code { font-size:clamp(10px,2.8cqw,13px); }
 }
 .horse-trait-essentials { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:0 0 24px; padding-bottom:20px; border-bottom:1px solid var(--border); }
 .horse-trait-essentials > div { min-width:0; }
