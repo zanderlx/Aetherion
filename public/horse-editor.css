@@ -1,5 +1,7 @@
 .horse-name-row { display:flex; align-items:center; gap:12px; }
-.profile-info .horse-name-row h2 { margin:0; }
+.profile-info .horse-name-row h2 { margin:0; width:100%; min-width:0; white-space:nowrap; overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; }
+.profile-grid > .profile-info { min-width:0; }
+.horse-name-row { min-width:0; }
 .horse-name-row { margin-top:0; }
 .horse-name-row .icon-button { flex-shrink:0; }
 .horse-edit-dialog { width:min(520px,calc(100vw - 32px)); }

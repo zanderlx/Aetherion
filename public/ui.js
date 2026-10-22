@@ -62,13 +62,15 @@ export function sidebar(route, state, openGroups, catalog) {
 }
 export function card(horse, state, mode = 'wild') {
   const title = horse.name || horse.species;
+  const characters = Array.from(title);
+  const cardTitle = characters.length > 13 ? `${characters.slice(0,13).join('')}…` : title;
   const collected = mode === 'stable';
   return `<article class="horse-card">
     <div class="card-picture"><button class="art-button" data-action="inspect" data-id="${horse.id}" aria-label="Inspect ${escapeHTML(title)}">${horseArt(horse)}</button>
 
     ${collected ? `<button class="favorite ${horse.favorite ? 'is-favorite' : ''}" data-action="favorite" data-id="${horse.id}" aria-label="${horse.favorite ? 'Unfavorite' : 'Favorite'} ${escapeHTML(title)}" aria-pressed="${horse.favorite}">${icon('heart')}</button>` : ''}
     <span class="art-caption">ILLUSTRATIVE PLACEHOLDER</span></div>
-    <div class="card-body"><div class="card-title"><div>${horse.name ? `<span class="eyebrow">${escapeHTML(horse.species)}</span>` : ''}<h3><button data-action="inspect" data-id="${horse.id}">${escapeHTML(title)}</button></h3></div><span class="gender" aria-label="${horse.gender}">${horse.gender === 'Female' ? '♀' : '♂'}</span></div>
+    <div class="card-body"><div class="card-title"><div>${horse.name ? `<span class="eyebrow">${escapeHTML(horse.species)}</span>` : ''}<h3><button data-action="inspect" data-id="${horse.id}" title="${escapeHTML(title)}" aria-label="Inspect ${escapeHTML(title)}">${escapeHTML(cardTitle)}</button></h3></div><span class="gender" aria-label="${horse.gender}">${horse.gender === 'Female' ? '♀' : '♂'}</span></div>
     <p class="horse-meta">${escapeHTML(horse.age)} <span>·</span> ${escapeHTML(horse.size)} <span>·</span> ${escapeHTML(horse.personality.name)}</p>
     <div class="palette-line"><div class="swatches" aria-label="All nine horse colors">${Object.entries(horse.palette.colors).map(([region,c]) => `<span style="--swatch:${c}" title="${escapeHTML(region)}: ${c}"></span>`).join('')}</div></div>
     <div class="card-actions"><button class="button secondary" data-action="inspect" data-id="${horse.id}">View horse ${icon('arrow')}</button>

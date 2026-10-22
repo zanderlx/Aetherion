@@ -1,4 +1,6 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
+
+
 import {horseTraits} from '../public/horse-traits.js';
 
 test('Horse traits separate essentials from all thirteen optional traits',()=>{
@@ -422,4 +424,13 @@ test('Personalities uses a compact search and header add button',()=>{
  assert.match(html,/>Search<input/);
  assert.match(html,/personality-manager-header/);
  assert.match(html,/type="hidden" name="systemId"/);
+});
+
+test('Horse cards truncate names after thirteen characters while profiles retain full names',()=>{
+ const horse={...horses[0],name:'ABCDEFGHIJKLMNO'};
+ const html=card(horse,state);
+ assert.match(html,/>ABCDEFGHIJKLM…<\/button>/);
+ assert.match(html,/title="ABCDEFGHIJKLMNO"/);
+ const profile=profileContent(horse,state);
+ assert.match(profile,/id="profile-title" tabindex="0">ABCDEFGHIJKLMNO/);
 });
