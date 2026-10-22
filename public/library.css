@@ -381,4 +381,6 @@ select{text-transform:uppercase}
 #definition-form[data-kind="palettes"]:has([name="global"]:checked) .palette-species-links{display:none}
 
 .palette-definition-dialog .palette-delete{margin-left:auto}
-.eye-manager-header:has(.palette-import){column-gap:16px}
+.eye-manager-header:has(.palette-import){align-items:center;justify-content:flex-start;gap:20px}
+.eye-manager-header .palette-import{width:43px;min-width:43px;padding:0;margin-top:0;flex-shrink:0}
+.eye-manager-header:has(.palette-import)>[data-action="new-definition"]{margin-left:auto}
