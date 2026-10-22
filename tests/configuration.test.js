@@ -228,3 +228,11 @@ test('Cosmic species persist with lower zone weight while hidden metadata surviv
   assert.equal(restored.getCatalog().spawning.tierWeights[0],10);
   assert.equal(restored.getCatalog().species.find(s=>s.id===species.id).rarityTier,0);
 });
+
+test('mutation emojis persist and duplicate emoji selections are allowed',async t=>{
+ const {directory,store}=await fixture(t);
+ const first=await add(store,'mutations',{name:'Emoji One',type:'Standard',weight:1,emoji:'🐴'});
+ const second=await add(store,'mutations',{name:'Emoji Two',type:'Standard',weight:1,emoji:'🐴'});
+ const restored=await new GameStore(directory,catalog,defaults).init();
+ for(const entry of [first,second]) assert.equal(restored.getCatalog().mutations.find(m=>m.id===entry.id).emoji,'🐴');
+});

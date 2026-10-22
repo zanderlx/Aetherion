@@ -472,3 +472,17 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 
 .mutation-collapse-card .personality-card-actions .button{min-width:0;min-height:34px;max-width:100%;padding:6px clamp(8px,1vw,12px);gap:6px;font-size:clamp(11px,.85vw,13px);line-height:1.3}
 .mutation-collapse-card .personality-card-actions .button .icon{width:15px;height:15px;flex-shrink:0}
+.mutation-definition-dialog .mutation-name-type-row{grid-template-columns:64px minmax(0,1fr) minmax(0,1fr)}
+.mutation-emoji-field [data-mutation-emoji]{height:48px;padding:0;font-size:24px}
+.emoji-picker-dialog{width:min(620px,calc(100vw - 32px));max-height:85dvh;overflow-y:auto}
+.emoji-picker-dialog>.dialog-top{position:sticky;top:0;background:var(--panel);z-index:1;align-items:center;justify-content:space-between}
+.emoji-picker-dialog h2{margin:0}
+.emoji-picker-content{padding:20px 24px}
+.emoji-picker-filters{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.emoji-picker-filters input{flex:1;min-width:120px}
+.emoji-picker-filters select{max-width:100%}
+.emoji-picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:8px;max-height:300px;overflow-y:auto;padding:4px}
+.emoji-choice{display:grid;place-items:center;min-height:44px;border:1px solid var(--border);border-radius:5px;background:var(--panel-deep);font-size:25px;cursor:pointer}
+.emoji-choice:hover,.emoji-choice:focus-visible{border-color:var(--gold);background:var(--panel)}
+.emoji-picker-error{color:#f29b98;margin-bottom:0}
+@media(max-width:500px){.mutation-definition-dialog .mutation-name-type-row{grid-template-columns:64px minmax(0,1fr)}.mutation-name-type-row>.zone-field:last-child{grid-column:1/-1}}

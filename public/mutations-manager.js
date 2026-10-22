@@ -1,3 +1,4 @@
+import {openEmojiPicker} from './emoji-picker.js';
 import {fitMutationDescriptions} from './mutation-card-layout.js';
 import {animateCardBody} from './collapsible-cards.js';
 import {definitionTransferControls} from './definition-transfer-controls.js';
@@ -6,7 +7,7 @@ import {formSignature,formBaseline} from './form-state.js';
 
 const mutationEmojis={'Springy Tendons':'🦘','Powerful Lungs':'🫁','Strong Muscles':'💪','Nimble Hooves':'🩰','Limber Tendons':'🏃','Chimera Mane':'🦁','Chimera Tail':'🐉','Harlequin Mane':'🎭','Harlequin Tail':'🎨','Dwarfism':'🐭','Gigantism':'🦣','Intelligence':'🧠','Double Stamina':'🔋','Close Bond':'💞','Double Jump':'🪽','Very Fertile':'🌱','Twins':'👯','Perfect Twins':'🪞','Mutated':'🧬','Solar':'☀️','Lunar':'🌙','Heavenly':'👼','Void':'🕳️','Astral':'🌌'};
 Object.assign(mutationEmojis,{Alien:'👽',Arcane:'🔮',Arisen:'🕊️',Artisan:'🖌️',Crystallized:'💎',Dilute:'🫧','Festive Eye':'🎄','Flowering Sakura':'🌸',Frost:'❄️',Geode:'🪨',Ghost:'👻',Ghoul:'🧟',Gilded:'🪙',Glow:'💡',Haunting:'🕯️',Jester:'🃏',Lacebound:'🧵','North Star':'🧭',Porcelain:'🏺',Reptile:'🦎','Rose Infection':'🥀','Tie Dye':'🌈',Trophy:'🏆','X Ray':'🦴'});
-export const mutationEmoji=mutation=>mutationEmojis[mutation.name] || (mutation.type==='Special' ? '🔮' : '🧬');
+export const mutationEmoji=mutation=>mutation.emoji || mutationEmojis[mutation.name] || (mutation.type==='Special' ? '🔮' : '🧬');
 const typeOrder = ['Standard','Special','Mutated'];
 const compareType = (a,b) => (typeOrder.includes(a) ? typeOrder.indexOf(a) : typeOrder.length)-(typeOrder.includes(b) ? typeOrder.indexOf(b) : typeOrder.length) || a.localeCompare(b);
 export const mutationTypes = entries => [...new Set([...typeOrder,...entries.map(m=>m.type)])].sort(compareType);
@@ -98,6 +99,12 @@ export function createMutationEditor(renderEditor) {
   dialog.addEventListener('cancel',event=>{event.preventDefault();requestClose();});
   dialog.addEventListener('close',()=>{if (!dialog.open) dialog.replaceChildren();});
   dialog.addEventListener('click',event=>{
+    const emojiButton=event.target.closest('[data-mutation-emoji]');
+    if(emojiButton) {
+      const input=dialog.querySelector('[name="emoji"]');
+      openEmojiPicker({value:input.value,onSelect:emoji=>{input.value=emoji;emojiButton.textContent=emoji;input.dispatchEvent(new Event('input',{bubbles:true}));}});
+      return;
+    }
     if (event.target.closest('[data-mutation-close]')) return requestClose();
     if (event.target!==dialog) return;
     const bounds=dialog.getBoundingClientRect();
@@ -114,6 +121,10 @@ export function createMutationEditor(renderEditor) {
     const fields=form.querySelector('.definition-fields');
     const row=document.createElement('div');row.className='eye-name-rarity';
     row.append(fields.querySelector('[name="name"]').closest('label'),fields.querySelector('[name="type"]').closest('label'));
+    row.classList.add('mutation-name-type-row');
+    const emojiField=document.createElement('label');emojiField.className='zone-field mutation-emoji-field';
+    emojiField.innerHTML=`Emoji<button type="button" class="button secondary" data-mutation-emoji aria-label="Choose mutation emoji">${mutationEmoji(draft)}</button><input type="hidden" name="emoji" value="${e(mutationEmoji(draft))}">`;
+    row.prepend(emojiField);
     fields.prepend(row);
     dialog.append(form);dialog.scrollTop=0;
     if (!dialog.open) dialog.showModal();

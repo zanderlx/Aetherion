@@ -123,6 +123,7 @@ export function validateDefinition(kind, input) {
     });
   }
   if (kind === 'mutations') {
+    result.emoji = text('emoji',32);
     Object.assign(result,{type:text('type',60,true),weight:number('weight',true),thresholds:validateThresholds(input.thresholds)});
     result.sizeShift = input.sizeShift ?? (result.name === 'Dwarfism' ? -1 : result.name === 'Gigantism' ? 1 : 0);
     if (!Number.isInteger(result.sizeShift) || Math.abs(result.sizeShift) > 10) throw new Error('Size shift must be an integer between -10 and 10.');
