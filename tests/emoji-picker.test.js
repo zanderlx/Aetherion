@@ -6,6 +6,8 @@ import {createDefinitionDocument,readDefinitionDocument} from '../public/definit
 test('emoji picker has broad searchable choices with category filters',()=>{
  assert.ok(emojiChoices.length>=304);
  assert.ok(filterEmojiChoices('peppermint').some(entry=>entry.emoji==='🍭'));
+ assert.ok(filterEmojiChoices('leg','Body Parts').some(entry=>entry.emoji==='🦵'));
+ assert.ok(filterEmojiChoices('arm','Body Parts').some(entry=>entry.emoji==='💪'));
  assert.ok(filterEmojiChoices('lungs').some(entry=>entry.emoji==='🫁'));
  assert.ok(filterEmojiChoices('jump','Animals').some(entry=>entry.emoji==='🐰'));
  assert.equal(filterEmojiChoices('not-a-real-emoji-name').length,0);
