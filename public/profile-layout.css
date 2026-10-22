@@ -111,6 +111,7 @@
 
 .horse-profile-shell .profile-traits>h3,.horse-profile-shell .horse-mutations-heading{justify-content:center;text-align:center;margin:0 0 8px}
 .horse-profile-shell .horse-mutations-heading h3{margin:0}
+.horse-profile-shell .horse-mutations-heading{padding-block:5px}
 .horse-profile-shell .profile-lower h3{font-size:22px}
 .horse-profile-shell :is(.profile-palette,.profile-traits,.horse-mutations-heading,.profile-skills,.profile-equipment,.horse-notes)>h3{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
 .horse-profile-shell .horse-trait-group{padding:9px}
@@ -122,8 +123,8 @@
 .horse-profile-shell .mutation-slot-text{font-size:13px;line-height:1.4}
 .profile-scroll-frame>.dialog-top{padding:8px 16px}
 .profile-scroll-frame>.profile-actions{padding:12px 18px}
-.profile-scroll-frame .horse-export{width:43px;min-width:43px;padding:0;flex-shrink:0}
-.profile-scroll-frame [data-action="sell"]{margin-left:auto}
+.profile-scroll-frame .profile-actions .horse-export{width:43px;min-width:43px;padding:0;flex-shrink:0;margin-left:auto}
+.profile-scroll-frame [data-action="sell"]{margin-left:0}
 .horse-profile-shell .horse-wild-description .horse-text-display{margin:0;white-space:pre-wrap;font-size:14px;line-height:1.5}
 @media(min-width:761px) and (max-height:800px){
  .profile-equipment dl{min-height:336px;grid-auto-rows:minmax(33.4px,1fr)}
