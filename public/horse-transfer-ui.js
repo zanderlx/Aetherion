@@ -1,7 +1,7 @@
 import {createHorseDocument,readHorseDocument} from './horse-transfer.js';
 import {profileContent} from './profile.js';
 
-export function createHorseTransfers({getState,save,notify,onImported}) {
+export function createHorseTransfers({getCatalog,getState,save,notify,onImported}) {
   let picker, importing = false;
   let pendingDocument, previewDialog, saving = false;
   function showImportPreview(document,horse) {
@@ -32,7 +32,7 @@ export function createHorseTransfers({getState,save,notify,onImported}) {
       });
     }
     const state = getState();
-    previewDialog.innerHTML = profileContent({...horse,id:'import-preview'},{...state,horses:[],sold:[],settings:{...state.settings,developerEditMode:false}},{importPreview:true}).replace('id="profile-title"','id="import-preview-title"');
+    previewDialog.innerHTML = profileContent({...horse,id:'import-preview'},{...state,horses:[],sold:[],settings:{...state.settings,developerEditMode:false}},{importPreview:true,catalog:getCatalog?.()}).replace('id="profile-title"','id="import-preview-title"');
     previewDialog.showModal();
   }
   function importHorse() {
