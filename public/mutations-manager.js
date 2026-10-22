@@ -21,11 +21,6 @@ export function mutationCards(entries,showWeights=false) {
 }
 export function mutationsManagerPage(catalog) {
   return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Mutations Manager</h1><button type="button" class="button secondary definition-import" data-action="import-definition" data-kind="mutations" title="Import Mutation" aria-label="Import Mutation">${icon('download')}</button><button class="button primary" data-action="new-definition" data-kind="mutations">${icon('spark')} Create Mutation</button></div>
-  <section class="mutation-instructions" aria-label="Adding mutations and weights">
-    <p>Click <strong>Create Mutation</strong> to add one, or click a card to edit it. Save when finished.</p>
-    <p><strong>Types:</strong> Standard can appear naturally. Mutated means Cosmic and uses separate chances. Special is for other methods.</p>
-    <p><strong>Weight:</strong> Higher means more common; 0 disables Standard selection. Weights do not need to total 100. Leave thresholds and size shift unchanged for no restrictions or size changes.</p>
-  </section>
   <div class="eye-grid-controls"><label class="zone-field">Search<input id="mutation-search" type="search" placeholder="Search..." aria-label="Search mutations"></label><label class="zone-field">Type<select id="mutation-type"><option value="">All Types</option>${mutationTypes(catalog.mutations).map(type=>`<option value="${e(type)}">${e(type)}</option>`).join('')}</select></label><label class="zone-field eye-percent-control"><span><input id="mutation-weights" type="checkbox"> Show Weights</span></label><div class="definition-sort-controls"><label class="zone-field">Sort By<select id="mutation-sort"><option value="type" selected>Type</option><option value="name">Name</option><option value="weight">Weight</option></select></label><button type="button" class="icon-button sort-direction" data-action="mutation-sort-direction" data-direction="asc" aria-label="Ascending order. Switch to descending" title="Ascending order. Switch to descending">${icon('arrow')}</button></div></div>
   <div id="mutation-grid">${mutationResults(filterMutations(catalog.mutations,'','','type'))}</div><p id="mutation-empty" role="status" ${catalog.mutations.length ? 'hidden' : ''}>No mutations match your filters.</p>`;
 }
