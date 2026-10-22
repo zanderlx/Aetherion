@@ -66,7 +66,7 @@ export function plannedPage(route, state) {
   const p = planned[route];
   if (!p) return `${heading('A PATH LESS TRAVELED', 'This trail is not on the map', 'Choose a destination from your navigation.')}<a href="#wilds/aetherion" class="button primary">Return to the wilds</a>`;
   const [kicker, title, description, detail, symbol] = p;
-  return `${heading(kicker.toUpperCase(), title, description)}<section class="coming-soon"><div class="coming-illustration">${icon(symbol)}<span>✧</span></div><span class="badge">A FUTURE CHAPTER</span><h2>Good things take a little growing.</h2><p>${detail}</p>${route === 'stable/breeding' && state.horses.length ? `<div class="breeding-roster"><span class="eyebrow">IN YOUR STABLE</span>${state.horses.slice(0, 6).map(h => `<button class="button secondary" data-action="inspect" data-id="${h.id}">${e(h.name || h.species)}</button>`).join('')}</div>` : ''}<a class="button secondary" href="#wilds/aetherion">Back to the wilds ${icon('arrow')}</a></section>`;
+  return `${heading(kicker.toUpperCase(), title, description)}<section class="coming-soon"><div class="coming-illustration">${icon(symbol)}<span>✧</span></div><span class="badge">A FUTURE CHAPTER</span><h2>Good things take a little growing.</h2><p>${detail}</p><a class="button secondary" href="#wilds/aetherion">Back to the wilds ${icon('arrow')}</a></section>`;
 }
 export const routeTitle = (route, locations = []) => locations.find(l => route === `wilds/${l.id}`)?.name || groups.flatMap(g => g.items).find(([path]) => path === route)?.[1] || 'Aetherion';
 
