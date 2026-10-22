@@ -5,7 +5,7 @@
   & #topbar { background:var(--panel);border-color:var(--border) }
   & .workspace { background:var(--bg) }
   & .panel,& .horse-card,& .stable-shortcut,& .stat-strip,& dialog { background:var(--panel);border-color:var(--border);color:var(--text) }
-  & input,& select,& .zone-field textarea { background:var(--panel-deep);border-color:var(--border);color:var(--text) }
+  & input,& select,& .zone-field textarea { background-color:var(--panel-deep);border-color:var(--border);color:var(--text) }
   & input::placeholder,& textarea::placeholder { color:var(--muted) }
   & input[type=checkbox] { accent-color:var(--burgundy) }
   & .brand>span,& .card-title h3 button,& .field-note h3,& .stable-shortcut span,& .breadcrumb strong { color:var(--text) }
