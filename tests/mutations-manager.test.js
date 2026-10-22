@@ -24,7 +24,7 @@ test('mutation types form a dropdown and sort into separate named sections',asyn
 test('mutation grid searches descriptions and combines type and sort filters',()=>{
  assert.deepEqual(filterMutations(mutations,'stamina','Standard').map(m=>m.id),['lungs']);
  assert.deepEqual(filterMutations(mutations,'','Standard','weight').map(m=>m.id),['springy','lungs']);
- assert.deepEqual(filterMutations(mutations,'','','za').map(m=>m.id),['springy','solar','lungs']);
+ assert.deepEqual(filterMutations(mutations,'','','name','desc').map(m=>m.id),['springy','solar','lungs']);
  assert.deepEqual(filterMutations(mutations,'sunlit','Standard'),[]);
  assert.equal(mutations[0].id,'solar');
 });
@@ -39,10 +39,15 @@ test('mutation manager keeps its global spawning toggle and card grid without in
  const html=mutationsManagerPage({mutations});
  assert.match(html,/Create Mutation/);
  assert.match(html,/name="ALLOW_DUPLICATE_MUTATIONS"/);
- assert.match(html,/4,008 tickets/);
+ assert.match(html,/4,008 Total Weight/);
  assert.match(html,/id="mutation-search"/);
  assert.match(html,/id="mutation-type"/);
  assert.match(html,/id="mutation-sort"/);
+ assert.match(html,/id="mutation-weights" type="checkbox"/);
+ assert.match(html,/data-action="mutation-sort-direction"/);
+ assert.doesNotMatch(html,/value="az"|value="za"|Tokens|Weight: /);
+ assert.match(mutationCards(mutations,true),/Weight: 2,333/);
+ assert.deepEqual(filterMutations(mutations,'','','weight','asc').map(m=>m.id),['solar','lungs','springy']);
  assert.equal((html.match(/class="panel eye-definition-card/g) || []).length,3);
  assert.doesNotMatch(html,/id="definition-form"|Your collection of options/);
 });

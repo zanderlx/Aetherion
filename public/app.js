@@ -307,6 +307,11 @@ document.addEventListener('click', async event => {
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
   if (intent === 'sort-direction') {updateStableSort(button.dataset.direction === 'asc' ? 'desc' : 'asc'); return;}
+  if (intent === 'mutation-sort-direction') {
+    button.dataset.direction = button.dataset.direction === 'asc' ? 'desc' : 'asc';
+    updateMutationGrid(main,catalog);
+    return;
+  }
   if (intent === 'choose-avatar') {
     $('#keeper-form').elements.avatarSeed.value = button.dataset.seed;
     updateAvatarPreview();
@@ -630,7 +635,8 @@ document.addEventListener('input', event => {
   if (event.target.id === 'mutation-search') updateMutationGrid(main,catalog);
 });
 document.addEventListener('change', event => {
-  if (['mutation-type','mutation-sort'].includes(event.target.id)) updateMutationGrid(main,catalog);
+  if (event.target.id === 'mutation-sort') main.querySelector('[data-action="mutation-sort-direction"]').dataset.direction = event.target.value === 'weight' ? 'desc' : 'asc';
+  if (['mutation-type','mutation-sort','mutation-weights'].includes(event.target.id)) updateMutationGrid(main,catalog);
   if (['eye-rarity','eye-sort','eye-percent'].includes(event.target.id)) updateEyeGrid(main,catalog);
   if (event.target.id === 'traits-species') {main.innerHTML = traitsEditorPage(catalog,event.target.value); trackForms(main); return;}
   updateFormState(event.target.form);
