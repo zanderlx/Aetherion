@@ -6,7 +6,7 @@ import {defaultRaritySettings,rarityNames,raritySettings} from './rarity-setting
 import {horseCardRank} from './horse-rank.js';
 import {saleQuoteBreakdown} from './sale-quote.js';
 import {horseSalePrice,defaultSaleModifiers} from './sale-pricing.js';
-import {personalityForm} from './personalities-manager.js';
+import {personalityForm,togglePersonalities} from './personalities-manager.js';
 import {closePersonalityEditor} from './personality-editor.js';
 import {eyesManagerPage,createEyeEditor,updateEyeGrid,labelEyeColors} from './eyes-manager.js';
 import {mutationsManagerPage,createMutationEditor,updateMutationGrid} from './mutations-manager.js';
@@ -340,6 +340,7 @@ document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action]');
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
+  if (['toggle-personality','toggle-all-personalities'].includes(intent)) return togglePersonalities(main,button);
   if (intent === 'wilds-home') {
     event.preventDefault();
     const group = button.closest('details');

@@ -8,7 +8,27 @@ export function personalityForm(draft) {
   return `<form id="definition-form" class="panel personality-card" data-kind="personalities" data-id="${e(draft.id || '')}"><div class="personality-card-heading"><h2>${draft.id ? 'Edit Personality' : 'Create Personality'}</h2><button type="button" class="icon-button personality-editor-close" data-action="close-personality-editor" aria-label="Close personality editor">${icon('close')}</button></div><div class="personality-name-row"><label class="zone-field personality-emoji-field">Emoji<select name="emoji">${[...new Set([personalityEmoji(draft),...personalityEmojis])].map(emoji => `<option value="${e(emoji)}" ${emoji === personalityEmoji(draft) ? 'selected' : ''}>${e(emoji)}</option>`).join('')}</select></label><label class="zone-field">Name<input name="name" value="${e(draft.name || '')}" maxlength="80" required></label></div><label class="zone-field">Description<textarea name="description" rows="5" maxlength="4000">${e(draft.description || '')}</textarea></label><input type="hidden" name="systemId" value="${e(draft.systemId || '')}"><input type="hidden" name="behaviorTags" value="${e(JSON.stringify(draft.behaviorTags || []))}"><p id="definition-status" class="form-status" role="status"></p><div class="form-actions"><button class="button primary" type="submit">Save</button>${draft.id ? `<button class="text-button" type="button" data-action="delete-definition" data-kind="personalities" data-id="${e(draft.id)}">Delete Entry</button>` : ''}</div></form>`;
 }
 
+export function personalityCard(entry) {
+  return `<article class="panel personality-card definition-list-item" data-personality-card data-search="${e(`${entry.name} ${entry.description || ''}`.toLowerCase())}"><div class="personality-card-heading"><h2><span class="personality-emoji">${e(personalityEmoji(entry))}</span> ${e(entry.name)}</h2><button type="button" class="icon-button personality-toggle" data-action="toggle-personality" aria-expanded="false" aria-controls="personality-body-${e(entry.id)}" aria-label="Expand ${e(entry.name)}" data-name="${e(entry.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="personality-card-body" id="personality-body-${e(entry.id)}" hidden><p class="personality-card-description" tabindex="0" aria-label="${e(entry.name)} description">${e(entry.description || '')}</p><div class="personality-card-actions"><button type="button" class="button secondary" data-action="edit-definition" data-kind="personalities" data-id="${e(entry.id)}">${icon('edit')} Edit</button></div></div></article>`;
+}
+
+export function togglePersonalities(root,button) {
+  const cards=[...root.querySelectorAll('[data-personality-card]')];
+  const all=button.dataset.action==='toggle-all-personalities';
+  const expand=all ? cards.some(card=>card.querySelector('.personality-card-body').hidden) : button.getAttribute('aria-expanded')!=='true';
+  for(const card of all ? cards : [button.closest('[data-personality-card]')]) {
+    const toggle=card.querySelector('.personality-toggle');
+    card.querySelector('.personality-card-body').hidden=!expand;
+    toggle.setAttribute('aria-expanded',String(expand));
+    toggle.setAttribute('aria-label',`${expand ? 'Collapse' : 'Expand'} ${toggle.dataset.name}`);
+  }
+  const control=root.querySelector('[data-action="toggle-all-personalities"]');
+  const allOpen=cards.length>0 && cards.every(card=>!card.querySelector('.personality-card-body').hidden);
+  control.textContent=allOpen ? 'Hide All' : 'Show All';
+  control.setAttribute('aria-expanded',String(allOpen));
+}
+
 export function personalitiesManagerPage(catalog,draft) {
-  const entries = catalog.personalities;
-  return `<div class="definitions-header personality-manager-header"><h1 class="manager-heading">Personalities Manager</h1><button class="button primary" data-action="new-definition" data-kind="personalities">${icon('spark')} Add New</button><label class="zone-field personality-search">Search<input type="search" id="definition-search" aria-label="Search personalities"></label></div><div class="personality-card-grid">${entries.map(entry => draft?.id === entry.id ? personalityForm(draft) : `<article class="panel personality-card definition-list-item" data-search="${e(`${entry.name} ${entry.description || ''}`.toLowerCase())}"><div class="personality-card-heading"><h2><span class="personality-emoji">${e(personalityEmoji(entry))}</span> ${e(entry.name)}</h2><button type="button" class="icon-button" data-action="edit-definition" data-kind="personalities" data-id="${e(entry.id)}" aria-label="Edit ${e(entry.name)}" title="Edit Personality">${icon('edit')}</button></div><p class="personality-card-description">${e(entry.description || '')}</p></article>`).join('')}</div><p id="definition-no-results" hidden>No matching personalities.</p>`;
+  const entries=catalog.personalities;
+  return `<div class="definitions-header personality-manager-header"><h1 class="manager-heading">Personalities Manager</h1><button class="button primary" data-action="new-definition" data-kind="personalities">${icon('spark')} Add New</button><button type="button" class="button secondary" data-action="toggle-all-personalities" aria-expanded="false">Show All</button><label class="zone-field personality-search">Search<input type="search" id="definition-search" aria-label="Search personalities"></label></div><div class="personality-card-grid">${entries.map(entry=>draft?.id===entry.id ? personalityForm(draft) : personalityCard(entry)).join('')}</div><p id="definition-no-results" hidden>No matching personalities.</p>`;
 }
