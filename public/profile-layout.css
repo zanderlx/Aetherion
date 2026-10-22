@@ -61,9 +61,9 @@
 .horse-profile-shell .profile-palette{--palette-swatch-size:clamp(40px,5dvh,46px);padding:8px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
 .horse-profile-shell .profile-palette>.profile-palette-heading{padding:0;margin:0;font:400 22px/1.4 var(--serif);color:var(--text);text-align:center}
 .horse-profile-shell .color-regions{padding:0;margin:8px auto 0;width:100%;max-width:560px;gap:6px 14px;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));flex:1;min-height:0}
-.horse-profile-shell .color-regions>div{grid-template-columns:var(--palette-swatch-size) minmax(0,max-content);column-gap:8px;justify-content:center;align-content:center}
+.horse-profile-shell .color-regions>div{grid-template-columns:var(--palette-swatch-size) minmax(0,1fr);column-gap:8px;align-content:center}
 .horse-profile-shell .color-regions>div>span{width:var(--palette-swatch-size);height:var(--palette-swatch-size)}
-.horse-profile-shell .color-regions small{font-size:13px;white-space:nowrap;overflow-wrap:normal}
+.horse-profile-shell .color-regions small{font-size:14px;white-space:nowrap;overflow-wrap:normal}
 .horse-profile-shell .color-regions code{font-size:12px}
 .horse-profile-shell .profile-lower{display:flex;flex-direction:column;flex:1}
 .horse-profile-shell .profile-traits{flex:1}
