@@ -46,6 +46,8 @@ svg.gender-symbol.gender-female{color:#F19BC2}
 .horse-card-open::after{content:"";position:absolute;inset:0;z-index:1;cursor:pointer}
 .horse-card:has(.horse-card-open:focus-visible){outline:2px solid var(--gold);outline-offset:4px}
 .horse-card .favorite{z-index:2}
+#main .horse-card .favorite.is-favorite{color:#FA6E91}
+#main .horse-card .favorite.is-favorite .icon{fill:#E94D7999}
 .sidebar-foot{justify-content:center;text-align:center;text-transform:uppercase}
 .gold-balance{flex-direction:row;flex-wrap:nowrap;white-space:nowrap;flex-shrink:0}
 .gold-balance .icon{display:block;flex-shrink:0;align-self:center}
