@@ -17,6 +17,7 @@ export const defaultSpawnSettings = {
 export const systemID = name => name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'custom';
 export function rarityTier(species) {
   if (species.rarityTier !== undefined) return species.rarityTier;
+  if (['felorse','friesan','clydesdale','akhal teke'].includes(species.name?.toLowerCase())) return 3;
   const note = species.restriction || '';
   return /ultra/i.test(note) ? 1 : /rare/i.test(note) ? 2 : /uncommon/i.test(note) ? 3 : 4;
 }

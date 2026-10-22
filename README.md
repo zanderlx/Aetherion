@@ -27,7 +27,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **88 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **100 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -145,7 +145,7 @@ See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file p
 
 Catching a wild horse immediately refreshes that zone's full encounter group. Reloading a Wilds page also generates fresh encounters, as does Search the Wilds. Switching sections without reloading preserves existing encounters.
 
-Horse cards use rarity glows in Wilds and Stables: **Uncommon → green**, **Rare/Ultra Rare → purple**, and **Solar/Lunar/Heavenly/Void/Astral → gold**. Common and event species have no outline or glow; those five special mutations override event status. Event status belongs to the species, not merely the zone it spawned in. Species Manager already controls rarity tiers, so no separate ranking dashboard is needed for these rules. New horses retain their tier/event snapshot through capture and JSON transfer; older records resolve against a matching species when available. Unknown legacy species receive no glow. The current seeded registry has no Uncommon species; assign tier 3 to a species to generate green-ranked horses.
+Horse cards use rarity glows in Wilds and Stables: **Uncommon → green**, **Rare/Ultra Rare → purple**, and **Solar/Lunar/Heavenly/Void/Astral → gold**. Common and event species have no outline or glow; those five special mutations override event status. Event status belongs to the species, not merely the zone it spawned in. Species Manager already controls rarity tiers, so no separate ranking dashboard is needed for these rules. New horses retain their tier/event snapshot through capture and JSON transfer; older records resolve against a matching species when available. Unknown legacy species receive no glow. The default Aetherion pool includes all 46 species: 39 Common at 500 tickets each, Felorse/Friesan/Clydesdale/Akhal Teke as Uncommon at 250 each, and Nephyrian/Caniquine/Serpentine as Rare at 100 each. No species is currently assigned Ultra Rare (40 tickets). These are per-species ticket weights, not fixed rarity percentages.
 
 Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 

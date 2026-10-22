@@ -9,7 +9,7 @@ export const atmospheres = {
 export function locationsFor(catalog, state = {}) {
   const defaults = catalog.locations.map(l => ({
       ...l, enabled: true, custom: false, atmosphere: l.id === 'hallowhoof' ? 'autumn' : 'forest',
-      speciesPool: l.id === 'hallowhoof' ? ['Ghoulsteed', 'Hauntmare', 'Calaverita'] : ['Unicorn', 'Friesan', 'Peryton', 'Equus', 'Fae', 'Clydesdale', 'Kelpie', 'Felorse', 'Nephyrian'],
+      speciesPool: l.id === 'hallowhoof' ? ['Ghoulsteed', 'Hauntmare', 'Calaverita'] : catalog.species.map(s => s.name),
       palettePool: l.id === 'hallowhoof' ? ['Pumpkin', 'Ghoulish', 'Monochrome'] : ['Natural Gold', 'Amethyst', 'Emerald'],
       ...l
     }));

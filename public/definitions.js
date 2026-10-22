@@ -42,7 +42,7 @@ export function normalizeCatalog(source) {
   catalog.traits = Object.fromEntries(catalog.species.map(s => [s.name, s.traits]));
   catalog.locations = catalog.locations.map(l => ({
     ...l, atmosphere: l.atmosphere || (l.id === 'hallowhoof' ? 'autumn' : 'forest'),
-    speciesPool: l.speciesPool || (l.id === 'hallowhoof' ? ['Ghoulsteed','Hauntmare','Calaverita'] : ['Unicorn','Friesan','Peryton','Equus','Fae','Clydesdale','Kelpie','Felorse','Nephyrian']),
+    speciesPool: l.speciesPool || (l.id === 'hallowhoof' ? ['Ghoulsteed','Hauntmare','Calaverita'] : catalog.species.map(s => s.name)),
     palettePool: l.palettePool || (l.id === 'hallowhoof' ? ['Pumpkin','Ghoulish','Monochrome'] : ['Natural Gold','Amethyst','Emerald'])
   }));
   return catalog;
