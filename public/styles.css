@@ -193,6 +193,8 @@ footer>span:last-child{color:#b19b76}
 .input-suffix input{width:100px}
 .toggle{width:20px;height:20px;min-height:20px}
 .form-actions{display:flex;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+#settings-form .form-actions,#economy-form .form-actions{justify-content:flex-end}
+#settings-form .form-actions [data-action="defaults"],#economy-form .form-actions [data-action="defaults"]{order:-1;margin-right:auto}
 .form-status{font-size:13px;color:#c1d0a9;margin-top:18px}
 .form-status:empty{display:none}
 .guide-panel h2{margin:12px 0 18px;line-height:1.4;font-size:31px}

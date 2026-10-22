@@ -598,8 +598,7 @@ document.addEventListener('submit', async event => {
     } else if (form.id === 'economy-form') {
       await action('economy-settings',{gold:Number(values.gold),sellingPrice:Number(values.sellingPrice),saleModifiers:Object.fromEntries(Object.keys(defaultSaleModifiers).map(key => [key,Number(values[`saleModifier:${key}`])]))});
       render();
-      $('#economy-status').textContent = 'Economy settings saved.';
-      notify('Economy settings saved.');
+      notify('Saved successfully.');
     } else if (form.id === 'gold-form') {
       await action('current-gold', { gold:Number(values.gold) });
       render();
@@ -634,8 +633,7 @@ document.addEventListener('submit', async event => {
         ALLOW_DUPLICATE_MUTATIONS:form.elements.ALLOW_DUPLICATE_MUTATIONS.checked
       });
       render();
-      $(`#${form.id === 'economy-form' ? 'economy' : 'settings'}-status`).textContent = 'Settings saved. Your next search and future sales will use these values.';
-      notify('Your world, a little more your own. Settings saved.');
+      notify('Saved successfully.');
 
     }
   } catch (error) {
