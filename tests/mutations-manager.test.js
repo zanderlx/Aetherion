@@ -99,5 +99,5 @@ test('mutation type is close beneath the name only outside grouped type sorting'
  const byName=mutationResults(mutations,'name',false,'asc',expanded);
  assert.match(byName,/mutation-preview-type/);
  assert.match(byName,/aria-expanded="true"/);
- assert.doesNotMatch(mutationResults(mutations,'type',false,'asc',expanded),/mutation-preview-type/);
+ assert.match(mutationResults(mutations,'type',false,'asc',expanded),/mutation-type-expanded-only/);
 });
