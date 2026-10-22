@@ -337,3 +337,11 @@ select{text-transform:uppercase}
 .natural-mutation-setting small{max-width:none;white-space:normal}
 .natural-mutation-setting>.toggle{flex-shrink:0}
 @media(max-width:1400px) { .definitions-main .library-workbench { grid-template-columns:1fr; } .definitions-main .library-list-panel { position:static; } .definitions-main .definition-list { max-height:260px; } }
+
+/* Palette managers share Mutation controls, grids, and modal spacing. */
+.palette-card-swatches{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));height:40px;width:100%;border:1px solid var(--border);border-radius:5px;overflow:hidden;flex-shrink:0}
+.palette-definition-dialog #palette-editor-title{margin:0 12px 0 0}
+.palette-definition-dialog>.dialog-top>[data-palette-close]{margin-left:auto;flex-shrink:0}
+.palette-definition-dialog .definition-fields{min-width:0}
+.palette-definition-dialog .eye-name-rarity label{min-width:0;margin:0}
+.palette-definition-dialog .eye-name-rarity :is(input,select){width:100%;min-width:0}

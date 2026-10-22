@@ -1,3 +1,4 @@
+import {palettesManagerPage,createPaletteEditor,updatePaletteGrid} from './palettes-manager.js';
 import {defaultSpawnSettings} from './spawn-config.js';
 import {validateSettingsNumbers} from './game-settings.js';
 import {raritiesManagerPage,readRaritySettings} from './rarities-manager.js';
@@ -48,6 +49,7 @@ document.body.append(personalityCreation);
 personalityCreation.addEventListener('close',()=>{if (!personalityCreation.open) personalityCreation.replaceChildren();});
 personalityCreation.addEventListener('cancel',event=>{event.preventDefault();closePersonalityEditor(personalityCreation.querySelector('form'),()=>personalityCreation.close());});
 const eyeEditor = createEyeEditor(draft => libraryEditorPage('eyes',catalog,state,draft),() => catalog.eyes);
+const paletteEditor = createPaletteEditor(draft => libraryEditorPage('palettes',catalog,state,draft));
 const mutationEditor = createMutationEditor(draft => libraryEditorPage('mutations',catalog,state,draft));
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
 
@@ -115,6 +117,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
   else if (section === 'dev' && page === 'rarities') return raritiesManagerPage(catalog);
   else if (section === 'dev' && page === 'eyes') return eyesManagerPage(catalog);
+  else if (section === 'dev' && page === 'colors') return palettesManagerPage(catalog);
   else if (section === 'dev' && page === 'mutations') return mutationsManagerPage(catalog);
   else if (section === 'dev' && page === 'traits') return traitsEditorPage(catalog);
   else if (section === 'dev' && Object.hasOwn(editorRoutes, page)) return libraryEditorPage(editorRoutes[page], catalog, state);
@@ -152,7 +155,7 @@ async function navigate({refreshSpawns = false} = {}) {
   horseDialogs.close();
   horseArtViewer.close();
   eyeEditor.dialog.close();
-  mutationEditor.dialog.close();
+  mutationEditor.dialog.close(); paletteEditor.dialog.close();
   try {
     if (route.startsWith('wilds/') && (refreshSpawns || !state.encounters[route.split('/')[1]]) && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action(refreshSpawns ? 'search' : 'visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
@@ -243,6 +246,12 @@ function showZoneDraft(draft) {
   $('#zone-form').scrollIntoView({ block: 'start' });
 }
 function showDefinition(kind, draft) {
+  if (kind === 'palettes') {
+    paletteEditor.open(draft);
+    trackForms(paletteEditor.dialog);
+    if (!draft.id && draft.name) restoreBaseline(paletteEditor.dialog.querySelector('#definition-form'),'new-palette-copy');
+    return;
+  }
   if (kind === 'mutations') {
     mutationEditor.open(draft);
     trackForms(mutationEditor.dialog);
@@ -313,7 +322,7 @@ function updateAvatarPreview() {
 }
 function askToDelete(type, payload, name, detail, verb = type === 'delete-profile' ? 'Reset' : 'Delete') {
   pendingDeletion = {type,payload};
-  confirmation.classList.toggle('eye-delete-confirm',type === 'delete-definition' && ['eyes','mutations'].includes(payload.kind));
+  confirmation.classList.toggle('eye-delete-confirm',type === 'delete-definition' && ['eyes','mutations','palettes'].includes(payload.kind));
   confirmation.innerHTML = `<div class="dialog-top"><h2 id="confirm-title">${verb} ${e(name)}?</h2></div><p class="delete-warning">${e(detail)} This is saved immediately. The previous save is kept in your backup folder.</p><div class="form-actions"><button class="button secondary" data-action="cancel-delete" autofocus>${verb === 'Release' ? 'No' : 'Keep It'}</button><button class="button primary" data-action="confirm-delete">${verb === 'Release' ? 'Yes' : `Confirm ${verb}`}</button></div>`;
   confirmation.showModal();
 }
@@ -337,6 +346,11 @@ document.addEventListener('click', async event => {
     updateEyeGrid(main,catalog);
     return;
   }
+  if (intent === 'palette-sort-direction') {
+    button.dataset.direction = button.dataset.direction === 'asc' ? 'desc' : 'asc';
+    updatePaletteGrid(main,catalog);
+    return;
+  }
   if (intent === 'mutation-sort-direction') {
     button.dataset.direction = button.dataset.direction === 'asc' ? 'desc' : 'asc';
     updateMutationGrid(main,catalog);
@@ -357,6 +371,7 @@ document.addEventListener('click', async event => {
   if (intent === 'delete-zone') return askToDelete('delete-zone',{id},locationsFor(catalog,state).find(z => z.id === id)?.name || 'Zone','Remove this zone and its wild encounters. Collected horses and sold records stay unchanged.');
   if (intent === 'delete-definition') {
     const kind = button.dataset.kind;
+    if (kind === 'palettes') return askToDelete('delete-definition',{kind,id},catalog.palettes.find(p => p.id === id)?.name || 'Palette','Remove this palette from future use. Matching zone pools are updated; zones with empty pools close.');
     if (kind === 'mutations') return askToDelete('delete-definition',{kind,id},catalog.mutations.find(m => m.id === id)?.name || 'Mutation','Remove this mutation from future spawns. Existing horses keep their saved mutations.');
     if (kind === 'eyes') return askToDelete('delete-definition',{kind,id},catalog.eyes.find(eye => eye.id === id)?.name || 'Eye Color','Remove this eye color from future spawns. Existing horses keep their saved eye colors.');
     return askToDelete('delete-definition',{kind,id},catalog[kind].find(d => d.id === id)?.name || 'Entry','Remove this option from future use. Existing horse details stay unchanged. Matching zone pools are updated; zones with empty pools close. Deleted atmospheres use a remaining atmosphere, item themes are cleared, and a deleted active website theme returns to Original.');
@@ -473,7 +488,7 @@ document.addEventListener('click', async event => {
       await action(pendingDeletion.type,pendingDeletion.payload);
       personalityCreation.close();
       eyeEditor.dialog.close();
-      mutationEditor.dialog.close();
+      mutationEditor.dialog.close(); paletteEditor.dialog.close();
       pendingDeletion = null;
       confirmation.close();
       profile.close();
@@ -618,7 +633,8 @@ document.addEventListener('submit', async event => {
       renderChrome();
       const saved = catalog[payload.kind].find(d => payload.id ? d.id === payload.id : d.name === payload.values.name.trim() && (payload.kind !== 'mutations' || d.type === payload.values.type.trim()));
       if (payload.kind === 'eyes') { eyeEditor.dialog.close(); render(); }
-      else if (payload.kind === 'mutations') {mutationEditor.dialog.close();render();}
+      else if (payload.kind === 'palettes') {paletteEditor.dialog.close();render();}
+      else if (payload.kind === 'mutations') {mutationEditor.dialog.close(); paletteEditor.dialog.close();render();}
       else if (payload.kind === 'personalities') {personalityCreation.close();render();}
       else showDefinition(payload.kind, saved);
       if ($('#definition-status')) $('#definition-status').textContent = payload.kind === 'siteThemes' ? 'Theme saved. Select it above to apply it to the website.' : payload.kind === 'atmospheres' ? 'Atmosphere saved. Choose it in a zone to use it.' : ['items','themes'].includes(payload.kind) ? 'Definition saved. Gameplay effects and rewards remain planned.' : 'Saved to the local configuration files. Future spawns use this definition.';
@@ -681,9 +697,12 @@ document.addEventListener('input', event => {
   }
   if (event.target.closest('#zone-form')) $('#zone-preview').innerHTML = zonePreview(readZoneForm($('#zone-form')), catalog);
   if (event.target.id === 'horse-search') updateStableSort();
+  if (event.target.id === 'palette-search') updatePaletteGrid(main,catalog);
   if (event.target.id === 'mutation-search') updateMutationGrid(main,catalog);
 });
 document.addEventListener('change', event => {
+  if (event.target.id === 'palette-sort') main.querySelector('[data-action="palette-sort-direction"]').dataset.direction = 'asc';
+  if (['palette-group','palette-sort','palette-scope'].includes(event.target.id)) updatePaletteGrid(main,catalog);
   if (event.target.id === 'mutation-sort') main.querySelector('[data-action="mutation-sort-direction"]').dataset.direction = event.target.value === 'weight' ? 'desc' : 'asc';
   if (['mutation-type','mutation-sort','mutation-weights'].includes(event.target.id)) updateMutationGrid(main,catalog);
   if (event.target.id === 'eye-sort') main.querySelector('[data-action="eye-sort-direction"]').dataset.direction = 'asc';
