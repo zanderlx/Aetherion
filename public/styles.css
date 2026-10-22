@@ -54,7 +54,8 @@ nav summary{display:flex;align-items:center;gap:11px;min-height:43px;color:#d5c7
 nav summary::-webkit-details-marker{display:none}
 nav summary:hover{background:#ffffff05}
 nav summary .icon{width:18px;height:18px;color:#b49b75}
-.chevron{margin-left:auto;color:#a28c6e;transition:transform .2s}
+.chevron{display:grid;place-items:center;width:18px;height:18px;flex:0 0 18px;margin-left:auto;color:#a28c6e;line-height:1;transform-origin:center;transition:transform .2s}
+.chevron svg{display:block;width:18px;height:18px}
 details[open]>.chevron,details[open]>summary .chevron{transform:rotate(180deg)}
 .nav-items{padding:1px 0 5px}
 .nav-items a{display:flex;align-items:center;justify-content:space-between;margin:2px 0;padding:10px 13px 10px 40px;color:#b7aa97;font-size:13px;min-height:38px;position:relative;border-radius:4px}
