@@ -1,12 +1,12 @@
-import {horseArt} from './art.js';
+import {horseHeadArt} from './art.js';
 import {icon} from './ui.js';
 import {readHorseSkills,skillProgress} from './skill-progress.js';
 
 const equipmentSlots=['Hat','Mouth','Bridle','Saddle','Sock','Side','Tail','Flair'];
 const skillDefinitions=[['Agility','agility','#EF922B'],['Strength','strength','#59B653'],['Jump','jump','#5FBFF0'],['Bond','heart','#A66DE0'],['Wing','wing','#E879B1']];
 function portrait(horse,suffix) {
-  const art=horseArt({...horse,id:`${horse.id}-${suffix}`},true).replace('viewBox="0 0 460 310"','viewBox="240 25 135 145"');
-  return `<div class="profile-portrait">${art}</div>`;
+  const art=horseHeadArt({...horse,id:`${horse.id}-${suffix}`},true);
+  return `<button type="button" class="profile-portrait" data-full-horse title="View Full Horse" aria-label="View full horse illustration">${art}</button>`;
 }
 function equipment() {
   return `<section class="profile-equipment"><h3>Equipment</h3><dl>${equipmentSlots.map(slot=>`<div><span class="equipment-slot" aria-hidden="true">${icon('bag')}</span><div><dt>${slot}</dt><dd>Not equipped</dd></div></div>`).join('')}</dl></section>`;

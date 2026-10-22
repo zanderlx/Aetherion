@@ -5,6 +5,8 @@ import {normalizeCatalog} from '../public/definitions.js';
 import {createEncounters} from '../src/encounters.js';
 import {profileContent} from '../public/profile.js';
 import {selectProfileTab} from '../public/profile-layout.js';
+import {horseHeadArt,horseArt} from '../public/art.js';
+import {card} from '../public/ui.js';
 const catalog=normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')));
 const settings=JSON.parse(await readFile(new URL('../data/defaults/settings.json',import.meta.url),'utf8'));
 const horse=createEncounters(catalog,'aetherion',1,0,undefined,()=>0.5)[0];
@@ -25,6 +27,7 @@ test('horse profile separates overview from appearance and keeps unique portrait
  assert.match(appearance,/class="color-regions"/);assert.match(appearance,/>Traits<\/h3>/);assert.match(appearance,/>Mutations<\/h3>/);
  assert.match(appearance,/>Palette<\/h3>/);
  assert.equal((html.match(/viewBox="240 25 135 145"/g)||[]).length,2);
+ assert.equal((html.match(/data-full-horse title="View Full Horse"/g)||[]).length,2);
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(new Set(ids).size,ids.length);
  const owned=profileContent({...horse,notes:'Keep this note'},{...state,horses:[horse]},{catalog});
@@ -38,6 +41,15 @@ test('horse profile separates overview from appearance and keeps unique portrait
  const preview=profileContent(horse,state,{catalog,importPreview:true});
  assert.match(preview,/id="import-horse-appearance"/);assert.match(preview,/data-action="confirm-import"/);
  assert.doesNotMatch(preview,/data-action="sell"|data-action="export-horse"/);
+});
+
+test('preview headshots and full artwork share the same horse colors',()=>{
+ const full=horseArt(horse);
+ const head=horseHeadArt(horse);
+ assert.match(full,/viewBox="0 0 460 310"/);
+ assert.equal(head,full.replace('viewBox="0 0 460 310"','viewBox="240 25 135 145"'));
+ assert.match(card(horse,state,'wild',catalog),/viewBox="240 25 135 145"/);
+ assert.match(card(horse,{...state,horses:[horse]},'stable',catalog),/viewBox="240 25 135 145"/);
 });
 
 test('switching profile tabs hides inactive content and supports focus without replacing forms',()=>{

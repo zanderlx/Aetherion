@@ -16,6 +16,7 @@ import { icon, sidebar, groups, navigationSection, escapeHTML as e, number } fro
 import { wildPage, stablePage, collectionCards, settingsPage, editModePage, libraryPage, savesPage, plannedPage, routeTitle } from './pages.js';
 import { profileContent } from './profile.js';
 import {bindProfileTabs,selectProfileTab} from './profile-layout.js';
+import {bindHorseArtViewer} from './horse-art-viewer.js';
 import { displayBirthday, horseAcquisitionDate } from './dates.js';
 import { locationsFor, newZoneDraft, randomZone, validateZone } from './zones.js';
 import { zoneEditorPage, zonePreview } from './zone-editor.js';
@@ -35,6 +36,7 @@ const openGroups = new Set(groups.filter(g => g.open).map(g => g.title));
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
 bindProfileTabs();
+const horseArtViewer = bindHorseArtViewer();
 const profile = $('#profile');
 const confirmation = $('#confirm');
 const personalityCreation = document.createElement('dialog');
@@ -139,6 +141,7 @@ async function navigate({refreshSpawns = false} = {}) {
   copyEditor.close();
   profileCopyEditor.close();
   horseDialogs.close();
+  horseArtViewer.close();
   eyeEditor.dialog.close();
   mutationEditor.dialog.close();
   try {
