@@ -15,9 +15,16 @@ export const defaultSpawnSettings = {
   maleChance:50
 };
 export const systemID = name => name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'custom';
+export const defaultSpeciesTiers = Object.fromEntries([
+  [4,['Bisorse','Caprine','Equus','Friesan','Horse','Peryton','Pony']],
+  [3,['Akhal Teke','Clydesdale','Donkey','Fjord','Flora','Gargoyle','Lusitano','Marwari']],
+  [2,['Anticorn','Cactaline','Fae','Felorse','Hippocampus','Kelpie','Unicorn']],
+  [1,['Caniquine','Nephyrian','Serpentine']]
+].flatMap(([tier,names]) => names.map(name => [name.toLowerCase(),tier])));
 export function rarityTier(species) {
   if (species.rarityTier !== undefined) return species.rarityTier;
-  if (['felorse','friesan','clydesdale','akhal teke'].includes(species.name?.toLowerCase())) return 3;
+  const assigned = defaultSpeciesTiers[species.name?.toLowerCase()];
+  if (assigned) return assigned;
   const note = species.restriction || '';
   return /ultra/i.test(note) ? 1 : /rare/i.test(note) ? 2 : /uncommon/i.test(note) ? 3 : 4;
 }
