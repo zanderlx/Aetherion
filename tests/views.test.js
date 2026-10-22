@@ -391,8 +391,8 @@ test('Eye card search combines name hex and rarity with alphabetical sorting',()
 });
 
 test('sidebar footer shows the supplied release version without old preview wording',()=>{
- const html=sidebar('stable/all',state,new Set(),catalog,'1.3.0');
- assert.match(html,/Aetherion v1\.3\.0/);
+ const html=sidebar('stable/all',state,new Set(),catalog,'1.4.0');
+ assert.match(html,/Aetherion v1\.4\.0/);
  assert.doesNotMatch(html,/A sanctuary of your own|Local files · Phase 1 preview/);
 });
 

@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.3](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.4](docs/assets/aetherion-banner.svg)
 
-**Version 1.3.0 · Definition Managers & Horse Profile Redesign**
+**Version 1.4.0 · Horse Profiles, Skills & Customizable Rarities**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1.3 improves definition management and horse profiles, building on version 1.2’s data-driven spawning and local configuration.** Cosmic/Wild selection, weighted species, cascading mutations, sizes, gender, aesthetics, personalities, horse import/export, and local saves work today. Full horse creation, gameplay effects, breeding, inventory gameplay, and Town activities remain planned.
+> **Version 1.4 adds two-tab horse profiles, individual skill progress, customizable rarity colors, expanded sale pricing, and more flexible collection and definition managers.** Local saves, imports/exports, weighted spawning, and configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,12 +22,13 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.3.0 — current** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
+| **1.4.0 — current** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
+| **1.3.0** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
 | **1.2.0** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **103 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **127 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -56,8 +57,8 @@ Node must report `v22` or higher. No Python, database, API key, paid account, or
 **Git option:**
 
 ```sh
-git clone https://github.com/zanderlx/HorseGenerator.git
-cd HorseGenerator
+git clone https://github.com/zanderlx/Aetherion.git
+cd Aetherion
 ```
 
 ### 3. Start your sanctuary
@@ -107,7 +108,7 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 | 🌿 Explore & collect | ✨ Build & customize |
 | --- | --- |
 | Wilds encounters with inspectable horse profiles | Create, edit, randomize, and delete zones with editable tags |
-| Catch, rename, favorite, sell, import, and export horses | Define species, traits, palettes, eyes, and personalities |
+| Tame, rename, favorite, sell, import, and export horses | Define species, traits, palettes, eyes, and personalities |
 | Stable search, sorting, favorites, and preserved sale records | Maintain mutation, item, item-theme, and atmosphere definitions |
 | Nine-region color swatches and saved characteristics | Edit website wording without changing source code |
 | Current gold editor and transaction history | Nine website themes, plus custom theme editing |
@@ -117,13 +118,15 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 Save and Cancel controls appear when a form has changes. Deletion requires confirmation. Existing horse snapshots are preserved when definitions change.
 
 
-### Definition manager and profile improvements in 1.3
+### What's new in 1.4
 
-- **Eye Colors:** responsive clickable cards with names, hex values, swatches, search, rarity filters, and alphabetical or rarity sorting. Rarity groups are the default. Headers show the reference Common **60%**, Uncommon **35%**, and Rare **5%**; optional card percentages divide those totals equally among registered colors. These are reference display values: the current spawning pipeline still selects eye records uniformly.
-- **Eye editing:** create/edit modals with sticky headers, Name/Rarity fields, trash-icon deletion with confirmation, and unsaved-change prompts. New entries start as **Custom Color**, Common, with one random color. Randomize generates **1–3** colors while preserving text and rarity. Add-color tiles offer white or random additions; Remove Color is hidden for a single swatch. Saved visual layers remain metadata and are not rendered.
-- **Personalities:** equal-size readable cards, default personality emojis, italic descriptions, compact labeled search, and pencil editing. Create and edit use modals with emoji choices, a compact emoji/name row, edit-only deletion, and Save after changes. Newly saved entries append to the grid.
-- **Horse profiles:** essentials for Eye Color, Mane, and Tail; six optional trait groups with counts and tags for up to thirteen optional traits. Missing-data text remains unboxed. Four equal-size mutation slots show numbered name/description entries or centered locks, plus an assigned count out of four. Horse colors use a 3×3 grid of noninteractive square swatches with bold type labels and hex codes. Catch is wider and centered.
-- **Navigation and collection:** consistent Wilds colors, simplified definition headers, and clearer empty-stable wording.
+- **Horse profiles:** matching Info and Traits pages with external bookmark tabs. Info contains horse details, equipment placeholders, Notes for owned horses or Description for wild horses, and Skills. Traits contains a centered 3×3 Palette, grouped appearance traits, and four mutation slots with locks for unused slots. Click the headshot to open a padded full-horse artwork viewer.
+- **Skills:** each horse stores its own Agility, Strength, Jump, Bond, and Wing levels and XP. Colored bars fill by current XP divided by the requirement for that level, rounded down to whole percentages. Level 10 remains numbered until it reaches 34,000 XP, then displays MAX. Training gameplay is not implemented yet.
+- **My Horses:** compact headshot cards, colored gender icons, favorite hearts, rarity sorting, ascending/descending controls, and a live grid-size slider from 3 to 6 columns (default 5, reduced on small screens). Import is beside the heading; imports require confirmation before entering the stable.
+- **Wilds:** expandable zone navigation with Aetherion Wilds as its main link; no duplicate zone tabs or Event markers. Tame opens the optional rename prompt, then redirects to the new horse's stable profile.
+- **Rarities:** editable Common, Uncommon, Rare, Ultra Rare, and Cosmic border colors apply to preview cards and profile modals. Species Manager now offers Cosmic with a default weight of 10, below Ultra Rare's 40.
+- **Managers:** Mutations uses searchable cards, type groups, optional weights, direction controls, and CRUD modals. Eye Colors and Personalities retain their card/modal editors. Species hides internal IDs and base attributes, uses Description (optional), and shows rarity names without numbers. Hauntmare now has 105 exclusive appearance options.
+- **Game Settings:** larger title-case labels, right-aligned typed numbers without spinner arrows, responsive descriptions, right-aligned Save/Cancel, success popups, and red validation errors. Allow Duplicate Mutations applies to natural spawning only.
 
 ### Mutated Horse palettes
 
@@ -133,19 +136,19 @@ Available under **Horse Definitions → Palettes**:
 | --- | --- | --- | --- | --- |
 | Gold, orange & red | Icy blues | Lavender & violet | White in all nine regions | Black in all nine regions |
 
-Every supplied hex value is preserved. These are palette definitions; choosing one does **not** activate a special-spawn probability or mutation effect.
+Every supplied hex value is preserved. Cosmic mutations use the matching palette automatically: Solar, Lunar, Heavenly, Void, or Astral. Existing horses are synchronized with a backup. These palettes are excluded from zone palette pools; a palette name alone does not grant a mutation or sale multiplier.
 
 ### Data-driven spawning
 
 Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, **Personalities**, and **Rarities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
 
-Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects species uniformly, using Aetherion’s whitelist in that zone and the full registry elsewhere. Wild selects by zone ticket weights, initially **40 / 100 / 250 / 500** for rarity tiers 1–4. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
+Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects species uniformly, using Aetherion’s whitelist in that zone and the full registry elsewhere. Wild selects by zone ticket weights, initially **10 / 40 / 100 / 250 / 500** for Cosmic / Ultra Rare / Rare / Uncommon / Common. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 
 See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file paths, thresholds, assets, migration, and recovery. Existing horses retain their snapshots; new searches use saved configuration changes.
 
 Catching a wild horse immediately refreshes that zone's full encounter group. Reloading a Wilds page also generates fresh encounters, as does Search the Wilds. Switching sections without reloading preserves existing encounters.
 
-Horse Definitions → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change the four species spawn tiers, weights, or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
+Horse Definitions → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change species spawn weights or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
 
 Aetherion Wilds uses this **25-species whitelist** as its source of truth. Both Wild and Cosmic encounters in Aetherion must use the listed species. The other 21 species remain registered for other zones. Other zones retain registry-wide uniform Cosmic species selection.
 
@@ -159,13 +162,13 @@ Aetherion Wilds uses this **25-species whitelist** as its source of truth. Both 
 The Wild pool totals **6,320 tickets**. Weights are relative per-species tickets, not fixed rarity percentages. Edit rarity assignments in Species Manager and zone membership in My Zones.
 
 
-Only Ghoulsteed has a complete supplied species-specific trait list. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
+Ghoulsteed and Hauntmare have complete supplied species-specific trait lists. Other species use explicit missing-data labels until you add their traits. The illustrations are replaceable SVG artwork, not exact renders of every species, trait, or mutation.
 
 Starting gold and stable limits are provisional settings. **Current Gold** changes your balance; the Economy section within Game Settings includes a sale history table (newest first). The header gold display is informational. The internal Starting Gold value is reserved for future new-game/reset functionality and is hidden from settings. Mutation selection, thresholds, and size shifts are active. Speed, stamina, fertility, item effects, and exact asset rendering remain separate gameplay work.
 
 ### Horse sale pricing
 
-Economy Settings exposes a base selling price and seven editable modifiers. A sale uses **(Base Price + Trait Count × Trait Bonus + Mutation Count × Mutation Bonus) × Special Multiplier**, rounded to whole gold. Defaults are **+15 per optional trait**, **+50 per assigned mutation**, Solar **×10**, Lunar **×15**, Heavenly **×20**, Void **×25**, and Astral **×30**.
+Economy Settings exposes **Base Horse Price** and nine editable modifiers. A sale uses **(Base Price + Trait Bonuses + Mutation Bonuses + Skill Bonuses + Wing Bonuses) × Special Multiplier**, rounded to whole gold. Defaults are **+15 per optional trait**, **+50 per assigned mutation**, **+8 per Agility/Strength/Jump/Bond level**, and **+8 per Wing level**, followed by Solar **×10**, Lunar **×15**, Heavenly **×20**, Void **×25**, or Astral **×30**. Wing is counted separately, once; level 0 adds nothing.
 
 Mane, Tail, Eye Color, empty values, and missing-data placeholders do not earn trait bonuses. Cosmic mutations also count toward the mutation bonus. Special types are identified from the horse's saved special-spawn/mutation data; palette names alone do not activate multipliers. If an imported horse has several special types, the strongest applicable multiplier is used once. Use a multiplier of 1 for no special increase, or a bonus of 0 to disable that bonus.
 
@@ -175,17 +178,17 @@ The profile sale button and confirmation show the calculated price. Confirmation
 
 Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
 
-Cards show all nine color swatches without palette names. Redundant acquaintance/ownership labels, the profile Return button, and the Wilds notes/sanctuary cards are removed. Eye Color appears in the primary Traits row; Horse ID is tracked internally. Interface font sizes increased by two pixels.
+Preview cards show a headshot, a name truncated after 13 characters, and a colored gender icon. Full names remain available in profiles. Owned cards also include a favorite heart. Palette swatches and detailed traits appear inside the two-tab profile rather than on preview cards. Horse IDs remain internal.
 
 In horse profiles, Birthday is the date the horse entered your stable (MM-DD-YYYY), and Age counts calendar days since that date. Existing horses use their saved catch timestamp; newly imported horses start at 0 days. Uncaught horses show Not caught yet. Editing Birthday updates the acquisition date used by Age. The life-stage value (Adult/Foal/Elder) remains internal for compatibility.
 
 ### Horse names, notes, and details
 
-Catch a horse to review its prefilled name, optionally change it, and select Save to add it to My Horses. The default name is grey until changed; the catch dialog has Save and Cancel, with no X or separate keep-name button. Click an owned horse’s name to rename it inline; clicking outside or pressing Esc saves it. Owned profiles show a personality description above Notes. Descriptions default to the captured personality. Description and Notes display as text; click either to edit that horse, then save or cancel changes. Notes use a fixed-size box with overflow scrolling and Save/Cancel controls after changes. Wild profiles have Catch without Sell or notes.
+Select Tame to review the prefilled name, optionally change it, and select Save to add the horse to My Horses and open its owned profile. The default name is grey until changed; the prompt has Save and Cancel with no X. Click an owned horse’s name to rename it; clicking outside or pressing Esc saves it. Owned profiles display editable Notes, with overflow scrolling. Wild profiles show the personality description in that space, and Tame without Sell or Notes.
 
-Enable Edit Mode to change an individual horse's birthday, origin, size, personality, or eye color. Choices are alphabetized; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
+Enable Edit Mode to change an individual horse's birthday, origin, size, personality, or eye color. Most choices are alphabetized; sizes run smallest to largest; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
-Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to show only favorite horses, with an empty-state message when there are none. Owned profiles offer Export Horse instead of Release Horse. Wilds is a single sidebar link to Aetherion Wilds; switch locations using the alphabetized tabs at the top. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
+Stables contains My Horses and Breeding. Use the heart on a horse card to favorite it; choose Favorites in Sort by to show only favorite horses, with an empty-state message when there are none. Owned profiles offer Export Horse instead of Release Horse. Wilds expands to an alphabetized list of zones; clicking its heading opens Aetherion Wilds. The separate Breeding navigation and history page are removed; breeding gameplay remains planned. Existing sale records are preserved.
 
 ## Make It Yours
 
@@ -262,7 +265,7 @@ See [the detailed open questions](docs/OPEN-QUESTIONS.md) and [development progr
 The importer replaces the bootstrap catalog; preserve manual catalog edits first. Existing `data/config/` registries remain authoritative and are edited through Horse Definitions. It does not replace player saves.
 
 ```text
-HorseGenerator/
+Aetherion/
 ├── public/             Browser UI, editors, styles, SVG artwork
 ├── src/                Save/configuration transactions and spawning pipeline
 ├── data/               Bootstrap data, live config files, player save, backups
