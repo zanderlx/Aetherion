@@ -392,3 +392,12 @@ select{text-transform:uppercase}
 .eye-definition-dialog .definition-transfer-button{width:43px;min-width:43px;min-height:43px;padding:0;display:inline-flex;align-items:center;justify-content:center}
 
 @media(prefers-reduced-motion:reduce){.personality-toggle svg{transition:none}}
+
+/* Shared manager filters use identical label baselines and control heights. */
+.eye-grid-controls{align-items:flex-end}
+.eye-grid-controls .zone-field{gap:8px;line-height:20px}
+.eye-grid-controls .zone-field>input:not([type="checkbox"]),.eye-grid-controls .zone-field>select{height:48px;min-height:48px;box-sizing:border-box}
+.eye-grid-controls .definition-sort-controls{align-items:flex-end;align-self:flex-end}
+.eye-grid-controls .definition-sort-controls .zone-field{flex:1 1 0}
+.eye-grid-controls .definition-sort-controls .sort-direction{height:48px;width:43px;flex:0 0 43px;margin:0}
+.eye-grid-controls .eye-percent-control>span{min-height:48px}
