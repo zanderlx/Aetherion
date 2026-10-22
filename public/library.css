@@ -347,7 +347,7 @@ select{text-transform:uppercase}
 .palette-definition-dialog .eye-name-rarity :is(input,select){width:100%;min-width:0}
 
 .palette-card-swatches>span{position:relative;min-width:0}
-.palette-card-swatches>span+span{border-left:1px solid #24242b;box-shadow:inset 1px 0 0 #f5f1e6aa}
+.palette-card-swatches>span+span{border-left:1px solid #0004;box-shadow:inset 1px 0 0 #fff4}
 .palette-card-swatches>span:first-child{border-radius:4px 0 0 4px}
 .palette-card-swatches>span:last-child{border-radius:0 4px 4px 0}
 .palette-definition-card:hover{z-index:1}
