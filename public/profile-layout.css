@@ -153,7 +153,7 @@
 }
 
 #horse-art-viewer{width:min(1100px,calc(100vw - 32px));height:94dvh;max-height:94dvh;overflow:hidden;background:var(--panel-deep);border-color:var(--border)}
-#horse-art-viewer[open]{display:grid;grid-template-rows:auto minmax(0,1fr)}
-.horse-art-viewer-header{display:flex;justify-content:flex-end;padding:8px 12px 0}
+#horse-art-viewer[open]{display:grid;grid-template-rows:minmax(0,1fr)}
+.horse-art-viewer-header{position:absolute;top:8px;right:8px;z-index:1;display:flex;justify-content:flex-end;padding:0}
 .horse-art-viewer-stage{display:grid;place-items:center;min-height:0;padding:clamp(12px,2vw,24px)}
 .horse-art-viewer-stage .horse-art{display:block;width:100%;height:100%;min-height:0;object-fit:contain;border-radius:8px}

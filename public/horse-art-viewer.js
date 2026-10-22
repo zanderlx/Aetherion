@@ -45,10 +45,9 @@ export function bindHorseArtViewer() {
     art.style.width=`${460*scale}px`;
     art.style.height=`${imageHeight}px`;
     art.style.maxWidth='100%';
-    stage.style.paddingBlock='4px';
-    stage.style.height=`${imageHeight+8}px`;
-    const headerHeight=dialog.querySelector('.horse-art-viewer-header').getBoundingClientRect().height;
-    dialog.style.height=`${headerHeight+imageHeight+8+dialog.offsetHeight-dialog.clientHeight}px`;
+    stage.style.padding='12px';
+    stage.style.height=`${imageHeight+24}px`;
+    dialog.style.height=`${imageHeight+24+dialog.offsetHeight-dialog.clientHeight}px`;
   });
   return {close:()=>dialog?.close()};
 }
