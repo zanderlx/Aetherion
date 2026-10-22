@@ -1,4 +1,5 @@
 import {horseAcquisitionDate} from './dates.js';
+import {readHorseSkills} from './skill-progress.js';
 import {ages,sizes} from './horse-fields.js';
 
 export const horseFormat = 'aetherion-horse';
@@ -60,6 +61,7 @@ export function readHorseDocument(document) {
   for (const key of ['favorite','preview','traitsComplete']) if (h[key] !== undefined && typeof h[key] !== 'boolean') throw new Error(`${key} must be true or false.`);
   if (h.rarityTier !== undefined && (!Number.isInteger(h.rarityTier) || h.rarityTier < 1 || h.rarityTier > 4)) throw new Error('Rarity tier must be an integer from 1 to 4.');
   return {
+    skills:readHorseSkills(h.skills),
     ...identifiers,
     ...(h.rarityTier === undefined ? {} : {rarityTier:h.rarityTier}),
     ...(h.speciesEvent === undefined ? {} : {speciesEvent:h.speciesEvent === null ? null : text(h.speciesEvent,'Species event',100,true)}),

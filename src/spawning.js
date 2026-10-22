@@ -1,6 +1,7 @@
 import {isCosmicPalette} from '../public/cosmic-types.js';
 import {randomInt,randomUUID} from 'node:crypto';
 import {cosmicPalette} from './cosmic-palettes.js';
+import {readHorseSkills} from '../public/skill-progress.js';
 import {defaultSpawnSettings,zoneCreatures} from '../public/spawn-config.js';
 
 export const randomFloat = () => randomInt(0,4294967296)/4294967296;
@@ -86,7 +87,7 @@ export function spawnHorse(catalog,location,rng = randomFloat) {
     palette,paletteId:palette.id,skinId:palette.assetSkins?.length ? pickUniform(palette.assetSkins,rng) : null,
     eye,eyeId:eye.id,eyeTextureId:eye.textureId || null,eyeLayers:structuredClone(eye.layers || []),
     personality,personalityId:personality.id,personalitySystemId:personality.systemId || personality.id,
-    personalityDescription:personality.description,traits,mutations,specialSpawn:cosmic?.name || null,
+    personalityDescription:personality.description,traits,mutations,skills:readHorseSkills(),specialSpawn:cosmic?.name || null,
     spawnPath:cosmic ? 'Cosmic' : 'Wild',locationId:location.id,favorite:false,preview:false,
     traitsComplete:!!(availableTraits.Mane?.length && availableTraits.Tail?.length),createdAt:new Date().toISOString()
   };

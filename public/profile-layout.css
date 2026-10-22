@@ -23,6 +23,8 @@
 .profile-portrait .horse-art{width:100%;height:100%;min-height:0;max-height:none}
 .horse-profile-shell .profile-info{padding:12px 20px;min-width:0;min-height:0;overflow:visible;display:flex;flex-direction:column}
 .horse-profile-shell .profile-info h2{margin:0;font-size:clamp(28px,3.4vw,36px)}
+.horse-profile-shell .horse-name-row h2,.horse-profile-shell .horse-name-text,.horse-profile-shell .horse-inline-name{text-align:center}
+.horse-profile-shell .horse-species-gender{justify-content:center}
 .horse-profile-shell .horse-facts{margin:6px 0 0;padding:4px 0;gap:8px 10px;border:0;flex:1;align-content:space-around}
 .horse-profile-shell .horse-facts dt{font-size:16px;font-weight:600}
 .horse-profile-shell .horse-facts dd{font-size:14px}
@@ -34,6 +36,7 @@
 .profile-equipment,.profile-notes-skills>section{padding:14px 18px}
 .profile-equipment{border-right:1px solid var(--border);display:flex;flex-direction:column;min-width:0}
 .profile-equipment h3,.profile-notes-skills h3{margin:0 0 8px;font-size:21px}
+.profile-equipment>h3,.profile-notes-skills>section>h3{text-align:center}
 .profile-unavailable{font-size:12px;line-height:1.5;margin:0 0 8px}
 .profile-equipment dl{display:grid;gap:6px;margin:0;padding-left:10px;flex:1;grid-auto-rows:minmax(36px,1fr);min-height:356px}
 .profile-equipment dl>div{display:flex;align-items:center;gap:12px;min-width:0}
@@ -47,11 +50,12 @@
 .horse-profile-shell .horse-notes .horse-text-display{height:90px;overflow-y:auto}
 .profile-skills{display:flex;flex-direction:column;flex:1}
 .profile-skills dl{display:grid;gap:6px;margin:0;flex:1;grid-auto-rows:minmax(30.4px,1fr);min-height:202px}
-.profile-skills dl>div{display:grid;grid-template-columns:90px minmax(0,1fr);align-items:center;gap:8px;padding:0;width:min(100%,340px)}
+.profile-skills dl>div{display:grid;grid-template-columns:90px minmax(50px,1fr) max-content;align-items:center;gap:8px;padding:0;width:100%}
 .profile-skills dt{display:flex;justify-content:flex-end;align-items:center;gap:6px;white-space:nowrap}
 .profile-skills dt>span{text-align:right}
 .profile-skills dt .icon{width:17px;height:17px;flex-shrink:0;color:var(--skill-color)}
-.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:stretch;min-height:28px;border:1px solid var(--skill-color);border-radius:4px;background:color-mix(in srgb,var(--skill-color) 40%,var(--panel-deep));font-size:13px;font-weight:600;color:var(--text)}
+.profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:stretch;min-height:28px;border:1px solid var(--skill-color);border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--skill-color) 80%,var(--panel-deep)) var(--skill-progress),color-mix(in srgb,var(--skill-color) 50%,var(--panel-deep)) var(--skill-progress));font-size:13px;font-weight:600;color:var(--text)}
+.profile-skills .skill-xp{font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--muted)}
 .profile-skills dd{margin:0;color:var(--muted)}
 .horse-profile-shell .profile-palette{padding:14px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
 .horse-profile-shell .profile-palette>.profile-palette-heading{padding:0;margin:0;font:400 22px/1.4 var(--serif);color:var(--text);text-align:center}
@@ -89,6 +93,11 @@
  .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:420px){
+ .profile-skills dl>div{grid-template-columns:68px minmax(36px,1fr) max-content;gap:4px}
+ .profile-skills dt{font-size:12px;gap:4px}
+ .profile-skills dt .icon{width:14px;height:14px}
+ .profile-skills .skill-level-bar{padding-inline:5px;font-size:11px}
+ .profile-skills .skill-xp{font-size:10px}
  .horse-profile-shell .horse-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
  .horse-profile-shell .horse-trait-essentials{grid-template-columns:1fr}
  .horse-profile-shell .horse-trait-categories,.horse-profile-shell .mutation-slots{grid-template-columns:1fr}

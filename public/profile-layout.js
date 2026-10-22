@@ -1,8 +1,9 @@
 import {horseArt} from './art.js';
 import {icon} from './ui.js';
+import {readHorseSkills,skillProgress} from './skill-progress.js';
 
 const equipmentSlots=['Hat','Mouth','Bridle','Saddle','Sock','Side','Tail','Flair'];
-const skillDefinitions=[['Agility','agility','#E5A052'],['Strength','strength','#7EB77A'],['Jump','jump','#89C8EA'],['Bond','heart','#B38ADE'],['Wing','wing','#E69DBE']];
+const skillDefinitions=[['Agility','agility','#EF922B'],['Strength','strength','#59B653'],['Jump','jump','#5FBFF0'],['Bond','heart','#A66DE0'],['Wing','wing','#E879B1']];
 function portrait(horse,suffix) {
   const art=horseArt({...horse,id:`${horse.id}-${suffix}`},true).replace('viewBox="0 0 460 310"','viewBox="240 25 135 145"');
   return `<div class="profile-portrait">${art}</div>`;
@@ -10,8 +11,12 @@ function portrait(horse,suffix) {
 function equipment() {
   return `<section class="profile-equipment"><h3>Equipment</h3><dl>${equipmentSlots.map(slot=>`<div><span class="equipment-slot" aria-hidden="true">${icon('bag')}</span><div><dt>${slot}</dt><dd>Not equipped</dd></div></div>`).join('')}</dl></section>`;
 }
-function skills() {
-  return `<section class="profile-skills"><h3>Skills</h3><dl>${skillDefinitions.map(([name,symbol,color])=>`<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" aria-label="${name} level 0">Lv. 0</dd></div>`).join('')}</dl></section>`;
+function skills(horse) {
+  const values=readHorseSkills(horse.skills);
+  return `<section class="profile-skills"><h3>Skills</h3><dl>${skillDefinitions.map(([name,symbol,color])=>{
+    const progress=skillProgress(values[name.toLowerCase()]);
+    return `<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" style="--skill-progress:${progress.percent}%" aria-label="${name} level ${progress.level}"><span>Lv. ${progress.level}</span></dd><dd class="skill-xp">${progress.xp}/${progress.xpNeeded ?? '—'} XP</dd></div>`;
+  }).join('')}</dl></section>`;
 }
 export function profileLayout(horse,{header,info,notes,colors,traits,mutations,actions,importPreview}) {
   const prefix=importPreview ? 'import-horse' : 'horse-profile';
@@ -22,7 +27,7 @@ export function profileLayout(horse,{header,info,notes,colors,traits,mutations,a
     </div>
     <div class="profile-scroll-frame">${header}<div class="horse-profile-shell"><section class="profile-tab-panel" id="${prefix}-overview" role="tabpanel" aria-labelledby="${prefix}-overview-tab" data-profile-panel="overview">
       <div class="profile-grid profile-overview-top">${portrait(horse,'overview')}<div class="profile-info">${info}</div></div>
-      <div class="profile-overview-bottom">${equipment()}<div class="profile-notes-skills">${notes}${skills()}</div></div>
+      <div class="profile-overview-bottom">${equipment()}<div class="profile-notes-skills">${notes}${skills(horse)}</div></div>
     </section>
     <section class="profile-tab-panel" id="${prefix}-appearance" role="tabpanel" aria-labelledby="${prefix}-appearance-tab" data-profile-panel="appearance" hidden inert>
       <div class="profile-grid profile-appearance-top">${portrait(horse,'appearance')}<div class="profile-palette">${colors}</div></div>
