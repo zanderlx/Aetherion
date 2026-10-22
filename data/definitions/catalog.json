@@ -182,7 +182,16 @@
       "name": "Hauntmare",
       "event": "Halloween",
       "restriction": null,
-      "traitsComplete": false
+      "traitsComplete": true,
+      "traits": {
+        "Mane": ["Ghoulish Hair", "Ghoulish Mane", "Flamed Mane", "Decaying Mane", "Bearded Face", "Raggedy Mane", "Nightshade Mane", "Buzzard Collar"],
+        "Tail": ["Ghostly Tail", "Equine Tail", "Phoenix Tail", "Draconic Tail", "Curled Bone Tail", "Eldritch Tail", "Decaying Tail", "Macetail", "Flame Tail"],
+        "Keratin": ["Masked Broken Wings", "Frightful Horn", "Flame Horns", "Shattered Horn", "Decaying Horns", "Chained Horns", "Eldritch Antlers", "Nose Spine", "Protruding Horns", "Ghastly Tusks", "Four Way Antlers", "Dragon Horns", "Sharp Horns"],
+        "Whiskers": ["Ghostly Head Aura", "Maw Aura", "Draconic Head Aura", "Equine Head Aura"],
+        "Paint": ["Flaming Hoof Aura", "Eye Aura", "Draconic Hoof Aura", "Flame Aura", "Evil Grin Aura", "Ghostly Hoof Aura", "Phoenix Head Aura", "Spiked Collar Aura", "Phoenix Hoof Aura", "Phoenix Neck Aura", "Ocular Aura", "Spectral Sword", "Hind Aura", "Eldritch Aura", "Equine Leg Aura", "Spike Aura", "Flaming Eye Aura", "Haunting Katana", "Falling Feathers Aura", "Mohawk Aura", "Chest Aura"],
+        "Cosmetic": ["Draconic Body Plates", "Draconic Body Growth", "Phoenix Beak", "Spined Legs", "Neck Spikes", "Furred Thighs", "Decaying Face", "Upper Flame Spikes", "Angry Eyebrows", "Draconic Ribs", "Belly Spikes", "Facial Piercing", "Jaw Bone Over Growth", "Draconic Neck Spikes", "Flamed Beak", "Phoenix Chest Feathers", "Shoulder Spines", "Split Face", "Spined Back", "Protruding Rib Spikes", "Spined Head", "Spined Sides", "Side Bone Over Growth", "Decaying Cape", "Leg Bone Over Growth", "Tusks", "Limb Teeth", "Decaying Spikes", "Furred Shoulders", "Neck Bone Over Growth", "Flame Hooves", "Head Bone Over Growth"],
+        "Pattern": ["Spider Web Cage", "Eldritch Spots", "Deep Scales", "War Paint", "Reaper Pattern", "Front Bone Runes", "Ocular Paint", "Rib Markings", "Stitches", "Phoenix Markings", "Torn Flames", "Leg Bones Runes", "Ribs Pattern", "Spotted Orbs", "Ripped Legs", "Endless Eyes", "Ghoulish Face", "Back Stripe"]
+      }
     },
     {
       "id": "heartbane",
