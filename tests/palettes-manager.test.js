@@ -86,3 +86,10 @@ test('palette forms use a Type dropdown and place scope after colors without Nat
  assert.ok(form.indexOf('color-editor-grid')<form.indexOf('name="global"'));
  assert.ok(form.indexOf('name="global"')<form.indexOf('palette-species-links'));
 });
+
+test('type grouping shows the group heading without repeating the type on each card',()=>{
+ const grouped=paletteResults([entries[0]],'group');
+ assert.match(grouped,/<h2>Natural<\/h2>/);
+ assert.doesNotMatch(grouped,/<span>Natural<\/span>/);
+ assert.match(paletteResults([entries[0]],'name'),/<span>Natural<\/span>/);
+});

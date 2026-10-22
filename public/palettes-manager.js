@@ -7,14 +7,14 @@ export function filterPalettes(entries,query='',group='',sort='group',direction=
   const words=query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return entries.filter(p=>(!group || (p.group || 'Custom')===group) && (!scope || (scope==='global' ? p.global!==false : p.global===false)) && words.every(word=>[p.name,p.group,p.description,...Object.values(p.colors || {}),...(p.assetSkins || [])].join(' ').toLowerCase().includes(word))).sort((a,b)=>(direction==='desc' ? -1 : 1)*((sort==='group' ? (a.group || 'Custom').localeCompare(b.group || 'Custom') : 0) || a.name.localeCompare(b.name)));
 }
-export function paletteCards(entries) {
-  return entries.map(p=>`<button type="button" class="panel eye-definition-card mutation-definition-card palette-definition-card" data-action="edit-definition" data-kind="palettes" data-id="${e(p.id)}" aria-label="Edit ${e(p.name)}"><span class="eye-card-name">${e(p.name)}</span><span class="palette-card-swatches" aria-hidden="true">${regions.map(region=>`<span data-tooltip="${e(region)} - ${e(/^#[0-9a-f]{6}$/i.test(p.colors?.[region]) ? p.colors[region].toUpperCase() : 'Not set')}" style="background:${/^#[0-9a-f]{6}$/i.test(p.colors?.[region]) ? p.colors[region] : 'transparent'}"></span>`).join('')}</span><span class="mutation-card-meta"><span>${e(p.group || 'Custom')}</span><span>${p.global!==false ? 'Global' : 'Species Linked'}</span></span></button>`).join('');
+export function paletteCards(entries,showType=true) {
+  return entries.map(p=>`<button type="button" class="panel eye-definition-card mutation-definition-card palette-definition-card" data-action="edit-definition" data-kind="palettes" data-id="${e(p.id)}" aria-label="Edit ${e(p.name)}"><span class="eye-card-name">${e(p.name)}</span><span class="palette-card-swatches" aria-hidden="true">${regions.map(region=>`<span data-tooltip="${e(region)} - ${e(/^#[0-9a-f]{6}$/i.test(p.colors?.[region]) ? p.colors[region].toUpperCase() : 'Not set')}" style="background:${/^#[0-9a-f]{6}$/i.test(p.colors?.[region]) ? p.colors[region] : 'transparent'}"></span>`).join('')}</span><span class="mutation-card-meta">${showType ? `<span>${e(p.group || 'Custom')}</span>` : ''}<span>${p.global!==false ? 'Global' : 'Species Linked'}</span></span></button>`).join('');
 }
 export function paletteResults(entries,sort='group',direction='asc') {
   if(sort!=='group') return paletteCards(entries);
   const groups=paletteGroups(entries);
   if(direction==='desc') groups.reverse();
-  return groups.map(group=>`<section class="eye-rarity-section"><h2>${e(group)}</h2><div class="eye-definition-grid mutation-definition-grid">${paletteCards(entries.filter(p=>(p.group || 'Custom')===group))}</div></section>`).join('');
+  return groups.map(group=>`<section class="eye-rarity-section"><h2>${e(group)}</h2><div class="eye-definition-grid mutation-definition-grid">${paletteCards(entries.filter(p=>(p.group || 'Custom')===group),false)}</div></section>`).join('');
 }
 export function palettesManagerPage(catalog) {
   return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Palettes Manager</h1><button type="button" class="button secondary stable-import palette-import" data-action="import-palette" aria-label="Import Palette" title="Import Palette">${icon('download')}</button><button class="button primary" data-action="new-definition" data-kind="palettes">${icon('spark')} Create Palette</button></div>
