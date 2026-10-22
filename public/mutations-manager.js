@@ -31,8 +31,9 @@ function refreshMutationExpansion(root) {
   for(const button of root.querySelectorAll('[data-action="toggle-all-mutations"],[data-action="toggle-mutation-section"]')) {
     const scope=button.dataset.action==='toggle-mutation-section' ? button.closest('[data-mutation-section]') : root;
     const cards=[...scope.querySelectorAll('[data-mutation-card]')];
-    const open=cards.length>0 && cards.every(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')==='true');
     const section=button.dataset.action==='toggle-mutation-section';
+    const isOpen=card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')==='true';
+    const open=cards.length>0 && (section ? cards.some(isOpen) : cards.every(isOpen));
     button.textContent=open ? (section ? 'Hide' : 'Hide All') : (section ? 'Show' : 'Show All');button.setAttribute('aria-expanded',String(open));
   }
 }
@@ -40,7 +41,8 @@ export function toggleMutations(root,button) {
   const individual=button.dataset.action==='toggle-mutation';
   const scope=button.dataset.action==='toggle-mutation-section' ? button.closest('[data-mutation-section]') : root;
   const cards=individual ? [button.closest('[data-mutation-card]')] : [...scope.querySelectorAll('[data-mutation-card]')];
-  const expand=cards.some(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')!=='true');
+  const isOpen=card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')==='true';
+  const expand=button.dataset.action==='toggle-mutation-section' ? !cards.some(isOpen) : cards.some(card=>!isOpen(card));
   const bodies=cards.map(card=>{const body=card.querySelector('.personality-card-body');return {body,height:body.animate ? (body.hidden ? 0 : body.getBoundingClientRect().height) : undefined};});
   for(const card of cards) {
     const toggle=card.querySelector('.personality-toggle');

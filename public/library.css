@@ -456,3 +456,6 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .mutation-preview-type{font-size:14px;font-weight:600;text-align:center}
 .mutation-type-expanded-only{display:block;visibility:hidden}
 .mutation-collapse-card:has(.personality-toggle[aria-expanded="true"]) .mutation-type-expanded-only{visibility:visible}
+
+.mutation-title-block{position:relative}
+.mutation-title-block .mutation-preview-type{position:absolute;left:0;right:0;top:calc(100% + 1px);margin:0}
