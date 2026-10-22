@@ -363,7 +363,7 @@ select{text-transform:uppercase}
 .personality-toggle{width:34px;height:34px;padding:6px;flex:0 0 34px}
 .personality-toggle svg{display:block;width:20px;height:20px;transition:transform .15s}
 .personality-toggle[aria-expanded=true] svg{transform:rotate(180deg)}
-.personality-card-body{padding-top:16px}
+.personality-card-body{box-sizing:border-box;padding-top:16px}
 .personality-card-body .personality-card-description{box-sizing:border-box;height:240px;overflow-y:auto;scrollbar-width:thin;margin:0;line-height:1.6;padding-right:6px}
 .personality-card-actions{display:flex;justify-content:center;margin-top:18px}
 .personality-card-actions .button{min-height:42px}
@@ -390,3 +390,5 @@ select{text-transform:uppercase}
 
 .definition-delete-actions{display:flex;justify-content:center;margin-top:16px}
 .eye-definition-dialog .definition-transfer-button{width:43px;min-width:43px;min-height:43px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+
+@media(prefers-reduced-motion:reduce){.personality-toggle svg{transition:none}}

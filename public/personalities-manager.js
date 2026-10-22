@@ -12,18 +12,34 @@ export function personalityCard(entry) {
   return `<article class="panel personality-card definition-list-item" data-personality-card data-search="${e(`${entry.name} ${entry.description || ''}`.toLowerCase())}"><div class="personality-card-heading"><h2><span class="personality-emoji">${e(personalityEmoji(entry))}</span> ${e(entry.name)}</h2><button type="button" class="icon-button personality-toggle" data-action="toggle-personality" aria-expanded="false" aria-controls="personality-body-${e(entry.id)}" aria-label="Expand ${e(entry.name)}" data-name="${e(entry.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="personality-card-body" id="personality-body-${e(entry.id)}" hidden><p class="personality-card-description" tabindex="0" aria-label="${e(entry.name)} description">${e(entry.description || '')}</p><div class="personality-card-actions"><button type="button" class="button secondary" data-action="edit-definition" data-kind="personalities" data-id="${e(entry.id)}">${icon('edit')} Edit</button></div></div></article>`;
 }
 
+const cardAnimations=new WeakMap();
+function animatePersonalityBody(body,expand) {
+  const reducedMotion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if(!body.animate || reducedMotion) {body.hidden=!expand;body.inert=!expand;return;}
+  const initialHeight=body.hidden ? 0 : body.getBoundingClientRect().height;
+  cardAnimations.get(body)?.cancel();
+  body.hidden=false;body.inert=!expand;
+  const fullHeight=body.scrollHeight;
+  const animation=body.animate([
+    {height:initialHeight+'px',paddingTop:initialHeight ? '16px' : '0px',opacity:Math.min(1,initialHeight/(fullHeight || 1)),overflow:'hidden'},
+    {height:(expand ? fullHeight : 0)+'px',paddingTop:expand ? '16px' : '0px',opacity:expand ? 1 : 0,overflow:'hidden'}
+  ],{duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});
+  cardAnimations.set(body,animation);
+  animation.onfinish=()=>{if(cardAnimations.get(body)===animation){body.hidden=!expand;cardAnimations.delete(body);}};
+}
+
 export function togglePersonalities(root,button) {
   const cards=[...root.querySelectorAll('[data-personality-card]')];
   const all=button.dataset.action==='toggle-all-personalities';
-  const expand=all ? cards.some(card=>card.querySelector('.personality-card-body').hidden) : button.getAttribute('aria-expanded')!=='true';
+  const expand=all ? cards.some(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')!=='true') : button.getAttribute('aria-expanded')!=='true';
   for(const card of all ? cards : [button.closest('[data-personality-card]')]) {
     const toggle=card.querySelector('.personality-toggle');
-    card.querySelector('.personality-card-body').hidden=!expand;
+    animatePersonalityBody(card.querySelector('.personality-card-body'),expand);
     toggle.setAttribute('aria-expanded',String(expand));
     toggle.setAttribute('aria-label',`${expand ? 'Collapse' : 'Expand'} ${toggle.dataset.name}`);
   }
   const control=root.querySelector('[data-action="toggle-all-personalities"]');
-  const allOpen=cards.length>0 && cards.every(card=>!card.querySelector('.personality-card-body').hidden);
+  const allOpen=cards.length>0 && cards.every(card=>card.querySelector('.personality-toggle').getAttribute('aria-expanded')==='true');
   control.textContent=allOpen ? 'Hide All' : 'Show All';
   control.setAttribute('aria-expanded',String(allOpen));
 }
