@@ -33,6 +33,7 @@ export class ConfigurationFiles {
   }
   seed(base,state) {
     const catalog = normalizeCatalog(base);
+    catalog.palettes = catalog.palettes.filter(p => !(p.name === 'Template' && !p.complete));
     catalog.species = catalog.species.map(s => ({...s,rarityTier:rarityTier(s),attributes:s.attributes || {}}));
     for (const [name,weight] of Object.entries(standardTokens)) {
       const existing = catalog.mutations.find(m => m.name === name && m.type === 'Standard');

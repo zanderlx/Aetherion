@@ -50,7 +50,7 @@ for (const line of (await read('Mutations')).split(/\r?\n/)) {
 const list = async name => (await read(name)).split(/\r?\n/).filter(line => line.startsWith('- ')).map(line => line.slice(2));
 const catalog = {
   version: 1, source: 'Supplied Markdown references; original spelling preserved.',
-  species, personalities, palettes: [...palettes.map(p => ({ ...p, complete: Object.keys(p.colors).length === 9 })), ...mutatedPalettes],
+  species, personalities, palettes: [...palettes.filter(p => p.name !== 'Template').map(p => ({ ...p, complete: Object.keys(p.colors).length === 9 })), ...mutatedPalettes],
   eyes, traits: { Ghoulsteed: traits }, mutations,
   themes: await list('Themes'), items: await list('Horse Items'),
   locations: [
