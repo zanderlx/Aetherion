@@ -6,7 +6,7 @@
 .horse-profile-shell{position:relative;min-height:0;display:grid}
 .horse-profile-shell .profile-tab-panel{grid-area:1 / 1;min-width:0;display:flex;flex-direction:column}
 /* Both pages contribute to the shared size so switching never moves the frame. */
-.horse-profile-shell .profile-tab-panel[hidden]{display:flex;visibility:hidden;pointer-events:none}
+.horse-profile-shell .profile-tab-panel[hidden]{display:flex!important;visibility:hidden;pointer-events:none}
 .profile-tab-rail{position:absolute;left:100%;top:66px;display:flex;flex-direction:column;gap:12px;width:62px;z-index:2}
 .profile-tab-rail button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:56px;min-height:76px;padding:10px 4px;border:1px solid var(--border);border-radius:0 8px 8px 0;background:var(--panel-deep);color:var(--muted);transition:transform .18s,background .18s;transform-origin:left center}
 .profile-tab-rail button .icon{width:24px;height:24px}
