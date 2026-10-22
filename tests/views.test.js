@@ -365,6 +365,7 @@ test('Eye card search combines name hex and rarity with alphabetical sorting',()
  const eyes=[{name:'Zinc',rarity:'Rare',colors:['#AABBCC']},{name:'Amber',rarity:'Common',colors:['#112233']}];
  assert.equal(filterEyes(eyes)[0].name,'Amber');
  assert.equal(filterEyes(eyes,'','', 'za')[0].name,'Zinc');
+ assert.equal(filterEyes(eyes,'','','name','desc')[0].name,'Zinc');
  assert.equal(filterEyes(eyes,'zinc aabb','Rare').length,1);
  assert.equal(filterEyes(eyes,'zinc','Common').length,0);
  assert.equal(filterEyes(eyes,'missing').length,0);
@@ -380,6 +381,12 @@ test('Eye rarity sorting groups Common then Uncommon then Rare',()=>{
  assert.match(html,/\(60%\)/);
  assert.match(html,/\(35%\)/);
  assert.match(html,/\(5%\)/);
+ const descending=eyeResults(eyes,'rarity',eyes,false,'desc');
+ assert.ok(descending.indexOf('<h2>Rare ')<descending.indexOf('<h2>Common '));
+ const page=eyesManagerPage({eyes});
+ assert.match(page,/class="definition-sort-controls"/);
+ assert.match(page,/data-action="eye-sort-direction"/);
+ assert.doesNotMatch(page,/Name A–Z|Name Z–A/);
 });
 
 test('Horse mutations have numbered entries and a count including zero',()=>{

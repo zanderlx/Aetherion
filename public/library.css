@@ -188,9 +188,9 @@ select{text-transform:uppercase}
 .eye-definition-card { display:flex; flex-direction:column; width:100%; text-align:left; color:var(--text); cursor:pointer; position:relative; transition:border-color .15s,box-shadow .15s,transform .15s; }
 .eye-definition-card:hover,.eye-definition-card:focus-within { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-soft); transform:translateY(-2px); }
 .mutation-definition-grid{grid-auto-rows:1fr}
-.mutation-sort-controls{display:flex;align-items:flex-end;gap:10px;flex:1 1 180px;min-width:0}
-.mutation-sort-controls .zone-field{min-width:0}
-.mutation-sort-controls .sort-direction{margin-bottom:2px}
+.definition-sort-controls{display:flex;align-items:flex-end;gap:10px;flex:1 1 180px;min-width:0}
+.definition-sort-controls .zone-field{min-width:0}
+.definition-sort-controls .sort-direction{margin-bottom:2px}
 .mutation-definition-card{gap:14px;min-height:210px}
 .mutation-card-description{display:block;flex:1;text-transform:none;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font:14px/1.6 var(--sans)}
 .mutation-card-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
@@ -201,10 +201,9 @@ select{text-transform:uppercase}
 .mutation-definition-dialog .eye-name-rarity :is(input,select){width:100%;min-width:0}
 .eye-card-name { display:block; font-family:var(--serif); font-size:22px; line-height:1.25; overflow-wrap:anywhere; }
 .eye-card-hex { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; margin:2px 0 16px; }
-.eye-grid-controls { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:20px; }
-.eye-grid-controls:has(#mutation-search){margin-bottom:36px}
+.eye-grid-controls { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:36px; }
 .eye-grid-controls .zone-field { flex:1 1 180px; margin:0; }
-.eye-grid-controls .zone-field:first-child { flex-grow:2; }
+.eye-grid-controls > .zone-field:first-child { flex-grow:2; }
 .eye-percent-control > span { display:flex; align-items:center; gap:8px; min-height:44px; font-size:14px; color:var(--text); }
 .eye-grid-controls .eye-percent-control { justify-content:flex-end; }
 .eye-percent-control input[type="checkbox"] { width:18px; height:18px; min-height:0; margin:0; flex-shrink:0; }

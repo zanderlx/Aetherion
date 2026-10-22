@@ -18,33 +18,37 @@ const eyeRarityChances = {common:60,uncommon:35,rare:5};
 const rarityRank = rarity => { const rank = rarityOrder.indexOf(rarity.toLowerCase()); return rank < 0 ? rarityOrder.length : rank; };
 const compareRarity = (a,b) => rarityRank(a)-rarityRank(b) || a.localeCompare(b);
 
-export function filterEyes(eyes,query = '',rarity = '',sort = 'az') {
+export function filterEyes(eyes,query = '',rarity = '',sort = 'name',direction = sort === 'za' ? 'desc' : 'asc') {
   const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return eyes.filter(eye => (!rarity || eye.rarity === rarity) && words.every(word => [eye.name,eye.rarity,...eye.colors].join(' ').toLowerCase().includes(word))).sort((a,b) => sort === 'za' ? b.name.localeCompare(a.name) : sort === 'rarity' ? compareRarity(a.rarity,b.rarity) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name));
+  return eyes.filter(eye => (!rarity || eye.rarity === rarity) && words.every(word => [eye.name,eye.rarity,...eye.colors].join(' ').toLowerCase().includes(word))).sort((a,b) => (direction === 'desc' ? -1 : 1)*(sort === 'rarity' ? compareRarity(a.rarity,b.rarity) || a.name.localeCompare(b.name) : a.name.localeCompare(b.name)));
 }
 
-export function eyeResults(eyes,sort = 'az',allEyes = eyes,showPercent = true) {
+export function eyeResults(eyes,sort = 'az',allEyes = eyes,showPercent = true,direction = 'asc') {
   if (sort !== 'rarity') return eyeCards(eyes,allEyes,showPercent);
   const groups = new Map();
   for (const eye of eyes) {
     if (!groups.has(eye.rarity)) groups.set(eye.rarity,[]);
     groups.get(eye.rarity).push(eye);
   }
-  return [...groups].sort(([a],[b]) => compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}${eyeRarityChances[rarity.toLowerCase()] === undefined ? '' : ` <span class="eye-rarity-chance">(${eyeRarityChances[rarity.toLowerCase()]}%)</span>`}</h2><div class="eye-definition-grid">${eyeCards(entries,allEyes,showPercent)}</div></section>`).join('');
+  return [...groups].sort(([a],[b]) => (direction === 'desc' ? -1 : 1)*compareRarity(a,b)).map(([rarity,entries]) => `<section class="eye-rarity-section"><h2>${e(rarity)}${eyeRarityChances[rarity.toLowerCase()] === undefined ? '' : ` <span class="eye-rarity-chance">(${eyeRarityChances[rarity.toLowerCase()]}%)</span>`}</h2><div class="eye-definition-grid">${eyeCards(entries,allEyes,showPercent)}</div></section>`).join('');
 }
 
 export function updateEyeGrid(root,catalog) {
-  const eyes = filterEyes(catalog.eyes,root.querySelector('#eye-search').value,root.querySelector('#eye-rarity').value,root.querySelector('#eye-sort').value);
+  const toggle = root.querySelector('[data-action="eye-sort-direction"]');
+  const direction = toggle.dataset.direction;
+  const label = direction === 'asc' ? 'Ascending order. Switch to descending' : 'Descending order. Switch to ascending';
+  toggle.setAttribute('aria-label',label); toggle.title = label;
+  const eyes = filterEyes(catalog.eyes,root.querySelector('#eye-search').value,root.querySelector('#eye-rarity').value,root.querySelector('#eye-sort').value,direction);
   const grid = root.querySelector('#eye-grid');
   const sort = root.querySelector('#eye-sort').value;
   grid.classList.toggle('eye-definition-grid',sort !== 'rarity');
-  grid.innerHTML = eyeResults(eyes,sort,catalog.eyes,root.querySelector('#eye-percent').checked);
+  grid.innerHTML = eyeResults(eyes,sort,catalog.eyes,root.querySelector('#eye-percent').checked,direction);
   root.querySelector('#eye-empty').hidden = eyes.length > 0;
 }
 
 export function eyesManagerPage(catalog) {
   return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Eye Color Manager</h1><button class="button primary" data-action="new-definition" data-kind="eyes">${icon('spark')} Create Eye Color</button></div>
-    <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search name, rarity, or hex…" aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field eye-percent-control"><span><input id="eye-percent" type="checkbox"> Show Percentages</span></label><label class="zone-field">Sort By<select id="eye-sort"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="rarity" selected>Rarity</option></select></label></div>
+    <div class="eye-grid-controls"><label class="zone-field">Search<input id="eye-search" type="search" placeholder="Search..." aria-label="Search eye colors"></label><label class="zone-field">Rarity<select id="eye-rarity"><option value="">All Rarities</option>${[...new Set(catalog.eyes.map(eye => eye.rarity))].sort((a,b) => a.localeCompare(b)).map(rarity => `<option value="${e(rarity)}">${e(rarity)}</option>`).join('')}</select></label><label class="zone-field eye-percent-control"><span><input id="eye-percent" type="checkbox"> Show Percentages</span></label><div class="definition-sort-controls"><label class="zone-field">Sort By<select id="eye-sort"><option value="rarity" selected>Rarity</option><option value="name">Name</option></select></label><button type="button" class="icon-button sort-direction" data-action="eye-sort-direction" data-direction="asc" aria-label="Ascending order. Switch to descending" title="Ascending order. Switch to descending">${icon('arrow')}</button></div></div>
     <div id="eye-grid">${eyeResults(filterEyes(catalog.eyes,'','','rarity'),'rarity',catalog.eyes,false)}</div><p id="eye-empty" role="status" hidden>No eye colors match your filters.</p>`;
 }
 
