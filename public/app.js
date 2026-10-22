@@ -49,7 +49,14 @@ const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() =
   const horse = findHorse(profile.dataset.horseId);
   return horse ? {horseName:horse.name || horse.species,species:horse.species,gender:horse.gender,birthday:horseAcquisitionDate(horse) ? displayBirthday(horseAcquisitionDate(horse)) : 'Not caught yet',personality:horse.personality.name,personalityDescription:horse.personality.description,specialSpawn:horse.specialSpawn || 'No special spawn'} : {};
 }});
-const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:(id,kind) => { render(); if (kind === 'catch') { profile.close(); main.focus(); } else inspect(id); }});
+const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:async (id,kind) => {
+  if (kind === 'catch') {
+    // Navigate before opening the owned profile so route cleanup cannot close it.
+    history.pushState(null,'','#stable/all');
+    await navigate();
+    if (route === 'stable/all') inspect(id);
+  } else {render();inspect(id);}
+}});
 const horseTransfers = createHorseTransfers({getCatalog:() => catalog,getState:() => state,save:action,notify,onImported:() => {render();}});
 async function request(path, body) {
   const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});

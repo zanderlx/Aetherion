@@ -31,7 +31,7 @@ export function createHorseDialogs({getState,getCatalog,findHorse,save,onSaved,n
           const payload = kind === 'field' ? {id,field,value} : {id,name:value};
           await save(action,payload);
           dialog.close();
-          onSaved(id,kind);
+          await onSaved(id,kind);
           notify(kind === 'catch' ? 'Your companion is saved in My Horses.' : 'Horse updated.');
         } catch (error) { dialog.querySelector('[role=status]').textContent = error.message; }
         finally { saving = false; dialog.querySelectorAll('button').forEach(button => button.disabled = false); }
