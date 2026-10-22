@@ -406,3 +406,5 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .personality-emoji-field select:not([multiple]){padding-left:8px;padding-right:20px;background-position:right 6px center;background-size:10px 10px}
 @media(forced-colors:active){select:not([multiple]){appearance:auto;background-image:none}}
 .personality-name-row :is(input,select){height:48px;min-height:48px;box-sizing:border-box}
+
+.personality-name-row .personality-emoji-field select{padding-top:0;padding-bottom:0;line-height:46px;text-align:left;text-align-last:left}
