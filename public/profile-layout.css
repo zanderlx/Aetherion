@@ -3,32 +3,34 @@
 .horse-profile-book{position:relative;--profile-columns:minmax(180px,.75fr) minmax(0,1.7fr)}
 .profile-scroll-frame{max-height:88dvh;overflow-y:auto;overflow-x:hidden;border-radius:7px;scrollbar-width:thin}
 .profile-scroll-frame>.dialog-top>.icon-button{margin-left:auto}
-.horse-profile-shell{position:relative;min-height:0}
-.horse-profile-shell .profile-tab-panel[hidden]{display:none}
+.horse-profile-shell{position:relative;min-height:0;display:grid}
+.horse-profile-shell .profile-tab-panel{grid-area:1 / 1;min-width:0;display:flex;flex-direction:column}
+/* Both pages contribute to the shared size so switching never moves the frame. */
+.horse-profile-shell .profile-tab-panel[hidden]{display:flex;visibility:hidden;pointer-events:none}
 .profile-tab-rail{position:absolute;left:100%;top:66px;display:flex;flex-direction:column;gap:12px;width:62px;z-index:2}
 .profile-tab-rail button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:56px;min-height:76px;padding:10px 4px;border:1px solid var(--border);border-radius:0 8px 8px 0;background:var(--panel-deep);color:var(--muted);transition:transform .18s,background .18s;transform-origin:left center}
 .profile-tab-rail button .icon{width:24px;height:24px}
 .profile-tab-rail button span{font-size:11px}
 .profile-tab-rail button[aria-selected=true]{width:64px;border-color:var(--profile-rarity-color,var(--gold));color:var(--gold);background:var(--panel);box-shadow:3px 3px 12px #0004}
 .profile-tab-rail button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.horse-profile-shell .profile-grid{display:grid;grid-template-columns:var(--profile-columns);height:clamp(190px,27dvh,240px);border-bottom:1px solid var(--border);align-items:stretch}
+.horse-profile-shell .profile-grid{display:grid;grid-template-columns:var(--profile-columns);height:clamp(190px,27dvh,240px);border-bottom:1px solid var(--border);align-items:stretch;flex-shrink:0}
 .profile-portrait{display:flex;align-items:center;justify-content:center;background:var(--panel-deep);border-right:1px solid var(--border);overflow:hidden;min-height:0;height:100%}
 .profile-portrait .horse-art{width:100%;height:100%;min-height:0;max-height:none}
 .horse-profile-shell .profile-info{padding:16px 20px;min-width:0;min-height:0;overflow-y:auto}
 .horse-profile-shell .profile-info h2{margin:0;font-size:clamp(26px,3.3vw,34px)}
-.horse-profile-shell .horse-facts{margin:10px 0 0;padding:12px 0;gap:12px 10px}
+.horse-profile-shell .horse-facts{margin:10px 0 0;padding:12px 0;gap:12px 10px;border:0}
 .horse-profile-shell .horse-description{margin:0}
-.profile-overview-bottom{display:grid;grid-template-columns:var(--profile-columns)}
+.profile-overview-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);flex:1}
 .profile-equipment,.profile-notes-skills>section{padding:14px 18px}
 .profile-equipment{border-right:1px solid var(--border)}
 .profile-equipment h3,.profile-notes-skills h3{margin:0 0 8px;font-size:21px}
 .profile-unavailable{font-size:12px;line-height:1.5;margin:0 0 8px}
 .profile-equipment dl{display:grid;gap:6px;margin:0}
 .profile-equipment dl>div{display:flex;align-items:center;gap:12px;min-width:0}
-.equipment-slot{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--border);border-radius:5px;background:var(--panel-deep);color:var(--muted);flex-shrink:0}
+.equipment-slot{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--border);border-radius:5px;background:var(--panel-deep);color:var(--muted);flex-shrink:0}
 .equipment-slot .icon{width:16px;height:16px}
-.profile-equipment dt,.profile-skills dt{font-size:13px;font-weight:600}
-.profile-equipment dd{margin:1px 0 0;font-size:12px;color:var(--muted)}
+.profile-equipment dt,.profile-skills dt{font-size:14px;font-weight:600}
+.profile-equipment dd{margin:1px 0 0;font-size:13px;color:var(--muted)}
 .profile-equipment dt,.profile-equipment dd{line-height:1.2}
 .profile-notes-skills{display:flex;flex-direction:column;min-width:0}
 .horse-profile-shell .horse-notes{margin:0;flex:1;border-bottom:1px solid var(--border)}
@@ -43,10 +45,11 @@
 .horse-profile-shell .color-regions>div>span{width:40px;height:40px}
 .horse-profile-shell .color-regions small{font-size:13px;white-space:nowrap;overflow-wrap:normal}
 .horse-profile-shell .color-regions code{font-size:12px}
-.horse-profile-shell .profile-lower{display:block}
+.horse-profile-shell .profile-lower{display:flex;flex-direction:column;flex:1}
+.horse-profile-shell .profile-traits{flex:1}
 .horse-profile-shell .profile-lower>section{padding:12px 18px;border:0;border-bottom:1px solid var(--border)}
 .horse-profile-shell .horse-trait-categories{grid-template-columns:repeat(3,minmax(0,1fr))}
-.horse-profile-shell .horse-trait-essentials{margin-bottom:10px;padding-bottom:10px;gap:10px}
+.horse-profile-shell .horse-trait-essentials{margin-bottom:10px;padding-bottom:10px;gap:10px;border:0}
 .horse-profile-shell .mutation-slots{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:0}
 .horse-profile-shell .mutation-slot{min-height:62px;padding:10px}
 @media(max-width:760px){
@@ -90,6 +93,7 @@
 .profile-scroll-frame>.profile-actions{padding:12px 18px}
 .horse-profile-shell .horse-wild-description .horse-text-display{margin:0;white-space:pre-wrap;font-size:14px;line-height:1.5}
 @media(min-width:761px) and (max-height:800px){
+ .equipment-slot{width:30px;height:30px}
  .horse-profile-shell .profile-grid{height:190px}
  .horse-profile-shell .horse-notes .horse-text-display{height:64px}
  .profile-equipment,.profile-notes-skills>section{padding:10px 16px}

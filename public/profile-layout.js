@@ -24,7 +24,7 @@ export function profileLayout(horse,{header,info,notes,colors,traits,mutations,a
       <div class="profile-grid profile-overview-top">${portrait(horse,'overview')}<div class="profile-info">${info}</div></div>
       <div class="profile-overview-bottom">${equipment()}<div class="profile-notes-skills">${notes}${skills()}</div></div>
     </section>
-    <section class="profile-tab-panel" id="${prefix}-appearance" role="tabpanel" aria-labelledby="${prefix}-appearance-tab" data-profile-panel="appearance" hidden>
+    <section class="profile-tab-panel" id="${prefix}-appearance" role="tabpanel" aria-labelledby="${prefix}-appearance-tab" data-profile-panel="appearance" hidden inert>
       <div class="profile-grid profile-appearance-top">${portrait(horse,'appearance')}<div class="profile-palette">${colors}</div></div>
       <div class="profile-lower"><section class="profile-traits"><h3>Traits</h3>${traits}</section><section class="profile-mutations">${mutations}</section></div>
     </section>
@@ -39,7 +39,10 @@ export function selectProfileTab(root,key,{focus=false}={}) {
     tab.setAttribute('aria-selected',String(active));tab.tabIndex=active ? 0 : -1;
     if (active && focus) tab.focus();
   }
-  for (const panel of root.querySelectorAll('[data-profile-panel]')) panel.hidden=panel.dataset.profilePanel!==key;
+  for (const panel of root.querySelectorAll('[data-profile-panel]')) {
+    panel.hidden=panel.dataset.profilePanel!==key;
+    panel.inert=panel.hidden;
+  }
 }
 export function bindProfileTabs() {
   document.addEventListener('click',event=>{
