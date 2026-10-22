@@ -408,3 +408,6 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 .personality-name-row :is(input,select){height:48px;min-height:48px;box-sizing:border-box}
 
 .personality-name-row .personality-emoji-field select{padding-top:0;padding-bottom:0;line-height:46px;text-align:left;text-align-last:left}
+
+.personality-grid-controls .personality-search{width:auto;max-width:480px;min-width:min(180px,100%)}
+.personality-grid-controls>[data-action="toggle-all-personalities"]{height:48px;min-height:48px;margin-left:auto}
