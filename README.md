@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.4](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.5](docs/assets/aetherion-banner.svg)
 
-**Version 1.4.0 · Horse Profiles, Skills & Customizable Rarities**
+**Version 1.5.0 · Definition Transfers, Collapsible Cards & Emoji Pickers**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1.4 adds two-tab horse profiles, individual skill progress, customizable rarity colors, expanded sale pricing, and more flexible collection and definition managers.** Local saves, imports/exports, weighted spawning, and configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
+> **Version 1.5 adds matching definition managers, JSON import/export for palettes, eye colors and mutations, animated collapsible cards, and a shared searchable emoji picker.** Local saves, weighted spawning, horse profiles, skill tracking, and visual configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,13 +22,14 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.4.0 — current** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
+| **1.5.0 — current** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
+| **1.4.0** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
 | **1.3.0** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
 | **1.2.0** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **127 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **156 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -115,8 +116,18 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 | Site-wide search with **Ctrl+K / Cmd+K** | Profile name, About Me, and twelve avatar color choices |
 | Automatic JSON saving, exports, and backups | Grouped, alphabetized navigation that retains its scroll position |
 
-Save and Cancel controls appear when a form has changes. Deletion requires confirmation. Existing horse snapshots are preserved when definitions change.
+Save and Cancel controls appear when a form has changes; horse Notes instead save when focus leaves the editor. Deletion requires confirmation. Existing horse snapshots are preserved when definitions change.
 
+
+### What's new in 1.5
+
+- **Matching managers:** Palettes now uses searchable cards, Type/Scope filters, compact dropdowns, direction controls, and create/edit modals like Eye Colors and Mutations. Shared import, export, and centered confirmed-delete buttons keep the editors consistent.
+- **Definition transfers:** export one palette, eye color, or mutation as versioned JSON and import the same file. Review and edit it before clicking **Import**; **Cancel Import** adds nothing. Invalid files are rejected and duplicate names receive a distinct imported name. Palette species links must exist in the target registry. Files preserve editable fields and regenerate local identifiers; full-world backups remain separate.
+- **Palettes:** nine distinct swatch segments with subtle dividers and instant region/hex tooltips. Notes are hidden on previews and appear last in the editor. Global and Species Linked follow the colors; Global hides the linked list. Type is a dropdown, Natural classification is no longer used, and internal IDs/unused skin metadata stay hidden. Twelve incomplete palettes now have themed placeholder colors, with red Tomato and orange Carrot. The former Mutated Horse group is **Mutated**.
+- **Collapsible cards:** Personalities and Mutations start minimized, expand with smooth animation, and offer centered Edit buttons. Personality descriptions have a scrollable fixed area. Mutation grids use five columns on larger screens and reduce columns responsively; open cards size to the tallest open description in their own section. Type sections have **Show/Hide** controls; the page button says **Hide All** only when all cards are open. Names stay fixed and aligned with emojis, while type and description text scale responsively.
+- **Shared emoji picker:** Personality and Mutation editors open a searchable modal with category filters, nearly 400 distinct emoji choices, official Unicode-name tooltips, and a paste-any-emoji option. Existing Personality choices are retained; duplicate assignments are allowed. Custom Mutation emojis persist and travel with definition exports.
+- **Horse Notes:** stable Notes and wild descriptions fill their sections. Notes save on clicking away or pressing Esc without Save/Cancel buttons; clearing a note immediately restores the centered empty prompt.
+- **Navigation and controls:** refresh preserves the current page and opens only its navigation folder. Wilds text toggles its dropdown. Website & Profile is now **User Interface**. Dropdown arrows are inset consistently; manager search fields and filters are compact and responsive.
 
 ### What's new in 1.4
 
@@ -128,7 +139,7 @@ Save and Cancel controls appear when a form has changes. Deletion requires confi
 - **Managers:** Mutations uses searchable cards, type groups, optional weights, direction controls, and CRUD modals. Eye Colors and Personalities retain their card/modal editors. Species hides internal IDs and base attributes, uses Description (optional), and shows rarity names without numbers. Hauntmare now has 105 exclusive appearance options.
 - **Game Settings:** larger title-case labels, right-aligned typed numbers without spinner arrows, responsive descriptions, right-aligned Save/Cancel, success popups, and red validation errors. Allow Duplicate Mutations applies to natural spawning only.
 
-### Mutated Horse palettes
+### Mutated palettes
 
 Available under **Horse Definitions → Palettes**:
 
@@ -198,7 +209,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
 | **Horse Definitions** | Species, Traits, Palettes, Eye Colors, Mutations, Personalities, and Rarities with local files |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
-| **Website & Profile** | Appearance & Themes, My Profile |
+| **User Interface** | Appearance & Themes, My Profile |
 
 **My Zones:** existing zone cards appear above the editor. Use the trash icon to request deletion. The editor includes an Event checkbox and a checkbox to show the zone in Wilds navigation; Short Tagline is no longer a field.
 
