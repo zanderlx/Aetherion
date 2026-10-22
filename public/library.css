@@ -454,5 +454,5 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 @media(max-width:480px){.mutation-definition-grid.personality-card-grid{grid-template-columns:minmax(0,1fr)}}
 
 .mutation-preview-type{font-size:14px;font-weight:600;text-align:center}
-.mutation-type-expanded-only{display:none}
-.mutation-collapse-card:has(.personality-toggle[aria-expanded="true"]) .mutation-type-expanded-only{display:block}
+.mutation-type-expanded-only{display:block;visibility:hidden}
+.mutation-collapse-card:has(.personality-toggle[aria-expanded="true"]) .mutation-type-expanded-only{visibility:visible}
