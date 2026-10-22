@@ -110,6 +110,18 @@ select{text-transform:uppercase}
 .trait-list .horse-eye-value { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
 .horse-eye-swatch { display:inline-flex; width:24px; height:18px; flex-shrink:0; border:1px solid var(--border); border-radius:3px; overflow:hidden; pointer-events:none; }
 .horse-eye-swatch > span { flex:1; }
+.horse-trait-essentials { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:0 0 24px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.horse-trait-essentials > div { min-width:0; }
+.horse-trait-essentials dt { font-size:13px; color:var(--muted); margin-bottom:10px; }
+.horse-trait-essentials dd { margin:0; display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:14px; overflow-wrap:anywhere; }
+.horse-trait-categories { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:0; }
+.horse-trait-group { padding:14px; border:1px solid var(--border); border-radius:6px; background:var(--panel-deep); min-width:0; }
+.horse-trait-group dt { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; font-size:14px; }
+.horse-trait-group dt small { color:var(--muted); font-size:12px; }
+.horse-trait-group dd { display:flex; flex-wrap:wrap; gap:7px; margin:0; }
+.horse-trait-tag { display:inline-block; padding:5px 9px; background:var(--panel); border:1px solid var(--border); border-radius:5px; font-size:13px; line-height:1.5; overflow-wrap:anywhere; }
+.horse-trait-none { font-size:13px; color:var(--muted); }
+@media(max-width:420px) { .horse-trait-categories { grid-template-columns:1fr; } }
 .profile-actions > [data-action="catch"] { width:min(260px,100%); margin-inline:auto; }
 .horse-mutations { margin:0; padding-left:26px; }
 .horse-mutations li p { margin:6px 0 0; color:var(--muted); line-height:1.6; }

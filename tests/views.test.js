@@ -1,4 +1,16 @@
 import {traitsEditorPage} from '../public/traits-editor.js';
+import {horseTraits} from '../public/horse-traits.js';
+
+test('Horse traits separate essentials from all thirteen optional traits',()=>{
+  const horse = {eye:{name:'Amber',colors:['#112233']},traits:{Mane:['Long'],Tail:['Flowing'],Pattern:['A','B','C','D'],Paint:['E','F'],Cosmetic:['G','H','I','J'],Keratin:['K'],Ears:['L'],Whiskers:['M']}};
+  const html = horseTraits(horse);
+  assert.match(html,/horse-trait-essentials/);
+  assert.equal((html.match(/class="horse-trait-group"/g)||[]).length,6);
+  assert.match(html,/>4\/4</);
+  assert.match(html,/>2\/2</);
+  assert.equal((html.match(/class="horse-trait-tag"/g)||[]).length,15);
+  assert.match(html,/horse-eye-swatch/);
+});
 import {eyesManagerPage,filterEyes,eyeResults,eyeIndividualChance,randomEyeDraft} from '../public/eyes-manager.js';
 
 test('individual eye percentages use all colors in the rarity',()=>{
