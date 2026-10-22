@@ -23,3 +23,16 @@ test('eye colors and mutations cannot import each others files',()=>{
  assert.throws(()=>readDefinitionDocument('eyes',createDefinitionDocument('mutations',entries.mutations),catalog));
  assert.throws(()=>readDefinitionDocument('mutations',createDefinitionDocument('eyes',entries.eyes),catalog));
 });
+test('import review uses Import and Cancel Import without reset behavior',async()=>{
+ const {definitionTransferControls}=await import('../public/definition-transfer-controls.js');
+ for(const kind of ['eyes','mutations','palettes']) {
+  const submit={textContent:'Save entry'};
+  const cancel={type:'reset',textContent:'Cancel changes',dataset:{}};
+  const form={querySelector:selector=>selector==='[type="submit"]' ? submit : selector==='[type="reset"]' ? cancel : null};
+  definitionTransferControls(form,{}, {imported:true},kind,'Definition');
+  assert.equal(submit.textContent,'Import');
+  assert.equal(cancel.textContent,'Cancel Import');
+  assert.equal(cancel.type,'button');
+  assert.equal(cancel.dataset.action,'cancel-definition-import');
+ }
+});

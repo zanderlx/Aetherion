@@ -135,7 +135,7 @@ export function createEyeEditor(renderEditor,getEyes) {
       const colors = form.querySelector('#eye-color-rows');
       labelEyeColors(colors);
       colors.insertAdjacentHTML('beforeend',`<div class="eye-add-tile" ${colors.children.length >= 6 ? 'hidden' : ''}><span class="eye-add-label" aria-hidden="true">Eye Color</span><div class="eye-add-actions"><button type="button" class="icon-button" data-eye-add="manual" title="Add a color (default: white)" aria-label="Add a color (default: white)">${icon('plus')}</button><button type="button" class="icon-button" data-eye-add="random" title="Add a random color" aria-label="Add a random color">${icon('refresh')}</button></div></div>`);
-      if (!draft?.id) {
+      if (!draft?.id && !draft?.imported) {
         const random = document.createElement('button');
         random.type = 'button'; random.className = 'button secondary';
         random.textContent = 'Randomize';

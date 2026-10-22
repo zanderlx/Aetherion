@@ -1,6 +1,11 @@
 import {icon} from './ui.js';
 // Shared placement and styling for all definition transfer/delete actions.
 export function definitionTransferControls(form,dialog,draft,kind,label) {
+ if(draft?.imported) {
+  form.querySelector('[type="submit"]').textContent='Import';
+  const cancel=form.querySelector('[type="reset"]');
+  cancel.type='button';cancel.textContent='Cancel Import';cancel.dataset.action='cancel-definition-import';
+ }
  form.querySelector('[data-action="duplicate-definition"]')?.remove();
  const remove=form.querySelector('[data-action="delete-definition"]');
  if(!remove) return;

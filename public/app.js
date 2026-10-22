@@ -346,6 +346,7 @@ document.addEventListener('click', async event => {
   if (!button || busy) return;
   const { action: intent, id } = button.dataset;
   if (['toggle-personality','toggle-all-personalities'].includes(intent)) return togglePersonalities(main,button);
+  if (intent === 'cancel-definition-import') return button.closest('dialog')?.close();
   if (intent === 'import-definition') return definitionTransfers[button.dataset.kind]?.importDefinition();
   if (intent === 'export-definition') {try {definitionTransfers[button.dataset.kind]?.exportDefinition(id);} catch(error) {notify(error.message,true);} return;}
   if (intent === 'import-palette') return paletteTransfers.importPalette();
