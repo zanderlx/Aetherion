@@ -275,7 +275,7 @@ export class GameStore {
         const { kind, id, values } = payload;
         const existing = id ? catalog[kind]?.find(d => d.id === id) : null;
         // Mutation identifiers are generated on creation and remain stable through edits.
-        const input = kind === 'mutations' ? {...values,systemId:existing?.systemId || randomUUID()} : values;
+        const input = ['mutations','species'].includes(kind) ? {...values,systemId:existing?.systemId || randomUUID(),...(kind === 'species' ? {attributes:values.attributes ?? existing?.attributes ?? {}} : {})} : values;
         const definition = validateDefinition(kind, kind === 'species' && input.traits === undefined ? {...input,traits:catalog.species.find(s => s.id === id)?.traits || {}} : input);
         if (id && !existing) throw new Error('Definition not found.');
         if (kind === 'siteThemes' && id === 'default') throw new Error('The original theme is preserved. Duplicate it to customize a copy.');

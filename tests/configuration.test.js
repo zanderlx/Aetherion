@@ -43,7 +43,7 @@ test('first startup seeds nineteen integer mutation weights and all local config
   assert.equal(standards.reduce((n,m) => n+m.weight,0),10101);
   const settings = await read('spawn-settings.json');
   assert.equal(settings.ALLOW_DUPLICATE_MUTATIONS,false);
-  assert.deepEqual(settings.tierWeights,{'1':40,'2':100,'3':250,'4':500});
+  assert.deepEqual(settings.tierWeights,{'0':10,'1':40,'2':100,'3':250,'4':500});
   assert.equal((await read('personalities.json')).length,catalog.personalities.length);
   for (const id of (await read('index.json')).zoneIds) {
     const zone = await read(`zones/${id}.json`);
@@ -210,4 +210,21 @@ test('missing configuration index never silently replaces existing master files'
   await unlink(store.files.path('index.json'));
   await assert.rejects(new GameStore(directory,catalog,defaults).init(),/index.json is missing/);
   assert.deepEqual(await read('species.json'),species);
+});
+
+test('Cosmic species persist with lower zone weight while hidden metadata survives edits',async t => {
+  const {directory,store,read} = await fixture(t);
+  const species = await add(store,'species',{name:'Cosmic Pony',rarityTier:0,zoneIds:['hallowhoof'],attributes:{stamina:12},traits:{Mane:['Soft'],Tail:['Long']}});
+  assert.equal((await read('zones/hallowhoof.json')).creatures.find(c=>c.speciesId===species.id).weight,10);
+  const {attributes,systemId,...editable} = species;
+  await store.action('save-definition',{kind:'species',id:species.id,values:{...editable,name:'Renamed Cosmic Pony',zoneIds:['hallowhoof']}});
+  const saved = (await read('species.json')).find(s=>s.id===species.id);
+  assert.deepEqual(saved.attributes,attributes);
+  assert.equal(saved.systemId,systemId);
+  const settings = await read('spawn-settings.json');
+  delete settings.tierWeights[0];
+  await store.files.atomic('spawn-settings.json',settings);
+  const restored = await new GameStore(directory,catalog,defaults).init();
+  assert.equal(restored.getCatalog().spawning.tierWeights[0],10);
+  assert.equal(restored.getCatalog().species.find(s=>s.id===species.id).rarityTier,0);
 });

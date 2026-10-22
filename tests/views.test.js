@@ -328,7 +328,10 @@ test('Horse Definitions dashboard exposes five managers and the spawning configu
   }
   const species = libraryEditorPage('species',catalog,state);
   assert.match(species,/name="rarityTier"/);
-  assert.match(species,/1: Ultra Rare/);
+  assert.match(species,/>Ultra Rare<\/option>/);
+  assert.match(species,/<option value="0"[^>]*>Cosmic<\/option>/);
+  assert.match(species,/Description \(optional\)/);
+  assert.doesNotMatch(species,/Base Attributes|>System ID|Description & notes|1: Ultra Rare/);
   assert.match(species,/name="speciesZones"/);
   const palettes = libraryEditorPage('palettes',catalog,state);
   assert.match(palettes,/name="assetSkins"/);

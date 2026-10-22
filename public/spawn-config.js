@@ -1,6 +1,6 @@
 // Shared configuration rules. Probability constants live in JSON after first startup.
 export const registryKinds = ['species','palettes','eyes','mutations','personalities'];
-export const tierWeights = {1:40,2:100,3:250,4:500};
+export const tierWeights = {0:10,1:40,2:100,3:250,4:500};
 export const standardTokens = {
   'Springy Tendons':2333,'Powerful Lungs':1675,'Strong Muscles':1116,'Nimble Hooves':837,
   'Limber Tendons':558,'Chimera Mane':558,'Chimera Tail':558,'Harlequin Mane':558,
@@ -40,8 +40,10 @@ export function validateThresholds(value = {}) {
 export function validateSpawnSettings(input) {
   const s = structuredClone(input);
   if (!s || s.version !== 1 || typeof s.ALLOW_DUPLICATE_MUTATIONS !== 'boolean') throw new Error('Spawn settings need version 1 and a duplicate-mutation boolean.');
+  // Older local configuration files predate the Cosmic species tier.
+  if (s.tierWeights && s.tierWeights[0] === undefined) s.tierWeights[0] = tierWeights[0];
   const numeric = (n,min,max) => Number.isFinite(n) && n >= min && n <= max;
-  if (![1,2,3,4].every(t => numeric(s.tierWeights?.[t],1,1000000))) throw new Error('Each rarity tier needs a positive weight.');
+  if (![0,1,2,3,4].every(t => numeric(s.tierWeights?.[t],1,1000000))) throw new Error('Each rarity tier needs a positive weight.');
   for (const key of ['cosmicSlots','wildSlots']) if (!Array.isArray(s[key]) || s[key].length !== 4 || !s[key].every(n => numeric(n,0,100))) throw new Error('Each mutation path needs four percentages.');
   if (s.cosmicSlots[0] !== 100) throw new Error('Cosmic slot 1 must remain guaranteed.');
   if (!Array.isArray(s.cosmic) || s.cosmic.length !== 5 || new Set(s.cosmic.map(c => c.name)).size !== 5 || s.cosmic.some(c => !defaultSpawnSettings.cosmic.some(base => base.name === c.name) || !numeric(c.chance,0,100)) || s.cosmic.reduce((n,c) => n+c.chance,0) > 100) throw new Error('Provide five unique Cosmic chances totaling at most 100%.');

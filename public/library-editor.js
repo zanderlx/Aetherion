@@ -15,7 +15,7 @@ const jsonField = (label,key,value) => `<label class="zone-field">${label}<texta
 const linesField = (label,key,values) => `<label class="zone-field">${label}<textarea name="${key}" rows="3">${e((values || []).join('\n'))}</textarea></label>`;
 const checkbox = (label, key, checked) => `<label class="zone-choice"><input type="checkbox" name="${key}" ${checked ? 'checked' : ''}><span>${label}</span></label>`;
 const editorGuidance = {
-  species:['Manage species, rarity tiers, attributes, and zone assignments.','Saves update species.json and the selected zone creature files. Existing horses retain their snapshots.'],
+  species:['Manage species, rarity tiers, and zone assignments.','Saves update species.json and the selected zone creature files. Existing horses retain their snapshots.'],
   palettes:['Create complete nine-region horse palettes and organize them by type or event.','Palette edits affect future horses using this palette. Existing horse colors are preserved.'],
   eyes:['Manage eye colors, textures, and visual layers.','Spawns read eyes.json for random eye definitions and visual IDs.'],
   personalities:['Write personality names and descriptions for future companions.','New encounters use these descriptions. Gameplay effects are not simulated.'],
@@ -50,7 +50,7 @@ export function libraryEditorPage(kind, catalog, state, draft) {
   const managers = {species:'Species Manager',palettes:'Palettes Manager',eyes:'Eye Color Manager',mutations:'Mutations Manager',personalities:'Personalities Manager'};
   let fields = '';
   if (kind === 'species') {
-    fields = `<label class="zone-field">Rarity Tier<select name="rarityTier">${[[1,'Ultra Rare'],[2,'Rare'],[3,'Uncommon'],[4,'Common']].map(([tier,label]) => `<option value="${tier}" ${Number(draft.rarityTier ?? 4) === tier ? 'selected' : ''}>${tier}: ${label}</option>`).join('')}</select></label>` + jsonField('Base Attributes (JSON)','attributes',draft.attributes || {}) +
+    fields = `<label class="zone-field">Rarity Tier<select name="rarityTier">${[[0,'Cosmic'],[1,'Ultra Rare'],[2,'Rare'],[3,'Uncommon'],[4,'Common']].map(([tier,label]) => `<option value="${tier}" ${Number(draft.rarityTier ?? 4) === tier ? 'selected' : ''}>${label}</option>`).join('')}</select></label>` +
       `<fieldset class="zone-pool"><legend>World Zones</legend>${locationsFor(catalog,state).map(z => `<label class="zone-choice"><input type="checkbox" name="speciesZones" value="${e(z.id)}" ${z.creatures?.some(c => c.speciesId === draft.id) || z.speciesPool.includes(draft.name) ? 'checked' : ''}><span>${e(z.name)}</span></label>`).join('')}</fieldset>` +
       textField('Event or group (optional)', 'event', draft.event, false, catalog.species.map(s => s.event)) +
       textField('Acquisition or rarity notes (optional)', 'restriction', draft.restriction) +
@@ -79,8 +79,8 @@ export function libraryEditorPage(kind, catalog, state, draft) {
     ${readOnly ? '<p class="callout">The original theme is always preserved. Duplicate it below to make your own version.</p>' : ''}
     <fieldset class="definition-fields" ${readOnly ? 'disabled' : ''}>
     ${textField('Name', 'name', draft.name, true)}
-    <label class="zone-field">${kind === 'eyes' ? 'Description' : 'Description & notes'}<textarea name="description" maxlength="4000" rows="4" placeholder="Add appearance, behavior, lore, or other details…">${e(draft.description || '')}</textarea></label>
-    ${['eyes','personalities'].includes(kind) ? `<input type="hidden" name="systemId" value="${e(draft.systemId || '')}">` : primary && kind !== 'mutations' ? textField('System ID','systemId',draft.systemId) : ''}${fields}</fieldset>
+    <label class="zone-field">${kind === 'species' ? 'Description (optional)' : kind === 'eyes' ? 'Description' : 'Description & notes'}<textarea name="description" maxlength="4000" rows="4" placeholder="Add appearance, behavior, lore, or other details…">${e(draft.description || '')}</textarea></label>
+    ${['species','eyes','personalities'].includes(kind) ? `<input type="hidden" name="systemId" value="${e(draft.systemId || '')}">` : primary && kind !== 'mutations' ? textField('System ID','systemId',draft.systemId) : ''}${fields}</fieldset>
     <p id="definition-status" class="form-status" role="status"></p>
     <div class="form-actions">${!readOnly ? '<button class="button primary" type="submit">Save entry</button><button class="button secondary" type="reset">Cancel changes</button>' : ''}${current && !readOnly ? `<button class="text-button" type="button" data-action="delete-definition" data-kind="${kind}" data-id="${e(current.id)}">Delete Entry</button>` : ''}${current && kind !== 'personalities' ? `<button class="text-button" type="button" data-action="duplicate-definition" data-kind="${kind}" data-id="${e(current.id)}">Duplicate</button>` : ''}</div>
     </form></div>${primary ? '</div>' : ''}`;
@@ -102,7 +102,7 @@ export function readDefinitionForm(form) {
   }
   const lines = key => String(values[key] || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean);
   const json = key => {try {return JSON.parse(values[key]);} catch {throw new Error(`${key} must be valid JSON.`);}};
-  if (kind === 'species') {values.rarityTier = Number(values.rarityTier); values.attributes = json('attributes'); values.zoneIds = data.getAll('speciesZones');}
+  if (kind === 'species') {values.rarityTier = Number(values.rarityTier); values.zoneIds = data.getAll('speciesZones');}
   if (kind === 'personalities') values.behaviorTags = json('behaviorTags');
   if (kind === 'eyes') {values.layers = json('layers');}
   if (kind === 'mutations') {values.thresholds = json('thresholds'); values.sizeShift = Number(values.sizeShift);}

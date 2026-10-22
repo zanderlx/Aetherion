@@ -261,10 +261,13 @@ test('selling retains complete horse history and concurrent duplicate sales cann
   const { store } = await fixture(t);
   await store.action('visit', { locationId: 'hallowhoof' });
   const horse = store.state.encounters.hallowhoof[0];
+  const initialGold = store.state.gold;
+  const optionalTraits = Object.entries(horse.traits).filter(([key])=>!['Mane','Tail','Eye Color'].includes(key)).flatMap(([,values])=>values).filter(value=>!['None','Awaiting species data'].includes(value)).length;
+  const expectedPrice = store.state.settings.sellingPrice + optionalTraits*15 + horse.mutations.length*50;
   await store.action('catch', { id: horse.id });
   const results = await Promise.allSettled([store.action('sell', { id: horse.id }), store.action('sell', { id: horse.id })]);
   assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
-  assert.equal(store.state.gold, 350);
+  assert.equal(store.state.gold, initialGold+expectedPrice);
   assert.equal(store.state.horses.length, 0);
   assert.equal(store.state.sold.length, 1);
   assert.deepEqual(store.state.sold[0].traits, horse.traits);

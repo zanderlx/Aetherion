@@ -87,7 +87,7 @@ export function validateDefinition(kind, input) {
   }
   if (kind === 'species') {
     const tier = input.rarityTier ?? 4;
-    if (!Number.isInteger(tier) || tier < 1 || tier > 4) throw new Error('Rarity Tier must be an integer from 1 to 4.');
+    if (!Number.isInteger(tier) || tier < 0 || tier > 4) throw new Error('Choose a valid rarity from Common through Cosmic.');
     result.rarityTier = tier;
     const attributes = input.attributes ?? {};
     if (!attributes || typeof attributes !== 'object' || Array.isArray(attributes) || Object.keys(attributes).length > 30 || Object.entries(attributes).some(([k,v]) => !/^[a-zA-Z][a-zA-Z0-9_]{0,59}$/.test(k) || ['constructor','prototype','__proto__'].includes(k) || !Number.isFinite(v))) throw new Error('Base attributes must be named finite numbers.');

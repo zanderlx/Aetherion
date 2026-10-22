@@ -7,6 +7,7 @@ test('species tiers distinguish Common Uncommon Rare and Ultra Rare display rank
   assert.equal(horseCardRank({rarityTier:3}).key,'uncommon');
   assert.equal(horseCardRank({rarityTier:2}).key,'rare');
   assert.deepEqual(horseCardRank({rarityTier:1}),{key:'ultra-rare',label:'Ultra Rare'});
+  assert.deepEqual(horseCardRank({rarityTier:0,speciesEvent:'Halloween'}),{key:'cosmic',label:'Cosmic'});
   assert.equal(horseCardRank({rarityTier:2,speciesEvent:'Halloween'}).key,'none');
 });
 test('five special mutations glow gold even on event species, without confusing palette names',()=>{

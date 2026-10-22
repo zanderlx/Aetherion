@@ -59,7 +59,7 @@ export function readHorseDocument(document) {
   const size = choice(h.size,Object.keys(sizes),'size');
   if (h.sizePercent !== undefined && h.sizePercent !== sizes[size]) throw new Error('Size percentage must match the selected size.');
   for (const key of ['favorite','preview','traitsComplete']) if (h[key] !== undefined && typeof h[key] !== 'boolean') throw new Error(`${key} must be true or false.`);
-  if (h.rarityTier !== undefined && (!Number.isInteger(h.rarityTier) || h.rarityTier < 1 || h.rarityTier > 4)) throw new Error('Rarity tier must be an integer from 1 to 4.');
+  if (h.rarityTier !== undefined && (!Number.isInteger(h.rarityTier) || h.rarityTier < 0 || h.rarityTier > 4)) throw new Error('Choose a valid rarity from Common through Cosmic.');
   return {
     skills:readHorseSkills(h.skills),
     ...identifiers,
