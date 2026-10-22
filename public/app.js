@@ -32,7 +32,7 @@ import { trackForms, updateFormState, formSignature, formBaseline, restoreBaseli
 
 let state, catalog, defaults, appVersion, busy = false, toastTimer;
 let stableGridColumns = 5;
-let route = 'wilds/aetherion';
+let route = location.hash.slice(1) || 'wilds/aetherion';
 let routeVersion = 0, pendingDeletion;
 let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer, pendingSearchResult;
 const openGroups = new Set();
@@ -147,6 +147,7 @@ async function navigate({refreshSpawns = false} = {}) {
   }
   const movedRoutes = {'dev/editor':'dev/roadmap','dev/generator':'dev/roadmap','dev/spawn':'dev/roadmap','dev/economy':'dev/settings','stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
   if (movedRoutes[route]) { route = movedRoutes[route]; history.replaceState(null,'', '#' + route); }
+  if (refreshSpawns) { openGroups.clear(); openGroups.add(navigationSection(route).title); }
   closeMenu();
   if (profile.open) profile.close();
   if (confirmation.open) confirmation.close();
@@ -762,8 +763,6 @@ for (const dialog of [profile, confirmation]) dialog.addEventListener('click', e
   if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
 });
 matchMedia('(max-width: 900px)').addEventListener('change', syncResponsiveMenu);
-// A fresh load always starts in Aetherion with navigation folders collapsed.
-history.replaceState(null,'','#wilds/aetherion');
 window.addEventListener('hashchange', navigate);
 try {
   ({ state, catalog, defaults, appVersion } = await request('/api/state'));
