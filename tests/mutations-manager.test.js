@@ -20,6 +20,8 @@ test('mutation types form a dropdown and sort into separate named sections',asyn
  assert.match(form,/<select name="type">/);
  for (const type of ['Standard','Special','Mutated']) assert.match(form,new RegExp(`value="${type}"`));
  assert.doesNotMatch(form,/<input name="type"/);
+ assert.doesNotMatch(form,/name="systemId"|System ID/);
+ assert.match(form,/Selection Weight \(0 = disabled\)/);
 });
 test('mutation grid searches descriptions and combines type and sort filters',()=>{
  assert.deepEqual(filterMutations(mutations,'stamina','Standard').map(m=>m.id),['lungs']);

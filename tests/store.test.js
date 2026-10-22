@@ -441,3 +441,15 @@ test('Game Settings saves duplicate mutation preference to spawn configuration a
  await assert.rejects(loaded.action('settings',{...payload,ALLOW_DUPLICATE_MUTATIONS:'yes'}));
  assert.equal(loaded.getCatalog().spawning.ALLOW_DUPLICATE_MUTATIONS,true);
 });
+
+test('mutation system identifiers are random on creation and preserved on rename',async t=>{
+ const {directory,store}=await fixture(t);
+ const values={name:'New Mutation',description:'Example',type:'Standard',weight:10,thresholds:{},sizeShift:0};
+ await store.action('save-definition',{kind:'mutations',values});
+ const mutation=store.getCatalog().mutations.find(m=>m.name===values.name);
+ assert.match(mutation.systemId,/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+ await store.action('save-definition',{kind:'mutations',id:mutation.id,values:{...values,name:'Renamed Mutation'}});
+ assert.equal(store.getCatalog().mutations.find(m=>m.id===mutation.id).systemId,mutation.systemId);
+ const loaded=await new GameStore(directory,catalog,defaults).init();
+ assert.equal(loaded.getCatalog().mutations.find(m=>m.id===mutation.id).systemId,mutation.systemId);
+});

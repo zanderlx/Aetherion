@@ -308,7 +308,7 @@ test('Horse Definitions dashboard exposes five managers and the spawning configu
     const html = libraryEditorPage(kind,catalog,state);
     assert.doesNotMatch(html,/>Horse Definitions<\/h1>/);
     assert.doesNotMatch(html,/definitions-sidebar|definitions-dashboard/);
-    if (kind !== 'personalities') assert.match(html,/name="systemId"/);
+    if (!['personalities','mutations'].includes(kind)) assert.match(html,/name="systemId"/);
   }
   const species = libraryEditorPage('species',catalog,state);
   assert.match(species,/name="rarityTier"/);
