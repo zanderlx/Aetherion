@@ -124,6 +124,8 @@ function render() {
   main.innerHTML = pageContent(route);
   if ($('#horse-grid-size')) {
     $('#horse-grid-size').value = String(stableGridColumns);
+    $('#horse-grid-size').setAttribute('aria-valuetext',`${stableGridColumns} horses per row`);
+    $('#horse-grid-value').textContent = stableGridColumns;
     $('#collection-grid').style.setProperty('--stable-grid-columns',stableGridColumns);
   }
   document.title = `${routeTitle(route, locationsFor(catalog, state))} · Aetherion`;
@@ -641,6 +643,16 @@ document.addEventListener('submit', async event => {
   finally { busy = false; submit.disabled = false; }
 });
 document.addEventListener('input', event => {
+  if (event.target.id === 'horse-grid-size') {
+    const count = Number(event.target.value);
+    if ([3,4,5,6].includes(count)) {
+      stableGridColumns = count;
+      $('#horse-grid-value').textContent = count;
+      event.target.setAttribute('aria-valuetext',`${count} horses per row`);
+      $('#collection-grid').style.setProperty('--stable-grid-columns',count);
+    }
+  }
+
   if (event.target.matches('[data-color-picker]')) {
     event.target.closest('.color-inputs').querySelector('[data-color-hex]').value = event.target.value.toUpperCase();
   }
@@ -663,13 +675,6 @@ document.addEventListener('input', event => {
   if (event.target.id === 'mutation-search') updateMutationGrid(main,catalog);
 });
 document.addEventListener('change', event => {
-  if (event.target.id === 'horse-grid-size') {
-    const count = Number(event.target.value);
-    if ([3,4,5,6].includes(count)) {
-      stableGridColumns = count;
-      $('#collection-grid').style.setProperty('--stable-grid-columns',count);
-    }
-  }
   if (event.target.id === 'mutation-sort') main.querySelector('[data-action="mutation-sort-direction"]').dataset.direction = event.target.value === 'weight' ? 'desc' : 'asc';
   if (['mutation-type','mutation-sort','mutation-weights'].includes(event.target.id)) updateMutationGrid(main,catalog);
   if (event.target.id === 'eye-sort') main.querySelector('[data-action="eye-sort-direction"]').dataset.direction = 'asc';

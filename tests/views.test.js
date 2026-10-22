@@ -244,7 +244,8 @@ test('collection search, sorting and favorites work with complete saved records'
   assert.match(page,/data-action="import-horse"/);
   assert.ok(page.indexOf('data-action="import-horse"')<page.indexOf('collection-toolbar'));
   assert.match(page,/id="horse-grid-size"/);
-  for (const count of [3,4,5,6]) assert.match(page,new RegExp(`value="${count}"[^>]*>${count} Horses`));
+  assert.match(page,/type="range" min="3" max="6" step="1" value="5"/);
+  assert.match(page,/title="Import Horse" aria-label="Import Horse">\s*<svg/);
   assert.match(page,/<option value="favorites">Favorites<\/option>/);
   assert.doesNotMatch(page,/A place to call home|A growing collection|Explore the wilds|YOUR SANCTUARY|value="birthday"/);
   assert.doesNotMatch(card(collected[0],populated),/picture-badge|Preview encounter/);
