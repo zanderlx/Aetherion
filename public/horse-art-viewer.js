@@ -33,8 +33,18 @@ export function bindHorseArtViewer() {
       }
     }
     dialog.innerHTML=`<div class="horse-art-viewer-header"><button type="button" class="icon-button" data-close-horse-art aria-label="Close full horse illustration">${icon('close')}</button></div><div class="horse-art-viewer-stage"></div>`;
-    dialog.querySelector('.horse-art-viewer-stage').append(art);
+    const stage=dialog.querySelector('.horse-art-viewer-stage');
+    stage.append(art);
+    dialog.style.height='94dvh';
     dialog.showModal();
+    // Preserve the rendered horse scale, then shrink away vertical letterboxing.
+    const bounds=art.getBoundingClientRect();
+    const scale=Math.min(bounds.width/460,bounds.height/310);
+    art.style.width=`${460*scale}px`;
+    art.style.height=`${310*scale}px`;
+    art.style.maxWidth='100%';
+    stage.style.paddingBlock='8px';
+    dialog.style.height='auto';
   });
   return {close:()=>dialog?.close()};
 }
