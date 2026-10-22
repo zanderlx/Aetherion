@@ -116,6 +116,12 @@ select{text-transform:uppercase}
 .profile-palette .color-regions > div > span { grid-column:1; grid-row:1 / 3; width:36px; height:36px; border-radius:4px; pointer-events:none; align-self:center; }
 .profile-palette .color-regions small { grid-column:2; margin:0; font-size:12px; font-weight:700; line-height:1.4; align-self:end; overflow-wrap:anywhere; }
 .profile-palette .color-regions code { grid-column:2; font-size:11px; line-height:1.4; align-self:start; }
+@media(min-width:701px) {
+  .profile-grid:has(.horse-notes) > .profile-art { align-self:stretch; display:flex; flex-direction:column; min-width:0; }
+  .profile-grid:has(.horse-notes) .profile-art > .horse-art { flex-shrink:0; }
+  .profile-grid:has(.horse-notes) .profile-palette { flex:1; display:flex; flex-direction:column; }
+  .profile-grid:has(.horse-notes) .color-regions { flex:1; grid-template-rows:repeat(3,minmax(36px,1fr)); }
+}
 .horse-trait-essentials { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:0 0 24px; padding-bottom:20px; border-bottom:1px solid var(--border); }
 .horse-trait-essentials > div { min-width:0; }
 .horse-trait-essentials dt { font-size:13px; font-weight:700; color:var(--muted); margin-bottom:4px; }
