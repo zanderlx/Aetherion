@@ -293,7 +293,7 @@ test('custom zones appear in navigation and wild pages with safe text; disabled 
   const zone = { ...newZoneDraft(), id: 'zone-test', name: '<script>magic</script>', description: 'Moon & stars', custom: true, atmosphere: 'moonlit' };
   const populated = { ...state, customLocations: [zone, { ...zone, id: 'zone-hidden', name: 'Hidden', enabled: false }] };
   const locations = locationsFor(catalog, populated);
-  const nav = sidebar('wilds/zone-test', populated, new Set(), catalog);
+  const nav = sidebar('wilds/zone-test', populated, new Set(['Wilds']), catalog);
   assert.match(nav,/<details data-group="Wilds" open>/);
   assert.match(nav,/href="#wilds\/zone-test" aria-current="page"/);
   assert.doesNotMatch(nav, /#wilds\/zone-hidden|<script>/);
@@ -486,3 +486,10 @@ test('Rarity settings show five editable ranks and apply colors to horse cards',
  assert.match(card({...horse,specialSpawn:'Solar'},state,'stable',custom),/data-card-rank="cosmic"/);
  assert.match(card({...horse,rarityTier:4},state,'stable',custom),/data-card-rank="none"/);
 });
+
+ test('navigation stays collapsed even on its active route and includes User Interface',()=>{
+  const html=sidebar('wilds/aetherion',state,new Set(),catalog);
+  assert.doesNotMatch(html,/<details[^>]*\sopen[\s>]/);
+  assert.match(html,/data-group="User Interface"/);
+  assert.doesNotMatch(html,/Website & Profile/);
+ });

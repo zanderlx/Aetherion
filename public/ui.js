@@ -47,7 +47,7 @@ workbench.items = [['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'
 groups.push(
   {title:'Horse Definitions',icon:'stable',items:[['dev/species','Species'],['dev/traits','Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations'],['dev/rarities','Rarities']]},
   {title:'World & Items',icon:'compass',items:[['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]},
-  {title:'Website & Profile',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}
+  {title:'User Interface',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}
 );
 groups.splice(groups.indexOf(workbench),1);
 groups.push(workbench);
@@ -60,7 +60,7 @@ export function sidebar(route, state, openGroups, catalog, appVersion = '') {
   const locations = catalog ? locationsFor(catalog,state) : [{id:'hallowhoof',event:true}];
   const navigation = groups.map(group => group.title === 'Wilds' && catalog ? { ...group, items: locations.filter(l => l.enabled).map(l => [`wilds/${l.id}`, l.name]) } : group).map(group => ({...group,items:group.title === 'Stables' ? group.items : [...group.items].sort((a,b) => (state.pageCopy?.site?.[`nav-${a[0].replaceAll('/','-')}`] || a[1]).localeCompare(state.pageCopy?.site?.[`nav-${b[0].replaceAll('/','-')}`] || b[1]))}));
   return `<a href="#wilds/aetherion" class="brand"><svg class="brand-logo" viewBox="0 0 80 80" aria-hidden="true"><rect width="80" height="80" rx="22" fill="var(--panel-deep)"/><path d="M40 7 65 22v28L40 73 15 50V22Z" fill="none" stroke="var(--gold)" stroke-width="1.5"/><path d="m28 57 2-16-7-5 6-11 8-3 5-10 4 12c13 3 15 17 10 32H28Z" fill="var(--gold)"/><path d="m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32" fill="none" stroke="var(--panel-deep)" stroke-width="2"/><circle cx="34" cy="29" r="1.5" fill="var(--panel-deep)"/></svg><span><span class="brand-title">AETHERION</span><small>A HORSEKEEPER’S CHRONICLE</small></span></a>
-    <nav>${navigation.map(group => `<details data-group="${group.title}" ${openGroups.has(group.title) || group.items.some(([path]) => path === route) ? 'open' : ''}>
+    <nav>${navigation.map(group => `<details data-group="${group.title}" ${openGroups.has(group.title) ? 'open' : ''}>
       <summary>${group.title === 'Wilds' ? `<a class="nav-group-home" href="#wilds/aetherion" data-action="wilds-home">${icon(group.icon)}<span>Wilds</span></a>` : `${icon(group.icon)}<span>${group.title}</span>`}<span class="chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
       <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : ''}</a>`).join('')}</div>
     </details>`).join('')}</nav>

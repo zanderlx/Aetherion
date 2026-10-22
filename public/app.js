@@ -32,10 +32,10 @@ import { trackForms, updateFormState, formSignature, formBaseline, restoreBaseli
 
 let state, catalog, defaults, appVersion, busy = false, toastTimer;
 let stableGridColumns = 5;
-let route = location.hash.slice(1) || 'wilds/aetherion';
+let route = 'wilds/aetherion';
 let routeVersion = 0, pendingDeletion;
 let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer, pendingSearchResult;
-const openGroups = new Set(groups.filter(g => g.open).map(g => g.title));
+const openGroups = new Set();
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
 bindProfileTabs();
@@ -762,6 +762,8 @@ for (const dialog of [profile, confirmation]) dialog.addEventListener('click', e
   if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
 });
 matchMedia('(max-width: 900px)').addEventListener('change', syncResponsiveMenu);
+// A fresh load always starts in Aetherion with navigation folders collapsed.
+history.replaceState(null,'','#wilds/aetherion');
 window.addEventListener('hashchange', navigate);
 try {
   ({ state, catalog, defaults, appVersion } = await request('/api/state'));

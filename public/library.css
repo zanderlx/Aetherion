@@ -20,7 +20,7 @@
 .color-inputs input[type=color]{width:100%;height:42px;padding:4px;cursor:pointer}
 .color-inputs input[data-color-hex]{width:100%;font-size:14px;font-family:monospace}
 .theme-picker{margin-bottom:32px}
-nav summary .nav-group-home{display:flex;align-items:center;gap:11px;flex:1;color:inherit;text-decoration:none}
+nav summary .nav-group-home{display:flex;align-items:center;gap:8px;flex:1;color:inherit;text-decoration:none}
 #collection-grid{--stable-grid-limit:6;grid-template-columns:repeat(min(var(--stable-grid-columns,5),var(--stable-grid-limit)),minmax(0,1fr))}
 #collection-grid .card-body{padding:12px}
 #collection-grid .card-title{gap:7px}

@@ -48,9 +48,9 @@ strong{font-weight:600}
 .brand img{width:43px;height:47px}
 .nav-caption{display:flex;justify-content:space-between;color:#ab987d;font-size:11px;letter-spacing:1.7px;padding:17px 23px 16px;border-top:1px solid #ffffff06;margin:0 0 5px}
 .nav-caption span{color:var(--gold)}
-nav{overflow-y:auto;scrollbar-width:thin;scrollbar-color:#65523a transparent;flex:1;padding:0 23px 15px}
+nav{overflow-y:auto;scrollbar-width:thin;scrollbar-color:#65523a transparent;flex:1;padding:0 16px 15px}
 nav details{margin-bottom:5px}
-nav summary{display:flex;align-items:center;gap:11px;min-height:43px;color:#d5c7b3;padding:10px;list-style:none;cursor:pointer;font-size:14px;font-weight:500;border-radius:4px}
+nav summary{display:flex;align-items:center;gap:8px;min-height:43px;color:#d5c7b3;padding:8px;list-style:none;cursor:pointer;font-size:14px;font-weight:500;border-radius:4px}
 nav summary::-webkit-details-marker{display:none}
 nav summary:hover{background:#ffffff05}
 nav summary .icon{width:18px;height:18px;color:#b49b75}
@@ -58,7 +58,7 @@ nav summary .icon{width:18px;height:18px;color:#b49b75}
 .chevron svg{display:block;width:18px;height:18px}
 details[open]>.chevron,details[open]>summary .chevron{transform:rotate(180deg)}
 .nav-items{padding:1px 0 5px}
-.nav-items a{display:flex;align-items:center;justify-content:space-between;margin:2px 0;padding:10px 13px 10px 40px;color:#b7aa97;font-size:13px;min-height:38px;position:relative;border-radius:4px}
+.nav-items a{display:flex;align-items:center;justify-content:space-between;margin:2px 0;padding:8px 10px 8px 34px;color:#b7aa97;font-size:13px;min-height:38px;position:relative;border-radius:4px}
 .nav-items a:hover{color:#f5e2be;background:#ffffff05}
 .nav-items a[aria-current]{background:linear-gradient(90deg,#543131,#3c2826);color:#f0dba9;box-shadow:inset 2px 0 #c5a166}
 .nav-items a[aria-current]:before{content:'◆';position:absolute;left:23px;font-size:8px;color:#ddbd7e}
