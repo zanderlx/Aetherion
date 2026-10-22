@@ -321,9 +321,10 @@ test('Horse Definitions dashboard exposes five managers and the spawning configu
   assert.match(eyes,/name="textureId"/);
   assert.match(eyes,/name="layers"/);
   const mutations = libraryEditorPage('mutations',catalog,state);
-  assert.match(mutations,/name="ALLOW_DUPLICATE_MUTATIONS"/);
+  assert.doesNotMatch(mutations,/name="ALLOW_DUPLICATE_MUTATIONS"/);
+  assert.match(settingsPage(state,catalog),/name="ALLOW_DUPLICATE_MUTATIONS"/);
   assert.match(mutations,/name="thresholds"/);
-  assert.ok(mutations.indexOf('spawn-settings-form') < mutations.indexOf('id="definition-form"'));
+
   assert.match(libraryEditorPage('personalities',catalog,state,catalog.personalities[0]),/name="behaviorTags"/);
 });
 test('all existing definitions and blank editor forms render without missing values', () => {

@@ -35,11 +35,11 @@ test('mutation cards expose modal edit actions and safely render names and descr
  assert.doesNotMatch(html,/<script>|<img/);
  assert.match(html,/Cosmic/);
 });
-test('mutation manager keeps its global spawning toggle and card grid without inline editor',()=>{
+test('mutation manager shows its card grid without gameplay settings or inline editor',()=>{
  const html=mutationsManagerPage({mutations});
  assert.match(html,/Create Mutation/);
- assert.match(html,/name="ALLOW_DUPLICATE_MUTATIONS"/);
- assert.match(html,/4,008 Total Weight/);
+ assert.doesNotMatch(html,/name="ALLOW_DUPLICATE_MUTATIONS"/);
+
  assert.match(html,/id="mutation-search"/);
  assert.match(html,/id="mutation-type"/);
  assert.match(html,/id="mutation-sort"/);

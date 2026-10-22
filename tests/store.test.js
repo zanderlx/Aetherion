@@ -429,3 +429,15 @@ test('legacy zone Cosmic palettes are removed from local files on load', async t
   assert.deepEqual(loaded.getCatalog().locations.find(z => z.id === 'aetherion').palettePool,saved.palettePool);
   assert.ok((await readdir(join(directory,'backups'))).some(n => n.startsWith('pre-cosmic-zone-cleanup-')));
 });
+
+test('Game Settings saves duplicate mutation preference to spawn configuration atomically',async t=>{
+ const {directory,store}=await fixture(t);
+ const payload={...store.state.settings,ALLOW_DUPLICATE_MUTATIONS:true};
+ await store.action('settings',payload);
+ const spawn=JSON.parse(await readFile(join(directory,'config','spawn-settings.json'),'utf8'));
+ assert.equal(spawn.ALLOW_DUPLICATE_MUTATIONS,true);
+ const loaded=await new GameStore(directory,catalog,defaults).init();
+ assert.equal(loaded.getCatalog().spawning.ALLOW_DUPLICATE_MUTATIONS,true);
+ await assert.rejects(loaded.action('settings',{...payload,ALLOW_DUPLICATE_MUTATIONS:'yes'}));
+ assert.equal(loaded.getCatalog().spawning.ALLOW_DUPLICATE_MUTATIONS,true);
+});

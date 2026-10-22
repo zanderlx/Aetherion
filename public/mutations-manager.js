@@ -1,5 +1,4 @@
 import {escapeHTML as e,icon} from './ui.js';
-import {defaultSpawnSettings} from './spawn-config.js';
 import {formSignature,formBaseline} from './form-state.js';
 
 const typeOrder = ['Standard','Special','Mutated'];
@@ -20,9 +19,7 @@ export function mutationCards(entries,showWeights=false) {
   return entries.map(m=>`<button type="button" class="panel eye-definition-card mutation-definition-card" data-action="edit-definition" data-kind="mutations" data-id="${e(m.id)}" aria-label="Edit ${e(m.name)}"><span class="eye-card-name">${e(m.name)}</span><span class="mutation-card-description">${e(m.description || 'No description yet.')}</span><span class="mutation-card-meta"><span>${e(m.type)}</span>${showWeights ? `<span>Weight: ${Math.abs(m.weight || 0).toLocaleString()}</span>` : ''}</span></button>`).join('');
 }
 export function mutationsManagerPage(catalog) {
-  const standards=catalog.mutations.filter(m=>m.type==='Standard');
   return `<div class="definitions-header eye-manager-header"><h1 class="manager-heading">Mutations Manager</h1><button class="button primary" data-action="new-definition" data-kind="mutations">${icon('spark')} Create Mutation</button></div>
-  <form id="spawn-settings-form" class="panel spawn-settings"><p data-copy-skip>Standard pool: ${standards.length} mutations · ${standards.reduce((n,m)=>n+Math.abs(m.weight || 0),0).toLocaleString()} Total Weight</p><label class="setting-row"><span><strong>ALLOW_DUPLICATE_MUTATIONS</strong><small>Allow the same standard mutation in multiple slots on one horse.</small></span><input type="checkbox" class="toggle" name="ALLOW_DUPLICATE_MUTATIONS" ${(catalog.spawning || defaultSpawnSettings).ALLOW_DUPLICATE_MUTATIONS ? 'checked' : ''}></label><div class="form-actions"><button class="button primary" type="submit">Save Configuration</button><button class="button secondary" type="reset">Cancel Changes</button></div></form>
   <div class="eye-grid-controls"><label class="zone-field">Search<input id="mutation-search" type="search" placeholder="Search..." aria-label="Search mutations"></label><label class="zone-field">Type<select id="mutation-type"><option value="">All Types</option>${mutationTypes(catalog.mutations).map(type=>`<option value="${e(type)}">${e(type)}</option>`).join('')}</select></label><label class="zone-field eye-percent-control"><span><input id="mutation-weights" type="checkbox"> Show Weights</span></label><div class="mutation-sort-controls"><label class="zone-field">Sort By<select id="mutation-sort"><option value="type" selected>Type</option><option value="name">Name</option><option value="weight">Weight</option></select></label><button type="button" class="icon-button sort-direction" data-action="mutation-sort-direction" data-direction="asc" aria-label="Ascending order. Switch to descending" title="Ascending order. Switch to descending">${icon('arrow')}</button></div></div>
   <div id="mutation-grid">${mutationResults(filterMutations(catalog.mutations,'','','type'))}</div><p id="mutation-empty" role="status" ${catalog.mutations.length ? 'hidden' : ''}>No mutations match your filters.</p>`;
 }

@@ -1,3 +1,4 @@
+import {defaultSpawnSettings} from './spawn-config.js';
 import {raritiesManagerPage,readRaritySettings} from './rarities-manager.js';
 import {defaultRaritySettings,rarityNames,raritySettings} from './rarity-settings.js';
 import {horseCardRank} from './horse-rank.js';
@@ -93,7 +94,7 @@ function pageContent(pageRoute, pageState = state) {
   if (section === 'wilds' && locations.some(l => l.id === page && l.enabled)) return wildPage(locations.find(l => l.id === page), state, locations, catalog);
   else if (route === 'stable/breeding') return plannedPage(route,state);
   else if (section === 'stable') return stablePage(page, state,catalog);
-  else if (route === 'dev/settings' || route === 'dev/economy') return settingsPage(state, page === 'economy');
+  else if (route === 'dev/settings' || route === 'dev/economy') return settingsPage(state,catalog);
   else if (route === 'dev/saves') return savesPage(state);
   else if (route === 'dev/roadmap') return roadmapPage();
   else if (route === 'dev/profile') return keeperPage(state);
@@ -429,6 +430,7 @@ document.addEventListener('click', async event => {
       if (!input) continue;
       if (input.type === 'checkbox') input.checked = value; else input.value = value;
     }
+    if (form.id === 'settings-form') form.elements.ALLOW_DUPLICATE_MUTATIONS.checked = defaultSpawnSettings.ALLOW_DUPLICATE_MUTATIONS;
     if (form.id === 'economy-form') for (const [key,value] of Object.entries(defaults.saleModifiers || defaultSaleModifiers)) form.elements.namedItem(`saleModifier:${key}`).value = value;
     updateFormState(form);
     form.querySelector('[role=status]').textContent = 'Defaults loaded into the form. Save settings to apply, or cancel to keep your current values.';
@@ -598,7 +600,8 @@ document.addEventListener('submit', async event => {
       await action('settings', {
         horsesPerSearch: Number(values.horsesPerSearch ?? state.settings.horsesPerSearch), sellingPrice: Number(values.sellingPrice ?? state.settings.sellingPrice),
         startingGold: Number(values.startingGold ?? state.settings.startingGold), stableCapacity: Number(values.stableCapacity ?? state.settings.stableCapacity),
-        ignoreStableLimit: form.elements.ignoreStableLimit?.checked ?? state.settings.ignoreStableLimit
+        ignoreStableLimit: form.elements.ignoreStableLimit?.checked ?? state.settings.ignoreStableLimit,
+        ALLOW_DUPLICATE_MUTATIONS:form.elements.ALLOW_DUPLICATE_MUTATIONS.checked
       });
       render();
       $(`#${form.id === 'economy-form' ? 'economy' : 'settings'}-status`).textContent = 'Settings saved. Your next search and future sales will use these values.';

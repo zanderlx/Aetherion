@@ -238,6 +238,7 @@ export class GameStore {
         }
         if (typeof payload.ignoreStableLimit !== 'boolean') throw new Error('Stable limit override must be true or false.');
         next.settings.ignoreStableLimit = payload.ignoreStableLimit;
+        if (payload.ALLOW_DUPLICATE_MUTATIONS !== undefined) catalog.spawning = validateSpawnSettings({...catalog.spawning,ALLOW_DUPLICATE_MUTATIONS:payload.ALLOW_DUPLICATE_MUTATIONS});
       } else if (type === 'save-zone') {
         const zone = validateZone(payload, catalog);
         const existing = payload.id ? locationsFor(catalog, next).find(l => l.id === payload.id) : null;
@@ -320,7 +321,7 @@ export class GameStore {
         await writeFile(join(this.directory, 'backups', `save-${Date.now()}-${randomUUID().slice(0, 8)}.json`), JSON.stringify(next, null, 2) + '\n', { flag: 'wx' });
       } else throw new Error('Unknown action.');
       synchronizeCosmicPalettes(horseRecords(next),catalog);
-      if (['rarity-settings','save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type)) {
+      if (['rarity-settings','save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type) || (type === 'settings' && payload.ALLOW_DUPLICATE_MUTATIONS !== undefined)) {
         const settings = catalog.spawning || defaultSpawnSettings;
         const zones = locationsFor(catalog,next).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
         let committed;
