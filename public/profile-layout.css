@@ -58,11 +58,11 @@
 .profile-skills .skill-level-bar{display:grid;align-items:center;justify-items:start;padding-inline:10px;align-self:center;height:24px;border:1px solid var(--skill-color);border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--skill-color) 80%,var(--panel-deep)) var(--skill-progress),color-mix(in srgb,var(--skill-color) 50%,var(--panel-deep)) var(--skill-progress));font-size:13px;font-weight:600;color:var(--text)}
 .profile-skills .skill-xp{font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--muted)}
 .profile-skills dd{margin:0;color:var(--muted)}
-.horse-profile-shell .profile-palette{padding:14px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.horse-profile-shell .profile-palette{--palette-swatch-size:clamp(40px,5dvh,46px);padding:8px 20px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
 .horse-profile-shell .profile-palette>.profile-palette-heading{padding:0;margin:0;font:400 22px/1.4 var(--serif);color:var(--text);text-align:center}
-.horse-profile-shell .color-regions{padding:0;margin:14px auto 0;width:100%;max-width:560px;gap:12px 14px;grid-template-columns:repeat(3,minmax(0,1fr))}
-.horse-profile-shell .color-regions>div{grid-template-columns:40px minmax(0,1fr);column-gap:10px}
-.horse-profile-shell .color-regions>div>span{width:40px;height:40px}
+.horse-profile-shell .color-regions{padding:0;margin:8px auto 0;width:100%;max-width:560px;gap:6px 14px;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));flex:1;min-height:0}
+.horse-profile-shell .color-regions>div{grid-template-columns:var(--palette-swatch-size) minmax(0,max-content);column-gap:8px;justify-content:center;align-content:center}
+.horse-profile-shell .color-regions>div>span{width:var(--palette-swatch-size);height:var(--palette-swatch-size)}
 .horse-profile-shell .color-regions small{font-size:13px;white-space:nowrap;overflow-wrap:normal}
 .horse-profile-shell .color-regions code{font-size:12px}
 .horse-profile-shell .profile-lower{display:flex;flex-direction:column;flex:1}
