@@ -1,0 +1,40 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {varyPalette} from '../public/palette-variation.js';
+import {synchronizeCosmicPalettes} from '../src/cosmic-palettes.js';
+import {spawnHorse} from '../src/spawning.js';
+import {catalogFor} from '../public/definitions.js';
+import {createHorseDocument,readHorseDocument} from '../public/horse-transfer.js';
+import {readFile} from 'node:fs/promises';
+const catalog=catalogFor(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')),{});
+const channels=hex=>hex.slice(1).match(/../g).map(x=>parseInt(x,16));
+test('generated shades stay near base colors, preserve gray hues and leave definitions untouched',()=>{
+ const palette={id:'sample',colors:{Pink:'#F4A4C8',Gold:'#F5D66E',White:'#FFFFFF',Black:'#000000'}};
+ const before=structuredClone(palette);
+ for(const roll of [0,.1,.5,.9,.999999]) {
+  const varied=varyPalette(palette,()=>roll);
+  for(const [region,hex] of Object.entries(varied.colors)) {
+   assert.match(hex,/^#[0-9A-F]{6}$/);
+   channels(hex).forEach((value,i)=>assert.ok(Math.abs(value-channels(palette.colors[region])[i])<=13));
+  }
+  for(const region of ['White','Black'])assert.equal(new Set(channels(varied.colors[region])).size,1);
+ }
+ assert.deepEqual(palette,before);
+ assert.deepEqual(varyPalette(palette,()=>.5).colors,palette.colors);
+ assert.notDeepEqual(varyPalette(palette,()=>0).colors,varyPalette(palette,()=>1).colors);
+});
+test('spawned Cosmic shades survive synchronization and JSON export/import',()=>{
+ let first=true;
+ const horse=spawnHorse(catalog,catalog.locations.find(z=>z.id==='aetherion'),()=>{if(first){first=false;return .0015;}return .25;});
+ const definition=catalog.palettes.find(p=>p.id===horse.paletteId);
+ assert.equal(horse.specialSpawn,'Lunar');
+ assert.notDeepEqual(horse.palette.colors,definition.colors);
+ assert.deepEqual(horse.palette.colorVariation.baseColors,definition.colors);
+ const original=structuredClone(horse.palette.colors);
+ assert.equal(synchronizeCosmicPalettes([horse],catalog),0);
+ assert.deepEqual(horse.palette.colors,original);
+ const imported=readHorseDocument(createHorseDocument(horse));
+ synchronizeCosmicPalettes([imported],catalog);
+ assert.deepEqual(imported.palette.colors,original);
+ assert.deepEqual(definition.colors,horse.palette.colorVariation.baseColors);
+});

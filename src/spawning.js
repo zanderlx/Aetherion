@@ -1,3 +1,4 @@
+import {varyPalette} from '../public/palette-variation.js';
 import {isCosmicPalette} from '../public/cosmic-types.js';
 import {randomInt,randomUUID} from 'node:crypto';
 import {cosmicPalette} from './cosmic-palettes.js';
@@ -79,10 +80,11 @@ export function spawnHorse(catalog,location,rng = randomFloat) {
     return [category,selected && selected !== 'None' ? [selected] : []];
   }));
   for (const category of ['Mane','Tail']) if (!traits[category]?.length) traits[category] = ['Awaiting species data'];
+  const variedPalette = varyPalette(palette,rng);
   return {
     id:randomUUID(),name:'',species:species.name,speciesId:species.id,rarityTier:species.rarityTier,speciesEvent:species.event || null,age:'Adult',origin:'Wild',
     gender,size:size.name,sizePercent:size.percent,birthday:new Date().toISOString().slice(0,10),
-    palette,paletteId:palette.id,skinId:palette.assetSkins?.length ? pickUniform(palette.assetSkins,rng) : null,
+    palette:variedPalette,paletteId:palette.id,skinId:palette.assetSkins?.length ? pickUniform(palette.assetSkins,rng) : null,
     eye,eyeId:eye.id,eyeTextureId:eye.textureId || null,eyeLayers:structuredClone(eye.layers || []),
     personality,personalityId:personality.id,personalitySystemId:personality.systemId || personality.id,
     personalityDescription:personality.description,traits,mutations,skills:readHorseSkills(),specialSpawn:cosmic?.name || null,

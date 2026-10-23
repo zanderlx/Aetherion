@@ -15,8 +15,12 @@ export function synchronizeCosmicPalettes(horses,catalog) {
     if (!palette) continue; // Preserve saved visuals if a matching definition was deleted.
     const skins = palette.assetSkins || [];
     const skinId = skins.includes(horse.skinId) ? horse.skinId : skins[0] || null;
-    if (horse.paletteId === palette.id && horse.skinId === skinId && JSON.stringify(horse.palette) === JSON.stringify(palette)) continue;
-    horse.palette = structuredClone(palette);
+    // Preserve generated shades while the matching base palette is unchanged.
+    const variant = horse.palette?.colorVariation;
+    const current = variant && horse.paletteId === palette.id && JSON.stringify(variant.baseColors) === JSON.stringify(palette.colors)
+      ? {...structuredClone(palette),colors:horse.palette.colors,colorVariation:variant} : palette;
+    if (horse.paletteId === palette.id && horse.skinId === skinId && JSON.stringify(horse.palette) === JSON.stringify(current)) continue;
+    horse.palette = structuredClone(current);
     horse.paletteId = palette.id;
     horse.skinId = skinId;
     changed++;
