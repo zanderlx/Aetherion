@@ -57,6 +57,7 @@ async function showAudioSettings(){
 }
 window.addEventListener('DOMContentLoaded',async()=>{
   if(location.protocol==='file:')return;
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.body.animate([{opacity:0},{opacity:1}],{duration:400,easing:'ease-out'});
   const toggle=document.createElement('button');toggle.id='desktop-music-toggle';
   toggle.style.cssText='position:fixed;bottom:42px;right:48px;z-index:40;background:#202b25;color:#e9d8b4;border:1px solid #d2b47755;border-radius:5px;padding:9px 15px;font:13px Segoe UI;cursor:pointer';
   const refresh=async()=>{const state=await ipcRenderer.invoke('audio-state');toggle.textContent=state.muted?'♫ Music Off':'♫ Music On';toggle.title=state.muted?'Unmute music':'Mute music';};

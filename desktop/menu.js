@@ -6,7 +6,12 @@ display();
 mute.onclick=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:!preferences.muted});display();};
 volume.oninput=()=>{preferences.volume=Number(volume.value);display();window.desktopMenu.setAudio({...preferences});};
 document.querySelector('#settings').onclick=()=>settings.showModal();
-document.querySelector('#play').onclick=()=>{location.href=new URLSearchParams(location.search).get('game');};
+document.querySelector('#play').onclick=async()=>{
+  document.querySelector('#play').disabled=true;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced)await document.body.animate([{opacity:1},{opacity:0}],{duration:300,easing:'ease-in',fill:'forwards'}).finished;
+  location.href=new URLSearchParams(location.search).get('game');
+};
 document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();
 window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='AETHERION V'+version;});
 
