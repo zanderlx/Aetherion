@@ -45,11 +45,15 @@ async function showAudioSettings(){
     const heading=document.createElement('h3');heading.textContent='Audio';modal.append(heading);
     const label=document.createElement('label');label.textContent='Music Volume ';
     const output=document.createElement('output');label.append(output);modal.append(label);
-    const slider=document.createElement('input');slider.type='range';slider.min=0;slider.max=100;slider.style.cssText='width:100%;accent-color:#d2b477;margin:24px 0';modal.append(slider);
+    const slider=document.createElement('input');slider.type='range';slider.min=0;slider.max=100;slider.style.cssText='appearance:auto;width:100%;min-height:0;height:20px;padding:0;border:0;background:transparent;accent-color:#d2b477;margin:24px 0;box-sizing:border-box';modal.append(slider);
     slider.oninput=async()=>{output.textContent=slider.value+'%';const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,volume:Number(slider.value)});};
+    const muteLabel=document.createElement('label');muteLabel.textContent='Mute Music';muteLabel.style.alignItems='center';
+    const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.id='audio-muted';checkbox.style.cssText='width:auto;min-height:0;margin:0;accent-color:#d2b477';
+    checkbox.onchange=async()=>{const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,muted:checkbox.checked});document.querySelector('#desktop-music-toggle').textContent=checkbox.checked?'♫ Music Off':'♫ Music On';};
+    muteLabel.append(checkbox);modal.append(muteLabel);
     const done=document.createElement('button');done.textContent='Done';done.onclick=()=>modal.close();modal.append(done);document.body.append(modal);modal.addEventListener('click',event=>{if(event.target===modal){const r=modal.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)modal.close();}});
   }
-  const state=await ipcRenderer.invoke('audio-state');modal.querySelector('input').value=state.volume;modal.querySelector('output').textContent=state.volume+'%';modal.showModal();
+  const state=await ipcRenderer.invoke('audio-state');modal.querySelector('input[type=range]').value=state.volume;modal.querySelector('#audio-muted').checked=state.muted;modal.querySelector('output').textContent=state.volume+'%';modal.showModal();
 }
 window.addEventListener('DOMContentLoaded',async()=>{
   if(location.protocol==='file:')return;
