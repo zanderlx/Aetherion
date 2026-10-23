@@ -473,3 +473,20 @@ test('legacy horses receive separate persisted skills without overwriting existi
  assert.deepEqual(loaded.state.horses[1].skills.agility,{level:0,xp:0});
  assert.ok((await readdir(join(directory,'backups'))).some(n=>n.startsWith('pre-horse-skills-')));
 });
+
+test('skill XP awards are validated, isolated per horse and persisted',async t=>{
+ const {directory,store}=await fixture(t);
+ await store.action('visit',{locationId:'aetherion'});
+ const first=store.state.encounters.aetherion[0];
+ await store.action('catch',{id:first.id});
+ const second=store.state.encounters.aetherion[0];
+ await store.action('catch',{id:second.id});
+ await assert.rejects(store.action('horse-skill-xp',{id:first.id,skill:'agility',xp:600}));
+ await store.action('developer-edit-mode',{enabled:true});
+ await store.action('horse-skill-xp',{id:first.id,skill:'agility',xp:600});
+ assert.deepEqual(store.state.horses.find(h=>h.id===first.id).skills.agility,{level:2,xp:75});
+ assert.deepEqual(store.state.horses.find(h=>h.id===second.id).skills.agility,{level:0,xp:0});
+ for(const xp of [-1,1.5,'10'])await assert.rejects(store.action('horse-skill-xp',{id:first.id,skill:'wing',xp}));
+ const loaded=await new GameStore(directory,catalog,defaults,{rng:()=>.5}).init();
+ assert.deepEqual(loaded.state.horses.find(h=>h.id===first.id).skills.agility,{level:2,xp:75});
+});

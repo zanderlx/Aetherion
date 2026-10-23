@@ -474,7 +474,7 @@ test('Horse cards truncate names after thirteen characters while profiles retain
  assert.match(html,/>ABCDEFGHIJKLM…<\/button>/);
  assert.match(html,/title="ABCDEFGHIJKLMNO"/);
  const profile=profileContent(horse,state);
- assert.match(profile,/id="profile-title" tabindex="0">ABCDEFGHIJKLMNO/);
+ assert.match(profile,/id="profile-title" tabindex="0">[\s\S]*?ABCDEFGHIJKLMNO<\/h2>/);
 });
 
 test('Rarity settings show five editable ranks and apply colors to horse cards',()=>{

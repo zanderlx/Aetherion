@@ -61,7 +61,7 @@ details[open]>.chevron,details[open]>summary .chevron{transform:rotate(180deg)}
 .nav-items a{display:flex;align-items:center;justify-content:space-between;margin:2px 0;padding:8px 10px 8px 34px;color:#b7aa97;font-size:13px;min-height:38px;position:relative;border-radius:4px}
 .nav-items a:hover{color:#f5e2be;background:#ffffff05}
 .nav-items a[aria-current]{background:linear-gradient(90deg,#543131,#3c2826);color:#f0dba9;box-shadow:inset 2px 0 #c5a166}
-.nav-items a[aria-current]:before{content:'◆';position:absolute;left:23px;font-size:8px;color:#ddbd7e}
+.nav-items a[aria-current]:before{content:'◆';position:absolute;left:17px;top:50%;transform:translate(-50%,-50%);line-height:1;font-size:8px;color:#ddbd7e}
 .count{font-size:11px;border:1px solid #5f4d39;padding:0 5px;border-radius:3px}
 .event-dot{width:5px;height:5px;background:#d89d67;border-radius:50%}
 .sidebar-foot{display:flex;gap:10px;align-items:center;padding:19px 22px;border-top:1px solid var(--border);font-size:12px;color:#cbbda5}

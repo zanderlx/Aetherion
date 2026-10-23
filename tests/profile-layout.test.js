@@ -48,7 +48,7 @@ test('preview headshots and full artwork share the same horse colors',()=>{
  const head=horseHeadArt(horse);
  assert.match(full,/viewBox="0 0 460 310"/);
  assert.equal(head,full.replace('viewBox="0 0 460 310"','viewBox="240 25 135 145"'));
- assert.match(card(horse,state,'wild',catalog),/viewBox="240 25 135 145"/);
+ assert.match(card(horse,state,'wild',catalog),/viewBox="0 0 460 310"/);
  assert.match(card(horse,{...state,horses:[horse]},'stable',catalog),/viewBox="240 25 135 145"/);
 });
 
@@ -73,4 +73,11 @@ test('each profile renders its own skill progress and maxed skills use MAX',()=>
  assert.doesNotMatch(html,/>Lv\. 11/);
  const other=profileContent(horse,state,{catalog});
  assert.equal((other.match(/>Lv\. 0<\/span>/g)||[]).length,5);
+});
+
+test('skill XP controls are limited to owned horses in Edit Mode',()=>{
+ const editing={...state,horses:[horse],settings:{...state.settings,developerEditMode:true}};
+ assert.equal((profileContent(horse,editing,{catalog}).match(/data-action="add-skill-xp"/g)||[]).length,5);
+ assert.doesNotMatch(profileContent(horse,state,{catalog}),/data-action="add-skill-xp"/);
+ assert.doesNotMatch(profileContent(horse,editing,{catalog,importPreview:true}),/data-action="add-skill-xp"/);
 });

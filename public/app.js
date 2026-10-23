@@ -29,7 +29,6 @@ import { zoneEditorPage, zonePreview } from './zone-editor.js';
 import { draftDefinition, validateDefinition } from './definitions.js';
 import { editorRoutes, libraryEditorPage, readDefinitionForm, traitRow, colorControl, applyWebsiteTheme } from './library-editor.js';
 import { createCopyEditor } from './copy-editor.js';
-import { prepareSearch, searchEntries } from './site-search.js';
 import { keeperPage, avatarSVG } from './keeper.js';
 import { roadmapPage } from './roadmap.js';
 import { trackForms, updateFormState, formSignature, formBaseline, restoreBaseline } from './form-state.js';
@@ -38,7 +37,6 @@ let state, catalog, defaults, appVersion, busy = false, toastTimer;
 let stableGridColumns = 5;
 let route = location.hash.slice(1) || 'wilds/aetherion';
 let routeVersion = 0, pendingDeletion;
-let searchState, searchIndex = [], searchDialog, searchResults = [], searchTimer, pendingSearchResult;
 const openGroups = new Set();
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
@@ -106,7 +104,7 @@ function renderChrome() {
   const sectionName = state.pageCopy?.site?.[`group-${section.title.toLowerCase()}`] ?? section.title;
   const definitionKind = route === 'dev/rarities' ? 'rarities' : route === 'dev/traits' ? 'species' : editorRoutes[route.split('/')[1]];
   const definitionPath = section.title === 'Compendium' && definitionKind ? `data/config/${definitionKind}.json` : '';
-  $('#topbar').innerHTML = `<div class="breadcrumb"><button class="icon-button mobile-menu" data-action="menu" aria-label="Open navigation" aria-expanded="${document.body.classList.contains('nav-open')}">${icon('menu')}</button>${icon(section.icon)}<span>${e(sectionName)}</span><span class="crumb-separator">/</span><strong>${e(routeTitle(route, locationsFor(catalog, state)))}</strong>${definitionPath ? `<span class="breadcrumb-path" title="${e(definitionPath)}">— ${e(definitionPath)}</span>` : ''}</div><div class="header-right"><button class="icon-button" data-action="site-search" aria-label="Search entire site" title="Search entire site (Ctrl+K)">${icon('search')}</button><span class="save-status"><span class="save-dot"></span>Saved locally</span><div class="gold-balance" role="group" aria-label="Current gold balance">${icon('coin')}<strong>${number(state.gold)}</strong><span>GOLD</span></div><a href="#dev/profile" class="keeper-avatar" aria-label="Open my profile">${avatarSVG(state.keeper?.avatarSeed ?? 11)}</a></div>`;
+  $('#topbar').innerHTML = `<div class="breadcrumb"><button class="icon-button mobile-menu" data-action="menu" aria-label="Open navigation" aria-expanded="${document.body.classList.contains('nav-open')}">${icon('menu')}</button>${icon(section.icon)}<span>${e(sectionName)}</span><span class="crumb-separator">/</span><strong>${e(routeTitle(route, locationsFor(catalog, state)))}</strong>${definitionPath ? `<span class="breadcrumb-path" title="${e(definitionPath)}">— ${e(definitionPath)}</span>` : ''}</div><div class="header-right"><div class="gold-balance" role="group" aria-label="Current gold balance">${icon('coin')}<strong>${number(state.gold)}</strong><span>GOLD</span></div><a href="#dev/profile" class="keeper-avatar" aria-label="Open my profile">${avatarSVG(state.keeper?.avatarSeed ?? 11)}</a></div>`;
 }
 function pageContent(pageRoute, pageState = state) {
   const state = pageState;
@@ -169,75 +167,11 @@ async function navigate({refreshSpawns = false} = {}) {
     if (route.startsWith('wilds/') && (refreshSpawns || !state.encounters[route.split('/')[1]]) && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action(refreshSpawns ? 'search' : 'visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
     render();
-    if (pendingSearchResult?.route === route) {
-      const result = pendingSearchResult;
-      pendingSearchResult = null;
-      if (result.kind) showDefinition(result.kind,catalog[result.kind].find(d => d.id === result.id));
-      if (result.horse) inspect(result.id);
-      if (result.zone) showZoneDraft(locationsFor(catalog,state).find(d => d.id === result.id));
-    }
     main.focus({ preventScroll: true });
     window.scrollTo({ top: 0 });
   } catch (error) { notify(error.message, true); }
 }
 function findHorse(id) { return [...state.horses, ...state.sold, ...Object.values(state.encounters).flat()].find(h => h.id === id); }
-function openSiteSearch() {
-  if (searchState !== state) {
-    const entries = [], locations = locationsFor(catalog,state);
-    const routes = new Map(groups.flatMap(group => group.items).filter(([path]) => !path.startsWith('wilds/')));
-    for (const zone of locations.filter(z => z.enabled)) routes.set(`wilds/${zone.id}`,zone.name);
-    const template = document.createElement('template');
-    // Horse records have their own index entries; don't generate their artwork to index page copy.
-    const pageState = {...state, horses:[], sold:[], encounters:{}, transactions:[]};
-    for (const [path,title] of routes) {
-      template.innerHTML = pageContent(path,pageState);
-      template.content.querySelectorAll('.definition-list,.horse-grid,.theme-grid,input,select,textarea').forEach(el => el.remove());
-      entries.push({ route:path, title:state.pageCopy?.[path]?.['page.title'] || title, text:template.content.textContent.replace(/\s+/g,' ') + ' ' + Object.values(state.pageCopy?.[path] || {}).join(' '), category:'Page' });
-    }
-    for (const [path,kind] of Object.entries(editorRoutes)) for (const entry of catalog[kind]) entries.push({
-      route:`dev/${path}`, kind, id:entry.id, title:entry.name, text:JSON.stringify(entry), category:kind
-    });
-    for (const zone of locations) entries.push({ route:'dev/locations', zone:true,id:zone.id,title:zone.name,text:JSON.stringify(zone),category:'Zone' });
-    const seen = new Set();
-    for (const [path,horses] of [['stable/all',state.horses],['stable/all',state.sold],...Object.entries(state.encounters).map(([id,horses]) => [`wilds/${id}`,horses])]) {
-      for (const horse of horses) {
-        if (seen.has(horse.id)) continue;
-        seen.add(horse.id);
-        entries.push({ route:path.startsWith('wilds/') && !locations.some(z => `wilds/${z.id}` === path && z.enabled) ? 'stable/all' : path, horse:true,id:horse.id,title:horse.name || horse.species,text:JSON.stringify(horse),category:'Horse' });
-      }
-    }
-    for (const [key,text] of Object.entries(state.pageCopy?.site || {})) entries.push({route:key.startsWith('nav-') ? key.slice(4).replace('-', '/') : 'dev/edit-mode',title:text,text:'Shared website wording',category:'Website text'});
-    if (state.keeper) entries.push({route:'dev/profile',title:state.keeper.name,text:state.keeper.about,category:'Profile'});
-    searchIndex = prepareSearch(entries);
-    searchState = state;
-  }
-  if (!searchDialog) {
-    searchDialog = document.createElement('dialog');
-    searchDialog.id = 'site-search-dialog';
-    searchDialog.setAttribute('aria-labelledby','site-search-title');
-    searchDialog.innerHTML = `<div class="dialog-top"><h2 id="site-search-title">Search The Site</h2><button class="icon-button" data-search-close aria-label="Close search">×</button></div><label for="site-search-input">Pages, settings, traits, colors, zones, and horses</label><input type="search" id="site-search-input" placeholder="Try natural gold, selling price, or a horse name…" autocomplete="off"><p role="status" id="site-search-status"></p><div class="site-search-results"></div>`;
-    document.body.append(searchDialog);
-    searchDialog.querySelector('input').addEventListener('input',() => { clearTimeout(searchTimer); searchTimer = setTimeout(updateSiteSearch,120); });
-    searchDialog.addEventListener('click',event => {
-      if (event.target.closest('[data-search-close]')) searchDialog.close();
-      const button = event.target.closest('[data-search-result]');
-      if (!button) return;
-      const result = searchResults[Number(button.dataset.searchResult)];
-      pendingSearchResult = result;
-      searchDialog.close();
-      if (route === result.route) navigate(); else location.hash = result.route;
-    });
-  }
-  searchDialog.showModal();
-  updateSiteSearch();
-  searchDialog.querySelector('input').focus();
-}
-function updateSiteSearch() {
-  const query = searchDialog.querySelector('input').value;
-  searchResults = searchEntries(searchIndex,query);
-  searchDialog.querySelector('#site-search-status').textContent = !query.trim() ? 'Type keywords to search the whole site.' : searchResults.length ? `${searchResults.length} results${searchResults.length === 60 ? ' · showing the first 60; add words to narrow your search' : ''}` : 'No matches. Try a name, color, trait, or setting.';
-  searchDialog.querySelector('.site-search-results').innerHTML = searchResults.map((result,index) => `<button class="site-search-result" data-search-result="${index}"><strong>${e(result.title)}</strong><small>${e(result.category)} · ${e(routeTitle(result.route,locationsFor(catalog,state)))}</small></button>`).join('');
-}
 function readZoneForm(form) {
   const values = new FormData(form);
   return { id: form.dataset.id || undefined, name: values.get('name'), subtitle: locationsFor(catalog,state).find(l => l.id === form.dataset.id)?.subtitle || '',
@@ -409,7 +343,6 @@ document.addEventListener('click', async event => {
   }
   if (intent === 'import-horse') return horseTransfers.importHorse();
   if (intent === 'export-horse') return horseTransfers.exportHorse(id);
-  if (intent === 'site-search') return openSiteSearch();
   if (intent === 'catch') return horseDialogs.open(id,'catch');
   if (intent === 'edit-horse-text') {
     const form = profile.querySelector('#' + button.dataset.form);
@@ -420,6 +353,7 @@ document.addEventListener('click', async event => {
     return;
   }
   if (intent === 'rename-horse') return startHorseRename(button,{horse:findHorse(id),save:action,onSaved:render,notify});
+  if (intent === 'add-skill-xp') return horseDialogs.open(id,'skill',button.dataset.skill);
   if (intent === 'edit-horse-field') return horseDialogs.open(id,'field',button.dataset.field);
   if (intent === 'inspect') return inspect(id);
   if (intent === 'close-profile') return profile.close();
@@ -767,7 +701,6 @@ document.addEventListener('reset', event => {
 });
 $('.scrim').addEventListener('click', closeMenu);
 document.addEventListener('keydown', event => {
-  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (!document.querySelector('dialog[open]')) openSiteSearch(); }
   if (event.key === 'Tab' && document.body.classList.contains('nav-open') && matchMedia('(max-width: 900px)').matches) {
     const focusable = [...$('#sidebar').querySelectorAll('a, summary')].filter(el => el.getClientRects().length);
     const first = focusable[0], last = focusable.at(-1);

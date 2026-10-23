@@ -1,5 +1,5 @@
 import {ConfigurationFiles} from './configuration.js';
-import {readHorseSkills} from '../public/skill-progress.js';
+import {readHorseSkills,awardHorseSkillXP} from '../public/skill-progress.js';
 import {synchronizeCosmicPalettes} from './cosmic-palettes.js';
 import {validateRaritySettings} from '../public/rarity-settings.js';
 import {horseSalePrice,saleModifiers,validateSaleModifiers} from '../public/sale-pricing.js';
@@ -167,6 +167,11 @@ export class GameStore {
         if (type === 'rename') {
           horse.name = validateHorseName(payload.name);
         } else horse.favorite = !horse.favorite;
+      } else if (type === 'horse-skill-xp') {
+        if (!next.settings.developerEditMode) throw new Error('Enable Edit Mode to add skill XP.');
+        const horse = next.horses.find(h => h.id === payload.id);
+        if (!horse) throw new Error('Horse not found in your stable.');
+        horse.skills = awardHorseSkillXP(horse.skills,payload.skill,payload.xp);
       } else if (type === 'horse-field') {
         if (!next.settings.developerEditMode) throw new Error('Enable Edit Mode to change horse details.');
         const horse = horseRecords(next).find(h => h.id === payload.id);

@@ -82,8 +82,9 @@ h1,h2,h3,h4,.breadcrumb strong{text-transform:capitalize}
 .site-search-result:hover,.site-search-result:focus-visible{border-color:var(--gold);background:var(--panel)}
 .site-search-result strong,.site-search-result small{display:block}
 .site-search-result small{color:var(--muted)}
-/* Controls and selectable options share a consistent uppercase treatment. */
-.button,.text-button,.editor-tabs a,.nav-items a,.definition-list-item,.theme-card,.zone-choice,option{ text-transform:uppercase }
+/* Action controls and navigation use uppercase; dropdowns preserve their labels. */
+.button,.text-button,.editor-tabs a,.definition-list-item,.theme-card,.zone-choice{ text-transform:uppercase }
+.nav-items a{text-transform:capitalize}
 [hidden]{display:none!important}
 .keeper-avatar{overflow:hidden;padding:0}
 .keeper-avatar svg{width:100%;height:100%;display:block}
@@ -100,7 +101,7 @@ h1,h2,h3,h4,.breadcrumb strong{text-transform:capitalize}
 #confirm.eye-delete-confirm .dialog-top h2 { padding:0; margin:0; }
 #confirm.eye-delete-confirm .delete-warning { padding:20px 24px; margin:0; }
 #confirm.eye-delete-confirm .form-actions { padding:0 24px; margin-top:0; }
-select{text-transform:uppercase}
+select:not(nav select),option:not(nav option){text-transform:none}
 .brand-logo{width:43px;height:47px;flex-shrink:0}
 .profile-id-footer{padding:0 24px 20px;text-align:right;overflow-wrap:anywhere}
 .palette-line .swatches{flex-wrap:wrap;gap:4px}.palette-line{min-height:28px}
@@ -402,12 +403,12 @@ select{text-transform:uppercase}
 .eye-grid-controls .definition-sort-controls .sort-direction{height:48px;width:43px;flex:0 0 43px;margin:0}
 .eye-grid-controls .eye-percent-control>span{min-height:48px}
 /* Inset single-select arrows consistently instead of using edge-hugging native arrows. */
-select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23938679' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px 14px}
+select:not([multiple]){appearance:none;-webkit-appearance:none;padding:10px 36px 10px 12px;text-align:center;text-align-last:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23938679' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px 14px}
 .personality-emoji-field select:not([multiple]){padding-left:8px;padding-right:0;background-position:right 6px center;background-size:10px 10px}
 @media(forced-colors:active){select:not([multiple]){appearance:auto;background-image:none}}
 .personality-name-row :is(input,select){height:48px;min-height:48px;box-sizing:border-box}
 
-.personality-name-row .personality-emoji-field select{padding-top:0;padding-bottom:0;line-height:46px;text-align:left;text-align-last:left}
+.personality-name-row .personality-emoji-field select{padding-top:0;padding-bottom:0;line-height:46px;text-align:center;text-align-last:center}
 
 .personality-grid-controls .personality-search{width:auto;max-width:480px;min-width:min(180px,100%)}
 .personality-grid-controls>[data-action="toggle-all-personalities"]{height:48px;min-height:48px;margin-left:0}
@@ -488,3 +489,6 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:36p
 @media(max-width:500px){.mutation-definition-dialog .mutation-name-type-row{grid-template-columns:64px minmax(0,1fr)}.mutation-name-type-row>.zone-field:last-child{grid-column:1/-1}}
 
 .personality-emoji-picker{height:48px;min-height:48px;padding:0;font-size:24px}
+
+/* Keep Scope compact while reserving space for its arrow. */
+#palette-scope{height:48px;min-height:48px;padding:0 26px 0 10px;line-height:normal;background-position:right 8px center;background-size:12px 12px}

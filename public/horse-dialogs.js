@@ -6,8 +6,8 @@ export function createHorseDialogs({getState,getCatalog,findHorse,save,onSaved,n
   let dialog, current, saving = false;
   function open(id,kind,field) {
     const horse = findHorse(id);
-    if (!horse || (kind === 'field' && !getState().settings.developerEditMode)) return;
-    if (kind === 'rename' && !getState().horses.some(h => h.id === id)) return;
+    if (!horse || (['field','skill'].includes(kind) && !getState().settings.developerEditMode)) return;
+    if (['rename','skill'].includes(kind) && !getState().horses.some(h => h.id === id)) return;
     if (!dialog) {
       dialog = document.createElement('dialog');
       dialog.className = 'horse-edit-dialog';
@@ -27,8 +27,8 @@ export function createHorseDialogs({getState,getCatalog,findHorse,save,onSaved,n
         saving = true;
         dialog.querySelectorAll('button').forEach(button => button.disabled = true);
         try {
-          const action = kind === 'catch' ? 'catch' : kind === 'rename' ? 'rename' : 'horse-field';
-          const payload = kind === 'field' ? {id,field,value} : {id,name:value};
+          const action = kind === 'catch' ? 'catch' : kind === 'rename' ? 'rename' : kind === 'skill' ? 'horse-skill-xp' : 'horse-field';
+          const payload = kind === 'skill' ? {id,skill:field,xp:Number(value)} : kind === 'field' ? {id,field,value} : {id,name:value};
           await save(action,payload);
           dialog.close();
           await onSaved(id,kind);
@@ -39,9 +39,10 @@ export function createHorseDialogs({getState,getCatalog,findHorse,save,onSaved,n
     }
     current = {id,kind,field};
     dialog.classList.toggle('catch-name-dialog',kind === 'catch');
-    const title = kind === 'catch' ? 'Name Your New Companion?' : kind === 'rename' ? 'Rename Horse' : `Edit ${field === 'eye' ? 'Eye Color' : field}`;
+    const title = kind === 'catch' ? 'Name Your New Companion?' : kind === 'rename' ? 'Rename Horse' : kind === 'skill' ? `Add ${field} XP` : `Edit ${field === 'eye' ? 'Eye Color' : field}`;
     let input;
-    if (kind !== 'field') input = `<input class="${kind === 'catch' ? 'default-horse-name' : ''}" aria-label="Horse name" name="value" maxlength="60" value="${e(horse.name || horse.species)}">`;
+    if (kind === 'skill') input = `<label>Add ${e(field)} XP<input type="number" name="value" min="1" max="9007199254740991" step="1" required></label>`;
+    else if (kind !== 'field') input = `<input class="${kind === 'catch' ? 'default-horse-name' : ''}" aria-label="Horse name" name="value" maxlength="60" value="${e(horse.name || horse.species)}">`;
     else if (field === 'birthday') input = `<label>Birthday<input type="date" name="value" min="0001-01-01" max="${new Date().toISOString().slice(0,10)}" value="${e(horseAcquisitionDate(horse) || horse.birthday)}" required></label>`;
     else {
       const options = horseFieldOptions(field,getCatalog(),getState());
