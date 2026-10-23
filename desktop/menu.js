@@ -9,7 +9,7 @@ document.querySelector('#settings').onclick=()=>settings.showModal();
 document.querySelector('#play').onclick=async()=>{
   document.querySelector('#play').disabled=true;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(!reduced)await document.body.animate([{opacity:1},{opacity:0}],{duration:300,easing:'ease-in',fill:'forwards'}).finished;
+  if(!reduced)await document.body.animate([{opacity:1},{opacity:0}],{duration:420,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'}).finished;
   location.href=new URLSearchParams(location.search).get('game');
 };
 document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();

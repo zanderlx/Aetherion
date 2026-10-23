@@ -57,7 +57,23 @@ async function showAudioSettings(){
 }
 window.addEventListener('DOMContentLoaded',async()=>{
   if(location.protocol==='file:')return;
-  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.body.animate([{opacity:0},{opacity:1}],{duration:400,easing:'ease-out'});
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const cover=document.createElement('div');
+    cover.style.cssText='position:fixed;inset:0;background:#1d1b18;z-index:2147483647;pointer-events:none';
+    document.documentElement.append(cover);
+    const reveal=async()=>{
+      await document.fonts.ready;
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      await cover.animate([{opacity:1},{opacity:0}],{duration:1100,easing:'cubic-bezier(0.4,0,0.2,1)',fill:'forwards'}).finished;
+      cover.remove();
+    };
+    if(document.querySelector('.brand'))void reveal();
+    else{
+      const observer=new MutationObserver(()=>{if(document.querySelector('.brand')){observer.disconnect();clearTimeout(fallback);void reveal();}});
+      observer.observe(document.body,{childList:true,subtree:true});
+      const fallback=setTimeout(()=>{observer.disconnect();void reveal();},5000);
+    }
+  }
   const toggle=document.createElement('button');toggle.id='desktop-music-toggle';
   toggle.style.cssText='position:fixed;bottom:42px;right:48px;z-index:40;background:#202b25;color:#e9d8b4;border:1px solid #d2b47755;border-radius:5px;padding:9px 15px;font:13px Segoe UI;cursor:pointer';
   const refresh=async()=>{const state=await ipcRenderer.invoke('audio-state');toggle.textContent=state.muted?'♫ Music Off':'♫ Music On';toggle.title=state.muted?'Unmute music':'Mute music';};
