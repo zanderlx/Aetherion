@@ -81,3 +81,22 @@ test('Aetherion restricts both Cosmic and Wild encounters to its configured whit
   const wild = spawnHorse(catalog,aetherion,sequence([0.5,0.99,0.99]));
   assert.equal(wild.speciesId,'pony');
 });
+
+test('full Wild profiles cannot draw Cosmic definitions or palettes even with positive Cosmic weights',()=>{
+  const names=['Solar','Lunar','Heavenly','Void','Astral'];
+  const auditCatalog=structuredClone(catalog);
+  auditCatalog.mutations.push(...names.map(name=>({id:`cosmic-${name}`,name,type:'Mutated',weight:1000000,thresholds:{}})));
+  auditCatalog.palettes.push(...names.map(name=>({id:`palette-${name}`,name,complete:true,colors:{Hair:'#FFFFFF'}})));
+  const zone={...location,palettePool:['Gold',...names]};
+  for(const disableCosmic of [false,true]) {
+    if(disableCosmic) auditCatalog.spawning.cosmic.forEach(entry=>entry.chance=0);
+    for(const subsequentRoll of [0,0.001,0.003,0.2,0.5,0.8,0.999999]) {
+      const rng=sequence([disableCosmic ? 0 : 0.99],subsequentRoll);
+      const horse=spawnHorse(auditCatalog,zone,rng);
+      assert.equal(horse.spawnPath,'Wild');
+      assert.equal(horse.specialSpawn,null);
+      assert.equal(horse.palette.name,'Gold');
+      assert.ok(horse.mutations.every(m=>m.type==='Standard' && !names.includes(m.name)));
+    }
+  }
+});
