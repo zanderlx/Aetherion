@@ -64,7 +64,11 @@ cd Aetherion
 
 ### 3. Start your sanctuary
 
-Open a terminal **inside the extracted or cloned folder containing `package.json`**:
+**Windows, no terminal needed:** double-click **Launch Aetherion.vbs** in the project folder. It starts the server in the background, waits until it is ready, then opens your default browser. Double-clicking again reuses the running server. Double-click **Stop Aetherion.vbs** when finished; closing the browser alone leaves the server running. Both shortcuts work from folders containing spaces.
+
+Startup errors are shown in a dialog; server logs are in `data/desktop-launcher.log` (not committed). Node.js 22+ must be available on PATH. These shortcuts use Windows Script Host; managed computers may disable it.
+
+**Terminal alternative (all platforms):** open a terminal **inside the extracted or cloned folder containing `package.json`**:
 
 ```sh
 npm start

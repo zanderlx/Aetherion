@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
@@ -25,6 +26,7 @@ const server = createServer(async (req, res) => {
   if (!allowedHosts.has(req.headers.host)) return send(res, 403, { error: 'Local connections only.' });
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    if (req.method === 'GET' && url.pathname === '/api/health') return send(res,200,{application:'aetherion',projectId:createHash('sha256').update(resolve(root).toLowerCase()).digest('hex'),pid:process.pid});
     if (req.method === 'GET' && url.pathname === '/api/state') { await store.refreshConfiguration(); return send(res,200,{state:store.snapshot(),catalog:store.getCatalog(),defaults,appVersion}); }
     if (req.method === 'GET' && url.pathname === '/api/export') {
       await store.refreshConfiguration();
