@@ -1,9 +1,9 @@
 import updater from 'electron-updater';
-import {app, BrowserWindow, Menu, dialog, shell, session} from 'electron';
+import {app, BrowserWindow, Menu, dialog, shell, session, ipcMain} from 'electron';
 import {appendFileSync, existsSync, mkdirSync} from 'node:fs';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join, dirname} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import {importLegacyData} from './data-migration.js';
 import {configureUpdates} from './updater.js';
 
@@ -63,9 +63,9 @@ async function start() {
   const origin = await backend.serverReady;
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   main = new BrowserWindow({width:1440, height:960, minWidth:800, minHeight:640, show:false, backgroundColor:'#1d1b18',
-    title:'Aetherion', icon:join(root, 'desktop/assets/icon.png'), webPreferences:options});
+    title:'Aetherion', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
   main.webContents.setWindowOpenHandler(() => ({action:'deny'}));
-  main.webContents.on('will-navigate', (event, url) => {if (new URL(url).origin !== origin) event.preventDefault();});
+  main.webContents.on('will-navigate', (event, url) => {if (url !== menuURL && new URL(url).origin !== origin) event.preventDefault();});
   main.webContents.on('will-attach-webview', event => event.preventDefault());
   const checkUpdates = configureUpdates({autoUpdater:updater.autoUpdater, packaged:app.isPackaged, show:options=>dialog.showMessageBox(main,options), shutdown, log});
   const openFolder = async folder => {await mkdir(folder, {recursive:true}); const error = await shell.openPath(folder); if(error) log(error);};
@@ -78,11 +78,17 @@ async function start() {
     {label:'Edit', submenu:[{role:'undo'},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
     {label:'View', submenu:[{role:'reload'},{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{role:'togglefullscreen'}]}
   ]));
-  await main.loadURL(origin);
+  const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
+  ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
+  await main.loadURL(menuURL);
   // A short aesthetic reveal, not a fabricated progress percentage.
   await new Promise(resolve => setTimeout(resolve, Math.max(0, 2200 - (Date.now()-started))));
   main.show(); splash.destroy(); splash = null;
   if (smoke) {
+    await writeFile(join(process.env.AETHERION_TEST_DATA,'menu-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    const menuTest=await main.webContents.executeJavaScript("(()=>{document.querySelector('#settings').click();const opened=document.querySelector('dialog').open;const slider=document.querySelector('#volume');slider.value=35;slider.dispatchEvent(new Event('input'));document.querySelector('#mute').click();const valid=opened && document.querySelector('#music').volume===.35 && document.querySelector('#music').muted;document.querySelector('dialog').close();return valid;})()");
+    if(!menuTest)throw new Error('Menu audio controls failed');
+    await main.webContents.executeJavaScript("document.querySelector('#play').click()");
     for (let attempt=0; attempt<100; attempt++) {
       if(await main.webContents.executeJavaScript("Boolean(document.querySelector('.brand'))")) break;
       await new Promise(resolve=>setTimeout(resolve,100));
