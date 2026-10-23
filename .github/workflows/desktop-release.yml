@@ -45,6 +45,7 @@ jobs:
           $tag = "${{ github.ref_name }}"
           gh release create $tag --draft --title "Aetherion $tag — The Symphony of the Wilds" --notes "Themed title menu, continuous music, saved audio controls, themed Escape menu, smooth transitions, isolated development saves, and mutation emoji HTML escaping. Unsigned Windows installer. Tests and packaged smoke validation passed."
           if ($LASTEXITCODE -ne 0) { throw "Release creation failed." }
+          Get-ChildItem dist/*.exe,dist/*.blockmap | ForEach-Object { Rename-Item -LiteralPath $_.FullName -NewName ($_.Name.Replace(" ","-")) }
           $assets = @(Get-ChildItem dist/*.exe,dist/*.blockmap,dist/latest.yml | ForEach-Object FullName)
           gh release upload $tag @assets
           if ($LASTEXITCODE -ne 0) { throw "Upload failed; release remains draft." }
