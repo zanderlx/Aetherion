@@ -492,3 +492,8 @@ select:not([multiple]){appearance:none;-webkit-appearance:none;padding:10px 36px
 
 /* Keep Scope compact while reserving space for its arrow. */
 #palette-scope{height:48px;min-height:48px;padding:0 26px 0 10px;line-height:normal;background-position:right 8px center;background-size:12px 12px}
+
+.palette-variation-settings{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:0 0 24px;color:var(--muted)}
+.palette-variation-settings input{width:88px;text-align:center}
+.palette-variation-settings>span{font-size:13px}
+.palette-variation-settings .form-actions{margin:0;padding:0;gap:8px}

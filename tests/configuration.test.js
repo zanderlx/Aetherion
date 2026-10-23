@@ -236,3 +236,23 @@ test('mutation emojis persist and duplicate emoji selections are allowed',async 
  const restored=await new GameStore(directory,catalog,defaults).init();
  for(const entry of [first,second]) assert.equal(restored.getCatalog().mutations.find(m=>m.id===entry.id).emoji,'🐴');
 });
+test('palette variation updates live from JSON settings, preserves saved colors, and validates bounds',async t=>{
+ const {store,read,directory}=await fixture(t);
+ assert.equal(store.getCatalog().spawning.paletteVariationPercent,25);
+ await store.action('spawn-settings',{paletteVariationPercent:0});
+ store.rng=()=>.25;
+ await store.action('search',{locationId:'aetherion'});
+ const original=store.state.encounters.aetherion[0];
+ assert.deepEqual(original.palette.colors,store.getCatalog().palettes.find(p=>p.id===original.paletteId).colors);
+ await store.action('catch',{id:original.id});
+ const saved=structuredClone(store.state.horses[0].palette.colors);
+ await store.action('spawn-settings',{paletteVariationPercent:25});
+ assert.equal((await read('spawn-settings.json')).paletteVariationPercent,25);
+ await store.action('search',{locationId:'aetherion'});
+ const varied=store.state.encounters.aetherion[0];
+ assert.notDeepEqual(varied.palette.colors,store.getCatalog().palettes.find(p=>p.id===varied.paletteId).colors);
+ assert.deepEqual(store.state.horses[0].palette.colors,saved);
+ for(const value of [-1,101,NaN,'25',null])await assert.rejects(store.action('spawn-settings',{paletteVariationPercent:value}));
+ const reloaded=await new GameStore(directory,catalog,defaults,{rng:()=>.5}).init();
+ assert.equal(reloaded.getCatalog().spawning.paletteVariationPercent,25);
+});

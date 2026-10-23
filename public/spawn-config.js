@@ -12,7 +12,7 @@ export const defaultSpawnSettings = {
   cosmic:[{name:'Solar',chance:0.1},{name:'Lunar',chance:0.1},{name:'Heavenly',chance:0.05},{name:'Void',chance:0.05},{name:'Astral',chance:0.025}],
   cosmicSlots:[100,80,40,15],wildSlots:[80,40,15,5],
   sizes:[{name:'Teacup',percent:75,weight:5},{name:'Teeny',percent:80,weight:15},{name:'Tiny',percent:85,weight:45},{name:'Small',percent:90,weight:120},{name:'Little',percent:95,weight:220},{name:'Normal',percent:100,weight:250},{name:'Big',percent:105,weight:220},{name:'Huge',percent:110,weight:120},{name:'Giant',percent:115,weight:45},{name:'Draft',percent:120,weight:15},{name:'Mammoth',percent:125,weight:5}],
-  maleChance:50
+  maleChance:50,paletteVariationPercent:25
 };
 export const systemID = name => name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'custom';
 export const defaultSpeciesTiers = Object.fromEntries([
@@ -49,6 +49,8 @@ export function validateSpawnSettings(input) {
   if (!Array.isArray(s.cosmic) || s.cosmic.length !== 5 || new Set(s.cosmic.map(c => c.name)).size !== 5 || s.cosmic.some(c => !defaultSpawnSettings.cosmic.some(base => base.name === c.name) || !numeric(c.chance,0,100)) || s.cosmic.reduce((n,c) => n+c.chance,0) > 100) throw new Error('Provide five unique Cosmic chances totaling at most 100%.');
   if (!Array.isArray(s.sizes) || s.sizes.length !== 11 || s.sizes.some((v,i) => v.name !== defaultSpawnSettings.sizes[i].name || v.percent !== 75+i*5 || !numeric(v.weight,0,1000000)) || !s.sizes.some(v => v.weight > 0)) throw new Error('Provide weights for the eleven ordered sizes.');
   if (!numeric(s.maleChance,0,100)) throw new Error('Male chance must be between 0 and 100.');
+  if (s.paletteVariationPercent === undefined) s.paletteVariationPercent = defaultSpawnSettings.paletteVariationPercent;
+  if (!numeric(s.paletteVariationPercent,0,100)) throw new Error('Color variation must be a number from 0 to 100%.');
   return s;
 }
 export function zoneCreatures(zone,catalog,settings = defaultSpawnSettings) {

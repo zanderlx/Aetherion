@@ -34,3 +34,33 @@ export function gameSettingsPage(state,catalog) {
   <section class="economy-settings" aria-labelledby="economy-heading"><h2 id="economy-heading" data-copy-key="economy.heading">Economy Settings</h2>
   ${settingForm(state,true)}</section>${saleHistoryTable(state)}`;
 }
+
+// Keep label clicks from opening numeric editing; steppers live inside the field.
+export function attachSettingsNumbers(root) {
+  for (const input of root.querySelectorAll(':is(#settings-form,#economy-form) input[type="number"]')) {
+    if (input.closest('.settings-number')) continue;
+    const label = input.closest('label');
+    const name = label.querySelector('strong').textContent;
+    input.setAttribute('aria-label',name);
+    const field = document.createElement('span');
+    field.className = 'settings-number';
+    input.before(field);field.append(input);
+    const fitValue=()=>field.style.setProperty('--number-digits',Math.max(3,input.value.length));
+    fitValue();input.addEventListener('input',fitValue);
+    const controls = document.createElement('span');controls.className='settings-number-steps';
+    for (const [direction,text] of [[1,'Increase'],[-1,'Decrease']]) {
+      const button=document.createElement('button');button.type='button';
+      button.textContent=direction===1 ? '▴' : '▾';button.setAttribute('aria-label',text+' '+name);
+      button.addEventListener('pointerdown',event=>event.preventDefault());
+      button.addEventListener('click',()=>{
+        input.focus();
+        if(direction===1) input.stepUp();else input.stepDown();
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.dispatchEvent(new Event('change',{bubbles:true}));
+      });controls.append(button);
+    }
+    field.append(controls);
+    label.addEventListener('click',event=>{if(!field.contains(event.target))event.preventDefault();});
+    input.addEventListener('wheel',event=>event.preventDefault(),{passive:false});
+  }
+}

@@ -80,7 +80,7 @@ export function spawnHorse(catalog,location,rng = randomFloat) {
     return [category,selected && selected !== 'None' ? [selected] : []];
   }));
   for (const category of ['Mane','Tail']) if (!traits[category]?.length) traits[category] = ['Awaiting species data'];
-  const variedPalette = varyPalette(palette,rng);
+  const variedPalette = varyPalette(palette,rng,settings.paletteVariationPercent ?? 25);
   return {
     id:randomUUID(),name:'',species:species.name,speciesId:species.id,rarityTier:species.rarityTier,speciesEvent:species.event || null,age:'Adult',origin:'Wild',
     gender,size:size.name,sizePercent:size.percent,birthday:new Date().toISOString().slice(0,10),

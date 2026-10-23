@@ -1,6 +1,6 @@
 import {horseHeadArt} from './art.js';
 import {icon} from './ui.js';
-import {readHorseSkills,skillProgress} from './skill-progress.js';
+import {readHorseSkills,skillProgress,skillXPRequirements} from './skill-progress.js';
 
 const equipmentSlots=['Hat','Mouth','Bridle','Saddle','Sock','Side','Tail','Flair'];
 const skillDefinitions=[['Agility','agility','#EF922B'],['Strength','strength','#59B653'],['Jump','jump','#5FBFF0'],['Bond','heart','#A66DE0'],['Wing','wing','#E879B1']];
@@ -15,7 +15,7 @@ function skills(horse,editable) {
   const values=readHorseSkills(horse.skills);
   return `<section class="profile-skills"><h3>Skills</h3><dl>${skillDefinitions.map(([name,symbol,color])=>{
     const progress=skillProgress(values[name.toLowerCase()]);
-    return `<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" style="--skill-progress:${progress.percent}%" aria-label="${name} ${progress.maxed ? 'maximum level' : `level ${progress.level}`}"><span>${progress.maxed ? 'MAX' : `Lv. ${progress.level}`}</span></dd><dd class="skill-xp">${editable && !progress.maxed ? `<button class="skill-xp-edit" data-action="add-skill-xp" data-id="${horse.id}" data-skill="${name.toLowerCase()}" title="Add ${name} XP" aria-label="Add ${name} XP">+</button>` : ''}${progress.maxed ? 'MAX XP' : `${progress.xp}/${progress.xpNeeded} XP`}</dd></div>`;
+    return `<div style="--skill-color:${color}"><dt>${icon(symbol)}<span>${name}</span></dt><dd class="skill-level-bar" style="--skill-progress:${progress.percent}%" aria-label="${name} ${progress.maxed ? 'maximum level' : `level ${progress.level}`}"><span>${progress.maxed ? 'MAX' : `Lv. ${progress.level}`}</span></dd><dd class="skill-xp">${editable && !progress.maxed ? `<button class="skill-xp-edit" data-action="add-skill-xp" data-id="${horse.id}" data-skill="${name.toLowerCase()}" title="Add ${name} XP" aria-label="Add ${name} XP">+</button>` : ''}${progress.xp}/${progress.maxed ? skillXPRequirements[10] : progress.xpNeeded} XP</dd></div>`;
   }).join('')}</dl></section>`;
 }
 export function profileLayout(horse,{header,info,notes,colors,traits,mutations,actions,importPreview,editableSkills = false}) {

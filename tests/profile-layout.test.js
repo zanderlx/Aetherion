@@ -81,3 +81,11 @@ test('skill XP controls are limited to owned horses in Edit Mode',()=>{
  assert.doesNotMatch(profileContent(horse,state,{catalog}),/data-action="add-skill-xp"/);
  assert.doesNotMatch(profileContent(horse,editing,{catalog,importPreview:true}),/data-action="add-skill-xp"/);
 });
+
+test('XP text follows level rollover and retains the completed requirement at MAX',()=>{
+ const trained={...horse,skills:{agility:{level:0,xp:600},wing:{level:10,xp:34000}}};
+ const html=profileContent(trained,{...state,horses:[trained]},{catalog});
+ assert.match(html,/>75\/975 XP<\/dd>/);
+ assert.match(html,/>34000\/34000 XP<\/dd>/);
+ assert.match(html,/--skill-progress:7%/);
+});

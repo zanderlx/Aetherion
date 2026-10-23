@@ -15,7 +15,7 @@ test('generated shades stay near base colors, preserve gray hues and leave defin
   const varied=varyPalette(palette,()=>roll);
   for(const [region,hex] of Object.entries(varied.colors)) {
    assert.match(hex,/^#[0-9A-F]{6}$/);
-   channels(hex).forEach((value,i)=>assert.ok(Math.abs(value-channels(palette.colors[region])[i])<=13));
+   channels(hex).forEach((value,i)=>assert.ok(Math.abs(value-channels(palette.colors[region])[i])<=64));
   }
   for(const region of ['White','Black'])assert.equal(new Set(channels(varied.colors[region])).size,1);
  }
@@ -37,4 +37,14 @@ test('spawned Cosmic shades survive synchronization and JSON export/import',()=>
  synchronizeCosmicPalettes([imported],catalog);
  assert.deepEqual(imported.palette.colors,original);
  assert.deepEqual(definition.colors,horse.palette.colorVariation.baseColors);
+});
+
+test('variation strength supports zero and adjustable limits',()=>{
+ const palette={colors:{Gold:'#F5D66E'}};
+ assert.deepEqual(varyPalette(palette,()=>0,0).colors,palette.colors);
+ for(const percent of [5,15,25,100]) {
+  const hex=varyPalette(palette,()=>0,percent).colors.Gold;
+  channels(hex).forEach((value,i)=>assert.ok(Math.abs(value-channels(palette.colors.Gold)[i])<=Math.ceil(255*percent/100)));
+ }
+ for(const value of [-1,101,NaN,'25'])assert.throws(()=>varyPalette(palette,()=>0,value));
 });

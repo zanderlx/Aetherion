@@ -4,7 +4,7 @@ import {createDefinitionTransfers} from './definition-transfer.js';
 import {createPaletteTransfers} from './palette-transfer.js';
 import {palettesManagerPage,createPaletteEditor,updatePaletteGrid} from './palettes-manager.js';
 import {defaultSpawnSettings} from './spawn-config.js';
-import {validateSettingsNumbers} from './game-settings.js';
+import {validateSettingsNumbers,attachSettingsNumbers} from './game-settings.js';
 import {raritiesManagerPage,readRaritySettings} from './rarities-manager.js';
 import {defaultRaritySettings,rarityNames,raritySettings} from './rarity-settings.js';
 import {horseCardRank} from './horse-rank.js';
@@ -141,6 +141,7 @@ function render() {
   }
   document.title = `${routeTitle(route, locationsFor(catalog, state))} · Aetherion`;
   copyEditor.attach(main);
+  attachSettingsNumbers(main);
   trackForms(main);
 }
 async function navigate({refreshSpawns = false} = {}) {
@@ -472,9 +473,7 @@ document.addEventListener('click', async event => {
     } else if (intent === 'search') {
       await action('search', { locationId: route.split('/')[1] });
       render();
-      main.querySelector('[data-action="search"]')?.focus({ preventScroll: true });
-      notify('Fresh hoofprints. New companions are waiting.');
-    } else if (intent === 'confirm-sell') {
+      main.querySelector('[data-action="search"]')?.focus({ preventScroll: true });    } else if (intent === 'confirm-sell') {
       await action('sell', { id });
       confirmation.close();
       profile.close();
@@ -547,7 +546,7 @@ profile.addEventListener('keydown',event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form', 'rarity-settings-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'palette-variation-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form', 'rarity-settings-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -556,7 +555,13 @@ document.addEventListener('submit', async event => {
   try {
     if (['economy-form','settings-form'].includes(form.id)) validateSettingsNumbers(form);
     const values = Object.fromEntries(new FormData(form));
-    if (form.id === 'rarity-settings-form') {
+    if (form.id === 'palette-variation-form') {
+      const input = form.elements.paletteVariationPercent;
+      if (!input.value.trim() || !input.validity.valid) throw new Error('Enter a color variation from 0 to 100%.');
+      await action('spawn-settings',{paletteVariationPercent:Number(input.value)});
+      render();
+      notify('Color variation saved.');
+    } else if (form.id === 'rarity-settings-form') {
       await action('rarity-settings',readRaritySettings(form));
       render();
       notify('Rarity colors saved.');
