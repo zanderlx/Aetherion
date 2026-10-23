@@ -490,3 +490,18 @@ test('skill XP awards are validated, isolated per horse and persisted',async t=>
  const loaded=await new GameStore(directory,catalog,defaults,{rng:()=>.5}).init();
  assert.deepEqual(loaded.state.horses.find(h=>h.id===first.id).skills.agility,{level:2,xp:75});
 });
+
+test('selling directly from a wild encounter credits its quote without adding it to the stable',async t=>{
+ const {store}=await fixture(t);
+ await store.action('visit',{locationId:'aetherion'});
+ const horse=store.state.encounters.aetherion[0];
+ const before=store.state.gold;
+ await store.action('sell',{id:horse.id});
+ assert.equal(store.state.horses.length,0);
+ const sold=store.state.sold.find(h=>h.id===horse.id);
+ assert.ok(sold);
+ assert.equal(store.state.gold,before+sold.salePricing.total);
+ assert.ok(!store.state.encounters.aetherion.some(h=>h.id===horse.id));
+ await assert.rejects(store.action('sell',{id:horse.id}));
+ assert.equal(store.state.gold,before+sold.salePricing.total);
+});

@@ -475,11 +475,12 @@ document.addEventListener('click', async event => {
       render();
       main.querySelector('[data-action="search"]')?.focus({ preventScroll: true });    } else if (intent === 'confirm-sell') {
       await action('sell', { id });
+      horseDialogs.close();
       confirmation.close();
       profile.close();
       render();
       main.focus({ preventScroll: true });
-      notify(`A fond farewell. ${number(state.sold.find(h => h.id === id).soldFor)} gold added.`);
+      notify(`${number(state.sold.find(h => h.id === id).soldFor)} gold added.`);
     } else if (intent === 'favorite') {
       const search = $('#horse-search')?.value || '';
       const sort = $('#horse-sort')?.value || 'recent';
@@ -548,6 +549,7 @@ document.addEventListener('submit', async event => {
   const form = event.target;
   if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form', 'rarity-settings-form'].includes(form.id)) return;
   event.preventDefault();
+  if (form.id === 'definition-form' && form.dataset.kind === 'palettes' && form.dataset.id && formSignature(form) === formBaseline(form)) { paletteEditor.dialog.close(); return; }
   if (busy) return;
   busy = true;
   const submit = form.querySelector('[type="submit"]');

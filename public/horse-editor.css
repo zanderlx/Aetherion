@@ -30,3 +30,5 @@
 .profile-actions .horse-export { margin-left:0; }
 
 .horse-gender.is-editable { display:inline-flex; align-items:center; border:1px dotted var(--gold); border-radius:4px; padding:3px 6px; }
+
+.catch-name-dialog .catch-sell{margin-left:auto}
