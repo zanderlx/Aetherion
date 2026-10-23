@@ -153,7 +153,7 @@ Every supplied hex value is preserved. Cosmic mutations use the matching palette
 
 Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, **Personalities**, and **Rarities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
 
-Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects species uniformly, using Aetherion’s whitelist in that zone and the full registry elsewhere. Wild selects by zone ticket weights, initially **10 / 40 / 100 / 250 / 500** for Cosmic / Ultra Rare / Rare / Uncommon / Common. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
+Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects uniformly from all registered species in every zone, including Aetherion Wilds, ignoring zone species whitelists and rarity weights. Wild selects by zone ticket weights, initially **10 / 40 / 100 / 250 / 500** for Cosmic / Ultra Rare / Rare / Uncommon / Common. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 
 See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file paths, thresholds, assets, migration, and recovery. Existing horses retain their snapshots; new searches use saved configuration changes.
 
@@ -161,7 +161,7 @@ Catching a wild horse immediately refreshes that zone's full encounter group. Re
 
 Horse Definitions → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change species spawn weights or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
 
-Aetherion Wilds uses this **25-species whitelist** as its source of truth. Both Wild and Cosmic encounters in Aetherion must use the listed species. The other 21 species remain registered for other zones. Other zones retain registry-wide uniform Cosmic species selection.
+Aetherion Wilds uses this **25-species whitelist** as its source of truth. Ordinary Wild encounters in Aetherion use the listed species. Cosmic encounters bypass this whitelist and can select any registered species equally, including the other 21 species and event species. The same unrestricted Cosmic rule applies to every zone.
 
 | Tier | Weight per species | Aetherion species |
 | --- | ---: | --- |

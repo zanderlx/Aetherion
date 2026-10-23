@@ -73,11 +73,35 @@ test('Cosmic ignores the zone species pool; Wild retains it and assigns profile 
   }
 });
 
-test('Aetherion restricts both Cosmic and Wild encounters to its configured whitelist',()=>{
+test('Aetherion Cosmic encounters ignore its whitelist while Wild encounters retain it',()=>{
   const aetherion = {...location,id:'aetherion'};
   const cosmic = spawnHorse(catalog,aetherion,sequence([0.003,0.99,0,0.99]));
   assert.equal(cosmic.spawnPath,'Cosmic');
-  assert.equal(cosmic.speciesId,'pony');
+  assert.equal(cosmic.speciesId,'cosmic-only');
   const wild = spawnHorse(catalog,aetherion,sequence([0.5,0.99,0.99]));
   assert.equal(wild.speciesId,'pony');
+});
+
+test('every zone gives every registered species an equal Cosmic interval, including event species',()=>{
+  const entries=[
+    {...species,id:'pony',rarityTier:4},
+    {...species,id:'event',name:'Event Horse',event:'Halloween',rarityTier:1},
+    {...species,id:'custom',name:'Custom Horse',rarityTier:0}
+  ];
+  const registry={...catalog,species:entries};
+  for(const id of ['aetherion','hallowhoof','custom-zone']) {
+    const zone={...location,id,creatures:[{speciesId:'pony',weight:1}]};
+    for(let index=0;index<entries.length;index++) {
+      for(const offset of [0.01,0.5,0.99]) {
+        const horse=spawnHorse(registry,zone,sequence([0.001,(index+offset)/entries.length]));
+        assert.equal(horse.spawnPath,'Cosmic');
+        assert.equal(horse.speciesId,entries[index].id);
+        assert.equal(horse.speciesEvent,entries[index].event || null);
+      }
+    }
+    for(const roll of [0,0.5,0.999]) {
+      const wild=spawnHorse(registry,zone,sequence([0.5,roll]));
+      assert.equal(wild.spawnPath,'Wild');assert.equal(wild.speciesId,'pony');
+    }
+  }
 });

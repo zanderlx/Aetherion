@@ -66,7 +66,7 @@ Every spawn trigger rereads the master and zone files. Editing a file directly a
 ## Pipeline
 
 1. Roll `0–100`. A result **≤ 0.325** enters the Cosmic path. Cosmic intervals are Solar **0.1%**, Lunar **0.1%**, Heavenly **0.05%**, Void **0.05%**, and Astral **0.025%**.
-2. Cosmic species are uniform across the registry, except Aetherion Wilds: its explicit 25-species whitelist also restricts Cosmic spawns. Wild species use the zone's absolute ticket sum. Initial tier weights are **0 (Cosmic): 10**, **1 (Ultra Rare): 40**, **2 (Rare): 100**, **3 (Uncommon): 250**, **4 (Common): 500**. Existing local settings missing tier 0 receive its default.
+2. Cosmic species are uniform across the entire registered species list in every zone, including Aetherion Wilds. Event membership, rarity weights, and zone species whitelists do not restrict Cosmic species selection. Wild species use the zone's absolute ticket sum. Initial tier weights are **0 (Cosmic): 10**, **1 (Ultra Rare): 40**, **2 (Rare): 100**, **3 (Uncommon): 250**, **4 (Common): 500**. Existing local settings missing tier 0 receive its default.
 3. Cascade up to four mutation slots, accepting rolls **≤** each chance. Failure ends the chain immediately:
 
    | Path | Slot 1 | Slot 2 | Slot 3 | Slot 4 |
