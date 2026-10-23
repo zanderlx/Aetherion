@@ -53,5 +53,17 @@ const server = createServer(async (req, res) => {
     send(res, error.code === 'ENOENT' ? 404 : 400, { error: error.code === 'ENOENT' ? 'Not found.' : error.message });
   }
 });
-server.listen(port, '127.0.0.1', () => console.log(`Aetherion is ready at http://127.0.0.1:${server.address().port}`));
+export const serverReady = new Promise((resolve, reject) => {
+  server.once('error', reject);
+  server.listen(port, '127.0.0.1', () => {
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    console.log(`Aetherion is ready at ${origin}`);
+    resolve(origin);
+  });
+});
+serverReady.catch(() => {}); // CLI errors are reported by the existing error handler.
+export async function closeGameServer() {
+  await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+  await store.queue; // Let every accepted write finish before desktop shutdown or updates.
+}
 server.on('error', error => { console.error(error.message); process.exitCode = 1; });
