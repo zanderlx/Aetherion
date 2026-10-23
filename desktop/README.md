@@ -22,6 +22,8 @@ Windows data is stored independently of the installation:
 - `%APPDATA%\Aetherion\data\backups\`: save backups.
 - `%APPDATA%\Aetherion\desktop.log`: startup/update diagnostics.
 
+Development launches with npm run desktop use %APPDATA%\Aetherion Development instead, with independent saves and Chromium caches. You can copy existing data on first launch. Installed player data stays in %APPDATA%\Aetherion.
+
 The Aetherion menu opens these folders. Updates replace application files only. Uninstalling retains app data.
 
 On first launch, choose **Start New** or **Copy Existing Data**. For migration, stop the browser server first and choose the original repository's `data` folder. The app validates a staged copy of player/config/backups, then activates it. It never overwrites the source or an existing desktop data folder. Each edition subsequently has independent saves.

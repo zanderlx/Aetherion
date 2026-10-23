@@ -1,6 +1,6 @@
 import updater from 'electron-updater';
 import {app, BrowserWindow, Menu, dialog, shell, session} from 'electron';
-import {appendFileSync, existsSync} from 'node:fs';
+import {appendFileSync, existsSync, mkdirSync} from 'node:fs';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -12,7 +12,12 @@ const smoke = process.argv.includes('--smoke-test');
 if (smoke && !process.env.AETHERION_TEST_DATA) throw new Error('Smoke testing requires an isolated AETHERION_TEST_DATA directory.');
 if (process.env.AETHERION_SOFTWARE_RENDERING === '1') app.disableHardwareAcceleration();
 app.setName('Aetherion');
-app.setPath('userData', smoke ? join(process.env.AETHERION_TEST_DATA, 'browser') : join(app.getPath('appData'), 'Aetherion'));
+const userDirectory = smoke ? join(process.env.AETHERION_TEST_DATA, 'browser')
+  : join(app.getPath('appData'), app.isPackaged ? 'Aetherion' : 'Aetherion Development');
+// Select Chromium storage before ready; development must not lock the installed game's cache or saves.
+mkdirSync(join(userDirectory, 'chromium'), {recursive:true});
+app.setPath('userData', userDirectory);
+app.setPath('sessionData', join(userDirectory, 'chromium'));
 const data = smoke ? join(process.env.AETHERION_TEST_DATA, 'data') : join(app.getPath('userData'), 'data');
 let main, splash, backend, stopping = false, stopped = false;
 const log = message => {
