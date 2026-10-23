@@ -256,3 +256,13 @@ test('palette variation updates live from JSON settings, preserves saved colors,
  const reloaded=await new GameStore(directory,catalog,defaults,{rng:()=>.5}).init();
  assert.equal(reloaded.getCatalog().spawning.paletteVariationPercent,25);
 });
+
+test('per-palette variance persists, supports global fallback, and rejects invalid values',async t=>{
+ const {store,read}=await fixture(t);
+ const palette=structuredClone(store.getCatalog().palettes.find(p=>p.complete));
+ await store.action('save-definition',{kind:'palettes',id:palette.id,values:{...palette,variationPercent:12}});
+ assert.equal((await read('palettes.json')).find(p=>p.id===palette.id).variationPercent,12);
+ for(const value of [-1,101,'25'])await assert.rejects(store.action('save-definition',{kind:'palettes',id:palette.id,values:{...palette,variationPercent:value}}));
+ await store.action('save-definition',{kind:'palettes',id:palette.id,values:{...palette,variationPercent:null}});
+ assert.equal((await read('palettes.json')).find(p=>p.id===palette.id).variationPercent,null);
+});

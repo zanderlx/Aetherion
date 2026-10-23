@@ -104,6 +104,8 @@ export function validateDefinition(kind, input) {
     result.restriction = text('restriction') || null;
   }
   if (kind === 'palettes') {
+    if (input.variationPercent != null && (typeof input.variationPercent !== 'number' || !Number.isFinite(input.variationPercent) || input.variationPercent < 0 || input.variationPercent > 100)) throw new Error('Color variance must be between 0 and 100%.');
+    result.variationPercent = input.variationPercent ?? null;
     result.speciesIds = strings('speciesIds');
     result.assetSkins = strings('assetSkins',200);
     if (input.global !== undefined && typeof input.global !== 'boolean') throw new Error('Choose whether the palette is global.');

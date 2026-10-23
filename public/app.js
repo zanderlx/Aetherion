@@ -546,7 +546,7 @@ profile.addEventListener('keydown',event => {
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
-  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'palette-variation-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form', 'rarity-settings-form'].includes(form.id)) return;
+  if (!['horse-description-form', 'horse-notes-form', 'keeper-form', 'spawn-settings-form', 'gold-form', 'economy-form', 'settings-form', 'zone-form', 'definition-form', 'traits-form', 'rarity-settings-form'].includes(form.id)) return;
   event.preventDefault();
   if (busy) return;
   busy = true;
@@ -555,13 +555,7 @@ document.addEventListener('submit', async event => {
   try {
     if (['economy-form','settings-form'].includes(form.id)) validateSettingsNumbers(form);
     const values = Object.fromEntries(new FormData(form));
-    if (form.id === 'palette-variation-form') {
-      const input = form.elements.paletteVariationPercent;
-      if (!input.value.trim() || !input.validity.valid) throw new Error('Enter a color variation from 0 to 100%.');
-      await action('spawn-settings',{paletteVariationPercent:Number(input.value)});
-      render();
-      notify('Color variation saved.');
-    } else if (form.id === 'rarity-settings-form') {
+    if (form.id === 'rarity-settings-form') {
       await action('rarity-settings',readRaritySettings(form));
       render();
       notify('Rarity colors saved.');
@@ -617,7 +611,6 @@ document.addEventListener('submit', async event => {
       const saved = state.customLocations.find(l => l.id === draft.id || l.name === draft.name.trim());
       showZoneDraft(saved);
       $('#zone-status').textContent = saved.enabled ? 'Saved! Your zone is now in the Wilds navigation and the atlas below.' : 'Saved as a closed zone. Enable exploration whenever you are ready.';
-      notify('Your new corner of the world is saved.');
     } else if (form.id === 'settings-form') {
       await action('settings', {
         horsesPerSearch: Number(values.horsesPerSearch ?? state.settings.horsesPerSearch), sellingPrice: Number(values.sellingPrice ?? state.settings.sellingPrice),
@@ -736,3 +729,20 @@ try {
 
 
 
+
+// Save variation only after leaving a changed field, without resetting palette filters.
+document.addEventListener('focusout',async event=>{
+  const input=event.target;
+  if(input.id!=='palette-variation')return;
+  const previous=catalog.spawning?.paletteVariationPercent ?? 25;
+  if(!input.value.trim() || !input.validity.valid){input.value=previous;notify('Enter a color variation from 0 to 100%.',true);return;}
+  const value=Number(input.value);
+  if(value===previous)return;
+  input.disabled=true;
+  try{await action('spawn-settings',{paletteVariationPercent:value});notify('Color variation saved.');}
+  catch(error){input.value=previous;notify(error.message,true);}
+  finally{input.disabled=false;}
+});
+document.addEventListener('keydown',event=>{
+  if(event.target.id==='palette-variation' && event.key==='Enter'){event.preventDefault();event.target.blur();}
+});

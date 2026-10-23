@@ -1,3 +1,4 @@
+import {defaultSpawnSettings} from '../public/spawn-config.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {varyPalette} from '../public/palette-variation.js';
@@ -47,4 +48,14 @@ test('variation strength supports zero and adjustable limits',()=>{
   channels(hex).forEach((value,i)=>assert.ok(Math.abs(value-channels(palette.colors.Gold)[i])<=Math.ceil(255*percent/100)));
  }
  for(const value of [-1,101,NaN,'25'])assert.throws(()=>varyPalette(palette,()=>0,value));
+});
+
+test('a palette override wins over the global variation strength, including zero',()=>{
+ const registry=structuredClone(catalog);registry.spawning={...structuredClone(defaultSpawnSettings),paletteVariationPercent:100};
+ registry.palettes.forEach(p=>p.variationPercent=0);
+ const horse=spawnHorse(registry,registry.locations.find(z=>z.id==='aetherion'),()=>.25);
+ assert.deepEqual(horse.palette.colors,registry.palettes.find(p=>p.id===horse.paletteId).colors);
+ registry.palettes.forEach(p=>p.variationPercent=25);
+ const varied=spawnHorse(registry,registry.locations.find(z=>z.id==='aetherion'),()=>.25);
+ assert.notDeepEqual(varied.palette.colors,registry.palettes.find(p=>p.id===varied.paletteId).colors);
 });
