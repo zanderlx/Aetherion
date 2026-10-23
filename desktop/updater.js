@@ -18,6 +18,11 @@ export function configureUpdates({autoUpdater, packaged, show, shutdown, log}) {
     let downloadRequested = false;
     try {
       const result = await autoUpdater.checkForUpdates();
+      if(result?.isUpdateAvailable && result.updateInfo.tag !== 'gallorin-v'+result.updateInfo.version){
+        log('Ignored update outside the Gallorin release series.');
+        if(manual)await show({type:'info',message:'No Gallorin update is available.'});
+        return;
+      }
       if (!result?.isUpdateAvailable) {
         if (manual) await show({message:'Gallorin is up to date.', type:'info'});
         return;

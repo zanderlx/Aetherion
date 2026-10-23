@@ -1,6 +1,6 @@
 {
   "name": "gallorin-horse-sanctuary",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Gallorin: a local fantasy horse collection game with data-driven spawning.",
@@ -26,7 +26,7 @@
   "main": "desktop/main.js",
   "author": "Gallorin",
   "repository": {
-    "url": "https://github.com/zanderlx/Aetherion.git",
+    "url": "https://github.com/zanderlx/Gallorin.git",
     "type": "git"
   }
 }

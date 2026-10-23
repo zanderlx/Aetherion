@@ -1,7 +1,7 @@
 name: Windows Desktop Release
 on:
   push:
-    tags: ['v*']
+    tags: ['gallorin-v*']
   workflow_dispatch:
 permissions:
   contents: write
@@ -22,7 +22,7 @@ jobs:
         shell: pwsh
         run: |
           $version = (Get-Content package.json | ConvertFrom-Json).version
-          if ("${{ github.ref_type }}" -eq "tag" -and "${{ github.ref_name }}" -ne "v$version") { throw "Tag must match package.json version." }
+          if ("${{ github.ref_type }}" -eq "tag" -and "${{ github.ref_name }}" -ne "gallorin-v$version") { throw "Tag must match package.json version." }
       - run: npm test
       - name: Build Windows installer without publishing
         run: npx electron-builder --config electron-builder.json --win --publish never
@@ -43,13 +43,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $tag = "${{ github.ref_name }}"
-          gh release create $tag --draft --title "Gallorin $tag — The Symphony of the Wilds" --notes "Themed title menu, continuous music, saved audio controls, themed Escape menu, smooth transitions, isolated development saves, and mutation emoji HTML escaping. Unsigned Windows installer. Tests and packaged smoke validation passed."
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          gh release create $tag --draft --title "Gallorin v$version — The Symphony of the Wilds" --notes "Themed title menu, continuous music, saved audio controls, themed Escape menu, smooth transitions, isolated development saves, and mutation emoji HTML escaping. Unsigned Windows installer. Tests and packaged smoke validation passed."
           if ($LASTEXITCODE -ne 0) { throw "Release creation failed." }
           Get-ChildItem dist/*.exe,dist/*.blockmap | ForEach-Object { Rename-Item -LiteralPath $_.FullName -NewName ($_.Name.Replace(" ","-")) }
           $assets = @(Get-ChildItem dist/*.exe,dist/*.blockmap,dist/latest.yml | ForEach-Object FullName)
           gh release upload $tag @assets
           if ($LASTEXITCODE -ne 0) { throw "Upload failed; release remains draft." }
-          gh release edit $tag --draft=false
+          gh release edit $tag --draft=false --latest
           if ($LASTEXITCODE -ne 0) { throw "Publication failed." }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

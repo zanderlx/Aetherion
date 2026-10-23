@@ -13,6 +13,10 @@ The splash uses the existing gold horse emblem, dark woodland tones, and a 4.5-s
 
 If a graphics driver causes problems, set `AETHERION_SOFTWARE_RENDERING=1` before launching. This compatibility switch disables hardware acceleration. The icon generator uses software rendering; regenerate with `npx electron scripts/build-desktop-icon.cjs`.
 
+## Gallorin version series
+
+Gallorin starts at **v1.0.0 — The Symphony of the Wilds**. Aetherion releases are legacy history. Gallorin tags use gallorin-v followed by major.minor.patch to avoid collisions with legacy tags. The updater accepts only this series. Legacy Aetherion users need a one-time manual Gallorin install because the version resets from 2.0.0 to 1.0.0; saves remain compatible.
+
 ## Saves and configuration
 
 Windows data is stored independently of the installation:
@@ -36,10 +40,10 @@ The repository is public, so players need no GitHub account or token.
 
 1. Before a release, increment package.json using major.minor.patch, update README features/version, run tests, and commit. The website footer uses that version automatically.
 2. When ready, push the approved changes to main.
-3. Create and push a matching tag, for example `v1.7.0` for version `1.7.0`.
-4. **Actions → Windows Desktop Release** builds and tests the Windows installer, then creates a **draft** GitHub Release using the workflow's built-in GITHUB_TOKEN. No personal token belongs in the app.
-5. Download and test the draft installer. Confirm the release contains its `.exe`, `.exe.blockmap`, and `latest.yml`.
-6. Publish the draft when satisfied. Installed apps can now discover it. A normal code push alone does not publish an app update.
+3. Create and push a matching tag, for example `gallorin-v1.0.0` for version `1.0.0`.
+4. **Actions → Windows Desktop Release** builds and tests the Windows installer, smoke-tests the packaged app before creating a GitHub Release using the workflow's built-in GITHUB_TOKEN. No personal token belongs in the app.
+5. After successful checks, the workflow uploads the installer, blockmap, and latest.yml, then publishes the release and explicitly marks it latest.
+6. Installed Gallorin apps can now discover it. A normal code push alone does not publish an app update.
 
 The workflow can also be started manually. Repository Actions must be enabled; its job requests contents:write to create the draft release.
 

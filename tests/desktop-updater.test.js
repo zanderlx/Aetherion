@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {configureUpdates} from '../desktop/updater.js';
 
-function fixture({available=true, responses=[0,0], failure=false, packaged=true}={}) {
+function fixture({available=true, responses=[0,0], failure=false, packaged=true,tag='gallorin-v1.1.0'}={}) {
   const calls=[];
   const autoUpdater=new EventEmitter();
-  autoUpdater.checkForUpdates=async()=>{calls.push('check');if(failure)throw Error('offline'); return {isUpdateAvailable:available,updateInfo:{version:'1.7.0'}};};
+  autoUpdater.checkForUpdates=async()=>{calls.push('check');if(failure)throw Error('offline'); return {isUpdateAvailable:available,updateInfo:{version:'1.1.0',tag}};};
   autoUpdater.downloadUpdate=async()=>{calls.push('download');};
   autoUpdater.quitAndInstall=()=>calls.push('install');
   const check=configureUpdates({autoUpdater,packaged,show:async options=>{calls.push(options.message);return {response:responses.shift()};},shutdown:async()=>{calls.push('save-and-close');},log:()=>{}});
@@ -27,4 +27,10 @@ test('update deferral, offline startup, no update, and development mode do not i
 });
 test('manual offline update check gives a recoverable message',async()=>{
   const f=fixture({failure:true});await f.check(true);assert.ok(f.calls.includes('Could not check for updates.'));
+});
+
+test('Gallorin ignores legacy Aetherion updates despite their higher version numbers',async()=>{
+  const f=fixture({tag:'v2.0.0'});await f.check(true);
+  assert.ok(!f.calls.includes('download'));assert.ok(!f.calls.includes('install'));
+  assert.ok(f.calls.includes('No Gallorin update is available.'));
 });

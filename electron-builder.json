@@ -6,5 +6,5 @@
   "files": ["desktop/**/*", "public/**/*", "src/**/*", "server.js", "data/definitions/**/*", "data/defaults/**/*", "package.json"],
   "win": {"target": [{"target": "nsis", "arch": ["x64"]}], "icon": "desktop/assets/icon.ico"},
   "nsis": {"oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "deleteAppDataOnUninstall": false, "createDesktopShortcut": true},
-  "publish": [{"provider": "github", "owner": "zanderlx", "repo": "Aetherion", "releaseType": "draft"}]
+  "publish": [{"provider": "github", "owner": "zanderlx", "repo": "Gallorin", "tagNamePrefix": "gallorin-v", "releaseType": "draft"}]
 }

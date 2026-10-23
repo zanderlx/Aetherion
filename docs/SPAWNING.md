@@ -1,4 +1,4 @@
-# Data-driven spawning · Version 1.4
+# Aetherion (Legacy) · Data-driven spawning · Version 1.4
 
 ## Horse Definitions dashboard
 

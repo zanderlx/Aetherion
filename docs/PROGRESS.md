@@ -1,4 +1,4 @@
-# Gallorin — Version 1.3 Progress
+# Aetherion (Legacy) — Version 1.3 Progress
 
 ## Implemented
 
