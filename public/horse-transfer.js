@@ -25,7 +25,7 @@ function timestamp(value,label) {
 }
 const optionalID = value => value === undefined ? {} : {id:text(value,'Definition ID',100)};
 export function readHorseDocument(document) {
-  if (!object(document) || document.format !== horseFormat || document.version !== horseFormatVersion || !object(document.horse)) throw new Error('Choose an aetherion-horse JSON file with version 1.');
+  if (!object(document) || document.format !== horseFormat || document.version !== horseFormatVersion || !object(document.horse)) throw new Error('Choose a Gallorin horse JSON file with version 1.');
   const h = document.horse;
   if (!object(h.palette) || !object(h.palette.colors) || !object(h.eye) || !object(h.personality) || !object(h.traits)) throw new Error('Horse colors, eyes, personality, and traits are required.');
   const birthday = text(h.birthday,'Birthday',10);

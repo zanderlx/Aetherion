@@ -33,7 +33,7 @@ jobs:
         run: |
           $env:AETHERION_TEST_DATA = Join-Path $env:RUNNER_TEMP ("aetherion-smoke-" + [Guid]::NewGuid())
           $env:AETHERION_SOFTWARE_RENDERING = '1'
-          $process = Start-Process -FilePath './dist/win-unpacked/Aetherion.exe' -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
+          $process = Start-Process -FilePath './dist/win-unpacked/Gallorin.exe' -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
           if (-not $process.WaitForExit(60000)) { $process.Kill(); throw "Desktop smoke test timed out." }
           if ($process.ExitCode -ne 0 -or -not (Test-Path (Join-Path $env:AETHERION_TEST_DATA 'desktop-smoke.json'))) { throw "Desktop smoke test failed." }
       - name: Publish validated release
@@ -43,7 +43,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $tag = "${{ github.ref_name }}"
-          gh release create $tag --draft --title "Aetherion $tag — The Symphony of the Wilds" --notes "Themed title menu, continuous music, saved audio controls, themed Escape menu, smooth transitions, isolated development saves, and mutation emoji HTML escaping. Unsigned Windows installer. Tests and packaged smoke validation passed."
+          gh release create $tag --draft --title "Gallorin $tag — The Symphony of the Wilds" --notes "Themed title menu, continuous music, saved audio controls, themed Escape menu, smooth transitions, isolated development saves, and mutation emoji HTML escaping. Unsigned Windows installer. Tests and packaged smoke validation passed."
           if ($LASTEXITCODE -ne 0) { throw "Release creation failed." }
           Get-ChildItem dist/*.exe,dist/*.blockmap | ForEach-Object { Rename-Item -LiteralPath $_.FullName -NewName ($_.Name.Replace(" ","-")) }
           $assets = @(Get-ChildItem dist/*.exe,dist/*.blockmap,dist/latest.yml | ForEach-Object FullName)
@@ -53,7 +53,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Publication failed." }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: Aetherion-Windows
+          name: Gallorin-Windows
           path: |
             dist/*.exe
             dist/*.blockmap

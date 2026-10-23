@@ -57,7 +57,7 @@ The five registries are JSON arrays. Each zone stores its metadata, tags, palett
 
 The excerpt shows the creature list, not a complete zone file. The matching `speciesPool` name list is maintained for the UI; spawning uses the IDs and absolute weights. Zero-weight entries are excluded. In **My Zones → Creatures Per Zone**, weights can be adjusted independently.
 
-Aetherion’s default species list and tiers are documented in the README. The other registered species remain available to other zones.
+Gallorin’s default species list and tiers are documented in the README. The other registered species remain available to other zones.
 
 Species zone checkboxes append/remove the ID in each selected zone file. Changing a species rarity tier updates its assigned zone weights. Saving other species fields preserves manually adjusted weights. Deleting a species removes its references; deleting a zone removes its JSON file. Empty zones close to exploration.
 

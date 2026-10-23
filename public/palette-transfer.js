@@ -7,7 +7,7 @@ export function createPaletteDocument(palette) {
   return {format:'aetherion-palette',version:1,palette:values};
 }
 export function readPaletteDocument(document,catalog) {
-  if(!document || document.format!=='aetherion-palette' || document.version!==1 || !document.palette || typeof document.palette!=='object' || Array.isArray(document.palette)) throw new Error('Choose an Aetherion palette JSON file (version 1).');
+  if(!document || document.format!=='aetherion-palette' || document.version!==1 || !document.palette || typeof document.palette!=='object' || Array.isArray(document.palette)) throw new Error('Choose an Gallorin palette JSON file (version 1).');
   const input={...document.palette};
   delete input.systemId;
   const values=validateDefinition('palettes',input);
@@ -46,7 +46,7 @@ export function createPaletteTransfers({getCatalog,openDraft,notify}) {
       const palette=getCatalog().palettes.find(p=>p.id===id);
       if(!palette) throw new Error('Palette not found.');
       const url=URL.createObjectURL(new Blob([JSON.stringify(createPaletteDocument(palette),null,2)+'\n'],{type:'application/json'}));
-      const link=document.createElement('a');link.href=url;link.download=`aetherion-palette-${palette.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.json`;
+      const link=document.createElement('a');link.href=url;link.download=`gallorin-palette-${palette.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.json`;
       document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
       notify('Palette exported.');
     }

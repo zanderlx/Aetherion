@@ -1,9 +1,9 @@
 {
-  "name": "aetherion-horse-sanctuary",
+  "name": "gallorin-horse-sanctuary",
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Aetherion: a local fantasy horse collection game with data-driven spawning.",
+  "description": "Gallorin: a local fantasy horse collection game with data-driven spawning.",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
@@ -24,7 +24,7 @@
     "electron-builder": "26.15.3"
   },
   "main": "desktop/main.js",
-  "author": "Aetherion",
+  "author": "Gallorin",
   "repository": {
     "url": "https://github.com/zanderlx/Aetherion.git",
     "type": "git"

@@ -13,7 +13,7 @@ document.querySelector('#play').onclick=async()=>{
   location.href=new URLSearchParams(location.search).get('game');
 };
 document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();
-window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='AETHERION V'+version;});
+window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='GALLORIN V'+version;});
 
 audioMuted.onchange=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:audioMuted.checked});display();};
 

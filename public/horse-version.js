@@ -9,7 +9,7 @@ export function readHorseVersion(horse) {
   for (const [name,value] of Object.entries({schemaVersion,revision,generationVersion})) {
     if (!Number.isSafeInteger(value) || value < 1) throw new Error('Invalid horse ' + name + '.');
   }
-  if (schemaVersion > horseSchemaVersion || generationVersion > horseGenerationVersion) throw new Error('This horse needs a newer version of Aetherion.');
+  if (schemaVersion > horseSchemaVersion || generationVersion > horseGenerationVersion) throw new Error('This horse needs a newer version of Gallorin.');
   const result = {schemaVersion,revision,generationVersion};
   if (horse.updatedAt !== undefined) {
     if (typeof horse.updatedAt !== 'string' || !Number.isFinite(Date.parse(horse.updatedAt))) throw new Error('Invalid horse update timestamp.');

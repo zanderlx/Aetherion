@@ -1,6 +1,6 @@
 {
   "appId": "com.aetherion.sanctuary",
-  "productName": "Aetherion",
+  "productName": "Gallorin",
   "directories": {"output": "dist"},
   "asar": true,
   "files": ["desktop/**/*", "public/**/*", "src/**/*", "server.js", "data/definitions/**/*", "data/defaults/**/*", "package.json"],

@@ -30,7 +30,7 @@ const server = createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/api/state') { await store.refreshConfiguration(); return send(res,200,{state:store.snapshot(),catalog:store.getCatalog(),defaults,appVersion}); }
     if (req.method === 'GET' && url.pathname === '/api/export') {
       await store.refreshConfiguration();
-      res.setHeader('Content-Disposition', 'attachment; filename="aetherion-backup.json"');
+      res.setHeader('Content-Disposition', 'attachment; filename="gallorin-backup.json"');
       return send(res, 200, { state: store.snapshot(), catalog: store.getCatalog(), defaults });
     }
     if (req.method === 'POST' && url.pathname === '/api/action') {
@@ -58,7 +58,7 @@ export const serverReady = new Promise((resolve, reject) => {
   server.once('error', reject);
   server.listen(port, '127.0.0.1', () => {
     const origin = `http://127.0.0.1:${server.address().port}`;
-    console.log(`Aetherion is ready at ${origin}`);
+    console.log(`Gallorin is ready at ${origin}`);
     resolve(origin);
   });
 });

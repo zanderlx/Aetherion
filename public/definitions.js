@@ -4,7 +4,7 @@ export const regions = ['Coat Top', 'Coat Bottom', 'Hair', 'Hoof', 'Nose', 'Sock
 export const traitCategories = ['Mane', 'Tail', 'Pattern', 'Paint', 'Cosmetic', 'Keratin', 'Ears', 'Whiskers'];
 export const themeTokens = ['bg', 'panel', 'panel-deep', 'sidebar', 'border', 'gold', 'gold-soft', 'text', 'muted', 'burgundy', 'green'];
 export const defaultThemes = [
-  { id: 'default', name: 'Aetherion Original', description: 'The original mahogany, burgundy, and antique gold.', scheme: 'dark', colors: ['#1d1b18','#28231f','#211d1a','#211b19','#463c30','#d2b477','#a58a5d','#eee5d6','#b6aa98','#6d343c','#a3bd91'] },
+  { id: 'default', name: 'Gallorin Original', description: 'The original mahogany, burgundy, and antique gold.', scheme: 'dark', colors: ['#1d1b18','#28231f','#211d1a','#211b19','#463c30','#d2b477','#a58a5d','#eee5d6','#b6aa98','#6d343c','#a3bd91'] },
   { id: 'pastel-rose', name: 'Rosewater', description: 'Blush pink, warm ivory, and dusty rose.', scheme: 'light', colors: ['#fcf1f3','#fffafb','#f5e3e8','#f4dce3','#d8b7c2','#78435b','#86546a','#3d2932','#70515e','#8a4965','#416349'] },
   { id: 'pastel-lavender', name: 'Lavender Cloud', description: 'Lilac clouds and soft plum accents.', scheme: 'light', colors: ['#f4f0fc','#fcfaff','#eae1f6','#e5daf4','#c8b7df','#65447f','#735689','#332b43','#655773','#74518d','#46684e'] },
   { id: 'pastel-mint', name: 'Mint Meadow', description: 'Pale sage, cream, and eucalyptus.', scheme: 'light', colors: ['#eff8f1','#fbfefa','#e0eee3','#d9eadf','#abc8b4','#346451','#4c705d','#293e32','#506b58','#3c705b','#3f6743'] },
@@ -36,6 +36,7 @@ export function normalizeCatalog(source) {
   catalog.species = catalog.species.map(s => ({
     ...s, rarityTier:rarityTier(s), attributes:s.attributes || {}, traits: s.traits || catalog.traits?.[s.name] || Object.fromEntries(traitCategories.map(k => [k, []]))
   }));
+  catalog.siteThemes = catalog.siteThemes.map(theme=>theme.id==='default' && theme.name==='Aetherion Original' ? {...theme,name:'Gallorin Original'} : theme);
   catalog.personalities = catalog.personalities.map(p => ({...p,systemId:p.systemId || p.id,behaviorTags:p.behaviorTags || []}));
   catalog.palettes = catalog.palettes.map(p => ({...p,global:p.global ?? !p.speciesIds?.length,speciesIds:p.speciesIds || [],assetSkins:p.assetSkins || []}));
   catalog.eyes = catalog.eyes.map(p => ({...p,textureId:p.textureId || '',layers:p.layers || []}));

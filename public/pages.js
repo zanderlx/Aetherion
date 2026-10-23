@@ -67,7 +67,7 @@ export function plannedPage(route, state) {
   const [kicker, title, description, detail, symbol] = p;
   return `${heading(kicker.toUpperCase(), title, description)}<section class="coming-soon"><div class="coming-illustration">${icon(symbol)}<span>✧</span></div><span class="badge">A FUTURE CHAPTER</span><h2>Good things take a little growing.</h2><p>${detail}</p><a class="button secondary" href="#wilds/aetherion">Back to the wilds ${icon('arrow')}</a></section>`;
 }
-export const routeTitle = (route, locations = []) => locations.find(l => route === `wilds/${l.id}`)?.name || groups.flatMap(g => g.items).find(([path]) => path === route)?.[1] || 'Aetherion';
+export const routeTitle = (route, locations = []) => locations.find(l => route === `wilds/${l.id}`)?.name || groups.flatMap(g => g.items).find(([path]) => path === route)?.[1] || 'Gallorin';
 
 export function editModePage(state) {
   return `${heading('', 'Edit Mode', 'Manage website wording from one dedicated place.')}

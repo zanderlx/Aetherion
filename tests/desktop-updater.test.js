@@ -14,7 +14,7 @@ function fixture({available=true, responses=[0,0], failure=false, packaged=true}
 }
 test('desktop updates require download and restart consent and drain saves before installation',async()=>{
   const f=fixture();await f.check();
-  assert.ok(f.calls.indexOf('download')>f.calls.indexOf('A new version of Aetherion is available.'));
+  assert.ok(f.calls.indexOf('download')>f.calls.indexOf('A new version of Gallorin is available.'));
   assert.ok(f.calls.indexOf('install')>f.calls.indexOf('save-and-close'));
   assert.equal(f.autoUpdater.autoInstallOnAppQuit,false);
 });

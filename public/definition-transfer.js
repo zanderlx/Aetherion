@@ -6,7 +6,7 @@ export function createDefinitionDocument(kind,entry) {
  return {format:`aetherion-${kind}`,version:1,definition:value};
 }
 export function readDefinitionDocument(kind,document,catalog) {
- if(!names[kind] || !document || document.format!==`aetherion-${kind}` || document.version!==1 || !document.definition || typeof document.definition!=='object' || Array.isArray(document.definition)) throw new Error(`Choose an Aetherion ${names[kind] || 'definition'} JSON file (version 1).`);
+ if(!names[kind] || !document || document.format!==`aetherion-${kind}` || document.version!==1 || !document.definition || typeof document.definition!=='object' || Array.isArray(document.definition)) throw new Error(`Choose an Gallorin ${names[kind] || 'definition'} JSON file (version 1).`);
  const input={...document.definition};delete input.systemId;
  const value=validateDefinition(kind,input);delete value.systemId;
  const base=value.name.slice(0,65);let suffix=1;
@@ -38,7 +38,7 @@ export function createDefinitionTransfers(kind,{getCatalog,openDraft,notify}) {
    const entry=getCatalog()[kind].find(entry=>entry.id===id);
    if(!entry) throw new Error(`${names[kind]} not found.`);
    const url=URL.createObjectURL(new Blob([JSON.stringify(createDefinitionDocument(kind,entry),null,2)+'\n'],{type:'application/json'}));
-   const link=document.createElement('a');link.href=url;link.download=`aetherion-${kind}-${entry.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.json`;
+   const link=document.createElement('a');link.href=url;link.download=`gallorin-${kind}-${entry.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.json`;
    document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);notify(`${names[kind]} exported.`);
   }
  };

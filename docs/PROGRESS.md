@@ -1,4 +1,4 @@
-# Aetherion — Version 1.3 Progress
+# Gallorin — Version 1.3 Progress
 
 ## Implemented
 

@@ -146,7 +146,7 @@ function render() {
     $('#horse-grid-size').closest('.stable-grid-slider').style.setProperty('--grid-position',`${(stableGridColumns-3)/3*100}%`);
     $('#collection-grid').style.setProperty('--stable-grid-columns',stableGridColumns);
   }
-  document.title = `${routeTitle(route, locationsFor(catalog, state))} · Aetherion`;
+  document.title = `Gallorin v${appVersion} · ${routeTitle(route, locationsFor(catalog, state))}`;
   copyEditor.attach(main);
   attachSettingsNumbers(main);
   trackForms(main);

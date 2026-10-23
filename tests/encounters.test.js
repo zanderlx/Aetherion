@@ -73,7 +73,7 @@ test('Cosmic ignores the zone species pool; Wild retains it and assigns profile 
   }
 });
 
-test('Aetherion Cosmic encounters ignore its whitelist while Wild encounters retain it',()=>{
+test('Gallorin Cosmic encounters ignore its whitelist while Wild encounters retain it',()=>{
   const aetherion = {...location,id:'aetherion'};
   const cosmic = spawnHorse(catalog,aetherion,sequence([0.003,0.99,0,0.99]));
   assert.equal(cosmic.spawnPath,'Cosmic');

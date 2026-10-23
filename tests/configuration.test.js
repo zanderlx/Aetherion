@@ -55,7 +55,7 @@ test('first startup seeds nineteen integer mutation weights and all local config
   assert.ok(!(await read('mutations.json')).some(m => m.id === solar.id));
 });
 
-test('Aetherion defaults use the exact twenty-five species whitelist and supplied tiers',async t => {
+test('Gallorin defaults use the exact twenty-five species whitelist and supplied tiers',async t => {
   const {read} = await fixture(t);
   const species = await read('species.json');
   const zone = await read('zones/aetherion.json');

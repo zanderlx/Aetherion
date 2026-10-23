@@ -1,6 +1,6 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 2.0](docs/assets/aetherion-banner.svg)
+![Gallorin — A Horsekeeper's Chronicle, Version 2.0](docs/assets/gallorin-banner.svg)
 
 **Version 2.0.0 · The Symphony of the Wilds**
 
@@ -32,7 +32,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **190 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **192 passing tests**; browser visual QA remains pending.
 
 ## Desktop Release
 
@@ -75,7 +75,7 @@ cd Aetherion
 
 ### 3. Start your sanctuary
 
-**Windows, no terminal needed:** double-click **Launch Aetherion.vbs** in the project folder. It starts the server in the background, waits until it is ready, then opens your default browser. Double-clicking again reuses the running server. Double-click **Stop Aetherion.vbs** when finished; closing the browser alone leaves the server running. Both shortcuts work from folders containing spaces.
+**Windows, no terminal needed:** double-click **Launch Gallorin.vbs** in the project folder. It starts the server in the background, waits until it is ready, then opens your default browser. Double-clicking again reuses the running server. Double-click **Stop Gallorin.vbs** when finished; closing the browser alone leaves the server running. Both shortcuts work from folders containing spaces.
 
 Startup errors are shown in a dialog; server logs are in `data/desktop-launcher.log` (not committed). Node.js 22+ must be available on PATH. These shortcuts use Windows Script Host; managed computers may disable it.
 
@@ -114,7 +114,7 @@ PORT=4174 npm start
 
 Then open `http://127.0.0.1:4174`. The server listens only on your computer's loopback address.
 
-- **The browser cannot connect:** confirm the terminal says “Aetherion is ready,” and use its URL. Opening `public/index.html` directly will not run the game.
+- **The browser cannot connect:** confirm the terminal says “Gallorin is ready,” and use its URL. Opening `public/index.html` directly will not run the game.
 - **The save cannot be read:** preserve the existing `data` folder before investigating. The app stops rather than silently replacing your progress.
 
 </details>
@@ -176,9 +176,9 @@ Taming or selling a wild horse replaces only that horse's slot, preserving the o
 
 Horse Definitions → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change species spawn weights or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
 
-Aetherion Wilds uses this **25-species whitelist** as its source of truth. Ordinary Wild encounters in Aetherion use the listed species. Cosmic encounters bypass this whitelist and can select any registered species equally, including the other 21 species and event species. The same unrestricted Cosmic rule applies to every zone.
+Aetherion Wilds uses this **25-species whitelist** as its source of truth. Ordinary Wild encounters in Aetherion Wilds use the listed species. Cosmic encounters bypass this whitelist and can select any registered species equally, including the other 21 species and event species. The same unrestricted Cosmic rule applies to every zone.
 
-| Tier | Weight per species | Aetherion species |
+| Tier | Weight per species | Aetherion Wilds species |
 | --- | ---: | --- |
 | 4 · Common | 500 | Bisorse, Caprine, Equus, Friesian, Horse, Peryton, Pony |
 | 3 · Uncommon | 250 | Akhal Teke, Clydesdale, Donkey, Fjord, Flora, Gargoyle, Lusitano, Marwari |
@@ -230,7 +230,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 
 **Zone tags:** zone creation and editing include a Tags field (one per line). New drafts include The evergreen realm and Free exploration. Add, replace, or remove tags, including all tags; they display without icons on Wilds pages and in the live preview. Existing zones keep their previous tag defaults.
 
-**Website themes:** Aetherion Original, Rosewater, Lavender Cloud, Mint Meadow, Bluebell Morning, Peach Blossom, Lemon Chiffon, Sea Glass, and Silver Mist. The original remains the default. Other presets offer dark and light variants, with dark selected by default. The Aetherion crest follows your theme colors.
+**Website themes:** Gallorin Original, Rosewater, Lavender Cloud, Mint Meadow, Bluebell Morning, Peach Blossom, Lemon Chiffon, Sea Glass, and Silver Mist. The original remains the default. Other presets offer dark and light variants, with dark selected by default. The Gallorin crest follows your theme colors.
 
 **Edit Mode:** enable it from its dedicated page, visit a section, and use the pencils. Save one section immediately, or preview multiple changes and choose **Save Page**. Discard drafts or restore default wording. Text supports live values such as `{gold}`, `{horseCount}`, and `{sellingPrice}`.
 
@@ -291,7 +291,7 @@ See [the detailed open questions](docs/OPEN-QUESTIONS.md) and [development progr
 The importer replaces the bootstrap catalog; preserve manual catalog edits first. Existing `data/config/` registries remain authoritative and are edited through Horse Definitions. It does not replace player saves.
 
 ```text
-Aetherion/
+Gallorin/
 ├── public/             Browser UI, editors, styles, SVG artwork
 ├── src/                Save/configuration transactions and spawning pipeline
 ├── data/               Bootstrap data, live config files, player save, backups

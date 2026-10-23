@@ -6,7 +6,7 @@ ipcRenderer.on('desktop-pause',()=>{
   if(modal?.open){modal.close();return;}
   if(!modal){
     modal=document.createElement('dialog');modal.id='desktop-pause';
-    modal.setAttribute('aria-label','Aetherion menu');
+    modal.setAttribute('aria-label','Gallorin menu');
     Object.assign(modal.style,{background:'#28231f',color:'#eee5d6',border:'1px solid #a58a5d',borderRadius:'12px',padding:'32px',width:'min(380px,90vw)',boxShadow:'0 24px 90px #0009'});
     const style=document.createElement('style');
     style.textContent='#desktop-pause::backdrop{background:#100e0bbb;backdrop-filter:blur(5px)}#desktop-pause h2{text-align:center;color:var(--gold,#d2b477);font:30px Georgia,serif;margin:0 0 26px}#desktop-pause .pause-actions{display:grid;gap:12px}#desktop-pause button{padding:12px 20px;border:1px solid #675744;border-radius:5px;background:#211d1a;color:#eee5d6;font:16px "Segoe UI",sans-serif;cursor:pointer}#desktop-pause button:hover{background:#463c30;border-color:#d2b477}#desktop-pause button:first-child{border-color:#d2b477;background:#66533455}#desktop-pause button:focus-visible{outline:2px solid #d2b477;outline-offset:3px}';
@@ -22,7 +22,7 @@ ipcRenderer.on('desktop-pause',()=>{
       ['path',{d:'m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32',fill:'none',stroke:'var(--panel-deep,#211d1a)','stroke-width':'2'}],
       ['circle',{cx:'34',cy:'29',r:'1.5',fill:'var(--panel-deep,#211d1a)'}]
     ]){const element=document.createElementNS(logo.namespaceURI,tag);for(const [key,value] of Object.entries(attributes))element.setAttribute(key,value);logo.append(element);}
-    const title=document.createElement('h2');title.textContent='AETHERION';title.style.cssText='margin:0;letter-spacing:4px;font-size:27px;padding-left:4px';
+    const title=document.createElement('h2');title.textContent='GALLORIN';title.style.cssText='margin:0;letter-spacing:4px;font-size:27px;padding-left:4px';
     branding.append(logo,title);modal.append(branding);
     const actions=document.createElement('div');actions.className='pause-actions';
     for(const [label,action] of [['Back To Game',()=>modal.close()],['Settings',()=>showAudioSettings()],['Main Menu',async()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)await document.body.animate([{opacity:1},{opacity:0}],{duration:420,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'}).finished;ipcRenderer.send('pause-main-menu');}],['Exit Game',()=>ipcRenderer.send('pause-exit')]]){

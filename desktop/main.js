@@ -1,3 +1,4 @@
+import {desktopDataPath} from './data-paths.js';
 import updater from 'electron-updater';
 import {app, BrowserWindow, Menu, dialog, shell, session, ipcMain} from 'electron';
 import {appendFileSync, existsSync, mkdirSync} from 'node:fs';
@@ -11,9 +12,9 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const smoke = process.argv.includes('--smoke-test');
 if (smoke && !process.env.AETHERION_TEST_DATA) throw new Error('Smoke testing requires an isolated AETHERION_TEST_DATA directory.');
 if (process.env.AETHERION_SOFTWARE_RENDERING === '1') app.disableHardwareAcceleration();
-app.setName('Aetherion');
+app.setName('Gallorin');
 const userDirectory = smoke ? join(process.env.AETHERION_TEST_DATA, 'browser')
-  : join(app.getPath('appData'), app.isPackaged ? 'Aetherion' : 'Aetherion Development');
+  : desktopDataPath(app.getPath('appData'),app.isPackaged);
 // Select Chromium storage before ready; development must not lock the installed game's cache or saves.
 mkdirSync(join(userDirectory, 'chromium'), {recursive:true});
 app.setPath('userData', userDirectory);
@@ -42,7 +43,7 @@ else {
   app.whenReady().then(start).catch(error => {
     log(error.stack);
     if (smoke) {console.error(error); app.exit(1);}
-    else {dialog.showErrorBox('Aetherion could not start', error.message + '\nYour existing files have been preserved.'); app.quit();}
+    else {dialog.showErrorBox('Gallorin could not start', error.message + '\nYour existing files have been preserved.'); app.quit();}
   });
 }
 
@@ -63,7 +64,7 @@ async function start() {
   const origin = await backend.serverReady;
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   main = new BrowserWindow({width:1440, height:960, minWidth:800, minHeight:640, show:false, backgroundColor:'#1d1b18',
-    title:'Aetherion', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, paintWhenInitiallyHidden:false, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
+    title:'Gallorin', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, paintWhenInitiallyHidden:false, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
   main.on('closed',()=>app.quit());
   main.webContents.setWindowOpenHandler(() => ({action:'deny'}));
   main.webContents.on('will-navigate', (event, url) => {if (url !== menuURL && new URL(url).origin !== origin) event.preventDefault();});
@@ -71,7 +72,7 @@ async function start() {
   const checkUpdates = configureUpdates({autoUpdater:updater.autoUpdater, packaged:app.isPackaged, show:options=>dialog.showMessageBox(main,options), shutdown, log});
   const openFolder = async folder => {await mkdir(folder, {recursive:true}); const error = await shell.openPath(folder); if(error) log(error);};
   Menu.setApplicationMenu(Menu.buildFromTemplate([
-    {label:'Aetherion', submenu:[
+    {label:'Gallorin', submenu:[
       {label:'Open Save Folder', click:()=>openFolder(join(data, 'player'))},
       {label:'Open Configuration Folder', click:()=>openFolder(join(data, 'config'))},
       {label:'Open Backups Folder', click:()=>openFolder(join(data, 'backups'))},
@@ -145,11 +146,11 @@ async function start() {
 }
 
 async function offerImport() {
-  const choice = await dialog.showMessageBox(splash, {type:'question', message:'Welcome to Aetherion',
+  const choice = await dialog.showMessageBox(splash, {type:'question', message:'Welcome to Gallorin',
     detail:'Start a new sanctuary, or copy your existing browser save and configuration. Close the browser server before copying its data folder. The original files will remain untouched.',
     buttons:['Start New', 'Copy Existing Data'], defaultId:0, cancelId:0});
   if (choice.response !== 1) return;
-  const selection = await dialog.showOpenDialog(splash, {title:'Choose your original Aetherion data folder', properties:['openDirectory']});
+  const selection = await dialog.showOpenDialog(splash, {title:'Choose your original Gallorin data folder', properties:['openDirectory']});
   if (selection.canceled) throw new Error('Import cancelled. Restart to choose a save or start a new sanctuary.');
   const {GameStore} = await import('../src/store.js');
   const catalog = JSON.parse(await readFile(join(root,'data/definitions/catalog.json'),'utf8'));

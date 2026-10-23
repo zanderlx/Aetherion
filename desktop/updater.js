@@ -19,10 +19,10 @@ export function configureUpdates({autoUpdater, packaged, show, shutdown, log}) {
     try {
       const result = await autoUpdater.checkForUpdates();
       if (!result?.isUpdateAvailable) {
-        if (manual) await show({message:'Aetherion is up to date.', type:'info'});
+        if (manual) await show({message:'Gallorin is up to date.', type:'info'});
         return;
       }
-      const {response} = await show({type:'info', message:'A new version of Aetherion is available.',
+      const {response} = await show({type:'info', message:'A new version of Gallorin is available.',
         detail:'Download version ' + result.updateInfo.version + '? Your horses and settings will be retained.',
         buttons:['Download', 'Later'], defaultId:0, cancelId:1});
       if (response !== 0) return;
