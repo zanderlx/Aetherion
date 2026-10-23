@@ -143,17 +143,12 @@ export class GameStore {
           next.transactions.push({ id: randomUUID(), type: 'Horse sold', horseId: horse.id, horseName:horse.name, species:horse.species, amount:salePricing.total, salePricing, at: new Date().toISOString() });
         }
         for (const key of Object.keys(next.encounters)) {
-          const containedHorse = next.encounters[key].some(h => h.id === horse.id);
-          next.encounters[key] = next.encounters[key].filter(h => h.id !== horse.id);
-          if (type === 'catch' && containedHorse) {
-            const location = locationsFor(catalog,next).find(l => l.id === key && l.enabled);
-            if (location) {
-              const searchNumber = next.searches[key] || 0;
-              // Save the capture and its replacement encounters in the same transaction.
-              next.encounters[key] = createEncounters(catalog,key,next.settings.horsesPerSearch,searchNumber,location,this.rng);
-              next.searches[key] = searchNumber+1;
-            }
-          }
+          const index = next.encounters[key].findIndex(h => h.id === horse.id);
+          if (index < 0) continue;
+          const location = locationsFor(catalog,next).find(l => l.id === key && l.enabled);
+          // Replace only the removed slot, atomically with its capture or sale.
+          if (location) next.encounters[key].splice(index,1,...createEncounters(catalog,key,1,next.searches[key] || 0,location,this.rng));
+          else next.encounters[key].splice(index,1);
         }
       } else if (type === 'import-horse') {
         if (JSON.stringify(payload).length > 524288) throw new Error('Horse files must be 512 KB or smaller.');

@@ -64,10 +64,9 @@ const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() =
 }});
 const horseDialogs = createHorseDialogs({getState:() => state,getCatalog:() => catalog,findHorse,save:action,notify,onSaved:async (id,kind) => {
   if (kind === 'catch') {
-    // Navigate before opening the owned profile so route cleanup cannot close it.
-    history.pushState(null,'','#stable/all');
-    await navigate();
-    if (route === 'stable/all') inspect(id);
+    profile.close();
+    render();
+    main.focus({preventScroll:true});
   } else {render();inspect(id);}
 }});
 const horseTransfers = createHorseTransfers({getCatalog:() => catalog,getState:() => state,save:action,notify,onImported:() => {render();}});
@@ -144,7 +143,7 @@ function render() {
   attachSettingsNumbers(main);
   trackForms(main);
 }
-async function navigate({refreshSpawns = false} = {}) {
+async function navigate({initializeNavigation = false} = {}) {
   const version = ++routeVersion;
   route = location.hash.slice(1) || 'wilds/aetherion';
   if (route.startsWith('wilds/') && !locationsFor(catalog,state).some(zone => zone.enabled && route === `wilds/${zone.id}`)) {
@@ -154,7 +153,7 @@ async function navigate({refreshSpawns = false} = {}) {
   }
   const movedRoutes = {'dev/editor':'dev/roadmap','dev/generator':'dev/roadmap','dev/spawn':'dev/roadmap','dev/economy':'dev/settings','stable/favorites':'stable/all','breeding/stable':'stable/breeding','breeding/history':'stable/all','stable/sold':'stable/all'};
   if (movedRoutes[route]) { route = movedRoutes[route]; history.replaceState(null,'', '#' + route); }
-  if (refreshSpawns) { openGroups.clear(); openGroups.add(navigationSection(route).title); }
+  if (initializeNavigation) { openGroups.clear(); openGroups.add(navigationSection(route).title); }
   closeMenu();
   if (profile.open) profile.close();
   if (confirmation.open) confirmation.close();
@@ -165,7 +164,7 @@ async function navigate({refreshSpawns = false} = {}) {
   eyeEditor.dialog.close();
   mutationEditor.dialog.close(); paletteEditor.dialog.close();
   try {
-    if (route.startsWith('wilds/') && (refreshSpawns || !state.encounters[route.split('/')[1]]) && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action(refreshSpawns ? 'search' : 'visit', { locationId: route.split('/')[1] });
+    if (route.startsWith('wilds/') && !state.encounters[route.split('/')[1]] && locationsFor(catalog, state).some(l => l.id === route.split('/')[1] && l.enabled)) await action('visit', { locationId: route.split('/')[1] });
     if (version !== routeVersion) return;
     render();
     main.focus({ preventScroll: true });
@@ -254,7 +253,7 @@ function syncResponsiveMenu() {
 function askToSell(id) {
   confirmation.classList.remove('eye-delete-confirm');
   const horse = findHorse(id);
-  confirmation.innerHTML = `<div class="dialog-top"><span class="eyebrow">A FOND FAREWELL</span><button class="icon-button" data-action="cancel-sell" aria-label="Cancel sale">${icon('close')}</button></div><h2 id="confirm-title">Sell ${e(horse.name || horse.species)}?</h2><p>You’ll receive <strong>${number(horseSalePrice(horse,state.settings).total)} gold</strong>. This horse will leave your care, and its full profile will be kept in your sold-horse history.</p>${saleQuoteBreakdown(horseSalePrice(horse,state.settings))}<div class="form-actions"><button class="button secondary" data-action="cancel-sell" autofocus>Keep this horse</button><button class="button primary" data-action="confirm-sell" data-id="${id}">Sell horse</button></div>`;
+  confirmation.innerHTML = `<div class="dialog-top"><button class="icon-button" data-action="cancel-sell" aria-label="Cancel sale">${icon('close')}</button></div><h2 id="confirm-title">Sell ${e(horse.name || horse.species)}?</h2><p>You’ll receive <strong>${number(horseSalePrice(horse,state.settings).total)} gold</strong>. This horse will leave your care, and its full profile will be kept in your sold-horse history.</p>${saleQuoteBreakdown(horseSalePrice(horse,state.settings))}<div class="form-actions"><button class="button secondary" data-action="cancel-sell" autofocus>Keep this horse</button><button class="button primary" data-action="confirm-sell" data-id="${id}">Sell horse</button></div>`;
   confirmation.showModal();
 }
 function updateAvatarPreview() {
@@ -720,7 +719,7 @@ matchMedia('(max-width: 900px)').addEventListener('change', syncResponsiveMenu);
 window.addEventListener('hashchange', navigate);
 try {
   ({ state, catalog, defaults, appVersion } = await request('/api/state'));
-  await navigate({refreshSpawns:true});
+  await navigate({initializeNavigation:true});
   syncResponsiveMenu();
 } catch (error) {
   main.innerHTML = `<section class="panel"><h1>The sanctuary couldn’t open</h1><p>${e(error.message)}</p><p>Check that the local server is running, then reload this page. Existing save files have been preserved.</p><button class="button primary" id="retry-load">Try again</button></section>`;

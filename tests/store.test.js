@@ -31,7 +31,7 @@ test('owned personality descriptions default on catch, persist, and reject inval
   await store.action('horse-description',{id:first.id,description});
   await assert.rejects(store.action('horse-description',{id:first.id,description:'a'.repeat(4001)}));
   assert.ok(store.state.encounters.aetherion.every(h => h.personalityDescription === h.personality.description));
-  assert.ok(!store.state.encounters.aetherion.some(h => h.id === second.id));
+  assert.ok(store.state.encounters.aetherion.some(h => h.id === second.id));
   const restored = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restored.state.horses[0].personalityDescription,description);
   assert.equal(restored.state.horses[0].personality.description,first.personality.description);
@@ -255,7 +255,8 @@ test('visit is stable; catching, naming and favoriting survive reload', async t 
   assert.equal(restarted.state.horses[0].favorite, true);
   assert.deepEqual(restarted.state.horses[0].palette, initial.encounters.aetherion[0].palette);
   assert.equal(restarted.state.encounters.aetherion.length,defaults.horsesPerSearch);
-  assert.ok(restarted.state.encounters.aetherion.every(h => !initial.encounters.aetherion.some(old => old.id === h.id)));
+  assert.notEqual(restarted.state.encounters.aetherion[0].id,id);
+  assert.deepEqual(restarted.state.encounters.aetherion.slice(1),initial.encounters.aetherion.slice(1));
 });
 test('selling retains complete horse history and concurrent duplicate sales cannot award gold twice', async t => {
   const { store } = await fixture(t);
@@ -504,4 +505,26 @@ test('selling directly from a wild encounter credits its quote without adding it
  assert.ok(!store.state.encounters.aetherion.some(h=>h.id===horse.id));
  await assert.rejects(store.action('sell',{id:horse.id}));
  assert.equal(store.state.gold,before+sold.salePricing.total);
+});
+
+test('taming and selling refill only their slot; reload and visit preserve all other encounters',async t=>{
+ const {store,directory}=await fixture(t);
+ await store.action('visit',{locationId:'aetherion'});
+ const original=structuredClone(store.state.encounters.aetherion);
+ const searches=store.state.searches.aetherion;
+ await store.action('catch',{id:original[1].id});
+ const caught=structuredClone(store.state.encounters.aetherion);
+ assert.equal(caught.length,original.length);
+ assert.deepEqual(caught[0],original[0]);assert.deepEqual(caught[2],original[2]);
+ assert.notEqual(caught[1].id,original[1].id);
+ assert.equal(store.state.searches.aetherion,searches);
+ await store.action('sell',{id:caught[0].id});
+ const sold=structuredClone(store.state.encounters.aetherion);
+ assert.notEqual(sold[0].id,caught[0].id);
+ assert.deepEqual(sold[1],caught[1]);assert.deepEqual(sold[2],caught[2]);
+ const loaded=await new GameStore(directory,catalog,defaults,{rng:()=>.5}).init();
+ await loaded.action('visit',{locationId:'aetherion'});
+ assert.deepEqual(loaded.state.encounters.aetherion,sold);
+ await loaded.action('search',{locationId:'aetherion'});
+ assert.ok(loaded.state.encounters.aetherion.every(h=>!sold.some(old=>old.id===h.id)));
 });
