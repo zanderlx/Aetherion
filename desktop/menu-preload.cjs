@@ -1,5 +1,5 @@
 const {contextBridge,ipcRenderer}=require('electron');
-contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit')});
+contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version')});
 ipcRenderer.on('desktop-pause',()=>{
   let modal=document.querySelector('#desktop-pause');
   if(modal?.open){modal.close();return;}

@@ -11,3 +11,5 @@ document.querySelector('#settings').addEventListener('click',()=>settings.showMo
 settings.addEventListener('click',event=>{if(event.target===settings){const r=settings.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)settings.close();}});
 document.querySelector('#play').addEventListener('click',()=>{music.pause();location.href=new URLSearchParams(location.search).get('game');});
 document.querySelector('#exit').addEventListener('click',()=>window.desktopMenu.exit());
+
+window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='AETHERION V'+version;});

@@ -79,6 +79,7 @@ async function start() {
     {label:'View', submenu:[{role:'reload'},{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{role:'togglefullscreen'}]}
   ]));
   const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
+  ipcMain.handle('desktop-version',event=>event.sender===main.webContents ? app.getVersion() : null);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
   const fromGame = event => event.sender === main.webContents && event.senderFrame.url.startsWith(origin + '/');
   ipcMain.on('pause-main-menu',event=>{if(fromGame(event))void main.loadURL(menuURL);});
