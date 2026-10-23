@@ -63,7 +63,7 @@ async function start() {
   const origin = await backend.serverReady;
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   main = new BrowserWindow({width:1440, height:960, minWidth:800, minHeight:640, show:false, backgroundColor:'#1d1b18',
-    title:'Aetherion', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
+    title:'Aetherion', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, paintWhenInitiallyHidden:false, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
   main.webContents.setWindowOpenHandler(() => ({action:'deny'}));
   main.webContents.on('will-navigate', (event, url) => {if (url !== menuURL && new URL(url).origin !== origin) event.preventDefault();});
   main.webContents.on('will-attach-webview', event => event.preventDefault());

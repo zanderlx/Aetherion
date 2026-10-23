@@ -4,7 +4,7 @@ try{const saved=JSON.parse(localStorage.getItem('aetherion-audio'));if(saved&&Nu
 function apply(){music.volume=preferences.volume/100;music.muted=preferences.muted;volume.value=preferences.volume;value.textContent=preferences.volume+'%';mute.textContent=preferences.muted?'♫ Music Off':'♫ Music On';mute.setAttribute('aria-label',preferences.muted?'Unmute music':'Mute music');mute.title=preferences.muted?'Unmute music':'Mute music';try{localStorage.setItem('aetherion-audio',JSON.stringify(preferences));}catch{}}
 apply();
 const resume=()=>music.play().catch(()=>{});
-resume();document.addEventListener('pointerdown',resume,{once:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)resume();});if(!document.hidden)resume();document.addEventListener('pointerdown',resume,{once:true});
 mute.addEventListener('click',()=>{preferences.muted=!preferences.muted;apply();});
 volume.addEventListener('input',()=>{preferences.volume=Number(volume.value);apply();});
 document.querySelector('#settings').addEventListener('click',()=>settings.showModal());
