@@ -1,3 +1,4 @@
+import {createGoldFeedback} from './gold-feedback.js';
 import {openEmojiPicker} from './emoji-picker.js';
 import {fitMutationDescriptions,watchMutationCardWidths} from './mutation-card-layout.js';
 import {createDefinitionTransfers} from './definition-transfer.js';
@@ -76,9 +77,12 @@ async function request(path, body) {
   if (!response.ok) throw new Error(result.error || 'Unable to save. Please try again.');
   return result;
 }
+const showGoldChange = createGoldFeedback();
 async function action(type, payload) {
   const result = await request('/api/action', { type, payload });
+  const goldChange = result.state.gold - state.gold;
   state = result.state;
+  showGoldChange(goldChange);
   if (result.catalog) catalog = result.catalog;
   return state;
 }
@@ -479,7 +483,6 @@ document.addEventListener('click', async event => {
       profile.close();
       render();
       main.focus({ preventScroll: true });
-      notify(`${number(state.sold.find(h => h.id === id).soldFor)} gold added.`);
     } else if (intent === 'favorite') {
       const search = $('#horse-search')?.value || '';
       const sort = $('#horse-sort')?.value || 'recent';

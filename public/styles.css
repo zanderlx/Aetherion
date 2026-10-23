@@ -338,3 +338,9 @@ nav summary{font-size:15px}
 .settings-number:focus-within .settings-number-steps{display:grid}
 .settings-number-steps button{display:grid;place-items:center;min-height:0;padding:0;line-height:1;font-size:12px;color:var(--muted);background:transparent;border:0;border-radius:2px}
 .settings-number-steps button:hover{color:var(--gold);background:var(--panel-deep)}
+
+#confirm .dialog-top>[data-action="cancel-sell"]{margin-left:auto}
+
+.gold-change{position:fixed;z-index:1000;pointer-events:none;white-space:nowrap;padding:7px 12px;border:1px solid currentColor;border-radius:5px;background:var(--panel-deep);box-shadow:0 4px 14px #0005;font-size:14px;font-weight:600}
+.gold-change[data-direction="gain"]{color:#63D68A}
+.gold-change[data-direction="loss"]{color:#F17B7B}
