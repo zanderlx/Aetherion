@@ -176,7 +176,7 @@ Aetherion Wilds uses this **25-species whitelist** as its source of truth. Ordin
 
 | Tier | Weight per species | Aetherion species |
 | --- | ---: | --- |
-| 4 · Common | 500 | Bisorse, Caprine, Equus, Friesan, Horse, Peryton, Pony |
+| 4 · Common | 500 | Bisorse, Caprine, Equus, Friesian, Horse, Peryton, Pony |
 | 3 · Uncommon | 250 | Akhal Teke, Clydesdale, Donkey, Fjord, Flora, Gargoyle, Lusitano, Marwari |
 | 2 · Rare | 100 | Anticorn, Cactaline, Fae, Felorse, Hippocampus, Kelpie, Unicorn |
 | 1 · Ultra Rare | 40 | Caniquine, Nephyrian, Serpentine |

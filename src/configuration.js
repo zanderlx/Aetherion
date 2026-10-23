@@ -65,10 +65,12 @@ export class ConfigurationFiles {
     const index = await this.json('index.json');
     if (index.version !== 1 || !Array.isArray(index.zoneIds) || index.zoneIds.some(id => !safeID(id)) || new Set(index.zoneIds).size !== index.zoneIds.length) throw new Error('Invalid config/index.json.');
     const catalog = normalizeCatalog(base);
+    let needsSpeciesSpellingCleanup = false;
     for (const kind of registryKinds) {
       const entries = await this.json(`${kind}.json`);
       if (!Array.isArray(entries) || entries.length > 10000 || (!entries.length && kind !== 'mutations') || entries.some(e => !safeID(e.id)) || new Set(entries.map(e => e.id)).size !== entries.length) throw new Error(`Invalid ${kind}.json registry.`);
       catalog[kind] = entries.map(entry => {
+        if(kind === 'species' && entry.name === 'Friesan'){entry={...entry,name:'Friesian'};needsSpeciesSpellingCleanup=true;}
         if (kind === 'palettes' && entry.complete === false) return entry; // Preserve incomplete imported reference palettes, never spawn them.
         return {...entry,...validateDefinition(kind,entry)};
       });
@@ -102,7 +104,7 @@ export class ConfigurationFiles {
     catalog.spawning = settings;
     try {catalog.rarities = validateRaritySettings(await this.json('rarities.json'));}
     catch(error) {if (error.code !== 'ENOENT') throw error; catalog.rarities = structuredClone(defaultRaritySettings);}
-    return {catalog,zones,settings,needsPaletteCleanup};
+    return {catalog,zones,settings,needsPaletteCleanup,needsSpeciesSpellingCleanup};
   }
   documents({catalog,zones,settings}) {
     const files = Object.fromEntries(registryKinds.map(kind => [`${kind}.json`,catalog[kind]]));

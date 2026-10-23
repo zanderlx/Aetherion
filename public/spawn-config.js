@@ -16,7 +16,7 @@ export const defaultSpawnSettings = {
 };
 export const systemID = name => name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'custom';
 export const defaultSpeciesTiers = Object.fromEntries([
-  [4,['Bisorse','Caprine','Equus','Friesan','Horse','Peryton','Pony']],
+  [4,['Bisorse','Caprine','Equus','Friesian','Horse','Peryton','Pony']],
   [3,['Akhal Teke','Clydesdale','Donkey','Fjord','Flora','Gargoyle','Lusitano','Marwari']],
   [2,['Anticorn','Cactaline','Fae','Felorse','Hippocampus','Kelpie','Unicorn']],
   [1,['Caniquine','Nephyrian','Serpentine']]

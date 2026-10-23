@@ -80,7 +80,7 @@ export class GameStore {
     const overrides = new Set(this.state.customLocations.map(z => z.id));
     this.state.customLocations = configuration.zones.filter(z => z.custom || overrides.has(z.id)).map(z => structuredClone(z));
     this.configuration = configuration;
-    if (configuration.needsPaletteCleanup) {
+    if (configuration.needsPaletteCleanup || configuration.needsSpeciesSpellingCleanup) {
       const next = this.snapshot();
       await copyFile(this.file,join(this.directory,'backups',`pre-cosmic-zone-cleanup-${Date.now()}-${randomUUID()}.json`));
       await this.files.commit(configuration,async revision => {
@@ -92,6 +92,7 @@ export class GameStore {
     const next = this.snapshot();
     let skillsChanged = false;
     for (const horse of horseRecords(next)) {
+      if(horse.species === 'Friesan'){horse.species='Friesian';skillsChanged=true;}
       const skills = readHorseSkills(horse.skills);
       if (JSON.stringify(skills) !== JSON.stringify(horse.skills)) {horse.skills=skills;skillsChanged=true;}
     }

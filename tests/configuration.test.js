@@ -266,3 +266,22 @@ test('per-palette variance persists, supports global fallback, and rejects inval
  await store.action('save-definition',{kind:'palettes',id:palette.id,values:{...palette,variationPercent:null}});
  assert.equal((await read('palettes.json')).find(p=>p.id===palette.id).variationPercent,null);
 });
+
+test('Friesian spelling migrates existing registry and horses while preserving species links',async t=>{
+  const {store,read}=await fixture(t);
+  const species=await read('species.json');
+  const entry=species.find(s=>s.name==='Friesian');
+  assert.ok(entry);
+  const id=entry.id;
+  entry.name='Friesan';
+  await store.files.atomic('species.json',species);
+  await store.action('visit',{locationId:'aetherion'});
+  const horse=store.state.encounters.aetherion[0];
+  horse.species='Friesan';horse.speciesId=id;
+  await store.persist(store.state);
+  const restarted=await new GameStore(store.directory,catalog,defaults).init();
+  assert.equal((await restarted.files.json('species.json')).find(s=>s.id===id).name,'Friesian');
+  assert.equal(restarted.snapshot().encounters.aetherion[0].species,'Friesian');
+  assert.equal(restarted.snapshot().encounters.aetherion[0].speciesId,id);
+  assert.ok(restarted.getCatalog().locations.find(z=>z.id==='aetherion').creatures.some(c=>c.speciesId===id));
+});
