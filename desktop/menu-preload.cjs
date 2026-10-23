@@ -1,6 +1,7 @@
 const {contextBridge,ipcRenderer}=require('electron');
-contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version')});
+contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version'), audio:()=>ipcRenderer.invoke('audio-state'), setAudio:value=>ipcRenderer.invoke('audio-set',value)});
 ipcRenderer.on('desktop-pause',()=>{
+  const audioDialog=document.querySelector('#desktop-audio');if(audioDialog?.open){audioDialog.close();return;}
   let modal=document.querySelector('#desktop-pause');
   if(modal?.open){modal.close();return;}
   if(!modal){
@@ -24,11 +25,34 @@ ipcRenderer.on('desktop-pause',()=>{
     const title=document.createElement('h2');title.textContent='AETHERION';title.style.cssText='margin:0;letter-spacing:4px;font-size:27px;padding-left:4px';
     branding.append(logo,title);modal.append(branding);
     const actions=document.createElement('div');actions.className='pause-actions';
-    for(const [label,action] of [['Back To Game',()=>modal.close()],['Main Menu',()=>ipcRenderer.send('pause-main-menu')],['Exit Game',()=>ipcRenderer.send('pause-exit')]]){
+    for(const [label,action] of [['Back To Game',()=>modal.close()],['Settings',()=>showAudioSettings()],['Main Menu',()=>ipcRenderer.send('pause-main-menu')],['Exit Game',()=>ipcRenderer.send('pause-exit')]]){
       const button=document.createElement('button');button.textContent=label;button.onclick=action;actions.append(button);
     }
     modal.append(actions);document.body.append(modal);
     modal.addEventListener('click',event=>{if(event.target===modal){const r=modal.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)modal.close();}});
   }
   modal.showModal();
+});
+
+async function showAudioSettings(){
+  let modal=document.querySelector('#desktop-audio');
+  if(!modal){
+    modal=document.createElement('dialog');modal.id='desktop-audio';
+    modal.style.cssText='background:#28231f;color:#eee5d6;border:1px solid #a58a5d;border-radius:12px;padding:32px;width:min(380px,90vw)';
+    const title=document.createElement('h2');title.textContent='Audio';modal.append(title);
+    const label=document.createElement('label');label.textContent='Music Volume ';
+    const output=document.createElement('output');label.append(output);modal.append(label);
+    const slider=document.createElement('input');slider.type='range';slider.min=0;slider.max=100;slider.style.cssText='width:100%;accent-color:#d2b477;margin:24px 0';modal.append(slider);
+    slider.oninput=async()=>{output.textContent=slider.value+'%';const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,volume:Number(slider.value)});};
+    const done=document.createElement('button');done.textContent='Done';done.onclick=()=>modal.close();modal.append(done);document.body.append(modal);
+  }
+  const state=await ipcRenderer.invoke('audio-state');modal.querySelector('input').value=state.volume;modal.querySelector('output').textContent=state.volume+'%';modal.showModal();
+}
+window.addEventListener('DOMContentLoaded',async()=>{
+  if(location.protocol==='file:')return;
+  const toggle=document.createElement('button');toggle.id='desktop-music-toggle';
+  toggle.style.cssText='position:fixed;bottom:42px;right:48px;z-index:40;background:#202b25;color:#e9d8b4;border:1px solid #d2b47755;border-radius:5px;padding:9px 15px;font:13px Segoe UI;cursor:pointer';
+  const refresh=async()=>{const state=await ipcRenderer.invoke('audio-state');toggle.textContent=state.muted?'♫ Music Off':'♫ Music On';toggle.title=state.muted?'Unmute music':'Mute music';};
+  toggle.onclick=async()=>{const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,muted:!state.muted});await refresh();};
+  document.body.append(toggle);await refresh();
 });

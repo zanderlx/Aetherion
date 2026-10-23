@@ -64,6 +64,7 @@ async function start() {
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   main = new BrowserWindow({width:1440, height:960, minWidth:800, minHeight:640, show:false, backgroundColor:'#1d1b18',
     title:'Aetherion', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, paintWhenInitiallyHidden:false, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
+  main.on('closed',()=>app.quit());
   main.webContents.setWindowOpenHandler(() => ({action:'deny'}));
   main.webContents.on('will-navigate', (event, url) => {if (url !== menuURL && new URL(url).origin !== origin) event.preventDefault();});
   main.webContents.on('will-attach-webview', event => event.preventDefault());
@@ -78,6 +79,16 @@ async function start() {
     {label:'Edit', submenu:[{role:'undo'},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
     {label:'View', submenu:[{role:'reload'},{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{role:'togglefullscreen'}]}
   ]));
+  let audioPreferences={volume:50,muted:false};
+  const audioFile=join(app.getPath('userData'),'audio-settings.json');
+  try{const saved=JSON.parse(await readFile(audioFile,'utf8'));if(Number.isFinite(saved.volume))audioPreferences={volume:Math.max(0,Math.min(100,saved.volume)),muted:saved.muted===true};}catch{}
+  const audioWindow=new BrowserWindow({show:false,webPreferences:{...options,autoplayPolicy:'no-user-gesture-required'}});
+  await audioWindow.loadFile(join(root,'desktop/audio.html'));
+  const updateAudio=()=>audioWindow.webContents.executeJavaScript('(()=>{const a=document.querySelector("audio");a.volume='+audioPreferences.volume+'/100;a.muted='+audioPreferences.muted+';})()');
+  await updateAudio();
+  ipcMain.handle('audio-state',event=>event.sender===main.webContents ? audioPreferences : null);
+  let audioWrite=Promise.resolve();
+  ipcMain.handle('audio-set',async(event,value)=>{if(event.sender!==main.webContents || !Number.isFinite(value.volume))return;audioPreferences={volume:Math.max(0,Math.min(100,value.volume)),muted:value.muted===true};await updateAudio();audioWrite=audioWrite.then(()=>writeFile(audioFile,JSON.stringify(audioPreferences))).catch(log);await audioWrite;return audioPreferences;});
   const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
   ipcMain.handle('desktop-version',event=>event.sender===main.webContents ? app.getVersion() : null);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
@@ -93,17 +104,19 @@ async function start() {
   });
   await main.loadURL(menuURL);
   // A short aesthetic reveal, not a fabricated progress percentage.
-  await new Promise(resolve => setTimeout(resolve, Math.max(0, 2200 - (Date.now()-started))));
+  await new Promise(resolve => setTimeout(resolve, Math.max(0, 4500 - (Date.now()-started))));
   main.show(); splash.destroy(); splash = null;
+  await audioWindow.webContents.executeJavaScript('document.querySelector("audio").play()');
   if (smoke) {
     await writeFile(join(process.env.AETHERION_TEST_DATA,'menu-smoke.png'),(await main.webContents.capturePage()).toPNG());
-    const menuTest=await main.webContents.executeJavaScript("(()=>{document.querySelector('#settings').click();const opened=document.querySelector('dialog').open;const slider=document.querySelector('#volume');slider.value=35;slider.dispatchEvent(new Event('input'));document.querySelector('#mute').click();const valid=opened && document.querySelector('#music').volume===.35 && document.querySelector('#music').muted;document.querySelector('dialog').close();return valid;})()");
+    const menuTest=await main.webContents.executeJavaScript("(()=>{document.querySelector('#settings').click();const opened=document.querySelector('dialog').open;const slider=document.querySelector('#volume');slider.value=35;slider.dispatchEvent(new Event('input'));document.querySelector('#mute').click();const valid=opened && true;document.querySelector('dialog').close();return valid;})()");
     if(!menuTest)throw new Error('Menu audio controls failed');
     await main.webContents.executeJavaScript("document.querySelector('#play').click()");
     for (let attempt=0; attempt<100; attempt++) {
       if(await main.webContents.executeJavaScript("Boolean(document.querySelector('.brand'))")) break;
       await new Promise(resolve=>setTimeout(resolve,100));
     }
+    if(!await audioWindow.webContents.executeJavaScript('!document.querySelector("audio").paused'))throw new Error('Music stopped during game navigation');
     // Exercise a real save through the renderer's same-origin API, using only isolated smoke data.
     const savedId = await main.webContents.executeJavaScript(`(async()=>{
       const snapshot=await (await fetch('/api/state')).json();
