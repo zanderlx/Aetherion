@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.5](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.6](docs/assets/aetherion-banner.svg)
 
-**Version 1.5.0 · Definition Transfers, Collapsible Cards & Emoji Pickers**
+**Version 1.6.0 · Living Palettes, Persistent Encounters & Windows Launcher**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1.5 adds matching definition managers, JSON import/export for palettes, eye colors and mutations, animated collapsible cards, and a shared searchable emoji picker.** Local saves, weighted spawning, horse profiles, skill tracking, and visual configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
+> **Version 1.6 adds customizable palette variation, persistent encounters, individual skill XP progression, and double-click Windows launchers.** Local saves, weighted spawning, horse profiles, skill tracking, and visual configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,14 +22,15 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.5.0 — current** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
+| **1.6.0 — current** | Live global and per-palette color variance; persistent Wilds encounters with single-slot replacements; selling during taming; individual skill XP progression; Compendium navigation; updated economy defaults; animated gold feedback; Windows launch/stop shortcuts. |
+| **1.5.0** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
 | **1.4.0** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
 | **1.3.0** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
 | **1.2.0** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **156 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **173 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
