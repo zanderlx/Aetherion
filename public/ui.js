@@ -29,7 +29,7 @@ export const icons = {
   close: '<path d="m6 6 12 12M6 18 18 6"/>',
   menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
   search: '<circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/>',
-  book: '<path d="M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2Zm0 0v16"/>',
+  book: '<path d="M12 7v14M12 7C9 4 5 3 3 3v14c3 0 6 1 9 4 3-3 6-4 9-4V3c-2 0-6 1-9 4Z"/>',
   lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4m-4 4v3"/>',
   upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5"/>',
   download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>'
