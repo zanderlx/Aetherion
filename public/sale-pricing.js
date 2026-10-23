@@ -1,6 +1,6 @@
 import {readHorseSkills} from './skill-progress.js';
 
-export const defaultSaleModifiers = {traitBonus:15,mutationBonus:50,skillLevelBonus:8,wingLevelBonus:8,solarMultiplier:10,lunarMultiplier:15,heavenlyMultiplier:20,voidMultiplier:25,astralMultiplier:30};
+export const defaultSaleModifiers = {traitBonus:8,mutationBonus:75,skillLevelBonus:8,wingLevelBonus:8,solarMultiplier:10,lunarMultiplier:15,heavenlyMultiplier:20,voidMultiplier:25,astralMultiplier:30};
 export const saleModifierFields = [
   ['traitBonus','Gold Per Trait','Excludes Mane, Tail, and Eye Color'],
   ['mutationBonus','Gold Per Mutation','Includes each assigned mutation, including a Cosmic mutation.'],

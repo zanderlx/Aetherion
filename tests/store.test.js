@@ -263,7 +263,7 @@ test('selling retains complete horse history and concurrent duplicate sales cann
   const horse = store.state.encounters.hallowhoof[0];
   const initialGold = store.state.gold;
   const optionalTraits = Object.entries(horse.traits).filter(([key])=>!['Mane','Tail','Eye Color'].includes(key)).flatMap(([,values])=>values).filter(value=>!['None','Awaiting species data'].includes(value)).length;
-  const expectedPrice = store.state.settings.sellingPrice + optionalTraits*15 + horse.mutations.length*50;
+  const expectedPrice = store.state.settings.sellingPrice + optionalTraits*8 + horse.mutations.length*75;
   await store.action('catch', { id: horse.id });
   const results = await Promise.allSettled([store.action('sell', { id: horse.id }), store.action('sell', { id: horse.id })]);
   assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
@@ -308,7 +308,7 @@ test('settings persist and affect new searches and sales, never existing horses'
   assert.equal(store.state.encounters.aetherion.length, 5);
   assert.deepEqual(store.state.horses[0], original);
   await store.action('sell', { id: horse.id });
-  assert.equal(store.state.gold, 470);
+  assert.equal(store.state.gold, 495);
   const restarted = await new GameStore(directory,catalog,defaults,{rng:() => 0.5}).init();
   assert.equal(restarted.state.settings.horsesPerSearch, 5);
 });

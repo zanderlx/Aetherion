@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {horseSalePrice,validateSaleModifiers} from '../public/sale-pricing.js';
 import {saleQuoteBreakdown} from '../public/sale-quote.js';
 
-const settings = {sellingPrice:300};
+const settings = {sellingPrice:300,saleModifiers:{traitBonus:15,mutationBonus:50}};
 const horse = {traits:{Mane:['Long'],Tail:['Flowing'],'Eye Color':['Amber'],Pattern:['Spotted','Striped'],Paint:['Socks'],Cosmetic:['None','Awaiting species data']},mutations:[{name:'Double Jump'}]};
 
 test('sale price counts assigned optional traits and mutations, excluding essentials and placeholders',()=>{
@@ -40,7 +40,7 @@ test('skill and wing levels add separate configurable bonuses before cosmic mult
   assert.equal(quote.wingLevelBonus,24);
   assert.equal(quote.total,443);
   const custom = horseSalePrice({...trained,specialSpawn:'Solar'},{...settings,saleModifiers:{skillLevelBonus:10,wingLevelBonus:2}});
-  assert.equal(custom.total,(395+30+6)*10);
+  assert.equal(custom.total,(399+30+6)*10);
   assert.match(saleQuoteBreakdown(quote),/Skill Levels \(3 × 8\)/);
   assert.match(saleQuoteBreakdown(quote),/Wing Levels \(3 × 8\)/);
   for (const modifiers of [{skillLevelBonus:-1},{wingLevelBonus:0.5}]) assert.throws(()=>validateSaleModifiers(modifiers));
@@ -52,4 +52,13 @@ test('sale confirmation explains counted bonuses and the special multiplier',()=
   assert.match(html,/Mutations \(1 × 50\)/);
   assert.match(html,/Solar Multiplier/);
   assert.match(html,/>×10</);
+});
+
+test('default economy uses 50 base gold, 8 per optional trait and 75 per mutation',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const defaults=JSON.parse(await readFile(new URL('../data/defaults/settings.json',import.meta.url),'utf8'));
+ assert.equal(defaults.sellingPrice,50);
+ assert.equal(validateSaleModifiers({}).traitBonus,8);
+ assert.equal(validateSaleModifiers({}).mutationBonus,75);
+ assert.equal(horseSalePrice(horse,defaults).total,149);
 });

@@ -1,13 +1,13 @@
 {
   "horsesPerSearch": 3,
-  "sellingPrice": 300,
+  "sellingPrice": 50,
   "startingGold": 0,
   "stableCapacity": 50,
   "ignoreStableLimit": true,
   "note": "Phase 1 preview defaults. Starting gold, capacity, and free guaranteed catches are provisional interface settings, not confirmed gameplay rules.",
   "saleModifiers": {
-    "traitBonus": 15,
-    "mutationBonus": 50,
+    "traitBonus": 8,
+    "mutationBonus": 75,
     "solarMultiplier": 10,
     "lunarMultiplier": 15,
     "heavenlyMultiplier": 20,
