@@ -22,7 +22,7 @@ export const baseAtmospheres = [
 ];
 export const definitionKinds = {
   species: 'Species', palettes: 'Palettes', eyes: 'Eye colors', personalities: 'Personalities',
-  mutations: 'Mutations', items: 'Items & potions', themes: 'Item themes', atmospheres: 'Zone atmospheres', siteThemes: 'Website themes'
+  mutations: 'Mutations', items: 'Items & potions', themes: 'Item themes', atmospheres: 'Zone atmospheres', siteThemes: 'Themes'
 };
 export function normalizeCatalog(source) {
   const catalog = structuredClone(source);

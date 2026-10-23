@@ -25,12 +25,14 @@ ipcRenderer.on('desktop-pause',()=>{
     const title=document.createElement('h2');title.textContent='AETHERION';title.style.cssText='margin:0;letter-spacing:4px;font-size:27px;padding-left:4px';
     branding.append(logo,title);modal.append(branding);
     const actions=document.createElement('div');actions.className='pause-actions';
-    for(const [label,action] of [['Back To Game',()=>modal.close()],['Settings',()=>showAudioSettings()],['Main Menu',()=>ipcRenderer.send('pause-main-menu')],['Exit Game',()=>ipcRenderer.send('pause-exit')]]){
+    for(const [label,action] of [['Back To Game',()=>modal.close()],['Settings',()=>showAudioSettings()],['Main Menu',async()=>{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)await document.body.animate([{opacity:1},{opacity:0}],{duration:420,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'}).finished;ipcRenderer.send('pause-main-menu');}],['Exit Game',()=>ipcRenderer.send('pause-exit')]]){
       const button=document.createElement('button');button.textContent=label;button.onclick=action;actions.append(button);
     }
     modal.append(actions);document.body.append(modal);
     modal.addEventListener('click',event=>{if(event.target===modal){const r=modal.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)modal.close();}});
   }
+  modal.style.background='var(--panel,#28231f)';modal.style.color='var(--text,#eee5d6)';modal.style.borderColor='var(--gold-soft,#a58a5d)';
+  modal.querySelectorAll('button').forEach(button=>{button.style.background='var(--panel-deep,#211d1a)';button.style.color='var(--text,#eee5d6)';button.style.borderColor='var(--border,#675744)';});
   modal.showModal();
 });
 
@@ -63,6 +65,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     document.documentElement.append(cover);
     const reveal=async()=>{
       await document.fonts.ready;
+      await new Promise(resolve=>setTimeout(resolve,350));
       await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
       await cover.animate([{opacity:1},{opacity:0}],{duration:1100,easing:'cubic-bezier(0.4,0,0.2,1)',fill:'forwards'}).finished;
       cover.remove();

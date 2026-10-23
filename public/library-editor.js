@@ -23,7 +23,7 @@ const editorGuidance = {
   items:['Define accessories and potions, their prices, rarities, and item themes.','Editing an item does not grant it. Inventory, gacha rewards, and item use remain planned.'],
   themes:['Organize item styles and optional event associations.','These themes label items and future rewards. Website colors are managed in Appearance & Themes.'],
   atmospheres:['Customize zone tints and encounter headings.','Choose the saved atmosphere in a zone editor to apply its appearance and encounter heading.'],
-  siteThemes:['Choose website colors or create your own dark and light variants.','Save your color variants, then select the theme above to apply it throughout the website.']
+  siteThemes:['','Save your color variants, then select the theme above to apply it throughout the website.']
 };
 export function colorControl(key, value = '#D6B4DF', label = key) {
   const valid = /^#[\da-f]{6}$/i.test(value) ? value : '#D6B4DF';

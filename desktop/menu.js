@@ -16,3 +16,12 @@ document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();
 window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='AETHERION V'+version;});
 
 audioMuted.onchange=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:audioMuted.checked});display();};
+
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const cover=document.createElement('div');cover.style.cssText='position:fixed;inset:0;background:#1d1b18;z-index:2147483647;pointer-events:none';
+  document.documentElement.append(cover);
+  await document.fonts.ready;
+  await new Promise(resolve=>setTimeout(resolve,350));
+  await cover.animate([{opacity:1},{opacity:0}],{duration:1100,easing:'cubic-bezier(0.4,0,0.2,1)',fill:'forwards'}).finished;
+  cover.remove();
+}
