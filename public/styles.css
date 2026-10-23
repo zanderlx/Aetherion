@@ -341,6 +341,6 @@ nav summary{font-size:15px}
 
 #confirm .dialog-top>[data-action="cancel-sell"]{margin-left:auto}
 
-.gold-change{position:fixed;z-index:1000;pointer-events:none;white-space:nowrap;padding:7px 12px;border:1px solid currentColor;border-radius:5px;background:var(--panel-deep);box-shadow:0 4px 14px #0005;font-size:14px;font-weight:600}
+.gold-change{position:fixed;z-index:1000;pointer-events:none;white-space:nowrap;padding:0;border:0;background:transparent;font-size:14px;font-weight:600;text-shadow:0 1px 3px var(--panel-deep)}
 .gold-change[data-direction="gain"]{color:#63D68A}
 .gold-change[data-direction="loss"]{color:#F17B7B}
