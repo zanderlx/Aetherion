@@ -9,7 +9,7 @@ The Electron build wraps the same local game/server. The browser launchers and `
 3. `npm run desktop:build` creates `dist/Aetherion Setup <version>.exe`.
 4. Install that file. Players do not need Node, npm, Git, or the repository.
 
-The splash uses the existing gold horse emblem, dark woodland tones, and a 2.2-second minimum reveal. It does not claim a fake loading percentage. The game must finish loading before it appears. Reduced-motion preferences are respected.
+The splash uses the existing gold horse emblem, dark woodland tones, and a 4.5-second minimum reveal. It does not claim a fake loading percentage. The game must finish loading before it appears. Reduced-motion preferences are respected.
 
 If a graphics driver causes problems, set `AETHERION_SOFTWARE_RENDERING=1` before launching. This compatibility switch disables hardware acceleration. The icon generator uses software rendering; regenerate with `npx electron scripts/build-desktop-icon.cjs`.
 
@@ -51,4 +51,4 @@ Release downloads/installations require an actual published newer version to tes
 
 Set `AETHERION_TEST_DATA` to a new temporary directory, then run `npx electron . --smoke-test`. It uses that directory exclusively, skips migration/update dialogs, validates renderer startup and Node isolation, captures the game and splash, drains saves, and exits. Never point this variable at real player data.
 
-Desktop startup now opens a woodland start menu after the splash. Play enters the game; Exit Game closes it. Settings > Audio adjusts saved menu-music volume, with a mute button on the menu. Music loops on the menu and stops on Play. Audio preferences are stored in the edition's Chromium storage.
+Desktop startup now opens a woodland start menu after the splash. Play enters the game; Exit Game closes it. Settings > Audio adjusts saved menu-music volume, with a mute button on the menu. Music starts at the title screen and continues during gameplay. Escape opens the themed menu and audio settings. Audio preferences are stored in the edition's Chromium storage.

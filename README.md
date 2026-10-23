@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.7](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 2.0](docs/assets/aetherion-banner.svg)
 
-**Version 1.7.0 · Aetherion Desktop**
+**Version 2.0.0 · The Symphony of the Wilds**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Version 1.6 adds customizable palette variation, persistent encounters, individual skill XP progression, and double-click Windows launchers.** Local saves, weighted spawning, horse profiles, skill tracking, and visual configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
+> **Version 2.0 introduces The Symphony of the Wilds: a themed title screen, continuous music, saved audio settings, a themed Escape menu, and smooth transitions.** Local saves, weighted spawning, horse profiles, skill tracking, and visual configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,7 +22,8 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.7.0 — current** | Windows desktop installer; themed splash and app icon; isolated AppData saves; existing-save migration; GitHub Releases updater; packaged smoke tests. |
+| **2.0.0 — current** | Themed title screen; continuous soundtrack; saved volume and mute controls; themed Escape menu and audio settings; smoother transitions; isolated development saves/caches; mutation emoji HTML escaping; smoke tests before release publication; pinned workflow actions. |
+| **1.7.0** | Windows desktop installer; themed splash and app icon; isolated AppData saves; existing-save migration; GitHub Releases updater; packaged smoke tests. |
 | **1.6.0** | Live global and per-palette color variance; persistent Wilds encounters with single-slot replacements; selling during taming; individual skill XP progression; Compendium navigation; updated economy defaults; animated gold feedback; Windows launch/stop shortcuts. |
 | **1.5.0** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
 | **1.4.0** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
@@ -32,6 +33,10 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
 Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **177 passing tests**; browser visual QA remains pending.
+
+## Desktop Release
+
+Download the installer from [GitHub Releases](https://github.com/zanderlx/Aetherion/releases/latest). No Node.js or Git is needed for the installed app. Music starts at the title screen and continues during gameplay, with saved mute/volume controls (35% default). Escape opens Back To Game, Settings, Main Menu, and Exit Game. Development uses separate saves. See the [desktop guide](desktop/README.md).
 
 ## Get Started
 
