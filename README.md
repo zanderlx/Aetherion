@@ -32,11 +32,15 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **177 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **190 passing tests**; browser visual QA remains pending.
 
 ## Desktop Release
 
 Download the installer from [GitHub Releases](https://github.com/zanderlx/Aetherion/releases/latest). No Node.js or Git is needed for the installed app. Music starts at the title screen and continues during gameplay, with saved mute/volume controls (35% default). Escape opens Back To Game, Settings, Main Menu, and Exit Game. Development uses separate saves. See the [desktop guide](desktop/README.md).
+
+## Horse Updates
+
+**Developer Settings → Horse Updates** adds versioned horse records and preview-first, backed-up updates for existing stable horses. Keep, set, or regenerate individual fields—including species traits and mutation slots—with Cosmic identity protection. Definitions added later can be applied to existing horses explicitly. [Horse Updates guide](docs/horse-updates.md).
 
 ## Get Started
 
@@ -264,7 +268,7 @@ The same roadmap is available in **Developer Settings → Remaining Features**.
 
 | Remaining feature | Information or decisions needed |
 | --- | --- |
-| **Horse Editor & custom creator** | Birthday, age, origin, size, personality, and eye edits already work. Remaining: species/palette/trait/mutation editing, sandbox validation, custom creation, duplicate handling, and advanced import options. |
+| **Horse Editor & custom creator** | Versioned records and preview-first stable updates now cover identity, palette colors, species traits, mutation slots, and skills, with backups and Cosmic locks. Remaining: standalone horse creation, deliberate invalid-combination sandbox overrides, and advanced import options. |
 | **Generator refinements** | The specified pipeline is implemented. Remaining: exact species artwork, additional species-specific appearance traits, and any future gameplay rules beyond generation. |
 | **Mutation effects & exact artwork** | Selection, duplicate control, thresholds, Cosmic slots, and size shifts work. Define speed/stamina/fertility effects, visual stacking, wings, and supply matching artwork/assets. |
 | **Breeding & family history** | Parent eligibility, costs, timing, regional color mixing, trait/mutation inheritance, special-spawn inheritance, twins, and lineage restrictions. Cross-species 50/50 species inheritance is already confirmed. |

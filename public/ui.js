@@ -43,7 +43,7 @@ export const groups = [
   { title: 'Developer Settings', icon: 'settings', items: [['dev/settings', 'Game Settings'], ['dev/species', 'Species'], ['dev/traits', 'Traits'], ['dev/colors', 'Colors & Palettes'], ['dev/mutations', 'Mutations'], ['dev/items', 'Inventory & Items'], ['dev/locations', 'Events & Locations'], ['dev/saves', 'Save Management']] }
 ];
 const workbench = groups.find(g => g.title === 'Developer Settings');
-workbench.items = [['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
+workbench.items = [['dev/horse-updates','Horse Updates'],['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/saves','Save Management'],['dev/roadmap','Remaining Features']];
 groups.push(
   {title:'Compendium',icon:'book',items:[['dev/species','Species'],['dev/traits','Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations'],['dev/rarities','Rarities'],['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]},
   {title:'User Interface',icon:'spark',items:[['dev/appearance','Appearance & Themes'],['dev/profile','My Profile']]}

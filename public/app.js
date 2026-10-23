@@ -1,3 +1,4 @@
+import {horseUpdatesPage,bindHorseUpdates} from './horse-updates.js';
 import {createGoldFeedback} from './gold-feedback.js';
 import {openEmojiPicker} from './emoji-picker.js';
 import {fitMutationDescriptions,watchMutationCardWidths} from './mutation-card-layout.js';
@@ -58,6 +59,8 @@ const paletteTransfers = createPaletteTransfers({getCatalog:()=>catalog,openDraf
 const paletteEditor = createPaletteEditor(draft => libraryEditorPage('palettes',catalog,state,draft));
 const mutationEditor = createMutationEditor(draft => libraryEditorPage('mutations',catalog,state,draft));
 const copyEditor = createCopyEditor({ getState:() => state, getRoute:() => route, save:action, notify });
+
+bindHorseUpdates({root:main,getState:()=>state,getCatalog:()=>catalog,preview:payload=>request('/api/action',{type:'preview-horse-updates',payload}),apply:payload=>action('apply-horse-updates',payload),enable:enabled=>action('horse-updates-enabled',{enabled}),onApplied:()=>render(),notify});
 
 const profileCopyEditor = createCopyEditor({ getState:() => state, getRoute:() => 'horse/profile', save:action, notify, includeChrome:false, getValues:() => {
   const horse = findHorse(profile.dataset.horseId);
@@ -121,6 +124,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/saves') return savesPage(state);
   else if (route === 'dev/roadmap') return roadmapPage();
   else if (route === 'dev/profile') return keeperPage(state);
+  else if (route === 'dev/horse-updates') return horseUpdatesPage(state,catalog);
   else if (route === 'dev/edit-mode') return editModePage(state);
   else if (route === 'dev/locations') return zoneEditorPage(catalog, state);
   else if (section === 'dev' && page === 'rarities') return raritiesManagerPage(catalog);
