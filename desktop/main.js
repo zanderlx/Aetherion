@@ -80,6 +80,27 @@ async function start() {
   ]));
   const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
+  let pauseOpen = false;
+  async function showPauseMenu() {
+    if (pauseOpen) return;
+    pauseOpen = true;
+    try {
+      const {response} = await dialog.showMessageBox(main, {
+        type:'question', title:'Aetherion', message:'Paused',
+        detail:'Return to your sanctuary, visit the title screen, or close the game.',
+        buttons:['Resume', 'Main Menu', 'Exit Game'], defaultId:0, cancelId:0, noLink:true
+      });
+      if (response === 1) await main.loadURL(menuURL);
+      if (response === 2) app.quit();
+    } finally { pauseOpen = false; }
+  }
+  main.webContents.on('before-input-event', (event, input) => {
+    if (input.type !== 'keyDown' || input.key !== 'Escape') return;
+    if (main.webContents.getURL().startsWith(origin + '/')) {
+      event.preventDefault(); // Stop the page's Escape handler from focusing sidebar navigation.
+      void showPauseMenu();
+    }
+  });
   await main.loadURL(menuURL);
   // A short aesthetic reveal, not a fabricated progress percentage.
   await new Promise(resolve => setTimeout(resolve, Math.max(0, 2200 - (Date.now()-started))));
