@@ -1,3 +1,4 @@
+import {horseSchemaVersion,horseGenerationVersion} from '../public/horse-version.js';
 import {varyPalette} from '../public/palette-variation.js';
 import {isCosmicPalette} from '../public/cosmic-types.js';
 import {randomInt,randomUUID} from 'node:crypto';
@@ -82,6 +83,7 @@ export function spawnHorse(catalog,location,rng = randomFloat) {
   for (const category of ['Mane','Tail']) if (!traits[category]?.length) traits[category] = ['Awaiting species data'];
   const variedPalette = varyPalette(palette,rng,palette.variationPercent ?? settings.paletteVariationPercent ?? 25);
   return {
+    schemaVersion:horseSchemaVersion,generationVersion:horseGenerationVersion,revision:1,
     id:randomUUID(),name:'',species:species.name,speciesId:species.id,rarityTier:species.rarityTier,speciesEvent:species.event || null,age:'Adult',origin:'Wild',
     gender,size:size.name,sizePercent:size.percent,birthday:new Date().toISOString().slice(0,10),
     palette:variedPalette,paletteId:palette.id,skinId:palette.assetSkins?.length ? pickUniform(palette.assetSkins,rng) : null,

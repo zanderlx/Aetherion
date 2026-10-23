@@ -1,3 +1,4 @@
+import {readHorseVersion} from './horse-version.js';
 import {horseAcquisitionDate} from './dates.js';
 import {readHorseSkills} from './skill-progress.js';
 import {ages,sizes} from './horse-fields.js';
@@ -61,6 +62,7 @@ export function readHorseDocument(document) {
   for (const key of ['favorite','preview','traitsComplete']) if (h[key] !== undefined && typeof h[key] !== 'boolean') throw new Error(`${key} must be true or false.`);
   if (h.rarityTier !== undefined && (!Number.isInteger(h.rarityTier) || h.rarityTier < 0 || h.rarityTier > 4)) throw new Error('Choose a valid rarity from Common through Cosmic.');
   return {
+    ...readHorseVersion(h),
     skills:readHorseSkills(h.skills),
     ...identifiers,
     ...(h.rarityTier === undefined ? {} : {rarityTier:h.rarityTier}),

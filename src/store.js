@@ -1,3 +1,5 @@
+import {regenerateHorse,horseFingerprint} from './horse-regeneration.js';
+import {migrateHorseVersion} from '../public/horse-version.js';
 import {ConfigurationFiles} from './configuration.js';
 import {readHorseSkills,awardHorseSkillXP} from '../public/skill-progress.js';
 import {synchronizeCosmicPalettes} from './cosmic-palettes.js';
@@ -24,6 +26,7 @@ export class GameStore {
     this.queue = Promise.resolve();
     this.files = new ConfigurationFiles(directory);
     this.rng = options.rng;
+    this.horseUpdatePreviews = new Map();
   }
   async init() {
     await mkdir(join(this.directory, 'player'), { recursive: true });
@@ -89,6 +92,12 @@ export class GameStore {
       });
       this.state = next;
     }
+    const versioned = this.snapshot();
+    const upgraded = horseRecords(versioned).map(migrateHorseVersion).some(Boolean);
+    if(upgraded){
+      await copyFile(this.file,join(this.directory,'backups',"pre-horse-version-"+Date.now()+"-"+randomUUID()+".json"));
+      await this.persist(versioned);this.state=versioned;
+    }
     const next = this.snapshot();
     let skillsChanged = false;
     for (const horse of horseRecords(next)) {
@@ -112,12 +121,45 @@ export class GameStore {
     this.queue = run.catch(() => {});
     return run;
   }
+  previewHorseUpdates(payload = {}) {
+    const run=this.queue.then(async()=>{
+      await this.readConfiguration();
+      if(!this.state.settings.horseUpdatesEnabled)throw new Error('Enable Horse Updates before updating horses.');
+      if(!Array.isArray(payload.ids)||!payload.ids.length||payload.ids.length>100||new Set(payload.ids).size!==payload.ids.length)throw new Error('Select 1–100 different stable horses.');
+      if(typeof payload.allowDuplicates!=='boolean')throw new Error('Choose whether this update allows duplicate mutations.');
+      const catalog=this.getCatalog();
+      const selected=payload.ids.map(id=>{const horse=this.state.horses.find(h=>h.id===id);if(!horse)throw new Error('Choose horses currently in your stable.');return horse;});
+      const results=selected.map(original=>({id:original.id,name:original.name || original.species,before:horseFingerprint(original),schemaVersion:original.schemaVersion,revision:original.revision,...regenerateHorse(original,payload.rules,catalog,this.state,{rng:this.rng,allowDuplicates:payload.allowDuplicates})}));
+      const preview={token:randomUUID(),expires:Date.now()+600000,catalog:horseFingerprint(catalog),settings:horseFingerprint(this.state.settings),results};
+      for(const [token,value] of this.horseUpdatePreviews)if(value.expires<Date.now())this.horseUpdatePreviews.delete(token);
+      while(this.horseUpdatePreviews.size>=10)this.horseUpdatePreviews.delete(this.horseUpdatePreviews.keys().next().value);
+      this.horseUpdatePreviews.set(preview.token,preview);
+      return {preview:{token:preview.token,expires:preview.expires,items:results.map(({horse,before,...result})=>result)}};
+    });
+    this.queue=run.catch(()=>{});
+    return run;
+  }
   action(type, payload = {}) {
     const run = this.queue.then(async () => {
       await this.readConfiguration();
       const next = this.snapshot();
       const catalog = this.getCatalog(next);
-      if (type === 'search' || type === 'visit') {
+      if(type==='horse-updates-enabled'){
+        if(typeof payload.enabled!=='boolean')throw new Error('Choose whether horse updates are enabled.');
+        next.settings.horseUpdatesEnabled=payload.enabled;
+      } else if(type === 'apply-horse-updates'){
+        if(!next.settings.horseUpdatesEnabled)throw new Error('Enable Horse Updates before updating horses.');
+        const preview=this.horseUpdatePreviews.get(payload.token);
+        if(!preview || preview.expires<Date.now())throw new Error('This preview expired. Generate a new preview.');
+        if(preview.catalog!==horseFingerprint(catalog)||preview.settings!==horseFingerprint(next.settings))throw new Error('Configuration changed. Generate a new preview.');
+        for(const result of preview.results){
+          const index=next.horses.findIndex(h=>h.id===result.id);
+          if(index<0||horseFingerprint(next.horses[index])!==result.before)throw new Error('A selected horse changed. Generate a new preview.');
+          if(result.changes.length)next.horses[index]=structuredClone(result.horse);
+        }
+        if(!preview.results.some(result=>result.changes.length))throw new Error('This preview has no changes.');
+        await copyFile(this.file,join(this.directory,'backups','pre-horse-updates-'+Date.now()+'-'+randomUUID()+'.json'));
+      } else if (type === 'search' || type === 'visit') {
         const location = locationsFor(catalog, next).find(l => l.id === payload.locationId && l.enabled);
         if (!location) throw new Error('Unknown location.');
         if (type === 'search' || !next.encounters[location.id]) {
@@ -335,6 +377,14 @@ export class GameStore {
         await writeFile(join(this.directory, 'backups', `save-${Date.now()}-${randomUUID().slice(0, 8)}.json`), JSON.stringify(next, null, 2) + '\n', { flag: 'wx' });
       } else throw new Error('Unknown action.');
       synchronizeCosmicPalettes(horseRecords(next),catalog);
+      const previousHorses = new Map(horseRecords(this.state).map(horse=>[horse.id,horse]));
+      for(const horse of horseRecords(next)){
+        migrateHorseVersion(horse);
+        const before=previousHorses.get(horse.id);
+        if(before && JSON.stringify(before)!==JSON.stringify(horse)){
+          horse.revision=(before.revision || 1)+1;horse.updatedAt=new Date().toISOString();
+        }
+      }
       if (['rarity-settings','save-traits','save-definition','delete-definition','save-zone','delete-zone','spawn-settings'].includes(type) || (type === 'settings' && payload.ALLOW_DUPLICATE_MUTATIONS !== undefined)) {
         const settings = catalog.spawning || defaultSpawnSettings;
         const zones = locationsFor(catalog,next).map(z => ({...z,creatures:zoneCreatures(z,catalog,settings)}));
@@ -347,6 +397,7 @@ export class GameStore {
         this.configuration = committed;
       } else await this.persist(next);
       this.state = next;
+      if(type==='apply-horse-updates')this.horseUpdatePreviews.delete(payload.token);
       return this.snapshot();
     });
     this.queue = run.catch(() => {});

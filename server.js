@@ -41,6 +41,7 @@ const server = createServer(async (req, res) => {
         if (body.length > 1048576) return send(res, 413, { error: 'Request too large.' });
       }
       const { type, payload } = JSON.parse(body);
+      if(type==='preview-horse-updates')return send(res,200,await store.previewHorseUpdates(payload));
       return send(res, 200, { state: await store.action(type, payload), catalog: store.getCatalog() });
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'Method not supported.' });
