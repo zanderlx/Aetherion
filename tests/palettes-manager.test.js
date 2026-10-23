@@ -93,3 +93,13 @@ test('type grouping shows the group heading without repeating the type on each c
  assert.doesNotMatch(grouped,/<span>Natural<\/span>/);
  assert.match(paletteResults([entries[0]],'name'),/<span>Natural<\/span>/);
 });
+
+test('palette variance displays the global default unless a custom override exists',async()=>{
+ const catalog=normalizeCatalog(JSON.parse(await readFile(new URL('../data/definitions/catalog.json',import.meta.url),'utf8')));
+ catalog.spawning={paletteVariationPercent:35};
+ const palette=catalog.palettes.find(p=>p.complete);
+ const render=variance=>libraryEditorPage('palettes',catalog,{settings:{},customLocations:[]},{...palette,variationPercent:variance});
+ assert.match(render(null),/required value="35" data-default-variance="35"/);
+ assert.match(render(12),/required value="12" data-default-variance="35"/);
+ assert.match(render(0),/required value="0" data-default-variance="35"/);
+});

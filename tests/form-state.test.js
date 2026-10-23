@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { trackForms, updateFormState, formBaseline, restoreBaseline } from '../public/form-state.js';
+import { trackForms, updateFormState, formBaseline, restoreBaseline,formSignature } from '../public/form-state.js';
 test('save and cancel controls follow real changes, reverting values and transferred baselines', () => {
   const fields = [
     {tagName:'INPUT',name:'gold',type:'number',value:'300'},
@@ -24,4 +24,14 @@ test('save and cancel controls follow real changes, reverting values and transfe
   trackForms({querySelectorAll:() => [freshForm]});
   restoreBaseline(freshForm,formBaseline(form));
   assert.ok(buttons.every(b => !b.hidden));
+});
+
+test('equal palette variance numbers do not count as unsaved edits',()=>{
+ const variance={tagName:'INPUT',name:'variationPercent',type:'number',value:'35'};
+ const name={tagName:'INPUT',name:'name',type:'text',value:'Gold'};
+ const form={elements:[variance,name]};
+ const baseline=formSignature(form);
+ for(const value of ['35','35.0','035']){variance.value=value;assert.equal(formSignature(form),baseline);}
+ variance.value='36';assert.notEqual(formSignature(form),baseline);
+ variance.value='35';name.value='New Gold';assert.notEqual(formSignature(form),baseline);
 });

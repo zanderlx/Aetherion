@@ -1,5 +1,5 @@
 export function formSignature(form) {
-  return JSON.stringify([...form.elements].filter(el => ['INPUT','TEXTAREA','SELECT'].includes(el.tagName)).map(el => [el.name, el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value]));
+  return JSON.stringify([...form.elements].filter(el => ['INPUT','TEXTAREA','SELECT'].includes(el.tagName)).map(el => [el.name, el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.name === 'variationPercent' && String(el.value).trim() !== '' && Number.isFinite(Number(el.value)) ? Number(el.value) : el.value]));
 }
 const baselines = new WeakMap();
 export const formBaseline = form => baselines.get(form);

@@ -57,7 +57,7 @@ export function libraryEditorPage(kind, catalog, state, draft) {
       `<p class="preview-note">Selected zones receive this species ID and rarity weight. Manage appearance traits in the Traits section.</p>`;
   }
   if (kind === 'palettes') fields = `<label class="zone-field">Type<select name="group" required>${[...new Set([...catalog.palettes.map(p=>p.group),draft.group || 'Custom'])].filter(Boolean).sort((a,b)=>a.localeCompare(b)).map(group=>`<option value="${e(group)}" ${group===draft.group ? 'selected' : ''}>${e(group)}</option>`).join('')}</select></label>
-    <label class="zone-field palette-variance-field">Color Variance<input type="number" name="variationPercent" min="0" max="100" step="1" value="${draft.variationPercent ?? ''}" placeholder="${catalog.spawning?.paletteVariationPercent ?? 25}" title="Leave blank to use the main Color Variation setting"><small>0=disabled, max 100 · blank=global</small></label>
+    <label class="zone-field palette-variance-field">Color Variance Override (%)<input type="number" name="variationPercent" min="0" max="100" step="1" required value="${draft.variationPercent ?? catalog.spawning?.paletteVariationPercent ?? 25}" data-default-variance="${catalog.spawning?.paletteVariationPercent ?? 25}" title="Use the default value to follow the main Color Variation setting"><small>0=disabled, max 100 · Default: ${catalog.spawning?.paletteVariationPercent ?? 25}</small></label>
     <div class="color-editor-grid">${regions.map(r=>colorControl(r,draft.colors?.[r] || '#D6B4DF')).join('')}</div>
     ${checkbox('Global (available to all species)','global',draft.global ?? !draft.speciesIds?.length)}
     <fieldset class="zone-pool palette-species-links"><legend>Species Linked</legend>${catalog.species.map(sp=>`<label class="zone-choice"><input type="checkbox" name="speciesIds" value="${e(sp.id)}" ${(draft.speciesIds || []).includes(sp.id) ? 'checked' : ''}><span>${e(sp.name)}</span></label>`).join('')}</fieldset>
@@ -109,7 +109,7 @@ export function readDefinitionForm(form) {
   if (kind === 'personalities') values.behaviorTags = json('behaviorTags');
   if (kind === 'eyes') {values.layers = json('layers');}
   if (kind === 'mutations') {values.thresholds = json('thresholds'); values.sizeShift = Number(values.sizeShift);}
-  if (kind === 'palettes') {values.variationPercent = data.get('variationPercent') === '' ? null : Number(data.get('variationPercent')); values.global = form.elements.global.checked; values.speciesIds = data.getAll('speciesIds'); values.assetSkins = lines('assetSkins');}
+  if (kind === 'palettes') {const variance = Number(data.get('variationPercent')); if (!String(data.get('variationPercent') ?? '').trim() || !Number.isFinite(variance) || variance < 0 || variance > 100) throw new Error('Color variance must be between 0 and 100%.'); values.variationPercent = variance === Number(form.elements.variationPercent.dataset.defaultVariance) ? null : variance; values.global = form.elements.global.checked; values.speciesIds = data.getAll('speciesIds'); values.assetSkins = lines('assetSkins');}
 
   if (kind === 'mutations') values.weight = values.weight === '' ? null : Number(values.weight);
   if (kind === 'items') values.price = Number(values.price);
