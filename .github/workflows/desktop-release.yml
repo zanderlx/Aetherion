@@ -1,0 +1,46 @@
+name: Windows Desktop Release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: desktop-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Verify release version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          if ("${{ github.ref_type }}" -eq "tag" -and "${{ github.ref_name }}" -ne "v$version") { throw "Tag must match package.json version." }
+      - run: npm test
+      - name: Build Windows installer and draft release
+        run: npx electron-builder --config electron-builder.json --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Smoke test packaged app with isolated data
+        shell: pwsh
+        run: |
+          $env:AETHERION_TEST_DATA = Join-Path $env:RUNNER_TEMP ("aetherion-smoke-" + [Guid]::NewGuid())
+          $env:AETHERION_SOFTWARE_RENDERING = '1'
+          $process = Start-Process -FilePath './dist/win-unpacked/Aetherion.exe' -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
+          if (-not $process.WaitForExit(60000)) { $process.Kill(); throw "Desktop smoke test timed out." }
+          if ($process.ExitCode -ne 0 -or -not (Test-Path (Join-Path $env:AETHERION_TEST_DATA 'desktop-smoke.json'))) { throw "Desktop smoke test failed." }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aetherion-Windows
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+            dist/latest.yml
+

@@ -30,7 +30,7 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 | **1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **173 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **177 passing tests**; browser visual QA remains pending.
 
 ## Get Started
 
@@ -77,7 +77,7 @@ npm start
 
 Open **[http://127.0.0.1:4173](http://127.0.0.1:4173)** in your browser.
 
-**No `npm install` is needed:** version 1 uses Node's built-in modules and has no package dependencies. After downloading Node and the project, the game runs offline.
+**Browser edition:** no `npm install` is needed; the browser server uses Node built-ins. **Desktop development:** run `npm ci`, then `npm run desktop`. See the [desktop guide](desktop/README.md) for Windows installers, save migration, and GitHub Releases updates.
 
 Keep the terminal open while playing. Press **Ctrl+C** to stop the server. Start it again with `npm start`; your saved world is retained.
 
