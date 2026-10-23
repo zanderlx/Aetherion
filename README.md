@@ -1,8 +1,8 @@
 <div align="center">
 
-![Aetherion — A Horsekeeper's Chronicle, Version 1.6](docs/assets/aetherion-banner.svg)
+![Aetherion — A Horsekeeper's Chronicle, Version 1.7](docs/assets/aetherion-banner.svg)
 
-**Version 1.6.0 · Living Palettes, Persistent Encounters & Windows Launcher**
+**Version 1.7.0 · Aetherion Desktop**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -22,7 +22,8 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **1.6.0 — current** | Live global and per-palette color variance; persistent Wilds encounters with single-slot replacements; selling during taming; individual skill XP progression; Compendium navigation; updated economy defaults; animated gold feedback; Windows launch/stop shortcuts. |
+| **1.7.0 — current** | Windows desktop installer; themed splash and app icon; isolated AppData saves; existing-save migration; GitHub Releases updater; packaged smoke tests. |
+| **1.6.0** | Live global and per-palette color variance; persistent Wilds encounters with single-slot replacements; selling during taming; individual skill XP progression; Compendium navigation; updated economy defaults; animated gold feedback; Windows launch/stop shortcuts. |
 | **1.5.0** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
 | **1.4.0** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
 | **1.3.0** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
