@@ -79,7 +79,7 @@ async function start() {
     {label:'Edit', submenu:[{role:'undo'},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
     {label:'View', submenu:[{role:'reload'},{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{role:'togglefullscreen'}]}
   ]));
-  let audioPreferences={volume:50,muted:false};
+  let audioPreferences={volume:35,muted:false};
   const audioFile=join(app.getPath('userData'),'audio-settings.json');
   try{const saved=JSON.parse(await readFile(audioFile,'utf8'));if(Number.isFinite(saved.volume))audioPreferences={volume:Math.max(0,Math.min(100,saved.volume)),muted:saved.muted===true};}catch{}
   const audioWindow=new BrowserWindow({show:false,webPreferences:{...options,autoplayPolicy:'no-user-gesture-required'}});

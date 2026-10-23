@@ -39,12 +39,15 @@ async function showAudioSettings(){
   if(!modal){
     modal=document.createElement('dialog');modal.id='desktop-audio';
     modal.style.cssText='background:#28231f;color:#eee5d6;border:1px solid #a58a5d;border-radius:12px;padding:32px;width:min(380px,90vw)';
-    const title=document.createElement('h2');title.textContent='Audio';modal.append(title);
+    const style=document.createElement('style');style.textContent='#desktop-audio::backdrop{background:#101811bd;backdrop-filter:blur(5px)}#desktop-audio{position:relative;background:#252b24!important;color:#e9d8b4!important;border:1px solid #9a8454!important;border-radius:10px!important;width:min(430px,90vw)!important;padding:32px!important}#desktop-audio h2{font:30px Georgia,serif;margin:0 0 30px}#desktop-audio h3{font:600 14px Segoe UI,sans-serif;text-transform:uppercase;letter-spacing:2px;color:#d2b477;margin:0 0 22px}#desktop-audio label{display:flex;justify-content:space-between;font:15px Segoe UI,sans-serif}#desktop-audio output{color:#d2b477}#desktop-audio button{font:16px Segoe UI,sans-serif;color:#e9d8b4;cursor:pointer;border:1px solid #d2b477;background:#9b7d414d;border-radius:5px;padding:12px 24px;width:100%;margin-top:20px}#desktop-audio button:hover{background:#48503c}#desktop-audio .audio-close{position:absolute;top:12px;right:12px;border:0;background:none;font-size:24px;padding:3px 10px;margin:0;width:auto}';modal.append(style);
+    const close=document.createElement('button');close.className='audio-close';close.textContent='×';close.setAttribute('aria-label','Close settings');close.onclick=()=>modal.close();modal.append(close);
+    const title=document.createElement('h2');title.textContent='Settings';modal.append(title);
+    const heading=document.createElement('h3');heading.textContent='Audio';modal.append(heading);
     const label=document.createElement('label');label.textContent='Music Volume ';
     const output=document.createElement('output');label.append(output);modal.append(label);
     const slider=document.createElement('input');slider.type='range';slider.min=0;slider.max=100;slider.style.cssText='width:100%;accent-color:#d2b477;margin:24px 0';modal.append(slider);
     slider.oninput=async()=>{output.textContent=slider.value+'%';const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,volume:Number(slider.value)});};
-    const done=document.createElement('button');done.textContent='Done';done.onclick=()=>modal.close();modal.append(done);document.body.append(modal);
+    const done=document.createElement('button');done.textContent='Done';done.onclick=()=>modal.close();modal.append(done);document.body.append(modal);modal.addEventListener('click',event=>{if(event.target===modal){const r=modal.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)modal.close();}});
   }
   const state=await ipcRenderer.invoke('audio-state');modal.querySelector('input').value=state.volume;modal.querySelector('output').textContent=state.volume+'%';modal.showModal();
 }
