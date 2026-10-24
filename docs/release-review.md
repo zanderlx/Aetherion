@@ -1,7 +1,7 @@
 # Gallorin v1.1.0 review
 
-**Working title:** Music & Sound Effects
-**Status:** Unreleased. Prepared for personal review; post-preparation validation has not started.
+**Release title:** The Melodies of Gallorin
+**Status:** Changelog wording reviewed by the user. Updated README/presentation review is pending; post-preparation validation has not started.
 
 ## Prepared
 

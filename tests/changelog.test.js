@@ -19,7 +19,7 @@ test('single-release notes contain only the chosen release and its categories',(
   assert.match(notes,/^## \[1\.0\.0\] - The Symphony of the Wilds - 2026-10-23/);
   assert.match(notes,/### Added/);assert.match(notes,/### Changed/);assert.match(notes,/### Fixed/);
   assert.ok(!notes.includes('## [0.9.0]'));
-  assert.equal(releaseTitle(current),'Gallorin v1.0.0 — The Symphony of the Wilds');
+  assert.equal(releaseTitle(current),'Gallorin v1.0.0: The Symphony of the Wilds');
 });
 test('changelog validation rejects duplicate versions, invalid dates and categories',()=>{
   assert.throws(()=>parseChangelog(source+'\n## [1.0.0] - Unreleased'),/duplicate/);
@@ -35,7 +35,7 @@ test('release checks fail when package, changelog, lockfile, README, or banner d
     'package-lock.json':JSON.stringify({version:'1.0.0',packages:{'':{version:'1.0.0'}}}),
     'CHANGELOG.md':baseline,
     'README.md':'Gallorin v1.0.0',
-    'docs/assets/gallorin-banner.svg':'VERSION 1.0'
+    'docs/assets/gallorin-banner.svg':'VERSION 1.0.0'
   };
   const check=values=>validateRelease(async path=>values[path]);
   assert.equal((await check(files)).current.version,'1.0.0');
@@ -43,7 +43,7 @@ test('release checks fail when package, changelog, lockfile, README, or banner d
     ['package.json',JSON.stringify({version:'1.1.0'})],
     ['package-lock.json',JSON.stringify({version:'2.0.0',packages:{'':{version:'2.0.0'}}})],
     ['README.md','Gallorin v2.0.0'],
-    ['docs/assets/gallorin-banner.svg','VERSION 2.0']
+    ['docs/assets/gallorin-banner.svg','VERSION 2.0.0']
   ])await assert.rejects(check({...files,[file]:value}));
   assert.throws(()=>assertReleaseReady({date:'Unreleased'}),/Finalize/);
   assert.doesNotThrow(()=>assertReleaseReady({date:'2026-10-23'}));

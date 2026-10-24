@@ -21,3 +21,7 @@
 - Always stop after step 3 for the user's personal review. Wait for explicit approval of the prepared version and documentation before step 4 or any push. A request to "push" starts preparation but does not waive this checkpoint.
 - Local preparation commits are allowed before review. Do not publish a tag, GitHub release, or installer unless the user explicitly requests a release.
 - Repeat the review checkpoint if later changes materially alter the approved version or release scope.
+
+- Display full major.minor.patch versions on the README banner and runtime labels. Use patch increments for subsequent small fix releases; a feature release can include fixes and start at patch 0.
+- Format release titles as Gallorin v<version>: <release name>. Keep workflow/run titles concise: Release v<version>: <release name>.
+- Keep README desktop-first and concise: installer play/updating, npm run desktop for local testing, first-time dependency setup, optional browser play, and brief feature/storage information.

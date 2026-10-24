@@ -1,4 +1,5 @@
-name: Windows Desktop Release
+name: "Release v1.1.0: The Melodies of Gallorin"
+run-name: "Release v1.1.0: The Melodies of Gallorin"
 on:
   push:
     tags: ['gallorin-v*']

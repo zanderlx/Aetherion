@@ -12,7 +12,7 @@ export async function validateRelease(readText=read){
   if(lock.version!==pkg.version||lock.packages[''].version!==pkg.version)throw new Error('package-lock.json version differs from package.json.');
   if(!await readText('README.md').then(text=>text.includes('Gallorin v'+pkg.version)))throw new Error('README version differs from package.json.');
   const banner=await readText('docs/assets/gallorin-banner.svg');
-  if(!banner.includes('VERSION '+pkg.version.split('.').slice(0,2).join('.')))throw new Error('README banner version differs from package.json.');
+  if(!banner.includes('VERSION '+pkg.version))throw new Error('README banner version differs from package.json.');
   for(let i=1;i<entries.length;i++){
     const a=entries[i-1].version.split('.').map(Number),b=entries[i].version.split('.').map(Number);
     const first=a.findIndex((value,index)=>value!==b[index]);

@@ -1,6 +1,6 @@
 # Pending release notes
 
-The accumulated changes are now consolidated into the **Gallorin v1.1.0 — Music & Sound Effects** draft in [CHANGELOG.md](../CHANGELOG.md).
+The accumulated changes are now consolidated into the **Gallorin v1.1.0 — The Melodies of Gallorin** draft in [CHANGELOG.md](../CHANGELOG.md).
 
 The previously planned v1.0.1 storage fix and v1.0.2 palette update were not separately released; both are included in v1.1.0.
 
