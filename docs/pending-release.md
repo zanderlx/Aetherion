@@ -41,3 +41,8 @@ was specific to this computer and is not an automatic app feature.
 - Organized location music into playlist tables grouped by navigation section and subsection.
 - Added multi-song assignments, reordering, automatic playlist advance, and previous/next player controls.
 - Player metadata uses formatted MP3 names and Gallorin Studios; renamed Import Music and default-song labels.
+
+- Named the protected default track Glades of Gallorin.
+- Added nested playlist collapse controls, MP3 duration columns, and per-playlist removal that preserves library files.
+- Empty playlists stay silent; renamed Default and replaced inheritance notes with song counts.
+- Unified Audio Settings across menu/game with Music and Sound Effects sliders and crossfade; simplified modal controls and header alignment.

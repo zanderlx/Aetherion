@@ -1,3 +1,4 @@
+import {durationOfFile,durationOfBuffer} from './music-duration.js';
 import {assignmentTracks,formatMusicName} from '../public/music-context.js';
 import {mkdir,readFile,writeFile,rename,unlink,open,stat,copyFile} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -17,6 +18,7 @@ export class MusicLibrary {
       seen.add(track.id);changed=true;
     }
     for(const track of seeds){const existing=library.tracks.find(t=>t.id===track.id);if(existing&&track.file&&existing.filename!==track.file){existing.filename=track.file;existing.name=formatMusicName(track.file);changed=true;}}
+    for(const track of library.tracks){if(!Object.hasOwn(track,'durationSeconds')){track.durationSeconds=await durationOfFile(join(this.root,track.id+'.mp3'));changed=true;}}
     if(changed){library.seededTrackIds=[...seen];await this.write(library);}
   }
   async read(){
@@ -35,7 +37,7 @@ export class MusicLibrary {
       if(typeof name!=='string'||!name.toLowerCase().endsWith('.mp3')||name.length>200)throw Error('Choose an MP3 file with a name under 200 characters.');
       // Accept ID3-tagged files or an MPEG frame header.
       if(!Buffer.isBuffer(bytes)||bytes.length<4||bytes.length>50*1024*1024||!(bytes.subarray(0,3).toString()==='ID3'||(bytes[0]===255&&(bytes[1]&224)===224)))throw Error('Choose a valid MP3 file (maximum 50 MB).');
-      const library=await this.read(),track={id:randomUUID(),filename:name.replace(/[\x00-\x1f]/g,''),name:formatMusicName(name),addedAt:new Date().toISOString()};
+      const library=await this.read(),track={id:randomUUID(),filename:name.replace(/[\x00-\x1f]/g,''),name:formatMusicName(name),durationSeconds:await durationOfBuffer(bytes),addedAt:new Date().toISOString()};
       await mkdir(this.root,{recursive:true});await writeFile(join(this.root,track.id+'.mp3'),bytes);
       try{library.tracks.push(track);await this.write(library);}catch(error){await unlink(join(this.root,track.id+'.mp3'));throw error;}
       return library;
@@ -49,9 +51,16 @@ export class MusicLibrary {
       for(const [context,value] of Object.entries(input.assignments)){
         const ids=assignmentTracks(value);
         if(!contexts.includes(context)||(!Array.isArray(value)&&typeof value!=='string')||ids.length>500||ids.some(id=>typeof id!=='string'||(id!=='menu'&&!library.tracks.some(t=>t.id===id))))throw Error('Choose an existing song and location.');
-        if(ids.length)assignments[context]=[...new Set(ids)];
+        if(Array.isArray(value)||ids.length)assignments[context]=[...new Set(ids)];
       }
       await this.write({...library,assignments,fadeSeconds:input.fadeSeconds});return this.read();
+    });
+  }
+  async fade(value){
+    return this.edit(async()=>{
+      if(!Number.isFinite(value)||value<0||value>10)throw Error('Crossfade must be between 0 and 10 seconds.');
+      const library=await this.read();if(library.fadeSeconds===value)return library;
+      library.fadeSeconds=value;await this.write(library);return library;
     });
   }
   async remove(id){
@@ -59,7 +68,7 @@ export class MusicLibrary {
       if(!validId(id))throw Error('Song not found.');
       const library=await this.read();if(!library.tracks.some(t=>t.id===id))throw Error('Song not found.');
       library.tracks=library.tracks.filter(t=>t.id!==id);
-      library.assignments=Object.fromEntries(Object.entries(library.assignments).map(([key,value])=>[key,assignmentTracks(value).filter(value=>value!==id)]).filter(([,value])=>value.length));
+      library.assignments=Object.fromEntries(Object.entries(library.assignments).map(([key,value])=>[key,assignmentTracks(value).filter(value=>value!==id)]));
       await this.write(library);await unlink(join(this.root,id+'.mp3')).catch(e=>{if(e.code!=='ENOENT')throw e;});return library;
     });
   }

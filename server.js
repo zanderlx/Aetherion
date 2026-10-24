@@ -47,6 +47,7 @@ const server = createServer(async (req, res) => {
           const contexts=musicContexts([...store.getCatalog().locations,...(store.snapshot().customLocations||[])]).map(item=>item.id);
           return send(res,200,await music.settings(input,contexts));
         }
+        if(url.pathname==='/api/music/fade')return send(res,200,await music.fade(input.fadeSeconds));
         if(url.pathname==='/api/music/delete')return send(res,200,await music.remove(input.id));
       }
       return send(res,404,{error:'Music endpoint not found.'});

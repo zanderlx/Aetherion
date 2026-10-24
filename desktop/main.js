@@ -1,3 +1,4 @@
+import {audioPreferences as normalizeAudio} from '../public/audio-preferences.js';
 import {selectedPlaylist,defaultMusicTrack} from '../public/music-context.js';
 import {parseChangelog} from '../public/changelog.js';
 import {brandLogo} from '../public/brand-logo.js';
@@ -84,30 +85,37 @@ async function start() {
     {label:'Edit', submenu:[{role:'undo'},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
     {label:'View', submenu:[{role:'reload'},{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{role:'togglefullscreen'}]}
   ]));
-  let audioPreferences={volume:35,muted:false};
+  let audioPreferences=normalizeAudio();
   const audioFile=join(app.getPath('userData'),'audio-settings.json');
-  try{const saved=JSON.parse(await readFile(audioFile,'utf8'));if(Number.isFinite(saved.volume))audioPreferences={volume:Math.max(0,Math.min(100,saved.volume)),muted:saved.muted===true};}catch{}
+  try{const saved=JSON.parse(await readFile(audioFile,'utf8'));audioPreferences=normalizeAudio(saved);}catch{}
   const audioWindow=new BrowserWindow({show:false,webPreferences:{...options,autoplayPolicy:'no-user-gesture-required',backgroundThrottling:false}});
   await audioWindow.loadFile(join(root,'desktop/audio.html'));
   const audioCommand=value=>audioWindow.webContents.executeJavaScript('window.musicTransport.command('+JSON.stringify(value)+')');
-  const updateAudio=async()=>{await audioCommand({type:'volume',value:audioPreferences.volume/100});await audioCommand({type:'mute',value:audioPreferences.muted});};
+  const updateAudio=async()=>{await audioCommand({type:'volume',value:audioPreferences.volume/100});await audioCommand({type:'mute',value:audioPreferences.muted});await audioCommand({type:'sfx-volume',value:audioPreferences.soundEffectsVolume/100});};
   ipcMain.handle('music-state',event=>event.sender===main.webContents?audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()'):null);
   ipcMain.handle('music-command',async(event,value)=>{
-    if(event.sender!==main.webContents||!value||!['select','playlist','next','previous','play','pause','stop','seek','volume','mute'].includes(value.type))return null;
+    if(event.sender!==main.webContents||!value||!['select','effect','playlist','next','previous','play','pause','stop','seek','volume','sfx-volume','fade','mute'].includes(value.type))return null;
     if(value.type==='playlist'){
-      if(!Array.isArray(value.tracks)||!value.tracks.length||value.tracks.length>500||value.tracks.some(track=>!track||typeof track.url!=='string'||!track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(track.url)))return null;
+      if(!Array.isArray(value.tracks)||value.tracks.length>500||value.tracks.some(track=>!track||typeof track.url!=='string'||!track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(track.url)))return null;
       value={type:'playlist',key:String(value.key).slice(0,150),tracks:value.tracks.map(track=>({id:String(track.id),name:String(track.name),url:track.url})),fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
     }
-    if(value.type==='select'){
+    if(value.type==='select'||value.type==='effect'){
       if(!value.track||typeof value.track.url!=='string'||!value.track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(value.track.url))return null;
-      value={type:'select',track:{id:String(value.track.id),name:String(value.track.name),url:value.track.url},fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
+      value={type:value.type,track:{id:String(value.track.id),name:String(value.track.name),url:value.track.url},fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
     }
     return audioCommand(value);
   });
   await updateAudio();
   ipcMain.handle('audio-state',event=>event.sender===main.webContents ? audioPreferences : null);
   let audioWrite=Promise.resolve();
-  ipcMain.handle('audio-set',async(event,value)=>{if(event.sender!==main.webContents || !Number.isFinite(value.volume))return;audioPreferences={volume:Math.max(0,Math.min(100,value.volume)),muted:value.muted===true};await updateAudio();audioWrite=audioWrite.then(()=>writeFile(audioFile,JSON.stringify(audioPreferences))).catch(log);await audioWrite;return audioPreferences;});
+  ipcMain.handle('audio-set',async(event,value)=>{if(event.sender!==main.webContents || !Number.isFinite(value.volume))return;audioPreferences=normalizeAudio(value,audioPreferences);await updateAudio();audioWrite=audioWrite.then(()=>writeFile(audioFile,JSON.stringify(audioPreferences))).catch(log);await audioWrite;return audioPreferences;});
+  ipcMain.handle('music-settings',async event=>event.sender===main.webContents?(await (await fetch(origin+'/api/music')).json()):null);
+  ipcMain.handle('music-fade',async(event,fadeSeconds)=>{
+    if(event.sender!==main.webContents)return null;
+    const response=await fetch(origin+'/api/music/fade',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({fadeSeconds})});
+    const result=await response.json();if(!response.ok)throw Error(result.error);
+    await audioCommand({type:'fade',value:result.fadeSeconds});return result;
+  });
   const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
   ipcMain.handle('desktop-logo',event=>event.sender===main.webContents ? brandLogo('pause',72,'pause-logo') : '');
   ipcMain.handle('desktop-changelog',event=>event.sender===main.webContents ? readFile(join(root,'CHANGELOG.md'),'utf8') : '');
@@ -150,7 +158,7 @@ async function start() {
     main.webContents.sendInputEvent({type:'keyUp',keyCode:'Escape'});
     await new Promise(resolve=>setTimeout(resolve,100));
     if(await main.webContents.executeJavaScript("document.querySelector('#changelog-dialog').open"))throw new Error('Escape did not close changelog');
-    const menuTest=await main.webContents.executeJavaScript("(()=>{document.querySelector('#settings').click();const opened=document.querySelector('dialog').open;const slider=document.querySelector('#volume');slider.value=35;slider.dispatchEvent(new Event('input'));document.querySelector('#mute').click();const valid=opened && true;document.querySelector('dialog').close();return valid;})()");
+    const menuTest=await main.webContents.executeJavaScript("(async()=>{\n document.querySelector('#settings').click();\n for(let i=0;i<80&&!document.querySelector('#audio-settings').open;i++)await new Promise(r=>setTimeout(r,25));\n const modal=document.querySelector('#audio-settings'),music=modal.querySelector('[data-audio-pref=\"volume\"]'),sfx=modal.querySelector('[data-audio-pref=\"soundEffectsVolume\"]');\n music.value=35;music.dispatchEvent(new Event('input',{bubbles:true}));sfx.value=63;sfx.dispatchEvent(new Event('input',{bubbles:true}));\n await new Promise(r=>setTimeout(r,150));\n const fade=modal.querySelector('[data-audio-fade]');fade.value=1.5;fade.dispatchEvent(new Event('change',{bubbles:true}));\n for(let i=0;i<80&&(await window.desktopMenu.musicSettings()).fadeSeconds!==1.5;i++)await new Promise(r=>setTimeout(r,25));\n const h=modal.querySelector('h2').getBoundingClientRect(),x=modal.querySelector('button').getBoundingClientRect();\n const valid=modal.open&&modal.querySelector('h2').textContent==='Audio Settings'&&!modal.querySelector('h3')&&!modal.querySelector('input[type=checkbox]')&&modal.querySelectorAll('button').length===1&&Math.abs((h.top+h.bottom-x.top-x.bottom)/2)<3&&(await window.desktopMenu.audio()).soundEffectsVolume===63;\n document.querySelector('#mute').click();modal.querySelector('button').click();return valid;\n})()");
     if(!menuTest)throw new Error('Menu audio controls failed');
     await main.webContents.executeJavaScript("document.querySelector('#play').click()");
     for (let attempt=0; attempt<100; attempt++) {
@@ -218,7 +226,9 @@ async function start() {
     await main.webContents.executeJavaScript("document.querySelector('[data-music=\"toggle\"]').click()");
     await main.webContents.executeJavaScript("location.hash='dev/music'");
     await new Promise(resolve=>setTimeout(resolve,1500));
+    await main.webContents.executeJavaScript("(async()=>{\n const wait=async()=>{for(let i=0;i<80&&document.querySelector('#main').hasAttribute('aria-busy');i++)await new Promise(r=>setTimeout(r,25));};\n const card=document.querySelector('[data-playlist=\"wilds/aetherion\"]');card.open=false;\n const other=document.querySelector('[data-playlist-add=\"wilds/hallowhoof\"]');other.value='menu';other.dispatchEvent(new Event('change',{bubbles:true}));await wait();\n if(document.querySelector('[data-playlist=\"wilds/aetherion\"]').open)throw Error('Playlist collapsed state was lost');\n document.querySelector('[data-playlist=\"wilds/aetherion\"]').open=true;\n document.querySelector('[data-playlist-remove=\"wilds/aetherion\"][data-index=\"1\"]').click();await wait();\n const first=await (await fetch('/api/music')).json();\n if(first.assignments['wilds/aetherion'].length!==1)throw Error('Playlist song removal failed');\n document.querySelector('[data-playlist-remove=\"wilds/aetherion\"][data-index=\"0\"]').click();await wait();\n const second=await (await fetch('/api/music')).json();\n if(second.assignments['wilds/aetherion'].length!==0)throw Error('Empty playlist did not persist');\n if(second.tracks.length!==first.tracks.length)throw Error('Playlist removal deleted library files');\n if(!/^\\d+:\\d\\d$/.test(document.querySelector('td.music-duration').textContent))throw Error('Duration metadata did not render');\n return true;\n})()");
     await main.webContents.executeJavaScript("document.querySelectorAll('[data-music-group]').forEach(d=>d.open=d.dataset.musicGroup==='wilds');document.querySelector('[data-music-group=\"wilds\"]').scrollIntoView({block:'start'});");
+    await new Promise(resolve=>setTimeout(resolve,180));
     await writeFile(join(process.env.AETHERION_TEST_DATA,'music-smoke.png'),(await main.webContents.capturePage()).toPNG());
     main.setSize(800,700);await new Promise(resolve=>setTimeout(resolve,400));
     if(!await main.webContents.executeJavaScript('document.querySelector(".music-player").getBoundingClientRect().right<=innerWidth && document.documentElement.scrollWidth<=innerWidth'))throw new Error('Music player overflow on narrow screen');
@@ -266,6 +276,13 @@ async function start() {
     }
     if(!await main.webContents.executeJavaScript("document.querySelector('#desktop-pause .pause-logo')?.getAttribute('viewBox')==='0 0 200 200'"))throw new Error('Pause logo failed');
     await writeFile(join(process.env.AETHERION_TEST_DATA,'pause-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    main.webContents.send('desktop-pause');
+    main.webContents.send('desktop-pause');
+    await new Promise(resolve=>setTimeout(resolve,100));
+    await main.webContents.executeJavaScript("(async()=>{\n [...document.querySelectorAll('#desktop-pause button')].find(b=>b.textContent==='Settings').click();\n for(let i=0;i<80&&!document.querySelector('#desktop-audio')?.open;i++)await new Promise(r=>setTimeout(r,25));\n const modal=document.querySelector('#desktop-audio');\n if(!modal?.open||modal.querySelector('h2').textContent!=='Audio Settings'||modal.querySelectorAll('input[type=range]').length!==2||modal.querySelector('input[type=checkbox]'))throw Error('Game audio dialog failed');\n const slider=modal.querySelector('[data-audio-pref=\"soundEffectsVolume\"]');slider.value=27;slider.dispatchEvent(new Event('input',{bubbles:true}));\n await new Promise(r=>setTimeout(r,150));\n if((await window.desktopMenu.audio()).soundEffectsVolume!==27||(await window.gallorinMusic.state()).soundEffectsVolume!==27)throw Error('Sound-effects volume did not persist/apply');\n const h=modal.querySelector('h2').getBoundingClientRect(),x=modal.querySelector('button').getBoundingClientRect();\n if(Math.abs((h.top+h.bottom-x.top-x.bottom)/2)>3)throw Error('Audio close button is misaligned');\n return true;\n})()");
+    await new Promise(resolve=>setTimeout(resolve,150));
+    await writeFile(join(process.env.AETHERION_TEST_DATA,'audio-settings-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    await main.webContents.executeJavaScript("document.querySelector('#desktop-audio .audio-settings-close').click()");
     main.webContents.send('desktop-pause');
     const result = await main.webContents.executeJavaScript("(async()=>({title:document.title, brand:!!document.querySelector('.brand'), state:(await (await fetch('/api/state')).json()).appVersion, node:typeof window.require}))()");
     if (!result.brand || result.node !== 'undefined') throw new Error('Desktop renderer failed to initialize securely.');

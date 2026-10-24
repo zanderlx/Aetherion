@@ -1,12 +1,13 @@
 import {bindChangelog} from './changelog.js';
-const mute=document.querySelector('#mute'),volume=document.querySelector('#volume'),value=document.querySelector('#volume-value'),settings=document.querySelector('#audio-settings');
+import {createAudioSettings} from '../public/audio-settings.js';
+const mute=document.querySelector('#mute');
 let preferences=await window.desktopMenu.audio();
-const audioMuted=document.querySelector('#audio-muted');
-function display(){audioMuted.checked=preferences.muted;volume.value=preferences.volume;value.textContent=preferences.volume+'%';mute.textContent=preferences.muted?'♫ Music Off':'♫ Music On';mute.title=preferences.muted?'Unmute music':'Mute music';}
+function display(){mute.textContent=preferences.muted?'♫ Music Off':'♫ Music On';mute.title=preferences.muted?'Unmute music':'Mute music';}
 display();
 mute.onclick=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:!preferences.muted});display();};
-volume.oninput=()=>{preferences.volume=Number(volume.value);display();window.desktopMenu.setAudio({...preferences});};
-document.querySelector('#settings').onclick=()=>settings.showModal();
+const settings=createAudioSettings({id:'audio-settings',getState:()=>window.desktopMenu.audio(),saveState:async value=>{preferences=await window.desktopMenu.setAudio(value);display();return preferences;},getMusic:()=>window.desktopMenu.musicSettings(),saveFade:value=>window.desktopMenu.setCrossfade(value)});
+document.querySelector('#settings').onclick=()=>settings.open();
+
 document.querySelector('#play').onclick=async()=>{
   document.querySelector('#play').disabled=true;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -17,7 +18,6 @@ document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();
 bindChangelog();
 window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='Gallorin v'+version;});
 
-audioMuted.onchange=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:audioMuted.checked});display();};
 
 if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
   const cover=document.createElement('div');cover.style.cssText='position:fixed;inset:0;background:#1d1b18;z-index:2147483647;pointer-events:none';

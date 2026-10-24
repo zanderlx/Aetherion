@@ -24,10 +24,10 @@ test('music imports persist, validate, assign independently, and delete without 
  await assert.rejects(store.settings({assignments:{default:'missing'},fadeSeconds:2},['default']),/existing song/);
  await assert.rejects(store.settings({assignments:{},fadeSeconds:11},[]),/fade/);
  const final=await store.remove(id);
- assert.equal(final.tracks.length,1);assert.equal(final.assignments['wilds/aetherion'],undefined);
+ assert.equal(final.tracks.length,1);assert.deepEqual(final.assignments['wilds/aetherion'],[]);
  assert.deepEqual(final.assignments['wilds/hallowhoof'],[id2]);
  await assert.rejects(store.remove('../save'),/not found/);
- assert.equal(selectedMusic(final,'wilds/aetherion'),'menu');
+ assert.deepEqual(selectedPlaylist(final,'wilds/aetherion'),[]);
 });
 test('location music uses zone-specific choices and keeps music through configuration pages',()=>{
  assert.equal(musicContext('wilds/hallowhoof'),'wilds/hallowhoof');

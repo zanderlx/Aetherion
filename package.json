@@ -20,7 +20,8 @@
     "node": ">=22"
   },
   "dependencies": {
-    "electron-updater": "6.8.9"
+    "electron-updater": "6.8.9",
+    "music-metadata": "12.2.3"
   },
   "devDependencies": {
     "electron": "45.0.0",

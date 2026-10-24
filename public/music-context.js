@@ -1,4 +1,4 @@
-export const defaultMusicTrack={id:'menu',name:'Main Menu',filename:'main-menu.mp3'};
+export const defaultMusicTrack={id:'menu',name:'Glades of Gallorin',filename:'main-menu.mp3',durationSeconds:178.104};
 export function formatMusicName(filename){
  return String(filename||'Untitled').replace(/\.mp3$/i,'').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([a-zA-Z])(\d)/g,'$1 $2').replace(/(\d)([a-zA-Z])/g,'$1 $2').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim().replace(/\b[a-z]/g,c=>c.toUpperCase());
 }
@@ -13,7 +13,7 @@ const sectionDefinitions=[
 export function musicGroups(locations=[]){
  const groups=sectionDefinitions.map(([name,id,items])=>({name,id,items:[{id,name:'All '+name},...items.map(([id,name])=>({id,name}))]}));
  groups.splice(3,0,{name:'Wilds',id:'wilds',items:[{id:'wilds',name:'All Wilds'},...locations.map(z=>({id:'wilds/'+z.id,name:z.name}))]});
- return [{name:'General',id:'general',items:[{id:'default',name:'Default Music'},{id:'main-menu',name:'Main Menu'}]},...groups];
+ return [{name:'General',id:'general',items:[{id:'default',name:'Default'},{id:'main-menu',name:'Main Menu'}]},...groups];
 }
 export const musicContexts=locations=>musicGroups(locations).flatMap(g=>g.items);
 export function musicParent(context){
@@ -24,18 +24,20 @@ export function musicParent(context){
 export function assignmentTracks(value){return Array.isArray(value)?value:typeof value==='string'&&value?[value]:[];}
 export function playlistSource(library,context){
  const assignments=library.assignments||{},parent=musicParent(context);
- return [context,parent,'default'].find(key=>key&&assignmentTracks(assignments[key]).length)||'default';
+ return [context,parent,'default'].find(key=>key&&Object.hasOwn(assignments,key)&&(Array.isArray(assignments[key])||assignmentTracks(assignments[key]).length))||'default';
 }
 export function selectedPlaylist(library,context){
- const list=assignmentTracks(library.assignments?.[playlistSource(library,context)]);
- return list.length?list:['menu'];
+ const source=playlistSource(library,context);
+ return Object.hasOwn(library.assignments||{},source)?assignmentTracks(library.assignments[source]):['menu'];
 }
 export function selectedMusic(library,context){return selectedPlaylist(library,context)[0];}
 export function musicContext(route,library={assignments:{}}){
  if(/^(wilds|stable|town|inventory)\//.test(route))return route;
  if(route.startsWith('dev/')){
   const parent=musicParent(route);
-  return assignmentTracks(library.assignments?.[route]).length||assignmentTracks(library.assignments?.[parent]).length?route:null;
+  return Object.hasOwn(library.assignments||{},route)||Object.hasOwn(library.assignments||{},parent)?route:null;
  }
  return null;
 }
+
+export function formatMusicDuration(value){if(!Number.isFinite(value)||value<0)return '—';const seconds=Math.floor(value);return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');}

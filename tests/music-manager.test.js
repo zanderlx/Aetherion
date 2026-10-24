@@ -8,3 +8,13 @@ test('music manager groups playlist tables by navigation and uses requested labe
  assert.ok(html.includes('data-playlist-add="stable/all"'));assert.ok(html.includes('data-playlist-remove="stable/all"'));
  assert.ok(html.includes('<table'));assert.ok(!html.includes('built-in'));assert.ok(!html.includes('Choose the music for each location'));
 });
+
+test('playlist cards collapse, show duration and counts, and can remove inherited songs',()=>{
+ const html=musicManagerPage({tracks:[],assignments:{'stable/all':[]},fadeSeconds:2},[]);
+ assert.ok(html.includes('<details class="music-playlist"'));
+ assert.ok(html.includes('Duration'));assert.ok(html.includes('2:58'));
+ assert.ok(html.includes('Glades of Gallorin'));
+ assert.ok(html.includes('0 songs'));assert.ok(!html.includes('Using Default'));
+ assert.ok(html.includes('data-playlist-remove="default"'));
+ assert.ok(!html.includes('data-fade'));assert.ok(html.includes('data-audio-settings'));
+});
