@@ -190,3 +190,10 @@ body.has-music-player.music-player-compact{--music-player-height:56px}
 .music-player.is-compact .music-collapse svg{transform:rotate(180deg)}
 @media(max-width:850px){body.has-music-player{--music-player-height:136px}body.has-music-player.music-player-compact{--music-player-height:88px}.music-player.is-compact{row-gap:4px}}
 @media(prefers-reduced-motion:reduce){body.has-music-player,.has-music-player #sidebar,.has-music-player #toast,.music-player,.music-player .music-art,.music-player .music-now small,.music-timeline,.music-compact-note,.music-collapse svg{transition:none!important}}
+/* Use identical column geometry regardless of each library's song titles or artists. */
+.music-library-table{table-layout:fixed}
+.music-library-table th.music-order{width:68px}
+.music-library-table th.music-artist{width:28%}
+.music-library-table th:last-child{width:66px}
+.music-library-table td.music-artist{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:600px){.music-library-table th:last-child{width:48px}}
