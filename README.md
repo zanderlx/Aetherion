@@ -44,7 +44,7 @@ Existing player saves migrate automatically with a dated backup. Breeding and ex
 
 ## In-Game Changelog
 
-The main menu shows **GALLORIN v1.0.0 | Changelog**. Open Changelog for a scrollable, offline history organized by version, date, Added, Changed, and Fixed. Escape, the close button, and clicking outside dismiss the popup. [CHANGELOG.md](CHANGELOG.md) also supplies the notes for each GitHub release. Before pushing, update the current entry and run npm run release:check; before publishing, finalize its date. The next push/release remains v1.0.0.
+The main menu and in-game sidebar show **Gallorin v1.0.0 | Changelog**. Open Changelog for a scrollable, offline history organized by version, date, Added, Changed, and Fixed. Escape, the close button, and clicking outside dismiss the popup. [CHANGELOG.md](CHANGELOG.md) also supplies the notes for each GitHub release. Before pushing, update the current entry and run npm run release:check; before publishing, finalize its date. The next push/release remains v1.0.0.
 
 ## Desktop Release
 

@@ -28,6 +28,7 @@ const server = createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     if (req.method === 'GET' && url.pathname === '/api/health') return send(res,200,{application:'aetherion',projectId:createHash('sha256').update(resolve(root).toLowerCase()).digest('hex'),pid:process.pid});
     if (req.method === 'GET' && url.pathname === '/api/state') { await store.refreshConfiguration(); return send(res,200,{state:store.snapshot(),catalog:store.getCatalog(),defaults,appVersion}); }
+    if(req.method==='GET' && url.pathname==='/api/changelog')return send(res,200,{changelog:await readFile(resolve(root,'CHANGELOG.md'),'utf8')});
     if (req.method === 'GET' && url.pathname === '/api/export') {
       await store.refreshConfiguration();
       res.setHeader('Content-Disposition', 'attachment; filename="gallorin-backup.json"');

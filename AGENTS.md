@@ -13,3 +13,4 @@
 - Legacy milestones use 0.1.0–0.9.0 in the changelog; original Aetherion version labels are retained only as historical mapping. Never rewrite old source tags or invent historical dates.
 - Before publishing, finalize the current Unreleased date with scripts/release-notes.js --finalize YYYY-MM-DD using the user's local date, then run npm run release:check. Generate release-specific notes from the changelog; do not hardcode or copy the full history into each release.
 - Gallorin release tags use gallorin-v followed by major.minor.patch. Never push or publish without explicit user authorization.
+- Before releases, verify both the main-menu footer and in-game sidebar footer show Gallorin v<current package version> | Changelog and both links open the same versioned history. The desktop smoke test checks these labels automatically.

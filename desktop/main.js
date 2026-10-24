@@ -67,6 +67,7 @@ async function start() {
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   main = new BrowserWindow({width:1440, height:960, minWidth:800, minHeight:640, show:false, backgroundColor:'#1d1b18',
     title:'Gallorin', icon:join(root, 'desktop/assets/icon.png'), webPreferences:{...options, paintWhenInitiallyHidden:false, preload:join(root,'desktop/menu-preload.cjs'), autoplayPolicy:'no-user-gesture-required'}});
+  if(smoke)main.webContents.on('console-message',(...args)=>console.error(args.slice(1).map(value=>typeof value==='object'?value?.message:value).join(' ')));
   main.on('closed',()=>app.quit());
   main.webContents.setWindowOpenHandler(() => ({action:'deny'}));
   main.webContents.on('will-navigate', (event, url) => {if (url !== menuURL && new URL(url).origin !== origin) event.preventDefault();});
@@ -114,6 +115,8 @@ async function start() {
   await audioWindow.webContents.executeJavaScript('document.querySelector("audio").play()');
   if (smoke) {
     await writeFile(join(process.env.AETHERION_TEST_DATA,'menu-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    const footerCaption='Gallorin v'+app.getVersion()+'|Changelog';
+    if(await main.webContents.executeJavaScript("document.querySelector('.menu-version-links').textContent.replace(/\\s/g,'')")!==footerCaption.replace(/\s/g,''))throw new Error('Main menu version label differs from package version');
     const historyCount=parseChangelog(await readFile(join(root,'CHANGELOG.md'),'utf8')).length;
     await main.webContents.executeJavaScript("document.querySelector('#open-changelog').click()");
     for(let attempt=0;attempt<50;attempt++){
@@ -153,6 +156,17 @@ async function start() {
     }
     const stored = JSON.parse(await readFile(join(data,'player/save.json'),'utf8'));
     if(!stored.horses.some(horse=>horse.id===savedId)) throw new Error('Desktop save did not persist.');
+    if(await main.webContents.executeJavaScript("document.querySelector('.sidebar-foot').textContent.replace(/\\s/g,'')")!==footerCaption.replace(/\s/g,''))throw new Error('Sidebar version label differs from package version');
+    await main.webContents.executeJavaScript("document.querySelector('#sidebar-changelog').click()");
+    for(let attempt=0;attempt<50;attempt++){
+      if(await main.webContents.executeJavaScript("document.querySelectorAll('.changelog-release').length==="+historyCount))break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    if(!await main.webContents.executeJavaScript("document.querySelector('#changelog-dialog').open && document.querySelectorAll('.changelog-release').length==="+historyCount))throw new Error('Sidebar changelog did not load');
+    main.webContents.sendInputEvent({type:'keyDown',keyCode:'Escape'});
+    main.webContents.sendInputEvent({type:'keyUp',keyCode:'Escape'});
+    await new Promise(resolve=>setTimeout(resolve,100));
+    if(await main.webContents.executeJavaScript("document.querySelector('#changelog-dialog').open"))throw new Error('Escape did not close sidebar changelog');
     // Let the gameplay reveal finish before checking the rendered branding.
     await new Promise(resolve=>setTimeout(resolve,1800));
     if(!await main.webContents.executeJavaScript("document.querySelector('.brand-logo')?.getAttribute('viewBox')==='0 0 200 200'"))throw new Error('Sidebar logo failed');

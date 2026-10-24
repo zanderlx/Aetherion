@@ -1,3 +1,4 @@
+import {createChangelog} from './changelog-ui.js';
 import {horseUpdatesPage,bindHorseUpdates} from './horse-updates.js';
 import {createGoldFeedback} from './gold-feedback.js';
 import {openEmojiPicker} from './emoji-picker.js';
@@ -42,6 +43,8 @@ let routeVersion = 0, pendingDeletion;
 const openGroups = new Set();
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
+const openChangelog=createChangelog({loadSource:async()=>(await request('/api/changelog')).changelog,getVersion:()=>appVersion});
+document.addEventListener('click',event=>{if(event.target.closest('#sidebar-changelog'))void openChangelog();});
 watchMutationCardWidths(main);
 bindProfileTabs();
 const horseArtViewer = bindHorseArtViewer();

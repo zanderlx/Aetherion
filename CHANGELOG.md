@@ -18,7 +18,7 @@ The first Gallorin release brings forward the Aetherion collection game with new
 - Developer Settings → Horse Updates: keep, set, or reroll selected details for individual horses or batches of up to 100.
 - Preview exact changes before applying, with automatic backups and protection against stale previews.
 - Species-aware trait regeneration, individual mutation-slot controls, Cosmic identity locks, and skill editing.
-- An in-game Changelog popup beside the main-menu version, with the complete historical change log.
+- A shared Changelog popup beside the version in both the main menu and in-game sidebar, with the complete historical change log.
 
 ### Changed
 - Renamed the application to Gallorin while retaining Aetherion Wilds as a zone.

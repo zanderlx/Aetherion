@@ -395,6 +395,7 @@ test('Eye card search combines name hex and rarity with alphabetical sorting',()
 test('sidebar footer shows the supplied release version without old preview wording',()=>{
  const html=sidebar('stable/all',state,new Set(),catalog,'1.5.0');
  assert.match(html,/Gallorin v1\.5\.0/);
+ assert.match(html,/id="sidebar-changelog"/);
  assert.doesNotMatch(html,/A sanctuary of your own|Local files · Phase 1 preview/);
 });
 

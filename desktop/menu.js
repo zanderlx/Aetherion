@@ -15,7 +15,7 @@ document.querySelector('#play').onclick=async()=>{
 };
 document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();
 bindChangelog();
-window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='GALLORIN v'+version;});
+window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='Gallorin v'+version;});
 
 audioMuted.onchange=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:audioMuted.checked});display();};
 

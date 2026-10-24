@@ -64,7 +64,7 @@ export function sidebar(route, state, openGroups, catalog, appVersion = '') {
       <summary>${group.title === 'Wilds' ? `<a class="nav-group-home" href="#wilds/aetherion" data-action="wilds-home">${icon(group.icon)}<span>Wilds</span></a>` : `${icon(group.icon)}<span>${group.title}</span>`}<span class="chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
       <div class="nav-items">${group.items.map(([path, label]) => `<a href="#${path}" ${route === path ? 'aria-current="page"' : ''}><span>${escapeHTML(label)}</span>${path === 'stable/all' ? `<span class="count">${state.horses.length}</span>` : ''}</a>`).join('')}</div>
     </details>`).join('')}</nav>
-    <div class="sidebar-foot" data-copy-skip>Gallorin${appVersion ? ` v${escapeHTML(appVersion)}` : ''}</div>`;
+    <div class="sidebar-foot" data-copy-skip><span>Gallorin${appVersion ? ` v${escapeHTML(appVersion)}` : ''}</span><span aria-hidden="true">|</span><button type="button" id="sidebar-changelog" aria-haspopup="dialog">Changelog</button></div>`;
 }
 export function card(horse, state, mode = 'wild', catalog) {
   const title = horse.name || horse.species;
@@ -81,7 +81,7 @@ export function card(horse, state, mode = 'wild', catalog) {
     <div class="card-body"><div class="card-title"><span class="gender ${female ? 'gender-female' : 'gender-male'}" role="img" aria-label="${female ? 'Female' : 'Male'}">${horseGenderIcon(horse.gender)}</span><h3><button class="horse-card-open" data-action="inspect" data-id="${horse.id}" title="${escapeHTML(title)}" aria-label="View ${escapeHTML(title)}">${escapeHTML(cardTitle)}</button></h3></div></div></article>`;
 }
 export function emptyState(title, description, link, linkLabel, symbol = 'stable') {
-  return `<div class="empty-state"><div class="empty-symbol">${icon(symbol)}</div><h2>${title}</h2><p>${description}</p>${link ? `<a class="button primary" href="#${link}">${linkLabel} ${icon('arrow')}</a>` : ''}</div>`;
+  return `<div class="empty-state"><div class="empty-symbol">${icon(symbol)}</div><h2>${title}</h2><p>${description}</p>${link ? `<a class="button primary" href="#${link}">${linkLabel} ${icon('arrow')}</a>` : ''}</span><span aria-hidden="true">|</span><button type="button" id="sidebar-changelog" aria-haspopup="dialog">Changelog</button></div>`;
 }
 export function heading(kicker, title, description, extra = '') {
   return `<div class="page-heading"><div>${kicker ? `<span class="eyebrow" data-copy-key="page.kicker" data-copy-label="Page eyebrow">${kicker}</span>` : ''}<h1 data-copy-key="page.title" data-copy-label="Page title">${title}</h1><p data-copy-key="page.description" data-copy-label="Page introduction">${description}</p></div>${extra}</div>`;
