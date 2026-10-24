@@ -1,3 +1,4 @@
+import {bindNavigationDisclosures} from './navigation-disclosures.js';
 import {createMusicPlayer} from './music-player.js';
 import {createChangelog} from './changelog-ui.js';
 import {horseUpdatesPage,bindHorseUpdates} from './horse-updates.js';
@@ -104,13 +105,13 @@ function notify(message, error = false) {
 }
 function renderChrome() {
   const navScroll = $('#sidebar nav')?.scrollTop || 0;
-  for (const details of $('#sidebar').querySelectorAll('details')) { if (details.open) openGroups.add(details.dataset.group); else openGroups.delete(details.dataset.group); }
+  for (const details of $('#sidebar').querySelectorAll('details')) { if (details.dataset.navExpanded ? details.dataset.navExpanded === 'true' : details.open) openGroups.add(details.dataset.group); else openGroups.delete(details.dataset.group); }
   applyWebsiteTheme(catalog, state);
   $('#sidebar').innerHTML = sidebar(route, state, openGroups, catalog, appVersion);
-  $('#sidebar').querySelectorAll('details').forEach(details => details.addEventListener('toggle', () => {
-    if (details.open) openGroups.add(details.dataset.group);
-    else openGroups.delete(details.dataset.group);
-  }));
+  bindNavigationDisclosures($('#sidebar'),{
+    onChange:(group,open)=>open?openGroups.add(group):openGroups.delete(group),
+    onWildsOpen:()=>{location.hash='wilds/aetherion';}
+  });
   const section = navigationSection(route);
   const sectionName = state.pageCopy?.site?.[`group-${section.title.toLowerCase()}`] ?? section.title;
   const definitionKind = route === 'dev/rarities' ? 'rarities' : route === 'dev/traits' ? 'species' : editorRoutes[route.split('/')[1]];
@@ -309,16 +310,6 @@ document.addEventListener('click', async event => {
   if (intent === 'choose-personality-emoji') {
     const input=button.closest('form').elements.emoji;
     openEmojiPicker({value:input.value,onSelect:emoji=>{input.value=emoji;button.textContent=emoji;input.dispatchEvent(new Event('input',{bubbles:true}));}});
-    return;
-  }
-  if (intent === 'wilds-home') {
-    event.preventDefault();
-    const group = button.closest('details');
-    group.open = !group.open;
-    if (group.open) {
-      openGroups.add('Wilds');
-      location.hash = 'wilds/aetherion';
-    } else openGroups.delete('Wilds');
     return;
   }
   if (intent === 'sort-direction') {updateStableSort(button.dataset.direction === 'asc' ? 'desc' : 'asc'); return;}

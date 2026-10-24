@@ -76,3 +76,4 @@ was specific to this computer and is not an automatic app feature.
 - Playlist trash buttons only remove that playlist membership; duration and MP3 files remain unchanged by metadata edits.
 - Hid the page scrollbar while preserving scrolling.
 - Refined playlist assignment with sidebar ordering, section filtering, centered actions, and a hover-only edge scrollbar; added a row checkmark to save all edited song metadata together.
+- Added smooth, reversible sidebar dropdown transitions with reduced-motion support and preserved navigation state.

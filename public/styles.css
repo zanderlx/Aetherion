@@ -348,3 +348,8 @@ nav summary{font-size:15px}
 /* Hide the page scrollbar without changing its scrolling behavior. */
 html,body{scrollbar-width:none}
 html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
+/* Clip links during sidebar expansion and rotate the chevron toward the target state. */
+#sidebar nav details[data-nav-expanded]{overflow:hidden;will-change:height}
+#sidebar nav details[data-nav-expanded=false]>summary .chevron{transform:rotate(0deg)}
+#sidebar nav details[data-nav-expanded=true]>summary .chevron{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){#sidebar .chevron{transition:none}}
