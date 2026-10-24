@@ -1,7 +1,8 @@
+import {defaultAudioPreferences} from './audio-preferences.js';
 // Persistent transport: playlist ordering, skip/previous and crossfades live together.
 export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),clock=()=>performance.now(),frame=requestAnimationFrame}={}){
- let active=audio,players=[audio],track=null,revision=0,volume=.35,muted=false,playing=false,error='',gains=new Map([[audio,1]]);
- let soundEffectsVolume=1;const effects=new Map();
+ let active=audio,players=[audio],track=null,revision=0,volume=defaultAudioPreferences.volume/100,muted=defaultAudioPreferences.muted,playing=false,error='',gains=new Map([[audio,1]]);
+ let soundEffectsVolume=defaultAudioPreferences.soundEffectsVolume/100;const effects=new Map();
  let queue=[],index=0,queueKey='',fadeSeconds=2;
  const apply=()=>players.forEach(a=>{a.volume=Math.max(0,Math.min(1,(gains.get(a)||0)*volume));a.muted=muted;});
  const clean=()=>{for(const a of players)if(a!==active){a.pause();a.removeAttribute('src');a.load();gains.delete(a);}players=[active];gains.set(active,1);apply();};

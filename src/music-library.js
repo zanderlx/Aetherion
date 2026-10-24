@@ -6,9 +6,9 @@ import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 const validId=id=>/^[a-f0-9-]{36}$/.test(id);
 export class MusicLibrary {
-  constructor(directory,builtin,seeds=[]){this.builtin=builtin;this.root=join(directory,'music');this.queue=Promise.resolve();this.ready=this.seed(seeds);}
-  async seed(seeds){
-    let library;try{library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;if(!seeds.length)return;library={version:2,tracks:[],assignments:{},fadeSeconds:2};}
+  constructor(directory,builtin,seeds=[],defaults={}){this.builtin=builtin;this.root=join(directory,'music');this.queue=Promise.resolve();this.ready=this.seed(seeds,defaults);}
+  async seed(seeds,defaults={}){
+    let library;try{library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;if(!seeds.length&&!Object.keys(defaults).length)return;library={version:2,tracks:[],assignments:structuredClone(defaults.assignments||{}),fadeSeconds:defaults.fadeSeconds??2};}
     const seen=new Set(library.seededTrackIds||[]);let changed=false;
     for(const track of seeds){
       if(seen.has(track.id))continue;

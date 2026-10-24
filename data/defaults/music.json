@@ -62,5 +62,24 @@
       "durationSeconds": 2.832,
       "kind": "effect"
     }
-  ]
+  ],
+  "assignments": {
+    "default": [
+      "menu"
+    ],
+    "wilds/aetherion": [
+      "4f1d9bd4-0f05-416c-98b1-0cabaf6c3d42"
+    ],
+    "wilds/hallowhoof": [
+      "bc804f97-ab0d-4c6a-bd09-db4d2949abff",
+      "93c7c7fc-c6da-4cf1-b8ce-69fd02e0d277"
+    ],
+    "effect/cosmic-spawn": [
+      "b3f0c272-1922-47e7-9ef3-d30dd0399e96"
+    ],
+    "town": [
+      "9eb1bb80-f34a-4aeb-b2c6-6a0fa3c97d3b"
+    ]
+  },
+  "fadeSeconds": 2
 }

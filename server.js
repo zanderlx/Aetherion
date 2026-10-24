@@ -13,7 +13,7 @@ const catalog = JSON.parse(await readFile(resolve(root, 'data/definitions/catalo
 const defaults = JSON.parse(await readFile(resolve(root, 'data/defaults/settings.json'), 'utf8'));
 const store = await new GameStore(process.env.HORSE_DATA_DIR || resolve(root, 'data'), catalog, defaults).init();
 const musicDefaults=JSON.parse(await readFile(resolve(root,'data/defaults/music.json'),'utf8'));
-const music=new MusicLibrary(process.env.HORSE_DATA_DIR || resolve(root,'data'),resolve(root,'desktop/assets/music/main-menu.mp3'),musicDefaults.tracks.map(track=>({...track,source:resolve(root,'desktop/assets/music',track.file)})));
+const music=new MusicLibrary(process.env.HORSE_DATA_DIR || resolve(root,'data'),resolve(root,'desktop/assets/music/main-menu.mp3'),musicDefaults.tracks.map(track=>({...track,source:resolve(root,'desktop/assets/music',track.file)})),musicDefaults);
 await music.ready;
 const port = Number(process.env.PORT || 4173);
 const publicRoot = resolve(root, 'public');
