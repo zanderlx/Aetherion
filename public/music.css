@@ -68,9 +68,13 @@ body.has-music-player{padding-bottom:100px}
 .music-row-number,.music-row-play{grid-area:1/1}
 .music-row-play{display:grid;place-items:center;width:30px;height:30px;padding:0;background:none;color:var(--text);font-size:13px;border-radius:4px}
 .music-row-play,.music-row-trash{opacity:0;pointer-events:none}
-.music-table tbody tr:hover,.music-table tbody tr:focus-within{background:var(--panel-deep)}
-.music-table tr:hover .music-row-play,.music-table tr:focus-within .music-row-play,.music-table tr.is-current .music-row-play,
-.music-table tr:hover .music-row-trash,.music-table tr:focus-within .music-row-trash,.music-table tr.is-current .music-row-trash{opacity:1;pointer-events:auto}
-.music-table tr:hover .music-row-number,.music-table tr:focus-within .music-row-number,.music-table tr.is-current .music-row-number{opacity:0}
-.music-table tr.is-current strong,.music-table tr.is-current .music-row-play{color:var(--gold)}
+.music-table tbody tr:hover{background:var(--panel-deep)}
+.music-table tr:hover .music-row-play,.music-table tr:hover .music-row-trash,.music-row-play:focus-visible,.music-row-trash:focus-visible{opacity:1;pointer-events:auto}
+.music-table tr:hover .music-row-number,.music-index-control:has(.music-row-play:focus-visible) .music-row-number{opacity:0}
+.music-table tbody tr.is-current{background:color-mix(in srgb,var(--gold) 12%,var(--panel));box-shadow:inset 3px 0 var(--gold)}
+.music-table tr.is-current strong{color:var(--gold)}
+.music-playlist-groups{margin-top:26px}
+.music-all-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.music-row-play{position:relative;z-index:1}
+.music-row-play>*{pointer-events:none}
 @media(hover:none){.music-row-play,.music-row-trash{opacity:1;pointer-events:auto}.music-row-number{opacity:0}}

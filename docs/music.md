@@ -11,19 +11,22 @@ navigation sections, their individual pages, each zone, and the main menu.
 - Assignments save automatically. Audio Settings (also in the main menu and ESC
   menu) contains Music, Sound Effects, and Crossfade. Crossfade ranges from
   0 to 10 seconds and defaults to 2 seconds.
-- Unassigned pages inherit their section playlist, then Default Music. Compendium,
-  User Interface, and Developer Settings keep the current music unless explicitly assigned.
+- Empty and unassigned playlists play the configured Default without inserting that
+  song into their tables. If Default has no selection, Glades of Gallorin is the fallback.
+  Compendium/settings keep the current music unless explicitly assigned.
 - Playlists advance in order and wrap at the end, with crossfades between songs.
   Play/pause, previous/next, stop, restart, seeking, volume, and mute are available
   in the full-width bottom player. One-song playlists loop that song.
 - Each folder and playlist can collapse independently. Tables show MP3 durations.
-- Playlist rows show a number that becomes Play on hover or while the song is current.
-  Trash controls follow the same hover/current-song behavior and remove a song only
-  from that playlist. The protected default uses the same trash icon.
+- Rows show their number when idle and a play button only on hover (or keyboard focus).
+  Click anywhere on the play button or double-click the row to play it.
+  The current track has a highlighted row; highlighting does not keep buttons visible.
+  Trash controls also appear only on hover/focus and remove a song from that playlist.
 - Playlist headers show song counts next to their collapse arrow. Add/reorder
   controls are intentionally absent; playlist assignment remains supported by the data/API.
-- Deleting from Your Music still confirms and removes a song from the whole library.
-- Empty playlists remain empty/silent. Use Default restores section/default inheritance.
+- Deleting from All Songs still confirms and removes a song from the whole library.
+- Playlist tables contain only explicitly assigned songs; there are no reset rows.
+  Default-song rows from older location assignments are removed automatically.
 - Song titles are formatted from MP3 filenames; the player artist is Gallorin Studios.
 - Existing single-song assignments become one-song playlists without losing settings.
 - Desktop playback continues through page reloads and menu transitions.
@@ -51,3 +54,6 @@ available on the player and main-menu footer.
 
 Missing or blank duration values are backfilled from MP3 metadata at startup,
 including existing libraries. Durations align left in the table.
+
+Import Music is in All Songs and uses the music-note icon. Playlist rows do not
+show a default suffix beside Glades of Gallorin.

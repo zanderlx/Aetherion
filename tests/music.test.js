@@ -1,10 +1,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm,readFile} from 'node:fs/promises';
+import {mkdtemp,rm,readFile,mkdir,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {MusicLibrary} from '../src/music-library.js';
-import {musicContext,selectedMusic,selectedPlaylist,formatMusicName} from '../public/music-context.js';
+import {musicContext,selectedMusic,selectedPlaylist,playlistSongs,formatMusicName} from '../public/music-context.js';
 import {createMusicEngine} from '../public/music-engine.js';
 const mp3=Buffer.from('ID3test audio');
 test('music imports persist, validate, assign independently, and delete without leaving assignments',async t=>{
@@ -27,7 +27,7 @@ test('music imports persist, validate, assign independently, and delete without 
  assert.equal(final.tracks.length,1);assert.deepEqual(final.assignments['wilds/aetherion'],[]);
  assert.deepEqual(final.assignments['wilds/hallowhoof'],[id2]);
  await assert.rejects(store.remove('../save'),/not found/);
- assert.deepEqual(selectedPlaylist(final,'wilds/aetherion'),[]);
+ assert.deepEqual(selectedPlaylist(final,'wilds/aetherion'),['menu']);
 });
 test('location music uses zone-specific choices and keeps music through configuration pages',()=>{
  assert.equal(musicContext('wilds/hallowhoof'),'wilds/hallowhoof');
@@ -63,17 +63,17 @@ test('bundled songs seed once and deleted songs stay deleted after restarting',a
  const first=new MusicLibrary(directory,undefined,seeds);assert.equal((await first.read()).tracks.length,1);
  const second=new MusicLibrary(directory,undefined,seeds);assert.equal((await second.read()).tracks.length,1);
  await second.settings({assignments:{default:id,'main-menu':'menu'},fadeSeconds:2},['default','main-menu']);
- assert.equal(selectedMusic(await second.read(),'main-menu'),'menu');
+ assert.equal(selectedMusic(await second.read(),'main-menu'),id);
  assert.equal(selectedMusic(await second.read(),'stable'),id);
  await second.remove(id);
  const third=new MusicLibrary(directory,undefined,seeds);
  assert.equal((await third.read()).tracks.length,0);
 });
 
-test('playlist inheritance prefers page, then section, then default and formats MP3 titles',()=>{
+test('assigned songs play directly and empty/unassigned pages use Default',()=>{
  const library={assignments:{default:['menu'],stable:['a','b'],'stable/all':['c','d']}};
  assert.deepEqual(selectedPlaylist(library,'stable/all'),['c','d']);
- assert.deepEqual(selectedPlaylist(library,'stable/breeding'),['a','b']);
+ assert.deepEqual(selectedPlaylist(library,'stable/breeding'),['menu']);
  assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['menu']);
  assert.equal(formatMusicName('aetherion-wilds.mp3'),'Aetherion Wilds');
  assert.equal(formatMusicName('cyberspace2.mp3'),'Cyberspace 2');
@@ -108,4 +108,20 @@ test('clicking a playlist row selects that song while retaining next/previous or
  await engine.command({type:'playlist',key:'test',tracks,fadeSeconds:0});
  await engine.command({type:'playlist',key:'test',tracks,startId:'b',fadeSeconds:0});assert.equal(engine.snapshot().track.id,'b');
  await engine.command({type:'next'});assert.equal(engine.snapshot().track.id,'c');
+});
+
+test('default fallback stays separate from displayed assignments',()=>{
+ const library={assignments:{default:['custom'],'wilds/aetherion':[],'wilds/hallowhoof':['menu']}};
+ assert.deepEqual(playlistSongs(library,'wilds/aetherion'),[]);assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['custom']);
+ assert.deepEqual(playlistSongs(library,'wilds/hallowhoof'),[]);assert.deepEqual(selectedPlaylist(library,'wilds/hallowhoof'),['custom']);
+ assert.deepEqual(selectedPlaylist({assignments:{}},'town/gacha'),['menu']);
+});
+
+test('legacy default entries are removed from locations while Default is retained',async t=>{
+ const dir=await mkdtemp(join(tmpdir(),'gallorin-default-cleanup-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ await mkdir(join(dir,'music'),{recursive:true});
+ await writeFile(join(dir,'music/library.json'),JSON.stringify({version:2,tracks:[],assignments:{default:['menu'],'wilds/aetherion':['menu']},fadeSeconds:2}));
+ const library=await new MusicLibrary(dir).read();
+ assert.deepEqual(library.assignments.default,['menu']);assert.deepEqual(library.assignments['wilds/aetherion'],[]);
+ assert.deepEqual(playlistSongs(library,'wilds/aetherion'),[]);assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['menu']);
 });

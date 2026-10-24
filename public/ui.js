@@ -8,6 +8,7 @@ import { locationsFor } from './zones.js';
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const number = value => Number(value).toLocaleString();
 export const icons = {
+  music:'<path d="M9 18V5l12-2v13M9 8l12-2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
   agility: '<path d="m13 2-9 12h7l-1 8 10-13h-8Z"/>',
   strength: '<path d="M7 12h10M3 8v8m4-10v12m10-12v12m4-10v8M3 12h4m10 0h4"/>',
   jump: '<path d="M12 20V4m-6 6 6-6 6 6M4 20h16"/>',

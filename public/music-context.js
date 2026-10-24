@@ -22,13 +22,16 @@ export function musicParent(context){
  return null;
 }
 export function assignmentTracks(value){return Array.isArray(value)?value:typeof value==='string'&&value?[value]:[];}
-export function playlistSource(library,context){
- const assignments=library.assignments||{},parent=musicParent(context);
- return [context,parent,'default'].find(key=>key&&Object.hasOwn(assignments,key)&&(Array.isArray(assignments[key])||assignmentTracks(assignments[key]).length))||'default';
+// Display only assignments; fallback playback does not insert rows into playlists.
+export function playlistSongs(library,context){
+ const ids=assignmentTracks(library.assignments?.[context]);
+ if(context==='default')return Object.hasOwn(library.assignments||{},context)?ids:['menu'];
+ return ids.filter(id=>id!=='menu');
 }
+export function playlistSource(library,context){return playlistSongs(library,context).length?context:'default';}
 export function selectedPlaylist(library,context){
- const source=playlistSource(library,context);
- return Object.hasOwn(library.assignments||{},source)?assignmentTracks(library.assignments[source]):['menu'];
+ const own=playlistSongs(library,context);if(own.length)return own;
+ const fallback=playlistSongs(library,'default');return fallback.length?fallback:['menu'];
 }
 export function selectedMusic(library,context){return selectedPlaylist(library,context)[0];}
 export function musicContext(route,library={assignments:{}}){

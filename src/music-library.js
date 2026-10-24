@@ -18,6 +18,9 @@ export class MusicLibrary {
     }
     for(const track of seeds){const existing=library.tracks.find(t=>t.id===track.id);if(existing&&track.file&&existing.filename!==track.file){existing.filename=track.file;existing.name=formatMusicName(track.file);changed=true;}}
     for(const track of library.tracks){if(!Number.isFinite(track.durationSeconds)||track.durationSeconds<=0){const duration=await durationOfFile(join(this.root,track.id+'.mp3'));if(duration!==track.durationSeconds){track.durationSeconds=duration;changed=true;}}}
+    for(const [context,value] of Object.entries(library.assignments||{})){
+      if(context!=='default'&&assignmentTracks(value).includes('menu')){library.assignments[context]=assignmentTracks(value).filter(id=>id!=='menu');changed=true;}
+    }
     if(changed){library.seededTrackIds=[...seen];await this.write(library);}
   }
   async read(){
@@ -50,7 +53,7 @@ export class MusicLibrary {
       for(const [context,value] of Object.entries(input.assignments)){
         const ids=assignmentTracks(value);
         if(!contexts.includes(context)||(!Array.isArray(value)&&typeof value!=='string')||ids.length>500||ids.some(id=>typeof id!=='string'||(id!=='menu'&&!library.tracks.some(t=>t.id===id))))throw Error('Choose an existing song and location.');
-        if(Array.isArray(value)||ids.length)assignments[context]=[...new Set(ids)];
+        if(Array.isArray(value)||ids.length)assignments[context]=[...new Set(ids.filter(id=>context==='default'||id!=='menu'))];
       }
       await this.write({...library,assignments,fadeSeconds:input.fadeSeconds});return this.read();
     });

@@ -44,9 +44,13 @@ was specific to this computer and is not an automatic app feature.
 
 - Named the protected default track Glades of Gallorin.
 - Added nested playlist collapse controls, MP3 duration columns, and per-playlist removal that preserves library files.
-- Empty playlists stay silent; renamed Default and replaced inheritance notes with song counts.
+- Empty playlists use Default without adding song rows; renamed Default and replaced inheritance notes with song counts.
 - Unified Audio Settings across menu/game with Music and Sound Effects sliders and crossfade; simplified modal controls and header alignment.
 
 - Moved playlist song counts beside chevrons and removed add/reorder controls.
 - Playlist rows reveal play/trash controls on hover and keep controls visible for the current song.
 - Added contextual row playback and repaired missing/blank MP3 duration metadata, with left-aligned duration columns.
+
+- Removed reset rows, implicit default-song entries, default suffix labels, and the Location Music heading.
+- Moved music import to All Songs with a music-note icon.
+- Added highlighted current rows, hover-only play/trash controls, full-button clicks, and row double-click playback.

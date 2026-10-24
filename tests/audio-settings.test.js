@@ -22,11 +22,11 @@ test('sound effects use their own live volume without changing music',async()=>{
  assert.equal(players[0].volume,.4);assert.equal(players[1].volume,.75);
  await engine.command({type:'sfx-volume',value:.2});assert.equal(players[1].volume,.2);assert.equal(players[0].volume,.4);
 });
-test('empty playlists remain silent and preserve earlier playback intent',async()=>{
+test('empty transport queues preserve playback intent while empty locations use Default',async()=>{
  const engine=createMusicEngine({audio:fake(),makeAudio:fake,frame:()=>{},clock:()=>0});
  await engine.command({type:'playlist',tracks:[{id:'a',url:'a'}],key:'one',fadeSeconds:0});await engine.command({type:'play'});
  await engine.command({type:'playlist',tracks:[],key:'empty'});assert.equal(engine.snapshot().track,null);assert.equal(engine.snapshot().playing,false);
- assert.deepEqual(selectedPlaylist({assignments:{'stable/all':[]}},'stable/all'),[]);
+ assert.deepEqual(selectedPlaylist({assignments:{'stable/all':[]}},'stable/all'),['menu']);
  await engine.command({type:'playlist',tracks:[{id:'b',url:'b'}],key:'two',fadeSeconds:0});assert.equal(engine.snapshot().playing,true);
 });
 test('MP3 duration metadata is parsed and stored during import',async t=>{
