@@ -1,3 +1,4 @@
+import {bindMusicDisclosures} from './music-disclosures.js';
 import {escapeHTML as e,icon} from './ui.js';
 import {musicGroups,defaultMusicTrack,playlistSongs,formatMusicDuration} from './music-context.js';
 
@@ -32,11 +33,12 @@ export function musicManagerPage(library,locations){
 }
 export function bindMusicManager(root,services){
  bindings.get(root)?.abort();const controller=new AbortController();bindings.set(root,controller);const options={signal:controller.signal};
+ bindMusicDisclosures(root,controller.signal);
  updateMusicRows(root,services.getPlaybackState?.());
  let busy=false;
  const redraw=()=>{
   if(location.hash!=='#dev/music')return;
-  const opened=new Set([...root.querySelectorAll('[data-music-group][open],[data-playlist][open]')].map(d=>d.dataset.musicGroup||d.dataset.playlist));
+  const opened=new Set([...root.querySelectorAll('[data-music-group],[data-playlist]')].filter(d=>d.dataset.expanding?d.dataset.expanding==='true':d.open).map(d=>d.dataset.musicGroup||d.dataset.playlist));
   root.innerHTML=musicManagerPage(services.getLibrary(),services.getLocations());
   root.querySelectorAll('[data-music-group],[data-playlist]').forEach(d=>d.open=opened.has(d.dataset.musicGroup||d.dataset.playlist));
   bindMusicManager(root,services);

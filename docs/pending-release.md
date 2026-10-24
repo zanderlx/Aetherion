@@ -54,3 +54,6 @@ was specific to this computer and is not an automatic app feature.
 - Removed reset rows, implicit default-song entries, default suffix labels, and the Location Music heading.
 - Moved music import to All Songs with a music-note icon.
 - Added highlighted current rows, hover-only play/trash controls, full-button clicks, and row double-click playback.
+
+- Added smooth, reversible expand/collapse animations to music folders and playlists, respecting reduced-motion preferences.
+- Removed the playlist/table gap and duplicate divider.
