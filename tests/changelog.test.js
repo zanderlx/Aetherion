@@ -62,7 +62,8 @@ test('named release headings keep legacy titles clean and retain old-format pars
 test('Gallorin 1.0.0 merges desktop, music, then Gallorin changes in chronological order',()=>{
   const entries=parseChangelog(source),current=entries.find(e=>e.version==='1.0.0');
   assert.ok(!entries.some(e=>['0.8.0','0.9.0'].includes(e.version)));
-  assert.deepEqual(current.timeline,['Desktop Foundations','Music & Main Menu','Gallorin Updates']);
+  assert.deepEqual(current.timeline,[]);
+  assert.deepEqual(current.sections.map(section=>section.name),['Added','Changed','Fixed']);
   const notes=releaseMarkdown(current);
   assert.ok(notes.indexOf('Windows desktop installer')<notes.indexOf('Woodland title screen'));
   assert.ok(notes.indexOf('Woodland title screen')<notes.indexOf('New Gallorin logo'));

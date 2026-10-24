@@ -8,46 +8,19 @@ Dates for legacy entries come from their release commits.
 
 ## [1.0.0] - The Symphony of the Wilds - 2026-10-23
 
-The first Gallorin release brings forward the Aetherion collection game with new branding and tools for updating existing horses.
+The first Gallorin release brings forward the Aetherion legacy with new branding and a new platform to play on. Sit down and relax as you listen to the symphony of the wilds!
 
-### Timeline: Desktop Foundations
-
-#### Added
+### Added
 
 - Windows desktop installer with a themed splash and application icon.
 - Separate AppData storage and safe migration from browser-edition saves.
 - GitHub Releases update checks with download and restart confirmation.
 - Packaged desktop smoke tests for startup, saves, export, and reload.
-
-### Timeline: Music & Main Menu
-
-#### Added
-
 - Woodland title screen with Play, Settings, and Exit Game.
 - Continuous looping music with saved volume, mute controls, and a 35% default.
 - Themed Escape menu with Back To Game, Settings, Main Menu, and Exit Game.
 - Audio settings and a music toggle during gameplay.
 - Longer silent splash and smooth transitions between title screen and gameplay.
-
-#### Changed
-
-- Matched Escape-menu and in-game audio colors to the selected theme.
-- Simplified menu and theme-page wording.
-- Moved release publication after packaged smoke testing and pinned workflow actions.
-
-#### Fixed
-
-- Separated development saves and Chromium caches from the installed app.
-- Fixed slider travel, saved-volume handling, and music starting before the title screen.
-
-#### Security
-
-- Escaped mutation emoji content in card and editor HTML.
-
-### Timeline: Gallorin Updates
-
-#### Added
-
 - New Gallorin logo across the title screen, splash, sidebar, Escape menu, favicon, README, and desktop icons.
 - Versioned horse records with schema, generation, and revision metadata preserved through imports and exports.
 - Developer Settings → Horse Updates (work in progress): keep, set, or reroll selected details for individual horses or batches of up to 100. Further refinements are planned.
@@ -55,8 +28,11 @@ The first Gallorin release brings forward the Aetherion collection game with new
 - Species-aware trait regeneration, individual mutation-slot controls, Cosmic identity locks, and skill editing.
 - A shared Changelog popup beside the version in both the main menu and in-game sidebar, with the complete historical change log.
 
-#### Changed
+### Changed
 
+- Matched Escape-menu and in-game audio colors to the selected theme.
+- Simplified menu and theme-page wording.
+- Moved release publication after packaged smoke testing and pinned workflow actions.
 - Renamed the application to Gallorin while retaining Aetherion Wilds as a zone.
 - Started fresh Gallorin versioning at 1.0.0 and archived earlier milestones as 0.x releases.
 - Updated window titles to show the game name, full version, and current page.
@@ -64,8 +40,11 @@ The first Gallorin release brings forward the Aetherion collection game with new
 - Unified in-game history and GitHub release notes around this changelog.
 - Release builds validate version consistency and packaged behavior before publication.
 
-#### Fixed
+### Fixed
 
+- Separated development saves and Chromium caches from the installed app.
+- Fixed slider travel, saved-volume handling, and music starting before the title screen.
+- Escaped mutation emoji content in card and editor HTML.
 - Corrected Friesian spelling, including existing species and horse records.
 - Prevented incompatible traits from being retained when changing a horse's species.
 - Protected Solar, Lunar, Heavenly, Void, and Astral mutations when rerolling existing horses.
