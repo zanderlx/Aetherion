@@ -50,7 +50,7 @@ Future structural migrations belong in public/horse-version.js. Future generatio
 
 ## Files and recovery
 
-Player records are in the active edition's data/player/save.json. Regeneration backups use data/backups/pre-horse-updates-*.json; schema upgrades use pre-horse-version-*.json. Desktop data is under %APPDATA%/Gallorin/data; development uses %APPDATA%/Gallorin Development/data. Existing installations may continue using their legacy Aetherion folders; use the app menu to open the active save folder.
+Player records are in the active edition's data/player/save.json. Regeneration backups use data/backups/pre-horse-updates-*.json; schema upgrades use pre-horse-version-*.json. Desktop data is under %APPDATA%/Gallorin/data; development uses %APPDATA%/Gallorin Development/data. Legacy Aetherion folders are never selected automatically. Use the app menu to open the active save folder.
 
 For manual recovery, close the app/server, keep a copy of the current save, and copy the selected standalone player backup over player/save.json. These backups do not replace Compendium configuration.
 
