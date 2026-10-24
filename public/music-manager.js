@@ -2,7 +2,7 @@ import {musicLibrarySections,rowPlay} from './music-library-table.js';
 import {bindSongActions} from './music-song-actions.js';
 import {bindMusicSorting} from './music-table-sort.js';
 import {bindMusicDisclosures} from './music-disclosures.js';
-import {escapeHTML as e,icon} from './ui.js';
+import {escapeHTML as e,icon,groups as navigationGroups} from './ui.js';
 import {musicGroups,musicTracks,playlistSongs,formatMusicDuration} from './music-context.js';
 
 const bindings=new WeakMap();
@@ -32,7 +32,7 @@ export function updateMusicRows(root,state){
  }
 }
 export function musicManagerPage(library,locations){
- return '<section class="music-manager"><header class="music-heading"><h1>Background Music</h1><button type="button" class="button music-header-toggle" data-music-toggle-all>Show All</button><button type="button" class="button music-audio-settings" data-audio-settings>'+icon('settings')+' Audio Settings</button></header><div class="music-playlist-groups">'+musicGroups(locations).map(group=>'<details class="music-group" data-music-group="'+e(group.id)+'"'+(group.id==='general'?' open':'')+'><summary><h2>'+e(group.name)+'</h2><button type="button" class="music-scope-toggle" data-music-toggle-folder>Show All</button><span class="music-group-count">'+group.items.length+' playlist'+(group.items.length===1?'':'s')+'</span>'+chevron+'</summary><div class="music-group-playlists">'+group.items.map(item=>playlistCard(library,item)).join('')+'</div></details>').join('')+'</div>'+musicLibrarySections(library)+'</section>';
+ return '<section class="music-manager"><header class="music-heading"><h1>Background Music</h1><button type="button" class="button music-header-toggle" data-music-toggle-all>Show All</button><button type="button" class="button music-audio-settings" data-audio-settings>'+icon('settings')+' Audio Settings</button></header><div class="music-playlist-groups">'+musicGroups(locations).map(group=>'<details class="music-group" data-music-group="'+e(group.id)+'"'+(group.id==='general'?' open':'')+'><summary><h2>'+icon(navigationGroups.find(section=>section.title===group.name)?.icon||'music')+e(group.name)+'</h2><button type="button" class="music-scope-toggle" data-music-toggle-folder>Show All</button><span class="music-group-count">'+group.items.length+' playlist'+(group.items.length===1?'':'s')+'</span>'+chevron+'</summary><div class="music-group-playlists">'+group.items.map(item=>playlistCard(library,item)).join('')+'</div></details>').join('')+'</div>'+musicLibrarySections(library)+'</section>';
 
 }
 export function bindMusicManager(root,services){
