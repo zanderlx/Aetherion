@@ -64,3 +64,11 @@ Desktop startup now opens a woodland start menu after the splash. Play enters th
 The master logo is public/assets/crest.svg. It is a square, self-contained SVG; vector paths scale to every UI size. Keep fonts outlined and image references embedded or avoided. Fine details should remain readable at 16px.
 
 After replacing the master, run npx electron scripts/build-desktop-icon.cjs. This synchronizes the desktop SVG, theme-aware sidebar/Escape logo, README banner, a 512px PNG, and a seven-size Windows ICO (16–256px). The ICO/PNG are generated assets; the source SVG remains editable.
+
+## Changelog and release notes
+
+CHANGELOG.md is the single source for the offline main-menu Changelog popup and GitHub release notes. Legacy milestones are displayed as 0.1.0–0.9.0, with their original Aetherion versions retained as context. Gallorin 1.0.0 remains the next release.
+
+Before every push, add meaningful changes to the current entry and run npm run release:check. Keep package.json, its lockfile, README, banner, and changelog consistent. Runtime version labels read the package automatically.
+
+For review, npm run release:draft writes dist/release-notes-draft.md for only the current release. When a release is authorized, run node scripts/release-notes.js --finalize YYYY-MM-DD with the local release date before committing. The tag workflow requires a dated current entry, smoke-tests the app, generates release-specific notes with npm run release:notes, and passes that file to GitHub. It never publishes the full historical changelog as one release's notes.

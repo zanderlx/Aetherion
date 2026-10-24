@@ -23,6 +23,12 @@ jobs:
         run: |
           $version = (Get-Content package.json | ConvertFrom-Json).version
           if ("${{ github.ref_type }}" -eq "tag" -and "${{ github.ref_name }}" -ne "gallorin-v$version") { throw "Tag must match package.json version." }
+      - name: Verify changelog and version consistency
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_REF_TYPE -eq 'tag') { node scripts/release-notes.js --check --release }
+          else { node scripts/release-notes.js --check }
+          if ($LASTEXITCODE -ne 0) { throw "Changelog/version validation failed." }
       - run: npm test
       - name: Build Windows installer without publishing
         run: npx electron-builder --config electron-builder.json --win --publish never
@@ -44,7 +50,11 @@ jobs:
         run: |
           $tag = "${{ github.ref_name }}"
           $version = (Get-Content package.json | ConvertFrom-Json).version
-          gh release create $tag --draft --title "Gallorin v$version — The Symphony of the Wilds" --notes "Themed title menu, continuous music, saved audio controls, themed Escape menu, smooth transitions, isolated development saves, and mutation emoji HTML escaping. Unsigned Windows installer. Tests and packaged smoke validation passed."
+          $releaseTitle = node scripts/release-notes.js --title
+          if ($LASTEXITCODE -ne 0) { throw "Could not read release title." }
+          node scripts/release-notes.js --write
+          if ($LASTEXITCODE -ne 0) { throw "Could not generate release notes." }
+          gh release create $tag --draft --title $releaseTitle --notes-file dist/release-notes.md
           if ($LASTEXITCODE -ne 0) { throw "Release creation failed." }
           Get-ChildItem dist/*.exe,dist/*.blockmap | ForEach-Object { Rename-Item -LiteralPath $_.FullName -NewName ($_.Name.Replace(" ","-")) }
           $assets = @(Get-ChildItem dist/*.exe,dist/*.blockmap,dist/latest.yml | ForEach-Object FullName)
@@ -59,4 +69,5 @@ jobs:
             dist/*.exe
             dist/*.blockmap
             dist/latest.yml
+            dist/release-notes.md
 

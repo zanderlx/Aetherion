@@ -11,7 +11,10 @@
     "import:references": "node scripts/import-references.js",
     "desktop": "electron .",
     "desktop:pack": "electron-builder --config electron-builder.json --dir",
-    "desktop:build": "electron-builder --config electron-builder.json --win --publish never"
+    "desktop:build": "electron-builder --config electron-builder.json --win --publish never",
+    "release:check": "node scripts/release-notes.js --check",
+    "release:notes": "node scripts/release-notes.js --write",
+    "release:draft": "node scripts/release-notes.js --draft"
   },
   "engines": {
     "node": ">=22"

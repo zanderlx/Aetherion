@@ -8,7 +8,7 @@
 
 Explore woodland realms, collect companions, and customize your world through visual editors.
 
-[Get Started](#get-started) · [Features](#features) · [Customization](#make-it-yours) · [Backups](#backups) · [Roadmap](#remaining-features)
+[Get Started](#get-started) · [Changelog](CHANGELOG.md) · [Features](#features) · [Customization](#make-it-yours) · [Backups](#backups) · [Roadmap](#remaining-features)
 
 </div>
 
@@ -26,21 +26,25 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 ### Aetherion (Legacy)
 
-These are historical Aetherion releases. Gallorin begins independently at v1.0.0; existing saves remain compatible.
+Previous milestones are logged as **0.1.0–0.9.0**. Their original Aetherion version mappings and dated changes are preserved in [CHANGELOG.md](CHANGELOG.md). Gallorin v1.0.0 is the next release; existing saves remain compatible.
 
 | Legacy version | Changes |
 | --- | --- |
-| **Aetherion 2.0.0** | Themed title screen; continuous soundtrack; saved volume and mute controls; themed Escape menu and audio settings; smoother transitions; isolated development saves/caches; mutation emoji HTML escaping; smoke tests before release publication; pinned workflow actions. |
-| **Aetherion 1.7.0** | Windows desktop installer; themed splash and app icon; isolated AppData saves; existing-save migration; GitHub Releases updater; packaged smoke tests. |
-| **Aetherion 1.6.0** | Live global and per-palette color variance; persistent Wilds encounters with single-slot replacements; selling during taming; individual skill XP progression; Compendium navigation; updated economy defaults; animated gold feedback; Windows launch/stop shortcuts. |
-| **Aetherion 1.5.0** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
-| **Aetherion 1.4.0** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
-| **Aetherion 1.3.0** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
-| **Aetherion 1.2.0** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
-| **Aetherion 1.1.0** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
-| **Aetherion 1.0.0 — initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
+| **0.9.0 · Aetherion (Legacy)** | Themed title screen; continuous soundtrack; saved volume and mute controls; themed Escape menu and audio settings; smoother transitions; isolated development saves/caches; mutation emoji HTML escaping; smoke tests before release publication; pinned workflow actions. |
+| **0.8.0 · Aetherion (Legacy)** | Windows desktop installer; themed splash and app icon; isolated AppData saves; existing-save migration; GitHub Releases updater; packaged smoke tests. |
+| **0.7.0 · Aetherion (Legacy)** | Live global and per-palette color variance; persistent Wilds encounters with single-slot replacements; selling during taming; individual skill XP progression; Compendium navigation; updated economy defaults; animated gold feedback; Windows launch/stop shortcuts. |
+| **0.6.0 · Aetherion (Legacy)** | Palette card/modal redesign; definition JSON transfers; collapsible Personality and Mutation cards; section/page expansion controls; searchable emoji picker; completed themed palettes; responsive controls and navigation; autosaving stable Notes. |
+| **0.5.0 · Aetherion (Legacy)** | Two-tab profiles and full-horse artwork viewer; per-horse skills and XP bars; 3–6-column stable grid; configurable rarity borders; Cosmic species tier; skill/wing sale bonuses; refreshed Wilds navigation and manager forms; 105 Hauntmare trait options. |
+| **0.4.0 · Aetherion (Legacy)** | Adds searchable eye color cards, rarity groups and percentage display controls, modal CRUD, random color creation, personality cards/emojis and modal editing, separate Traits navigation, and grouped horse traits with four mutation slots. |
+| **0.3.0 · Aetherion (Legacy)** | Adds five file-backed Horse Definitions managers, tier/zone weight synchronization, Cosmic/Wild spawning, nineteen mutation token weights, duplicate lockout, thresholds, size generation, and recoverable configuration saves. |
+| **0.2.0 · Aetherion (Legacy)** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
+| **0.1.0 · Aetherion (Legacy), initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **195 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **199 passing tests**; browser visual QA remains pending.
+
+## In-Game Changelog
+
+The main menu shows **GALLORIN v1.0.0 | Changelog**. Open Changelog for a scrollable, offline history organized by version, date, Added, Changed, and Fixed. Escape, the close button, and clicking outside dismiss the popup. [CHANGELOG.md](CHANGELOG.md) also supplies the notes for each GitHub release. Before pushing, update the current entry and run npm run release:check; before publishing, finalize its date. The next push/release remains v1.0.0.
 
 ## Desktop Release
 

@@ -1,4 +1,4 @@
-# Aetherion (Legacy) — Version 1.3 Progress
+# Aetherion (Legacy) — Version 0.4.0 Progress
 
 ## Implemented
 
@@ -84,7 +84,7 @@ Implemented editable profile wording and encounter counter, reversible text dele
 
 - Horse profiles show Birthday from the saved catch date and Age as elapsed calendar days. Uncaught horses show Not caught yet. Birthday edits update the catch date; Age is derived rather than separately editable.
 
-### Version 1.2 — current spawning and configuration
+### Version 0.3.0 — current spawning and configuration
 
 - Five-manager Horse Definitions dashboard with master JSON CRUD, species rarity tiers, world-zone assignments, asset metadata, mutation thresholds/tokens, and personality system IDs/tags.
 - Local `data/config/` master files and one creature file per zone; ID-based species references and tier synchronization.
@@ -92,7 +92,7 @@ Implemented editable profile wording and encounter counter, reversible text dele
 - Dynamic file reads on spawn, atomic writes, rollback/recovery journal, and dated pre-migration player backup. Existing horses remain unchanged.
 - Historical preview notes above describe earlier versions and are superseded by this update. Visual browser QA remains unverified.
 
-### Version 1.3 — definition managers and horse profiles
+### Version 0.4.0 — definition managers and horse profiles
 
 - Separate Species and Traits navigation; definition paths in breadcrumbs.
 - Eye cards with filters, rarity groups, reference percentages, random color generation, and modal CRUD with unsaved-change protection.
