@@ -175,3 +175,21 @@ test('All assignments are deduplicated and apply to every child playlist',async 
  assert.equal(playlistSource(saved,'wilds/hallowhoof'),'wilds');
  assert.deepEqual(selectedPlaylist({assignments:{wilds:['a'],'wilds/aetherion':['a','b']}},'wilds/aetherion'),['a','b']);
 });
+
+test('saving every child selection consolidates into All without affecting partial sections or effects',async t=>{
+ const {normalizePlaylistSelections}=await import('../public/music-context.js');
+ const contexts=['wilds','wilds/aetherion','wilds/hallowhoof','stable','stable/all','stable/breeding','default','main-menu'];
+ assert.deepEqual(normalizePlaylistSelections(['wilds/aetherion','wilds/hallowhoof','stable/all'],contexts),['stable/all','wilds']);
+ assert.deepEqual(normalizePlaylistSelections(['wilds/aetherion'],contexts),['wilds/aetherion']);
+ assert.deepEqual(normalizePlaylistSelections(['default','main-menu'],contexts),['default','main-menu']);
+ assert.deepEqual(normalizePlaylistSelections(['effect/cosmic-spawn'],['effect/cosmic-spawn']),['effect/cosmic-spawn']);
+ assert.deepEqual(normalizePlaylistSelections([],['wilds']),[]);
+ const directory=await mkdtemp(join(tmpdir(),'gallorin-auto-all-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ const store=new MusicLibrary(directory),first=await store.import('complete.mp3',mp3),id=first.tracks[0].id;
+ await store.assign(id,['wilds/aetherion','wilds/hallowhoof','stable/all'],contexts);
+ let saved=await store.read();assert.deepEqual(saved.assignments.wilds,[id]);assert.deepEqual(saved.assignments['stable/all'],[id]);
+ assert.deepEqual(saved.assignments['wilds/aetherion']||[],[]);assert.deepEqual(saved.assignments['wilds/hallowhoof']||[],[]);
+ assert.deepEqual(selectedPlaylist(saved,'wilds/new-zone'),[id]);
+ await store.assign(id,['wilds/aetherion'],contexts);saved=await store.read();
+ assert.deepEqual(saved.assignments.wilds,[]);assert.deepEqual(saved.assignments['wilds/aetherion'],[id]);
+});

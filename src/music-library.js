@@ -92,7 +92,7 @@ export class MusicLibrary {
       const track=library.tracks.find(t=>t.id===id),effect=isSoundEffect(track);
         const validContexts=effect?soundEffectGroups.flatMap(group=>group.items.map(item=>item.id)):contexts.filter(key=>!key.startsWith('effect/'));
         if(playlistIds.some(key=>!validContexts.includes(key)))throw Error('Choose a matching music playlist or sound effect event.');
-        const selected=new Set(normalizePlaylistSelections(playlistIds));
+        const selected=new Set(normalizePlaylistSelections(playlistIds,validContexts));
       for(const context of validContexts){
         const old=assignmentTracks(library.assignments[context]);
         if(selected.has(context)){

@@ -32,8 +32,15 @@ export function playlistSource(library,context){
  if(playlistSongs(library,context).length)return context;
  const parent=musicParent(context);return parent&&playlistSongs(library,parent).length?parent:'default';
 }
-export function normalizePlaylistSelections(ids){
- const selected=new Set(ids);return [...selected].filter(id=>!selected.has(musicParent(id)));
+export function normalizePlaylistSelections(ids,contexts=[]){
+ const selected=new Set(ids),sections=new Map();
+ for(const context of contexts){
+  const parent=musicParent(context);if(!parent||!contexts.includes(parent))continue;
+  if(!sections.has(parent))sections.set(parent,[]);
+  sections.get(parent).push(context);
+ }
+ for(const [parent,children] of sections)if(children.length&&children.every(id=>selected.has(id)))selected.add(parent);
+ return [...selected].filter(id=>!selected.has(musicParent(id)));
 }
 export function selectedPlaylist(library,context){
  const parent=musicParent(context),own=[...new Set([...(parent?playlistSongs(library,parent):[]),...playlistSongs(library,context)])];if(own.length)return own;

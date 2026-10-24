@@ -1,6 +1,6 @@
 import {bindPlaylistSelection} from './music-playlist-selection.js';
 import {soundEffectGroups,isSoundEffect} from './music-effects.js';
-import {musicGroups,musicTracks,playlistSongs} from './music-context.js';
+import {musicGroups,musicTracks,playlistSongs,normalizePlaylistSelections} from './music-context.js';
 import {escapeHTML as e,icon,groups as navigationGroups} from './ui.js';
 
 export function bindSongActions(root,services,{signal,redraw}){
@@ -91,7 +91,7 @@ export function bindSongActions(root,services,{signal,redraw}){
   const actions=document.createElement('div');actions.className='music-dialog-actions';actions.innerHTML='<button type="button" class="button secondary" data-cancel-playlists>Cancel</button><button type="button" class="button primary" data-save-playlists>Save</button>';dialog.append(actions);
   actions.querySelector('[data-cancel-playlists]').onclick=()=>dialog.close();
   actions.querySelector('[data-save-playlists]').onclick=async()=>{
-   const selected=[...dialog.querySelectorAll('[data-playlist-choice]:checked:not(:disabled)')].map(input=>input.dataset.playlistChoice);
+   const selected=normalizePlaylistSelections([...dialog.querySelectorAll('[data-playlist-choice]:checked:not(:disabled)')].map(input=>input.dataset.playlistChoice),groups.flatMap(group=>group.items.map(item=>item.id)));
    dialog.querySelectorAll('button,input,select').forEach(el=>el.disabled=true);
    try{await services.assignSong(id,selected);dialog.close();redraw();}
    catch(e){error.textContent=e.message;dialog.querySelectorAll('button,input,select').forEach(el=>el.disabled=false);refreshAvailability();}
