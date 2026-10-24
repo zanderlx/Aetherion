@@ -102,3 +102,6 @@ body.has-music-player{padding-bottom:100px}
 .music-scope-toggle:hover{color:var(--gold);border-color:var(--gold-soft)}
 .music-header-toggle{background:var(--panel);border:1px solid var(--border)}
 @media(max-width:600px){.music-group>summary{gap:10px}.music-scope-toggle{padding:4px 7px}}
+
+/* Extend the track without moving the neighboring controls. */
+.music-volume input[type=range]{width:125px;margin-inline:-10px}

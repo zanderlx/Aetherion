@@ -1,10 +1,10 @@
 import {createAudioSettings} from './audio-settings.js';
 import {audioPreferences as normalizeAudio} from './audio-preferences.js';
-import {icon} from './ui.js';
 import {musicContext,selectedPlaylist,playlistSource,defaultMusicTrack} from './music-context.js';
 import {musicManagerPage,bindMusicManager,updateMusicRows} from './music-manager.js';
 import {createMusicEngine} from './music-engine.js';
 
+const speakerIcon=muted=>'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(muted?'<path d="m3 3 18 18M9 5l3-2v6M12 15v6l-6-5H3V8h2"/>':'<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>')+'</svg>';
 const builtin=defaultMusicTrack;
 const time=value=>{const s=Math.max(0,Math.floor(value||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
 export function createMusicPlayer({notify,getLocations}){
@@ -16,7 +16,7 @@ export function createMusicPlayer({notify,getLocations}){
  let preferences=normalizeAudio();
  if(!desktop){try{const saved=JSON.parse(localStorage.getItem('gallorin-audio')||'null');if(saved&&Number.isFinite(saved.volume))preferences=normalizeAudio(saved);}catch{}}
  const bar=document.createElement('footer');bar.className='music-player';bar.setAttribute('aria-label','Music player');
- bar.innerHTML='<div class="music-now"><span class="music-art" aria-hidden="true">♫</span><div><strong data-song>Music</strong><small data-context>Gallorin Studios</small></div></div><div class="music-transport"><div class="music-buttons"><button type="button" data-music="stop" title="Stop" aria-label="Stop music">■</button><button type="button" data-music="previous" title="Previous song" aria-label="Previous song">⏮</button><button type="button" class="music-play" data-music="toggle" title="Play / Pause" aria-label="Play music">▶</button><button type="button" data-music="next" title="Next song" aria-label="Next song">⏭</button><button type="button" data-music="restart" title="Restart song" aria-label="Restart song">↺</button></div><div class="music-timeline"><span data-current>0:00</span><input type="range" data-seek min="0" max="0" step="0.1" value="0" aria-label="Song progress"><span data-duration>0:00</span></div></div><div class="music-volume"><button type="button" data-music="mute" title="Mute music" aria-label="Mute music">♫</button><input type="range" data-volume min="0" max="100" value="35" aria-label="Music volume"><output data-volume-value>35%</output><a href="#dev/music" title="Music settings" aria-label="Music settings">'+icon('settings')+'</a></div><span class="music-error" role="status"></span>';
+ bar.innerHTML='<div class="music-now"><span class="music-art" aria-hidden="true">♫</span><div><strong data-song>Music</strong><small data-context>Gallorin Studios</small></div></div><div class="music-transport"><div class="music-buttons"><button type="button" data-music="stop" title="Stop" aria-label="Stop music">■</button><button type="button" data-music="previous" title="Previous song" aria-label="Previous song">⏮</button><button type="button" class="music-play" data-music="toggle" title="Play / Pause" aria-label="Play music">▶</button><button type="button" data-music="next" title="Next song" aria-label="Next song">⏭</button><button type="button" data-music="restart" title="Restart song" aria-label="Restart song">↺</button></div><div class="music-timeline"><span data-current>0:00</span><input type="range" data-seek min="0" max="0" step="0.1" value="0" aria-label="Song progress"><span data-duration>0:00</span></div></div><div class="music-volume"><button type="button" data-music="mute" title="Mute music" aria-label="Mute music">'+speakerIcon(false)+'</button><input type="range" data-volume min="0" max="100" value="35" aria-label="Music volume"><output data-volume-value>35%</output></div><span class="music-error" role="status"></span>';
  document.body.append(bar);document.body.classList.add('has-music-player');
  const q=selector=>bar.querySelector(selector);
  async function api(url,body){
@@ -57,7 +57,7 @@ export function createMusicPlayer({notify,getLocations}){
    q('[data-current]').textContent=time(state.currentTime);q('[data-duration]').textContent=time(state.duration);
    if(document.activeElement!==q('[data-volume]'))q('[data-volume]').value=state.volume;
    q('[data-volume-value]').textContent=state.volume+'%';
-   const mute=q('[data-music="mute"]');mute.textContent=state.muted?'♪ ×':'♫';mute.setAttribute('aria-label',state.muted?'Unmute music':'Mute music');mute.setAttribute('aria-pressed',String(state.muted));
+   const mute=q('[data-music="mute"]');mute.innerHTML=speakerIcon(state.muted);mute.setAttribute('aria-label',state.muted?'Unmute music':'Mute music');mute.setAttribute('aria-pressed',String(state.muted));
    q('.music-error').textContent=state.error||'';
   }catch{}finally{updating=false;}
  }

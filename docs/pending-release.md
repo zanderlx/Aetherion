@@ -62,3 +62,7 @@ was specific to this computer and is not an automatic app feature.
 
 - Added three-state column sorting with default ascending row numbers and adjacent active-only arrows.
 - Added page-level folder and per-folder playlist Show All/Hide All controls.
+
+- Crossfade now uses a snapped 0–10 second slider with ticks, endpoint labels, and a live seconds readout.
+- Refined player volume controls with speaker mute icons, a longer centered slider, and no trailing settings icon.
+- Music tables start without active sorting arrows until a column is clicked.

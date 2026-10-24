@@ -1,6 +1,6 @@
 const sortState=new Map();
 const columns=['number','title','artist','duration'];
-const defaultSort={key:'number',direction:'asc'};
+const defaultSort={key:null,direction:null};
 export function nextMusicSort(previous,key){
  if(previous?.key!==key)return {key,direction:'asc'};
  if(previous.direction==='asc')return {key,direction:'desc'};

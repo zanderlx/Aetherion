@@ -63,7 +63,10 @@ Sorting is per table and lasts for the session, including after edits. It change
 the visible rows only; original row numbers, playlist playback, and deletion targets stay intact.
 Missing durations remain at the bottom in both directions.
 
-Tables begin in row-number ascending order. Headers cycle ascending → descending →
+Tables begin with no active sort or visible arrows, in their original row order. Headers cycle ascending → descending →
 no explicit sort (row-number ascending). Only the active column shows an adjacent arrow.
 The page Show All/Hide All controls folders; each folder has its own button for
 its playlists. These controls respect reduced-motion preferences.
+
+Crossfade uses a 0–10 second slider in one-second steps, with tick marks and a live
+seconds value. Older fractional settings round to the nearest second when Audio Settings opens.

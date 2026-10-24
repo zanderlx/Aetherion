@@ -14,3 +14,8 @@
 @media(max-width:450px){.audio-settings-dialog{padding:22px}.audio-settings-dialog .audio-settings-rows label{grid-template-columns:94px minmax(55px,1fr) 44px;gap:10px}.audio-settings-dialog>header h2{font-size:26px}}
 
 .audio-settings-dialog .audio-settings-rows label:has([data-audio-fade]){grid-template-columns:108px 80px auto}.audio-fade-unit{justify-self:start}@media(max-width:450px){.audio-settings-dialog .audio-settings-rows label:has([data-audio-fade]){grid-template-columns:94px 80px auto}}
+
+.audio-settings-dialog .audio-settings-rows label:has([data-audio-fade]){grid-template-columns:108px minmax(75px,180px) 48px;align-items:start}
+.audio-crossfade-track{display:grid;gap:2px;min-width:0}
+.audio-crossfade-endpoints{display:flex;justify-content:space-between;font-size:10px;line-height:1.2;color:var(--muted,#b6aa98)}
+@media(max-width:450px){.audio-settings-dialog .audio-settings-rows label:has([data-audio-fade]){grid-template-columns:94px minmax(55px,1fr) 44px}}
