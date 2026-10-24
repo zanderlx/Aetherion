@@ -2,13 +2,13 @@ import {createAudioSettings} from './audio-settings.js';
 import {audioPreferences as normalizeAudio} from './audio-preferences.js';
 import {icon} from './ui.js';
 import {musicContext,selectedPlaylist,playlistSource,defaultMusicTrack} from './music-context.js';
-import {musicManagerPage,bindMusicManager} from './music-manager.js';
+import {musicManagerPage,bindMusicManager,updateMusicRows} from './music-manager.js';
 import {createMusicEngine} from './music-engine.js';
 
 const builtin=defaultMusicTrack;
 const time=value=>{const s=Math.max(0,Math.floor(value||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
 export function createMusicPlayer({notify,getLocations}){
- let loading;
+ let loading,playback;
  let library={tracks:[],assignments:{},fadeSeconds:2},context='default',started=false,loaded=false,updating=false;
  const desktop=window.gallorinMusic;
  const engine=desktop?null:createMusicEngine();
@@ -47,7 +47,7 @@ export function createMusicPlayer({notify,getLocations}){
  async function refresh(){
   if(updating||document.hidden)return;updating=true;
   try{
-   const state=await transport.state();if(!state)return;
+   const state=await transport.state();if(!state)return;playback=state;updateMusicRows(document.querySelector('.music-manager'),state);
    preferences={...preferences,volume:state.volume,muted:state.muted,soundEffectsVolume:state.soundEffectsVolume??preferences.soundEffectsVolume};
    q('[data-song]').textContent=state.track?.name||(state.playlist?.length===0?'No Music':builtin.name);q('[data-song]').title=q('[data-song]').textContent;
    q('[data-context]').textContent='Gallorin Studios';
@@ -81,7 +81,7 @@ export function createMusicPlayer({notify,getLocations}){
  function page(){return musicManagerPage(library,getLocations());}
  function bind(root){
   bindMusicManager(root,{
-   getLibrary:()=>library,getLocations,notify,openAudioSettings:()=>audioSettings.open(),
+   getLibrary:()=>library,getPlaybackState:()=>playback,getLocations,notify,openAudioSettings:()=>audioSettings.open(),
    async saveSettings(assignments,fadeSeconds){library=await api('/api/music/settings',{assignments,fadeSeconds});context=musicContext(location.hash.slice(1),library)||context;await select();},
    async importFiles(files){
     for(const file of files){
@@ -91,9 +91,11 @@ export function createMusicPlayer({notify,getLocations}){
     }
     notify(files.length+' song'+(files.length===1?'':'s')+' imported.');
    },
-   async preview(id){
-    const track=[builtin,...library.tracks].find(t=>t.id===id);
-    await transport.command({type:'select',track:{...track,url:location.origin+'/api/music/media/'+track.id},fadeSeconds:library.fadeSeconds});
+   async preview(id,playlistContext){
+    const ids=playlistContext?selectedPlaylist(library,playlistContext):[builtin,...library.tracks].map(t=>t.id);
+    const tracks=ids.map(songId=>{const track=[builtin,...library.tracks].find(t=>t.id===songId);return {...track,url:location.origin+'/api/music/media/'+track.id};});
+    if(playlistContext)context=playlistContext;
+    await transport.command({type:'playlist',key:playlistContext||'library',startId:id,tracks,fadeSeconds:library.fadeSeconds});
     await transport.command({type:'play'});await refresh();
    },
    async deleteSong(id){library=await api('/api/music/delete',{id});await select();}

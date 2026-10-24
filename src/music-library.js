@@ -7,8 +7,7 @@ const validId=id=>/^[a-f0-9-]{36}$/.test(id);
 export class MusicLibrary {
   constructor(directory,builtin,seeds=[]){this.builtin=builtin;this.root=join(directory,'music');this.queue=Promise.resolve();this.ready=this.seed(seeds);}
   async seed(seeds){
-    if(!seeds.length)return;
-    let library;try{library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;library={version:2,tracks:[],assignments:{},fadeSeconds:2};}
+    let library;try{library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;if(!seeds.length)return;library={version:2,tracks:[],assignments:{},fadeSeconds:2};}
     const seen=new Set(library.seededTrackIds||[]);let changed=false;
     for(const track of seeds){
       if(seen.has(track.id))continue;
@@ -18,7 +17,7 @@ export class MusicLibrary {
       seen.add(track.id);changed=true;
     }
     for(const track of seeds){const existing=library.tracks.find(t=>t.id===track.id);if(existing&&track.file&&existing.filename!==track.file){existing.filename=track.file;existing.name=formatMusicName(track.file);changed=true;}}
-    for(const track of library.tracks){if(!Object.hasOwn(track,'durationSeconds')){track.durationSeconds=await durationOfFile(join(this.root,track.id+'.mp3'));changed=true;}}
+    for(const track of library.tracks){if(!Number.isFinite(track.durationSeconds)||track.durationSeconds<=0){const duration=await durationOfFile(join(this.root,track.id+'.mp3'));if(duration!==track.durationSeconds){track.durationSeconds=duration;changed=true;}}}
     if(changed){library.seededTrackIds=[...seen];await this.write(library);}
   }
   async read(){

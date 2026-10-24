@@ -17,9 +17,12 @@ navigation sections, their individual pages, each zone, and the main menu.
   Play/pause, previous/next, stop, restart, seeking, volume, and mute are available
   in the full-width bottom player. One-song playlists loop that song.
 - Each folder and playlist can collapse independently. Tables show MP3 durations.
-- Use Add Music to add songs and arrow buttons to reorder. The trash icon removes
-  a regular song from that playlist only; × removes the protected default song.
-  Deleting from Your Music still confirms and removes a song from the whole library.
+- Playlist rows show a number that becomes Play on hover or while the song is current.
+  Trash controls follow the same hover/current-song behavior and remove a song only
+  from that playlist. The protected default uses the same trash icon.
+- Playlist headers show song counts next to their collapse arrow. Add/reorder
+  controls are intentionally absent; playlist assignment remains supported by the data/API.
+- Deleting from Your Music still confirms and removes a song from the whole library.
 - Empty playlists remain empty/silent. Use Default restores section/default inheritance.
 - Song titles are formatted from MP3 filenames; the player artist is Gallorin Studios.
 - Existing single-song assignments become one-song playlists without losing settings.
@@ -45,3 +48,6 @@ Music and Sound Effects levels are independent and save automatically. The sound
 channel is available for game effects; changing it does not change the music level.
 Audio Settings has an X close button, with no Done or mute control; music mute remains
 available on the player and main-menu footer.
+
+Missing or blank duration values are backfilled from MP3 metadata at startup,
+including existing libraries. Durations align left in the table.

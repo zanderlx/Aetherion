@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,readFile,rm} from 'node:fs/promises';
+import {mkdtemp,readFile,rm,mkdir,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {audioPreferences} from '../public/audio-preferences.js';
@@ -36,4 +36,17 @@ test('MP3 duration metadata is parsed and stored during import',async t=>{
  assert.ok(result.tracks[0].durationSeconds>2&&result.tracks[0].durationSeconds<4);
  const persisted=await new MusicLibrary(dir).read();assert.equal(persisted.tracks[0].durationSeconds,result.tracks[0].durationSeconds);
  assert.ok(defaultMusicTrack.durationSeconds>178&&defaultMusicTrack.durationSeconds<179);
+});
+
+test('existing absent and null durations are repaired from MP3 metadata',async t=>{
+ const dir=await mkdtemp(join(tmpdir(),'gallorin-duration-repair-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ const bytes=await readFile(new URL('../desktop/assets/music/universfield-magic-twinkle-244951.mp3',import.meta.url));
+ const ids=['eae26ba3-0045-434c-b56f-38495336cd98','faf26ba3-0045-434c-b56f-38495336cd98'];
+ await mkdir(join(dir,'music'),{recursive:true});
+ for(const id of ids)await writeFile(join(dir,'music',id+'.mp3'),bytes);
+ await writeFile(join(dir,'music/library.json'),JSON.stringify({version:2,tracks:[{id:ids[0],name:'One',durationSeconds:null},{id:ids[1],name:'Two'}],assignments:{'main-menu':[ids[0]]},fadeSeconds:3}));
+ const result=await new MusicLibrary(dir).read();
+ assert.ok(result.tracks.every(t=>t.durationSeconds>2&&t.durationSeconds<4));
+ assert.deepEqual(result.assignments,{'main-menu':[ids[0]]});
+ const saved=JSON.parse(await readFile(join(dir,'music/library.json'),'utf8'));assert.ok(saved.tracks.every(t=>Number.isFinite(t.durationSeconds)));
 });

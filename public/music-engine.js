@@ -51,8 +51,9 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
    if(!input.tracks.length){++revision;queue=[];queueKey=input.key;track=null;error='';players.forEach(a=>a.pause());active.removeAttribute('src');active.load();clean();return snapshot();}
    const same=queueKey===input.key,current=input.tracks.findIndex(t=>t.id===track?.id);
    queue=input.tracks;queueKey=input.key;fadeSeconds=Number.isFinite(input.fadeSeconds)?Math.max(0,Math.min(10,input.fadeSeconds)):2;
-   index=current>=0?current:0;
-   if(same&&current>=0){active.loop=queue.length<=1;return snapshot();}
+   const requested=queue.findIndex(t=>t.id===input.startId);
+   index=requested>=0?requested:current>=0?current:0;
+   if(same&&current>=0&&(requested<0||requested===current)){active.loop=queue.length<=1;return snapshot();}
    return select(queue[index],fadeSeconds);
   }
   if(input.type==='select'){queue=[input.track];index=0;queueKey='preview';return select(input.track,input.fadeSeconds);}

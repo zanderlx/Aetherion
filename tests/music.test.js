@@ -101,3 +101,11 @@ test('next, previous, automatic advance and repeated page renders retain queue p
  players.at(-1).onended();await Promise.resolve();await Promise.resolve();assert.equal(engine.snapshot().track.id,'a');
  await engine.command({type:'pause'});await engine.command({type:'next'});assert.equal(engine.snapshot().track.id,'b');assert.equal(engine.snapshot().playing,false);
 });
+
+test('clicking a playlist row selects that song while retaining next/previous ordering',async()=>{
+ const engine=createMusicEngine({audio:fakeAudio(),makeAudio:fakeAudio,frame:()=>{},clock:()=>0});
+ const tracks=[{id:'a',url:'a'},{id:'b',url:'b'},{id:'c',url:'c'}];
+ await engine.command({type:'playlist',key:'test',tracks,fadeSeconds:0});
+ await engine.command({type:'playlist',key:'test',tracks,startId:'b',fadeSeconds:0});assert.equal(engine.snapshot().track.id,'b');
+ await engine.command({type:'next'});assert.equal(engine.snapshot().track.id,'c');
+});

@@ -97,7 +97,7 @@ async function start() {
     if(event.sender!==main.webContents||!value||!['select','effect','playlist','next','previous','play','pause','stop','seek','volume','sfx-volume','fade','mute'].includes(value.type))return null;
     if(value.type==='playlist'){
       if(!Array.isArray(value.tracks)||value.tracks.length>500||value.tracks.some(track=>!track||typeof track.url!=='string'||!track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(track.url)))return null;
-      value={type:'playlist',key:String(value.key).slice(0,150),tracks:value.tracks.map(track=>({id:String(track.id),name:String(track.name),url:track.url})),fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
+      value={type:'playlist',key:String(value.key).slice(0,150),startId:value.tracks.some(t=>t.id===value.startId)?value.startId:undefined,tracks:value.tracks.map(track=>({id:String(track.id),name:String(track.name),url:track.url})),fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
     }
     if(value.type==='select'||value.type==='effect'){
       if(!value.track||typeof value.track.url!=='string'||!value.track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(value.track.url))return null;
@@ -172,31 +172,10 @@ async function start() {
     const songLibrary=await songResponse.json(),songId=songLibrary.tracks.find(track=>track.name==='Smoke Song').id;
     const range=await fetch(origin+'/api/music/media/'+songId,{headers:{Range:'bytes=0-15'}});
     if(range.status!==206||(await range.arrayBuffer()).byteLength!==16)throw new Error('Music seek streaming failed');
-    await main.webContents.executeJavaScript("location.hash='dev/music'");
-    for(let attempt=0;attempt<80;attempt++){
-      if(await main.webContents.executeJavaScript("Boolean(document.querySelector('[data-music-location]'))"))break;
-      await new Promise(resolve=>setTimeout(resolve,100));
-    }
-    // The library is cached by the player; reload to pick up a test import made outside its UI.
-    await main.reload();
-    for(let attempt=0;attempt<80;attempt++){
-      if(await main.webContents.executeJavaScript("Boolean(document.querySelector('option[value=\""+songId+"\"]'))"))break;
-      await new Promise(resolve=>setTimeout(resolve,100));
-    }
-    await main.webContents.executeJavaScript("(()=>{const s=document.querySelector('[data-music-location=\"wilds/aetherion\"]');s.value='"+songId+"';s.dispatchEvent(new Event('change',{bubbles:true}));})()");
-    for(let attempt=0;attempt<80;attempt++){
-      const library=await (await fetch(origin+'/api/music')).json();
-      if(library.assignments['wilds/aetherion']?.includes(songId)&&!await main.webContents.executeJavaScript("document.querySelector('#main').hasAttribute('aria-busy')"))break;
-      await new Promise(resolve=>setTimeout(resolve,100));
-    }
     const secondSong=songLibrary.tracks.find(track=>track.name==='Town');
-    await main.webContents.executeJavaScript("(()=>{const s=document.querySelector('[data-music-location=\"wilds/aetherion\"]');s.value='"+secondSong.id+"';s.dispatchEvent(new Event('change',{bubbles:true}));})()");
-    for(let attempt=0;attempt<80;attempt++){
-      const library=await (await fetch(origin+'/api/music')).json();
-      if(library.assignments['wilds/aetherion']?.length===2)break;
-      await new Promise(resolve=>setTimeout(resolve,100));
-    }
-    await main.webContents.executeJavaScript("location.hash='wilds/aetherion'");
+    const setup=await fetch(origin+'/api/music/settings',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({assignments:{...songLibrary.assignments,'wilds/aetherion':[songId,secondSong.id]},fadeSeconds:songLibrary.fadeSeconds})});
+    if(!setup.ok)throw Error('Smoke playlist setup failed');
+    await main.loadURL(origin+'/?music-smoke=1#wilds/aetherion');
     for(let attempt=0;attempt<80;attempt++){
       if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id===songId)break;
       await new Promise(resolve=>setTimeout(resolve,100));
@@ -226,7 +205,7 @@ async function start() {
     await main.webContents.executeJavaScript("document.querySelector('[data-music=\"toggle\"]').click()");
     await main.webContents.executeJavaScript("location.hash='dev/music'");
     await new Promise(resolve=>setTimeout(resolve,1500));
-    await main.webContents.executeJavaScript("(async()=>{\n const wait=async()=>{for(let i=0;i<80&&document.querySelector('#main').hasAttribute('aria-busy');i++)await new Promise(r=>setTimeout(r,25));};\n const card=document.querySelector('[data-playlist=\"wilds/aetherion\"]');card.open=false;\n const other=document.querySelector('[data-playlist-add=\"wilds/hallowhoof\"]');other.value='menu';other.dispatchEvent(new Event('change',{bubbles:true}));await wait();\n if(document.querySelector('[data-playlist=\"wilds/aetherion\"]').open)throw Error('Playlist collapsed state was lost');\n document.querySelector('[data-playlist=\"wilds/aetherion\"]').open=true;\n document.querySelector('[data-playlist-remove=\"wilds/aetherion\"][data-index=\"1\"]').click();await wait();\n const first=await (await fetch('/api/music')).json();\n if(first.assignments['wilds/aetherion'].length!==1)throw Error('Playlist song removal failed');\n document.querySelector('[data-playlist-remove=\"wilds/aetherion\"][data-index=\"0\"]').click();await wait();\n const second=await (await fetch('/api/music')).json();\n if(second.assignments['wilds/aetherion'].length!==0)throw Error('Empty playlist did not persist');\n if(second.tracks.length!==first.tracks.length)throw Error('Playlist removal deleted library files');\n if(!/^\\d+:\\d\\d$/.test(document.querySelector('td.music-duration').textContent))throw Error('Duration metadata did not render');\n return true;\n})()");
+    await main.webContents.executeJavaScript("(async()=>{\n const wait=async()=>{for(let i=0;i<80&&document.querySelector('#main').hasAttribute('aria-busy');i++)await new Promise(r=>setTimeout(r,25));};\n document.querySelector('[data-playlist=\"wilds/aetherion\"]').open=false;\n document.querySelector('[data-music-group=\"general\"]').open=true;\n const reset=document.querySelector('[data-playlist-remove=\"default\"]');reset.focus();reset.click();await wait();\n if(document.querySelector('[data-playlist=\"wilds/aetherion\"]').open)throw Error('Playlist collapsed state was lost');\n const card=document.querySelector('[data-playlist=\"wilds/aetherion\"]');card.open=true;\n const row=card.querySelector('[data-music-track]');\n row.querySelector('[data-preview-song]').click();await new Promise(r=>setTimeout(r,450));\n if(!row.classList.contains('is-current'))throw Error('Currently playing row was not marked');\n if(Number(getComputedStyle(row.querySelector('.music-row-play')).opacity)!==1||Number(getComputedStyle(row.querySelector('.music-row-trash')).opacity)!==1)throw Error('Active song controls were hidden');\n if(getComputedStyle(row.querySelector('.music-duration')).textAlign!=='left')throw Error('Duration alignment failed');\n if(document.querySelector('[data-playlist-add]')||document.querySelector('[data-playlist-move]'))throw Error('Removed playlist controls are still present');\n card.querySelector('[data-playlist-remove][data-index=\"1\"]').click();await wait();\n const first=await (await fetch('/api/music')).json();if(first.assignments['wilds/aetherion'].length!==1)throw Error('Playlist song removal failed');\n document.querySelector('[data-playlist=\"wilds/aetherion\"] [data-playlist-remove][data-index=\"0\"]').click();await wait();\n const second=await (await fetch('/api/music')).json();\n if(second.assignments['wilds/aetherion'].length!==0||second.tracks.length!==first.tracks.length)throw Error('Playlist removal affected library files or empty state');\n if(!/^\\d+:\\d\\d$/.test(document.querySelector('td.music-duration').textContent))throw Error('Duration metadata did not render');\n return true;\n})()");
     await main.webContents.executeJavaScript("document.querySelectorAll('[data-music-group]').forEach(d=>d.open=d.dataset.musicGroup==='wilds');document.querySelector('[data-music-group=\"wilds\"]').scrollIntoView({block:'start'});");
     await new Promise(resolve=>setTimeout(resolve,180));
     await writeFile(join(process.env.AETHERION_TEST_DATA,'music-smoke.png'),(await main.webContents.capturePage()).toPNG());
