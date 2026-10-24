@@ -1,10 +1,6 @@
 # Pending release notes
 
-The accumulated changes are now consolidated into the **Gallorin v1.1.0 — The Melodies of Gallorin** draft in [CHANGELOG.md](../CHANGELOG.md).
+Gallorin v1.1.0 — The Melodies of Gallorin is recorded in [CHANGELOG.md](../CHANGELOG.md).
+The user approved the release preparation and authorized deployment.
 
-The previously planned v1.0.1 storage fix and v1.0.2 palette update were not separately released; both are included in v1.1.0.
-
-Preparation steps 1–3 are complete. **Personal review is pending.**
-Do not run step 4 release validation or push/publish until the user approves the prepared version and documentation.
-
-See [release review](release-review.md). Add later meaningful changes to the current draft before requesting review again.
+Record later changes here for the next release. The personal-review checkpoint remains mandatory before validation and pushing.

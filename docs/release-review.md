@@ -1,7 +1,7 @@
 # Gallorin v1.1.0 review
 
 **Release title:** The Melodies of Gallorin
-**Status:** Changelog wording reviewed by the user. Updated README/presentation review is pending; post-preparation validation has not started.
+**Status:** Changelog and README approved by the user; deployment authorized.
 
 ## Prepared
 
@@ -47,4 +47,4 @@ Keep the changelog Unreleased until publication is authorized and its date is fi
 
 This review checkpoint is mandatory for future pushes and is recorded in AGENTS.md.
 
-Installer naming is configured before packaging as Gallorin-Setup-<version>.exe; the blockmap and generated latest.yml use that same artifact name. Packaging/updater validation remains pending review approval.
+Installer naming is configured before packaging as Gallorin-Setup-<version>.exe; the blockmap and generated latest.yml use that same artifact name. Packaged validation is required before publication.

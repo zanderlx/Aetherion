@@ -10,8 +10,6 @@
 
 </div>
 
-> v1.1.0 is a review draft. The download link offers the latest published release until this update is released.
-
 ## Features
 
 - Explore zones and tame, rename, favorite, sell, import, and export horses.
