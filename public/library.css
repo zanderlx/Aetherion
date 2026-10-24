@@ -102,7 +102,7 @@ h1,h2,h3,h4,.breadcrumb strong{text-transform:capitalize}
 #confirm.eye-delete-confirm .delete-warning { padding:20px 24px; margin:0; }
 #confirm.eye-delete-confirm .form-actions { padding:0 24px; margin-top:0; }
 select:not(nav select),option:not(nav option){text-transform:none}
-.brand-logo{width:43px;height:47px;flex-shrink:0}
+.brand-logo{width:43px;height:43px;flex-shrink:0}
 .profile-id-footer{padding:0 24px 20px;text-align:right;overflow-wrap:anywhere}
 .palette-line .swatches{flex-wrap:wrap;gap:4px}.palette-line{min-height:28px}
 #profile>.dialog-top>.icon-button{margin-left:auto}

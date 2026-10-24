@@ -58,3 +58,9 @@ Release downloads/installations require an actual published newer version to tes
 Set `AETHERION_TEST_DATA` to a new temporary directory, then run `npx electron . --smoke-test`. It uses that directory exclusively, skips migration/update dialogs, validates renderer startup and Node isolation, captures the game and splash, drains saves, and exits. Never point this variable at real player data.
 
 Desktop startup now opens a woodland start menu after the splash. Play enters the game; Exit Game closes it. Settings > Audio adjusts saved menu-music volume, with a mute button on the menu. Music starts at the title screen and continues during gameplay. Escape opens the themed menu and audio settings. Audio preferences are stored in the edition's Chromium storage.
+
+## Logo artwork
+
+The master logo is public/assets/crest.svg. It is a square, self-contained SVG; vector paths scale to every UI size. Keep fonts outlined and image references embedded or avoided. Fine details should remain readable at 16px.
+
+After replacing the master, run npx electron scripts/build-desktop-icon.cjs. This synchronizes the desktop SVG, theme-aware sidebar/Escape logo, README banner, a 512px PNG, and a seven-size Windows ICO (16–256px). The ICO/PNG are generated assets; the source SVG remains editable.

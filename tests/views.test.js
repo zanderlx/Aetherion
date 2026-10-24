@@ -163,8 +163,8 @@ test('editor guidance is page-specific and the logo inherits theme colors', () =
   assert.match(atmosphere,/zone editor to apply/);
   const nav = sidebar('dev/appearance',state,new Set(),catalog);
   assert.match(nav,/class="brand-logo"/);
-  assert.match(nav,/fill="var\(--gold\)"/);
-  assert.match(nav,/fill="var\(--panel-deep\)"/);
+  assert.match(nav,/fill="var\(--gold,#D2B477\)"/);
+  assert.match(nav,/fill="var\(--panel-deep,#211D1A\)"/);
 });
 test('Game Settings contains gameplay and a separate Economy section without guide cards', () => {
   const game = settingsPage(state);

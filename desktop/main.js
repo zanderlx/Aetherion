@@ -1,3 +1,4 @@
+import {brandLogo} from '../public/brand-logo.js';
 import {desktopDataPath} from './data-paths.js';
 import updater from 'electron-updater';
 import {app, BrowserWindow, Menu, dialog, shell, session, ipcMain} from 'electron';
@@ -91,6 +92,7 @@ async function start() {
   let audioWrite=Promise.resolve();
   ipcMain.handle('audio-set',async(event,value)=>{if(event.sender!==main.webContents || !Number.isFinite(value.volume))return;audioPreferences={volume:Math.max(0,Math.min(100,value.volume)),muted:value.muted===true};await updateAudio();audioWrite=audioWrite.then(()=>writeFile(audioFile,JSON.stringify(audioPreferences))).catch(log);await audioWrite;return audioPreferences;});
   const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
+  ipcMain.handle('desktop-logo',event=>event.sender===main.webContents ? brandLogo('pause',72,'pause-logo') : '');
   ipcMain.handle('desktop-version',event=>event.sender===main.webContents ? app.getVersion() : null);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
   const fromGame = event => event.sender === main.webContents && event.senderFrame.url.startsWith(origin + '/');
@@ -137,6 +139,17 @@ async function start() {
     }
     const stored = JSON.parse(await readFile(join(data,'player/save.json'),'utf8'));
     if(!stored.horses.some(horse=>horse.id===savedId)) throw new Error('Desktop save did not persist.');
+    // Let the gameplay reveal finish before checking the rendered branding.
+    await new Promise(resolve=>setTimeout(resolve,1800));
+    if(!await main.webContents.executeJavaScript("document.querySelector('.brand-logo')?.getAttribute('viewBox')==='0 0 200 200'"))throw new Error('Sidebar logo failed');
+    main.webContents.send('desktop-pause');
+    for(let attempt=0;attempt<50;attempt++){
+      if(await main.webContents.executeJavaScript("Boolean(document.querySelector('#desktop-pause .pause-logo'))"))break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    if(!await main.webContents.executeJavaScript("document.querySelector('#desktop-pause .pause-logo')?.getAttribute('viewBox')==='0 0 200 200'"))throw new Error('Pause logo failed');
+    await writeFile(join(process.env.AETHERION_TEST_DATA,'pause-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    main.webContents.send('desktop-pause');
     const result = await main.webContents.executeJavaScript("(async()=>({title:document.title, brand:!!document.querySelector('.brand'), state:(await (await fetch('/api/state')).json()).appVersion, node:typeof window.require}))()");
     if (!result.brand || result.node !== 'undefined') throw new Error('Desktop renderer failed to initialize securely.');
     await writeFile(join(process.env.AETHERION_TEST_DATA,'desktop-smoke.json'), JSON.stringify(result));

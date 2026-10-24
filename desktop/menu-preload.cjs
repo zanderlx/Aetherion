@@ -13,15 +13,9 @@ ipcRenderer.on('desktop-pause',()=>{
     modal.append(style);
     const branding=document.createElement('div');
     branding.style.cssText='display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:26px';
-    const logo=document.createElementNS('http://www.w3.org/2000/svg','svg');
-    logo.setAttribute('viewBox','0 0 80 80');logo.setAttribute('width','72');logo.setAttribute('height','72');logo.setAttribute('aria-hidden','true');
-    for(const [tag,attributes] of [
-      ['rect',{width:'80',height:'80',rx:'22',fill:'var(--panel-deep,#211d1a)'}],
-      ['path',{d:'M40 7 65 22v28L40 73 15 50V22Z',fill:'none',stroke:'var(--gold,#d2b477)','stroke-width':'1.5'}],
-      ['path',{d:'m28 57 2-16-7-5 6-11 8-3 5-10 4 12c13 3 15 17 10 32H28Z',fill:'var(--gold,#d2b477)'}],
-      ['path',{d:'m35 32-4 5 9 3-1 17M46 25c6 8 7 20 3 32',fill:'none',stroke:'var(--panel-deep,#211d1a)','stroke-width':'2'}],
-      ['circle',{cx:'34',cy:'29',r:'1.5',fill:'var(--panel-deep,#211d1a)'}]
-    ]){const element=document.createElementNS(logo.namespaceURI,tag);for(const [key,value] of Object.entries(attributes))element.setAttribute(key,value);logo.append(element);}
+    const logo=document.createElement('span');
+    logo.style.cssText='display:block;width:72px;height:72px';
+    ipcRenderer.invoke('desktop-logo').then(markup=>{logo.innerHTML=markup;}).catch(()=>{});
     const title=document.createElement('h2');title.textContent='GALLORIN';title.style.cssText='margin:0;letter-spacing:4px;font-size:27px;padding-left:4px';
     branding.append(logo,title);modal.append(branding);
     const actions=document.createElement('div');actions.className='pause-actions';
