@@ -67,7 +67,7 @@ After replacing the master, run npx electron scripts/build-desktop-icon.cjs. Thi
 
 ## Changelog and release notes
 
-CHANGELOG.md is the single source for the offline main-menu Changelog popup and GitHub release notes. Legacy milestones are displayed as 0.1.0–0.9.0, with their original Aetherion versions retained as context. Gallorin 1.0.0 remains the next release.
+CHANGELOG.md is the single source for the offline main-menu Changelog popup and GitHub release notes. Legacy milestones are displayed as 0.1.0–0.7.0, with their original Aetherion versions retained as context. Gallorin 1.0.0 remains the next release.
 
 Before every push, add meaningful changes to the current entry and run npm run release:check. Keep package.json, its lockfile, README, banner, and changelog consistent. Runtime version labels read the package automatically.
 

@@ -10,7 +10,7 @@ test('changelog preserves 0.x history and keeps the next Gallorin release at 1.0
   const entries=parseChangelog(source);
   assert.equal(entries[0].version,pkg.version);
   assert.equal(entries.find(e=>e.version==='1.0.0').title,'The Symphony of the Wilds');
-  assert.deepEqual(entries.filter(e=>e.version.startsWith('0.')).map(e=>e.version),['0.9.0','0.8.0','0.7.0','0.6.0','0.5.0','0.4.0','0.3.0','0.2.0','0.1.0']);
+  assert.deepEqual(entries.filter(e=>e.version.startsWith('0.')).map(e=>e.version),['0.7.0','0.6.0','0.5.0','0.4.0','0.3.0','0.2.0','0.1.0']);
   assert.ok(entries.filter(e=>e.version.startsWith('0.')).every(e=>e.title==='Aetherion (Legacy)'));
 });
 test('single-release notes contain only the chosen release and its categories',()=>{
@@ -57,4 +57,14 @@ test('named release headings keep legacy titles clean and retain old-format pars
   assert.ok(first.sections.some(section=>section.items.some(text=>text.includes('Horse Updates (work in progress)'))));
   const old=parseChangelog('## [0.1.0] - 2026-10-20\nAetherion (Legacy)\n### Added\n- Collection');
   assert.equal(old[0].summary[0],'Aetherion (Legacy)');
+});
+
+test('Gallorin 1.0.0 merges desktop, music, then Gallorin changes in chronological order',()=>{
+  const entries=parseChangelog(source),current=entries.find(e=>e.version==='1.0.0');
+  assert.ok(!entries.some(e=>['0.8.0','0.9.0'].includes(e.version)));
+  assert.deepEqual(current.timeline,['Desktop Foundations','Music & Main Menu','Gallorin Updates']);
+  const notes=releaseMarkdown(current);
+  assert.ok(notes.indexOf('Windows desktop installer')<notes.indexOf('Woodland title screen'));
+  assert.ok(notes.indexOf('Woodland title screen')<notes.indexOf('New Gallorin logo'));
+  assert.deepEqual(parseChangelog(notes)[0].sections,current.sections);
 });

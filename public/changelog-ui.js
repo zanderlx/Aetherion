@@ -23,9 +23,12 @@ export function createChangelog({loadSource,getVersion}){
         const date=appendText(section,entry.date==='Unreleased'?'span':'time',entry.date==='Unreleased'?'Unreleased':entry.date,'changelog-date');
         if(entry.date!=='Unreleased')date.dateTime=entry.date;
         (entry.title?entry.summary:entry.summary.slice(1)).forEach(text=>appendText(section,'p',text));
+        let phase=null;
         for(const category of entry.sections){
           if(!category.items.length)continue;
-          appendText(section,'h4',category.name);
+          if(category.phase && category.phase!==phase)appendText(section,'h4',category.phase,'changelog-timeline-title');
+          phase=category.phase || null;
+          appendText(section,phase?'h5':'h4',category.name);
           const list=document.createElement('ul');
           category.items.forEach(text=>appendText(list,'li',text));
           section.append(list);
