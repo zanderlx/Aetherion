@@ -54,3 +54,18 @@ test('audio crossfades smoothly, preserves pause intent, seeks and stops',async(
  await engine.command({type:'play'});await engine.command({type:'mute',value:true});assert.equal(engine.snapshot().muted,true);
  await engine.command({type:'stop'});assert.equal(engine.snapshot().currentTime,0);assert.equal(engine.snapshot().playing,false);
 });
+
+test('bundled songs seed once and deleted songs stay deleted after restarting',async t=>{
+ const directory=await mkdtemp(join(tmpdir(),'gallorin-music-seed-'));
+ t.after(()=>rm(directory,{recursive:true,force:true}));
+ const source=join(directory,'source.mp3');await import('node:fs/promises').then(fs=>fs.writeFile(source,mp3));
+ const id='8bdd69a1-74ec-4b95-8b1e-98e535408e2b',seeds=[{id,name:'Bundled song',source}];
+ const first=new MusicLibrary(directory,undefined,seeds);assert.equal((await first.read()).tracks.length,1);
+ const second=new MusicLibrary(directory,undefined,seeds);assert.equal((await second.read()).tracks.length,1);
+ await second.settings({assignments:{default:id,'main-menu':'menu'},fadeSeconds:2},['default','main-menu']);
+ assert.equal(selectedMusic(await second.read(),'main-menu'),'menu');
+ assert.equal(selectedMusic(await second.read(),'stable'),id);
+ await second.remove(id);
+ const third=new MusicLibrary(directory,undefined,seeds);
+ assert.equal((await third.read()).tracks.length,0);
+});

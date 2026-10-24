@@ -32,3 +32,6 @@ was specific to this computer and is not an automatic app feature.
 - Full-width themed music player with play/pause, stop, restart, seeking, volume, and mute.
 - User Interface → Music: local MP3 import/deletion, per-zone/Stables/Town/default assignments, and configurable crossfades.
 - Shared desktop menu/game audio preferences and persistent playback across navigation.
+
+- Bundled ten supplied soundtrack files plus the original main-menu song in one music asset folder.
+- Added an independent Main Menu song selection and one-time local soundtrack seeding.

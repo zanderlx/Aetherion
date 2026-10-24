@@ -1,10 +1,24 @@
-import {mkdir,readFile,writeFile,rename,unlink,open,stat} from 'node:fs/promises';
+import {mkdir,readFile,writeFile,rename,unlink,open,stat,copyFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 const validId=id=>/^[a-f0-9-]{36}$/.test(id);
 export class MusicLibrary {
-  constructor(directory,builtin){this.builtin=builtin;this.root=join(directory,'music');this.queue=Promise.resolve();}
+  constructor(directory,builtin,seeds=[]){this.builtin=builtin;this.root=join(directory,'music');this.queue=Promise.resolve();this.ready=this.seed(seeds);}
+  async seed(seeds){
+    if(!seeds.length)return;
+    let library;try{library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;library={version:1,tracks:[],assignments:{},fadeSeconds:2};}
+    const seen=new Set(library.seededTrackIds||[]);let changed=false;
+    for(const track of seeds){
+      if(seen.has(track.id))continue;
+      await mkdir(this.root,{recursive:true});
+      await copyFile(track.source,join(this.root,track.id+'.mp3'));
+      library.tracks.push({id:track.id,name:track.name,addedAt:new Date().toISOString()});
+      seen.add(track.id);changed=true;
+    }
+    if(changed){library.seededTrackIds=[...seen];await this.write(library);}
+  }
   async read(){
+    await this.ready;
     try{return JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));}
     catch(error){if(error.code!=='ENOENT')throw error;return {version:1,tracks:[],assignments:{},fadeSeconds:2};}
   }

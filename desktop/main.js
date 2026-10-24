@@ -109,7 +109,7 @@ async function start() {
   ipcMain.handle('desktop-version',event=>event.sender===main.webContents ? app.getVersion() : null);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
   const fromGame = event => event.sender === main.webContents && event.senderFrame.url.startsWith(origin + '/');
-  ipcMain.on('pause-main-menu',event=>{if(fromGame(event)){void (async()=>{const library=await (await fetch(origin+'/api/music')).json();const id=library.assignments.default||'menu';const track=library.tracks.find(t=>t.id===id);await audioCommand({type:'select',track:{id,name:track?.name||'The Symphony of the Wilds',url:origin+'/api/music/media/'+id},fadeSeconds:library.fadeSeconds});})();void main.loadURL(menuURL);}});
+  ipcMain.on('pause-main-menu',event=>{if(fromGame(event)){void (async()=>{const library=await (await fetch(origin+'/api/music')).json();const id=library.assignments['main-menu']||library.assignments.default||'menu';const track=library.tracks.find(t=>t.id===id);await audioCommand({type:'select',track:{id,name:track?.name||'The Symphony of the Wilds',url:origin+'/api/music/media/'+id},fadeSeconds:library.fadeSeconds});})();void main.loadURL(menuURL);}});
   ipcMain.on('pause-exit',event=>{if(fromGame(event))app.quit();});
   main.webContents.on('before-input-event', (event, input) => {
     if (input.type !== 'keyDown' || input.key !== 'Escape' || input.isAutoRepeat) return;
@@ -123,7 +123,7 @@ async function start() {
   await new Promise(resolve => setTimeout(resolve, Math.max(0, 4500 - (Date.now()-started))));
   main.show(); splash.destroy(); splash = null;
   const initialMusic=await (await fetch(origin+'/api/music')).json();
-  const initialId=initialMusic.assignments.default||'menu',initialTrack=initialMusic.tracks.find(t=>t.id===initialId);
+  const initialId=initialMusic.assignments['main-menu']||initialMusic.assignments.default||'menu',initialTrack=initialMusic.tracks.find(t=>t.id===initialId);
   await audioCommand({type:'select',track:{id:initialId,name:initialTrack?.name||'The Symphony of the Wilds',url:origin+'/api/music/media/'+initialId},fadeSeconds:0});
   await audioCommand({type:'play'});
   if (smoke) {
@@ -151,9 +151,9 @@ async function start() {
     }
     if(!await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot().playing'))throw new Error('Music stopped during game navigation');
     // Music smoke tests use a copied built-in MP3 and only the isolated smoke library.
-    const songResponse=await fetch(origin+'/api/music/import',{method:'POST',headers:{Origin:origin,'Content-Type':'audio/mpeg','X-File-Name':'Smoke Song.mp3'},body:await readFile(join(root,'desktop/assets/menu-music.mp3'))});
+    const songResponse=await fetch(origin+'/api/music/import',{method:'POST',headers:{Origin:origin,'Content-Type':'audio/mpeg','X-File-Name':'Smoke Song.mp3'},body:await readFile(join(root,'desktop/assets/music/main-menu.mp3'))});
     if(!songResponse.ok)throw new Error('Music import failed');
-    const songLibrary=await songResponse.json(),songId=songLibrary.tracks[0].id;
+    const songLibrary=await songResponse.json(),songId=songLibrary.tracks.find(track=>track.name==='Smoke Song').id;
     const range=await fetch(origin+'/api/music/media/'+songId,{headers:{Range:'bytes=0-15'}});
     if(range.status!==206||(await range.arrayBuffer()).byteLength!==16)throw new Error('Music seek streaming failed');
     await main.webContents.executeJavaScript("location.hash='dev/music'");
@@ -236,6 +236,18 @@ async function start() {
     if (!result.brand || result.node !== 'undefined') throw new Error('Desktop renderer failed to initialize securely.');
     await writeFile(join(process.env.AETHERION_TEST_DATA,'desktop-smoke.json'), JSON.stringify(result));
     await writeFile(join(process.env.AETHERION_TEST_DATA,'desktop-smoke.png'), (await main.webContents.capturePage()).toPNG());
+    const menuLibrary=await (await fetch(origin+'/api/music')).json();
+    const menuSong=menuLibrary.tracks.find(track=>track.name==='Town');
+    const assignMenu=await fetch(origin+'/api/music/settings',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({assignments:{...menuLibrary.assignments,'main-menu':menuSong.id},fadeSeconds:0})});
+    if(!assignMenu.ok)throw Error('Main menu music settings failed');
+    main.webContents.send('desktop-pause');
+    await new Promise(resolve=>setTimeout(resolve,150));
+    await main.webContents.executeJavaScript("[...document.querySelectorAll('#desktop-pause button')].find(button=>button.textContent==='Main Menu').click()");
+    for(let attempt=0;attempt<80;attempt++){
+      if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id===menuSong.id)break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id!==menuSong.id)throw Error('Custom main menu song did not play');
     await shutdown(); app.quit();
   } else {setTimeout(()=>checkUpdates(false), 3000);}
 }

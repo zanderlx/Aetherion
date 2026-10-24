@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "tracks": [
+    {
+      "id": "4f1d9bd4-0f05-416c-98b1-0cabaf6c3d42",
+      "name": "Aetherion Wilds",
+      "file": "aetherion-wilds.mp3"
+    },
+    {
+      "id": "f814c1e1-8c8a-4547-a327-31c4e897cb5c",
+      "name": "Carnival",
+      "file": "carnival.mp3"
+    },
+    {
+      "id": "87fc4308-db42-4dd2-8a70-786a6d7fc84d",
+      "name": "Cyberspace 1",
+      "file": "cyberspace1.mp3"
+    },
+    {
+      "id": "8faf1d29-ad4a-4ccf-8685-dbdba48d29da",
+      "name": "Cyberspace 2",
+      "file": "cyberspace2.mp3"
+    },
+    {
+      "id": "2d2d4fb3-fe18-44c7-87a1-ef67ee70a4fc",
+      "name": "Easter",
+      "file": "easter.mp3"
+    },
+    {
+      "id": "bc804f97-ab0d-4c6a-bd09-db4d2949abff",
+      "name": "Halloween 1",
+      "file": "halloween1.mp3"
+    },
+    {
+      "id": "93c7c7fc-c6da-4cf1-b8ce-69fd02e0d277",
+      "name": "Halloween 2",
+      "file": "halloween2.mp3"
+    },
+    {
+      "id": "157dba98-80c7-4090-bc7a-ac80ea9c0205",
+      "name": "Medieval",
+      "file": "medieval.mp3"
+    },
+    {
+      "id": "9eb1bb80-f34a-4aeb-b2c6-6a0fa3c97d3b",
+      "name": "Town",
+      "file": "town.mp3"
+    },
+    {
+      "id": "b3f0c272-1922-47e7-9ef3-d30dd0399e96",
+      "name": "Magic Twinkle",
+      "file": "universfield-magic-twinkle-244951.mp3"
+    }
+  ]
+}

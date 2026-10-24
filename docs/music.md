@@ -18,10 +18,16 @@ Stables, Town, each zone, and the default/main-menu track.
   Volume/mute are shared with the menu and ESC audio settings.
 - Browser playback may require pressing Play once because of browser autoplay rules.
 - Delete confirms first and removes both the copied file and its assignments.
-- Music files are local and excluded from Git and the save JSON export.
+- User-imported music files are local and excluded from Git and the save JSON export. Bundled soundtrack sources are tracked in the repository.
   Copy the music folder separately when transferring a library.
 
 Desktop storage: %APPDATA%/Gallorin/data/music.
 Development desktop storage: %APPDATA%/Gallorin Development/data/music.
 Browser edition: the project's data/music folder (or HORSE_DATA_DIR/music).
 The built-in song stays bundled with the app and cannot be deleted.
+
+The bundled soundtrack is organized under desktop/assets/music, including
+main-menu.mp3. The ten additional songs are registered in data/defaults/music.json
+and copied into each local library once. Deleted songs remain deleted on restart.
+The original main-menu song is always listed as a built-in preview/selection option.
+Main Menu can be configured independently from Default Music.

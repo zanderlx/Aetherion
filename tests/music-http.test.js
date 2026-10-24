@@ -15,7 +15,7 @@ test('music HTTP APIs enforce origin and stream seekable imports without exposin
  const upload=origin=>fetch(base+'/api/music/import',{method:'POST',headers:{Origin:origin,'Content-Type':'audio/mpeg','X-File-Name':encodeURIComponent('Forest song.mp3')},body:bytes});
  assert.equal((await upload('https://elsewhere.test')).status,403);
  const response=await upload(base);assert.equal(response.status,200);
- const library=await response.json(),id=library.tracks[0].id;
+ const library=await response.json(),id=library.tracks.find(track=>track.name==='Forest song').id;
  const range=await fetch(base+'/api/music/media/'+id,{headers:{Range:'bytes=3-6'}});
  assert.equal(range.status,206);assert.equal(range.headers.get('content-range'),'bytes 3-6/'+bytes.length);
  assert.deepEqual(Buffer.from(await range.arrayBuffer()),bytes.subarray(3,7));

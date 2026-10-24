@@ -11,7 +11,9 @@ const {version:appVersion} = JSON.parse(await readFile(resolve(root,'package.jso
 const catalog = JSON.parse(await readFile(resolve(root, 'data/definitions/catalog.json'), 'utf8'));
 const defaults = JSON.parse(await readFile(resolve(root, 'data/defaults/settings.json'), 'utf8'));
 const store = await new GameStore(process.env.HORSE_DATA_DIR || resolve(root, 'data'), catalog, defaults).init();
-const music=new MusicLibrary(process.env.HORSE_DATA_DIR || resolve(root,'data'),resolve(root,'desktop/assets/menu-music.mp3'));
+const musicDefaults=JSON.parse(await readFile(resolve(root,'data/defaults/music.json'),'utf8'));
+const music=new MusicLibrary(process.env.HORSE_DATA_DIR || resolve(root,'data'),resolve(root,'desktop/assets/music/main-menu.mp3'),musicDefaults.tracks.map(track=>({...track,source:resolve(root,'desktop/assets/music',track.file)})));
+await music.ready;
 const port = Number(process.env.PORT || 4173);
 const publicRoot = resolve(root, 'public');
 const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
@@ -41,7 +43,7 @@ const server = createServer(async (req, res) => {
         if(upload)return send(res,200,await music.import(decodeURIComponent(req.headers['x-file-name']||''),bytes));
         const input=JSON.parse(bytes.toString());
         if(url.pathname==='/api/music/settings'){
-          const contexts=['default','stable','town',...store.getCatalog().locations.map(z=>'wilds/'+z.id),...(store.snapshot().customLocations||[]).map(z=>'wilds/'+z.id)];
+          const contexts=['default','main-menu','stable','town',...store.getCatalog().locations.map(z=>'wilds/'+z.id),...(store.snapshot().customLocations||[]).map(z=>'wilds/'+z.id)];
           return send(res,200,await music.settings(input,contexts));
         }
         if(url.pathname==='/api/music/delete')return send(res,200,await music.remove(input.id));

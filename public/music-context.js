@@ -5,4 +5,4 @@ export function musicContext(route){
   return null; // Settings and compendium keep the current music.
 }
 export function selectedMusic(library,context){return library.assignments[context]??library.assignments.default??'menu';}
-export function musicContexts(locations){return [{id:'default',name:'Default / Main Menu'},{id:'stable',name:'Stables'},{id:'town',name:'Town'},...locations.map(z=>({id:'wilds/'+z.id,name:z.name}))];}
+export function musicContexts(locations){return [{id:'default',name:'Default Music'},{id:'main-menu',name:'Main Menu'},{id:'stable',name:'Stables'},{id:'town',name:'Town'},...locations.map(z=>({id:'wilds/'+z.id,name:z.name}))];}
