@@ -75,3 +75,4 @@ was specific to this computer and is not an automatic app feature.
 - Added All Songs options menus with searchable multi-playlist assignment, inline song/artist editing with save/discard confirmation, and library-wide delete confirmation.
 - Playlist trash buttons only remove that playlist membership; duration and MP3 files remain unchanged by metadata edits.
 - Hid the page scrollbar while preserving scrolling.
+- Refined playlist assignment with sidebar ordering, section filtering, centered actions, and a hover-only edge scrollbar; added a row checkmark to save all edited song metadata together.
