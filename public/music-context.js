@@ -1,8 +1,41 @@
-export function musicContext(route){
-  if(route.startsWith('wilds/'))return route;
-  if(route.startsWith('stable/'))return 'stable';
-  if(route.startsWith('town/'))return 'town';
-  return null; // Settings and compendium keep the current music.
+export const defaultMusicTrack={id:'menu',name:'Main Menu',filename:'main-menu.mp3'};
+export function formatMusicName(filename){
+ return String(filename||'Untitled').replace(/\.mp3$/i,'').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([a-zA-Z])(\d)/g,'$1 $2').replace(/(\d)([a-zA-Z])/g,'$1 $2').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim().replace(/\b[a-z]/g,c=>c.toUpperCase());
 }
-export function selectedMusic(library,context){return library.assignments[context]??library.assignments.default??'menu';}
-export function musicContexts(locations){return [{id:'default',name:'Default Music'},{id:'main-menu',name:'Main Menu'},{id:'stable',name:'Stables'},{id:'town',name:'Town'},...locations.map(z=>({id:'wilds/'+z.id,name:z.name}))];}
+const sectionDefinitions=[
+ ['Stables','stable',[['stable/all','My Horses'],['stable/breeding','Breeding']]],
+ ['Town','town',[['town/cave','Ancient Cave'],['town/digsite','Digsite'],['town/gacha','Gacha Machine'],['town/plush','Plush Machine'],['town/spirit','Spirit Tame']]],
+ ['Inventory','inventory',[['inventory/accessories','Accessories'],['inventory/potions','Potions']]],
+ ['Compendium','compendium',[['dev/species','Species'],['dev/traits','Traits'],['dev/colors','Palettes'],['dev/eyes','Eye Colors'],['dev/personalities','Personalities'],['dev/mutations','Mutations'],['dev/rarities','Rarities'],['dev/locations','Zones'],['dev/atmospheres','Zone Atmospheres'],['dev/items','Items & Potions'],['dev/themes','Item Themes']]],
+ ['User Interface','user-interface',[['dev/appearance','Appearance & Themes'],['dev/music','Music'],['dev/profile','My Profile']]],
+ ['Developer Settings','developer',[['dev/edit-mode','Edit Mode'],['dev/settings','Game Settings'],['dev/horse-updates','Horse Updates'],['dev/roadmap','Remaining Features'],['dev/saves','Save Management']]]
+];
+export function musicGroups(locations=[]){
+ const groups=sectionDefinitions.map(([name,id,items])=>({name,id,items:[{id,name:'All '+name},...items.map(([id,name])=>({id,name}))]}));
+ groups.splice(3,0,{name:'Wilds',id:'wilds',items:[{id:'wilds',name:'All Wilds'},...locations.map(z=>({id:'wilds/'+z.id,name:z.name}))]});
+ return [{name:'General',id:'general',items:[{id:'default',name:'Default Music'},{id:'main-menu',name:'Main Menu'}]},...groups];
+}
+export const musicContexts=locations=>musicGroups(locations).flatMap(g=>g.items);
+export function musicParent(context){
+ if(context.startsWith('wilds/'))return 'wilds';
+ for(const [,id,items] of sectionDefinitions)if(items.some(([route])=>route===context))return id;
+ return null;
+}
+export function assignmentTracks(value){return Array.isArray(value)?value:typeof value==='string'&&value?[value]:[];}
+export function playlistSource(library,context){
+ const assignments=library.assignments||{},parent=musicParent(context);
+ return [context,parent,'default'].find(key=>key&&assignmentTracks(assignments[key]).length)||'default';
+}
+export function selectedPlaylist(library,context){
+ const list=assignmentTracks(library.assignments?.[playlistSource(library,context)]);
+ return list.length?list:['menu'];
+}
+export function selectedMusic(library,context){return selectedPlaylist(library,context)[0];}
+export function musicContext(route,library={assignments:{}}){
+ if(/^(wilds|stable|town|inventory)\//.test(route))return route;
+ if(route.startsWith('dev/')){
+  const parent=musicParent(route);
+  return assignmentTracks(library.assignments?.[route]).length||assignmentTracks(library.assignments?.[parent]).length?route:null;
+ }
+ return null;
+}

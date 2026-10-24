@@ -4,7 +4,7 @@ import {mkdtemp,rm,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {MusicLibrary} from '../src/music-library.js';
-import {musicContext,selectedMusic} from '../public/music-context.js';
+import {musicContext,selectedMusic,selectedPlaylist,formatMusicName} from '../public/music-context.js';
 import {createMusicEngine} from '../public/music-engine.js';
 const mp3=Buffer.from('ID3test audio');
 test('music imports persist, validate, assign independently, and delete without leaving assignments',async t=>{
@@ -19,19 +19,19 @@ test('music imports persist, validate, assign independently, and delete without 
  assert.deepEqual(await readFile(join(directory,'music',id+'.mp3')),mp3);
  const assignments={'wilds/aetherion':id,'wilds/hallowhoof':id2,stable:id2,default:'menu'};
  await store.settings({assignments,fadeSeconds:2},Object.keys(assignments));
- assert.deepEqual((await new MusicLibrary(directory).read()).assignments,assignments);
+ assert.deepEqual((await new MusicLibrary(directory).read()).assignments,Object.fromEntries(Object.entries(assignments).map(([key,value])=>[key,[value]])));
  await assert.rejects(store.settings({assignments:{unknown:id},fadeSeconds:2},['default']),/existing song/);
  await assert.rejects(store.settings({assignments:{default:'missing'},fadeSeconds:2},['default']),/existing song/);
  await assert.rejects(store.settings({assignments:{},fadeSeconds:11},[]),/fade/);
  const final=await store.remove(id);
  assert.equal(final.tracks.length,1);assert.equal(final.assignments['wilds/aetherion'],undefined);
- assert.equal(final.assignments['wilds/hallowhoof'],id2);
+ assert.deepEqual(final.assignments['wilds/hallowhoof'],[id2]);
  await assert.rejects(store.remove('../save'),/not found/);
  assert.equal(selectedMusic(final,'wilds/aetherion'),'menu');
 });
 test('location music uses zone-specific choices and keeps music through configuration pages',()=>{
  assert.equal(musicContext('wilds/hallowhoof'),'wilds/hallowhoof');
- assert.equal(musicContext('stable/all'),'stable');assert.equal(musicContext('town/gacha'),'town');
+ assert.equal(musicContext('stable/all'),'stable/all');assert.equal(musicContext('town/gacha'),'town/gacha');
  assert.equal(musicContext('dev/music'),null);
  assert.equal(selectedMusic({assignments:{default:'a',stable:'b'}},'stable'),'b');
  assert.equal(selectedMusic({assignments:{default:'a'}},'town'),'a');
@@ -68,4 +68,36 @@ test('bundled songs seed once and deleted songs stay deleted after restarting',a
  await second.remove(id);
  const third=new MusicLibrary(directory,undefined,seeds);
  assert.equal((await third.read()).tracks.length,0);
+});
+
+test('playlist inheritance prefers page, then section, then default and formats MP3 titles',()=>{
+ const library={assignments:{default:['menu'],stable:['a','b'],'stable/all':['c','d']}};
+ assert.deepEqual(selectedPlaylist(library,'stable/all'),['c','d']);
+ assert.deepEqual(selectedPlaylist(library,'stable/breeding'),['a','b']);
+ assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['menu']);
+ assert.equal(formatMusicName('aetherion-wilds.mp3'),'Aetherion Wilds');
+ assert.equal(formatMusicName('cyberspace2.mp3'),'Cyberspace 2');
+ assert.equal(formatMusicName('myTrack_name.mp3'),'My Track Name');
+ assert.equal(formatMusicName('main-menu.mp3'),'Main Menu');
+});
+test('ordered playlists persist and deleting a song preserves the rest of each list',async t=>{
+ const directory=await mkdtemp(join(tmpdir(),'gallorin-playlists-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ const store=new MusicLibrary(directory),one=await store.import('one.mp3',mp3),a=one.tracks[0].id;
+ const two=await store.import('two.mp3',mp3),b=two.tracks[1].id;
+ await store.settings({assignments:{'stable/all':[b,a,b],'main-menu':[a,b]},fadeSeconds:2},['stable/all','main-menu']);
+ assert.deepEqual((await store.read()).assignments['stable/all'],[b,a]);
+ assert.deepEqual((await new MusicLibrary(directory).read()).assignments['main-menu'],[a,b]);
+ await store.remove(a);assert.deepEqual((await store.read()).assignments['main-menu'],[b]);
+ await assert.rejects(store.settings({assignments:{default:[b,'missing']},fadeSeconds:2},['default']),/existing song/);
+});
+test('next, previous, automatic advance and repeated page renders retain queue position',async()=>{
+ let players=[];const engine=createMusicEngine({audio:fakeAudio(),makeAudio:()=>{const a=fakeAudio();players.push(a);return a;},clock:()=>0,frame:()=>{}});
+ const tracks=[{id:'a',url:'a'},{id:'b',url:'b'},{id:'c',url:'c'}];
+ await engine.command({type:'playlist',key:'test',tracks,fadeSeconds:0});await engine.command({type:'play'});
+ await engine.command({type:'next'});assert.equal(engine.snapshot().track.id,'b');
+ await engine.command({type:'playlist',key:'test',tracks,fadeSeconds:0});assert.equal(engine.snapshot().track.id,'b');
+ await engine.command({type:'previous'});assert.equal(engine.snapshot().track.id,'a');
+ await engine.command({type:'previous'});assert.equal(engine.snapshot().track.id,'c');
+ players.at(-1).onended();await Promise.resolve();await Promise.resolve();assert.equal(engine.snapshot().track.id,'a');
+ await engine.command({type:'pause'});await engine.command({type:'next'});assert.equal(engine.snapshot().track.id,'b');assert.equal(engine.snapshot().playing,false);
 });

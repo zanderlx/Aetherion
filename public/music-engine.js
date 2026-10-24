@@ -1,12 +1,17 @@
-// A single transport shared by the browser and Electron's persistent audio window.
+// Persistent transport: playlist ordering, skip/previous and crossfades live together.
 export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),clock=()=>performance.now(),frame=requestAnimationFrame}={}){
  let active=audio,players=[audio],track=null,revision=0,volume=.35,muted=false,playing=false,error='',gains=new Map([[audio,1]]);
+ let queue=[],index=0,queueKey='',fadeSeconds=2;
  const apply=()=>players.forEach(a=>{a.volume=Math.max(0,Math.min(1,(gains.get(a)||0)*volume));a.muted=muted;});
  const clean=()=>{for(const a of players)if(a!==active){a.pause();a.removeAttribute('src');a.load();gains.delete(a);}players=[active];gains.set(active,1);apply();};
  async function select(next,seconds=2){
-  if(track?.id===next?.id&&track?.url===next?.url)return snapshot();
-  const token=++revision,old=active;
-  const incoming=makeAudio();incoming.loop=true;incoming.volume=0;incoming.muted=muted;incoming.src=next.url;gains.set(incoming,0);players.push(incoming);
+  if(track?.id===next?.id&&track?.url===next?.url){active.loop=queue.length<=1;return snapshot();}
+  const token=++revision,old=active,incoming=makeAudio();
+  incoming.loop=queue.length<=1;incoming.volume=0;incoming.muted=muted;incoming.src=next.url;gains.set(incoming,0);players.push(incoming);
+  incoming.onended=()=>{if(active===incoming&&playing&&queue.length>1)void advance(1);};
+  incoming.ontimeupdate=()=>{
+   if(active===incoming&&playing&&!error&&players.length===1&&queue.length>1&&fadeSeconds>0&&incoming.duration>0&&incoming.duration-incoming.currentTime<=fadeSeconds)void advance(1);
+  };
   try{
    if(playing)await incoming.play();
    if(token!==revision){incoming.pause();return snapshot();}
@@ -18,11 +23,31 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
     for(const a of players)gains.set(a,a===incoming?t:(starts.get(a)||0)*(1-t));
     apply();if(t<1)frame(tick);else clean();
    };tick();
-  }catch(e){incoming.pause();players=players.filter(a=>a!==incoming);gains.delete(incoming);active=old;error='Music could not play. Press Play to try again.';if(!track){active=incoming;players=[incoming];gains.set(incoming,1);track=next;playing=false;}apply();}
+  }catch{
+   incoming.pause();players=players.filter(a=>a!==incoming);gains.delete(incoming);active=old;
+   error='Music could not play. Press Play to try again.';
+   if(!track){active=incoming;players=[incoming];gains.set(incoming,1);track=next;playing=false;}apply();
+  }
   return snapshot();
  }
+ async function advance(direction){
+  if(!queue.length)return snapshot();
+  index=(index+direction+queue.length)%queue.length;
+  if(queue.length===1){active.currentTime=0;return snapshot();}
+  return select(queue[index],fadeSeconds);
+ }
  async function command(input){
-  if(input.type==='select')return select(input.track,input.fadeSeconds);
+  if(input.type==='playlist'){
+   if(!Array.isArray(input.tracks)||!input.tracks.length)return snapshot();
+   const same=queueKey===input.key,current=input.tracks.findIndex(t=>t.id===track?.id);
+   queue=input.tracks;queueKey=input.key;fadeSeconds=Number.isFinite(input.fadeSeconds)?Math.max(0,Math.min(10,input.fadeSeconds)):2;
+   index=current>=0?current:0;
+   if(same&&current>=0){active.loop=queue.length<=1;return snapshot();}
+   return select(queue[index],fadeSeconds);
+  }
+  if(input.type==='select'){queue=[input.track];index=0;queueKey='preview';return select(input.track,input.fadeSeconds);}
+  if(input.type==='next')return advance(1);
+  if(input.type==='previous')return advance(-1);
   if(input.type==='play'){try{await active.play();playing=true;error='';}catch{playing=false;error='Press Play to allow music playback.';}}
   if(input.type==='pause'){playing=false;players.forEach(a=>a.pause());}
   if(input.type==='stop'){playing=false;players.forEach(a=>a.pause());active.currentTime=0;}
@@ -31,6 +56,6 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
   if(input.type==='mute')muted=input.value===true;
   apply();return snapshot();
  }
- function snapshot(){return {track,transitioning:players.length>1,playing:playing&&!active.paused,volume:Math.round(volume*100),muted,currentTime:active.currentTime||0,duration:Number.isFinite(active.duration)?active.duration:0,error};}
+ function snapshot(){return {track,playlist:queue.map(t=>t.id),index,transitioning:players.length>1,playing:playing&&!active.paused,volume:Math.round(volume*100),muted,currentTime:active.currentTime||0,duration:Number.isFinite(active.duration)?active.duration:0,error};}
  return {command,snapshot};
 }

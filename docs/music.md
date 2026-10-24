@@ -1,7 +1,7 @@
 # Music player
 
-Open **User Interface → Music** to import MP3 files and choose music for
-Stables, Town, each zone, and the default/main-menu track.
+Open **User Interface → Music** to import MP3 files and build ordered playlists for
+navigation sections, their individual pages, each zone, and the main menu.
 
 - MP3s are copied into the active game data folder, not referenced from Downloads.
 - The library and assignments are saved in data/music/library.json.
@@ -10,10 +10,15 @@ Stables, Town, each zone, and the default/main-menu track.
 - Each import accepts up to 50 MB. Multiple files can be selected together.
 - Assignments and crossfade duration save automatically. Crossfades range from
   0 to 10 seconds and default to 2 seconds.
-- Unassigned locations use the default song. Compendium/settings keep the current
-  location's music.
-- Songs loop. Play/pause, stop, restart, seeking, volume, and mute are available
-  in the full-width bottom player.
+- Unassigned pages inherit their section playlist, then Default Music. Compendium,
+  User Interface, and Developer Settings keep the current music unless explicitly assigned.
+- Playlists advance in order and wrap at the end, with crossfades between songs.
+  Play/pause, previous/next, stop, restart, seeking, volume, and mute are available
+  in the full-width bottom player. One-song playlists loop that song.
+- Use Add Music to add songs, arrow buttons to reorder, and × to remove a song
+  from one playlist. Deleting a library song removes it from every playlist.
+- Song titles are formatted from MP3 filenames; the player artist is Gallorin Studios.
+- Existing single-song assignments become one-song playlists without losing settings.
 - Desktop playback continues through page reloads and menu transitions.
   Volume/mute are shared with the menu and ESC audio settings.
 - Browser playback may require pressing Play once because of browser autoplay rules.

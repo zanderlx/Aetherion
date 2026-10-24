@@ -35,3 +35,9 @@ was specific to this computer and is not an automatic app feature.
 
 - Bundled ten supplied soundtrack files plus the original main-menu song in one music asset folder.
 - Added an independent Main Menu song selection and one-time local soundtrack seeding.
+
+### Changed
+
+- Organized location music into playlist tables grouped by navigation section and subsection.
+- Added multi-song assignments, reordering, automatic playlist advance, and previous/next player controls.
+- Player metadata uses formatted MP3 names and Gallorin Studios; renamed Import Music and default-song labels.

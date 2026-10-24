@@ -1,3 +1,4 @@
+import {musicContexts} from './public/music-context.js';
 import {MusicLibrary} from './src/music-library.js';
 import {createHash} from 'node:crypto';
 import { createServer } from 'node:http';
@@ -43,7 +44,7 @@ const server = createServer(async (req, res) => {
         if(upload)return send(res,200,await music.import(decodeURIComponent(req.headers['x-file-name']||''),bytes));
         const input=JSON.parse(bytes.toString());
         if(url.pathname==='/api/music/settings'){
-          const contexts=['default','main-menu','stable','town',...store.getCatalog().locations.map(z=>'wilds/'+z.id),...(store.snapshot().customLocations||[]).map(z=>'wilds/'+z.id)];
+          const contexts=musicContexts([...store.getCatalog().locations,...(store.snapshot().customLocations||[])]).map(item=>item.id);
           return send(res,200,await music.settings(input,contexts));
         }
         if(url.pathname==='/api/music/delete')return send(res,200,await music.remove(input.id));

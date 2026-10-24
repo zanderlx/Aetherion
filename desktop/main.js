@@ -1,3 +1,4 @@
+import {selectedPlaylist,defaultMusicTrack} from '../public/music-context.js';
 import {parseChangelog} from '../public/changelog.js';
 import {brandLogo} from '../public/brand-logo.js';
 import {desktopDataPath} from './data-paths.js';
@@ -92,7 +93,11 @@ async function start() {
   const updateAudio=async()=>{await audioCommand({type:'volume',value:audioPreferences.volume/100});await audioCommand({type:'mute',value:audioPreferences.muted});};
   ipcMain.handle('music-state',event=>event.sender===main.webContents?audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()'):null);
   ipcMain.handle('music-command',async(event,value)=>{
-    if(event.sender!==main.webContents||!value||!['select','play','pause','stop','seek','volume','mute'].includes(value.type))return null;
+    if(event.sender!==main.webContents||!value||!['select','playlist','next','previous','play','pause','stop','seek','volume','mute'].includes(value.type))return null;
+    if(value.type==='playlist'){
+      if(!Array.isArray(value.tracks)||!value.tracks.length||value.tracks.length>500||value.tracks.some(track=>!track||typeof track.url!=='string'||!track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(track.url)))return null;
+      value={type:'playlist',key:String(value.key).slice(0,150),tracks:value.tracks.map(track=>({id:String(track.id),name:String(track.name),url:track.url})),fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
+    }
     if(value.type==='select'){
       if(!value.track||typeof value.track.url!=='string'||!value.track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(value.track.url))return null;
       value={type:'select',track:{id:String(value.track.id),name:String(value.track.name),url:value.track.url},fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
@@ -109,7 +114,12 @@ async function start() {
   ipcMain.handle('desktop-version',event=>event.sender===main.webContents ? app.getVersion() : null);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
   const fromGame = event => event.sender === main.webContents && event.senderFrame.url.startsWith(origin + '/');
-  ipcMain.on('pause-main-menu',event=>{if(fromGame(event)){void (async()=>{const library=await (await fetch(origin+'/api/music')).json();const id=library.assignments['main-menu']||library.assignments.default||'menu';const track=library.tracks.find(t=>t.id===id);await audioCommand({type:'select',track:{id,name:track?.name||'The Symphony of the Wilds',url:origin+'/api/music/media/'+id},fadeSeconds:library.fadeSeconds});})();void main.loadURL(menuURL);}});
+  const playMenuMusic=async()=>{
+    const library=await (await fetch(origin+'/api/music')).json();
+    const tracks=selectedPlaylist(library,'main-menu').map(id=>{const track=library.tracks.find(t=>t.id===id)||defaultMusicTrack;return {...track,url:origin+'/api/music/media/'+track.id};});
+    await audioCommand({type:'playlist',key:'main-menu',tracks,fadeSeconds:library.fadeSeconds});
+  };
+  ipcMain.on('pause-main-menu',event=>{if(fromGame(event)){void playMenuMusic().catch(log);void main.loadURL(menuURL);}});
   ipcMain.on('pause-exit',event=>{if(fromGame(event))app.quit();});
   main.webContents.on('before-input-event', (event, input) => {
     if (input.type !== 'keyDown' || input.key !== 'Escape' || input.isAutoRepeat) return;
@@ -122,9 +132,7 @@ async function start() {
   // A short aesthetic reveal, not a fabricated progress percentage.
   await new Promise(resolve => setTimeout(resolve, Math.max(0, 4500 - (Date.now()-started))));
   main.show(); splash.destroy(); splash = null;
-  const initialMusic=await (await fetch(origin+'/api/music')).json();
-  const initialId=initialMusic.assignments['main-menu']||initialMusic.assignments.default||'menu',initialTrack=initialMusic.tracks.find(t=>t.id===initialId);
-  await audioCommand({type:'select',track:{id:initialId,name:initialTrack?.name||'The Symphony of the Wilds',url:origin+'/api/music/media/'+initialId},fadeSeconds:0});
+  await playMenuMusic();
   await audioCommand({type:'play'});
   if (smoke) {
     await writeFile(join(process.env.AETHERION_TEST_DATA,'menu-smoke.png'),(await main.webContents.capturePage()).toPNG());
@@ -167,13 +175,39 @@ async function start() {
       if(await main.webContents.executeJavaScript("Boolean(document.querySelector('option[value=\""+songId+"\"]'))"))break;
       await new Promise(resolve=>setTimeout(resolve,100));
     }
-    await main.webContents.executeJavaScript("(()=>{const s=document.querySelector('[data-music-location=\"wilds/aetherion\"]');s.value='"+songId+"';s.dispatchEvent(new Event('change'));})()");
+    await main.webContents.executeJavaScript("(()=>{const s=document.querySelector('[data-music-location=\"wilds/aetherion\"]');s.value='"+songId+"';s.dispatchEvent(new Event('change',{bubbles:true}));})()");
+    for(let attempt=0;attempt<80;attempt++){
+      const library=await (await fetch(origin+'/api/music')).json();
+      if(library.assignments['wilds/aetherion']?.includes(songId)&&!await main.webContents.executeJavaScript("document.querySelector('#main').hasAttribute('aria-busy')"))break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    const secondSong=songLibrary.tracks.find(track=>track.name==='Town');
+    await main.webContents.executeJavaScript("(()=>{const s=document.querySelector('[data-music-location=\"wilds/aetherion\"]');s.value='"+secondSong.id+"';s.dispatchEvent(new Event('change',{bubbles:true}));})()");
+    for(let attempt=0;attempt<80;attempt++){
+      const library=await (await fetch(origin+'/api/music')).json();
+      if(library.assignments['wilds/aetherion']?.length===2)break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
     await main.webContents.executeJavaScript("location.hash='wilds/aetherion'");
     for(let attempt=0;attempt<80;attempt++){
       if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id===songId)break;
       await new Promise(resolve=>setTimeout(resolve,100));
     }
     if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id!==songId)throw new Error('Location music assignment failed');
+    await new Promise(resolve=>setTimeout(resolve,400));
+    if(!await main.webContents.executeJavaScript("document.querySelector('[data-context]').textContent==='Gallorin Studios' && document.querySelector('.music-volume a').getAttribute('href')==='#dev/music'"))throw Error('Player labels/settings link failed');
+    await main.webContents.executeJavaScript("document.querySelector('[data-music=\"next\"]').click()");
+    for(let attempt=0;attempt<80;attempt++){
+      if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id===secondSong.id)break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id!==secondSong.id)throw Error('Next song button failed');
+    await main.webContents.executeJavaScript("document.querySelector('[data-music=\"previous\"]').click()");
+    for(let attempt=0;attempt<80;attempt++){
+      if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id===songId)break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).track?.id!==songId)throw Error('Previous song button failed');
     await new Promise(resolve=>setTimeout(resolve,2200));
     if((await audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()')).transitioning)throw new Error('Hidden audio crossfade did not finish');
     await audioCommand({type:'seek',value:5});
@@ -184,6 +218,7 @@ async function start() {
     await main.webContents.executeJavaScript("document.querySelector('[data-music=\"toggle\"]').click()");
     await main.webContents.executeJavaScript("location.hash='dev/music'");
     await new Promise(resolve=>setTimeout(resolve,1500));
+    await main.webContents.executeJavaScript("document.querySelectorAll('[data-music-group]').forEach(d=>d.open=d.dataset.musicGroup==='wilds');document.querySelector('[data-music-group=\"wilds\"]').scrollIntoView({block:'start'});");
     await writeFile(join(process.env.AETHERION_TEST_DATA,'music-smoke.png'),(await main.webContents.capturePage()).toPNG());
     main.setSize(800,700);await new Promise(resolve=>setTimeout(resolve,400));
     if(!await main.webContents.executeJavaScript('document.querySelector(".music-player").getBoundingClientRect().right<=innerWidth && document.documentElement.scrollWidth<=innerWidth'))throw new Error('Music player overflow on narrow screen');
