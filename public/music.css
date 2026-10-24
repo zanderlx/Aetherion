@@ -177,14 +177,14 @@ body.has-music-player.music-player-compact{--music-player-height:56px}
 .has-music-player #toast{bottom:calc(var(--music-player-height) + 20px);transition:bottom .32s cubic-bezier(.22,1,.36,1),opacity .2s,transform .2s}
 .music-player{height:var(--music-player-height);min-height:0;transition:height .32s cubic-bezier(.22,1,.36,1),padding .32s cubic-bezier(.22,1,.36,1)}
 .music-now{gap:0}
-.music-player .music-art{margin-right:12px;transition:width .32s,height .32s,margin .32s,opacity .2s,border-width .32s,visibility 0s}
+.music-player .music-art{margin-right:12px;transform:scale(1);transform-origin:center;transition:transform .26s cubic-bezier(.4,0,.6,1),width .32s,height .32s,margin .32s,opacity .24s,border-width .32s,visibility 0s}
 .music-compact-note{display:block;width:0;flex-shrink:0;overflow:hidden;opacity:0;color:var(--gold);font-size:22px;line-height:1;transition:width .32s,margin .32s,opacity .2s}
 .music-now small{max-height:22px;opacity:1;overflow:hidden;transition:max-height .32s,opacity .2s,visibility 0s}
 .music-timeline{max-height:24px;overflow:hidden;opacity:1;transition:max-height .32s,opacity .2s,visibility 0s}
 .music-player .music-collapse{width:28px;height:28px;flex-shrink:0;margin-left:8px}
 .music-collapse svg{display:block;width:18px;height:18px;transition:transform .32s cubic-bezier(.22,1,.36,1)}
 .music-player.is-compact{padding-top:6px;padding-bottom:6px}
-.music-player.is-compact .music-art{width:0;height:0;margin-right:0;border-width:0;opacity:0;visibility:hidden;transition:width .32s,height .32s,margin .32s,opacity .2s,border-width .32s,visibility 0s .2s}
+.music-player.is-compact .music-art{width:0;height:0;margin-right:0;border-width:0;transform:scale(0);opacity:0;visibility:hidden;transition:transform .26s cubic-bezier(.4,0,.6,1),width .32s,height .32s,margin .32s,opacity .24s,border-width .32s,visibility 0s .26s}
 .music-player.is-compact .music-compact-note{width:18px;margin-right:8px;opacity:1}
 .music-player.is-compact .music-now small,.music-player.is-compact .music-timeline{max-height:0;opacity:0;visibility:hidden;transition:max-height .32s,opacity .2s,visibility 0s .2s}
 .music-player.is-compact .music-collapse svg{transform:rotate(180deg)}
