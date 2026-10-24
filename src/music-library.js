@@ -18,14 +18,11 @@ export class MusicLibrary {
     }
     for(const track of seeds){const existing=library.tracks.find(t=>t.id===track.id);if(existing&&track.file&&existing.filename!==track.file){existing.filename=track.file;existing.name=formatMusicName(track.file);changed=true;}}
     for(const track of library.tracks){if(!Number.isFinite(track.durationSeconds)||track.durationSeconds<=0){const duration=await durationOfFile(join(this.root,track.id+'.mp3'));if(duration!==track.durationSeconds){track.durationSeconds=duration;changed=true;}}}
-    for(const [context,value] of Object.entries(library.assignments||{})){
-      if(context!=='default'&&assignmentTracks(value).includes('menu')){library.assignments[context]=assignmentTracks(value).filter(id=>id!=='menu');changed=true;}
-    }
     if(changed){library.seededTrackIds=[...seen];await this.write(library);}
   }
   async read(){
     await this.ready;
-    try{const library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));return {...library,version:2,tracks:library.tracks.map(track=>({...track,name:formatMusicName(track.filename||track.name)})),assignments:Object.fromEntries(Object.entries(library.assignments||{}).map(([key,value])=>[key,assignmentTracks(value)]))};}
+    try{const library=JSON.parse(await readFile(join(this.root,'library.json'),'utf8'));return {...library,version:2,tracks:library.tracks.map(track=>({...track,name:track.customName??formatMusicName(track.filename||track.name),artist:track.artist??'Gallorin Studios'})),assignments:Object.fromEntries(Object.entries(library.assignments||{}).map(([key,value])=>[key,assignmentTracks(value)]))};}
     catch(error){if(error.code!=='ENOENT')throw error;return {version:2,tracks:[],assignments:{},fadeSeconds:2};}
   }
   async write(value){
@@ -39,7 +36,7 @@ export class MusicLibrary {
       if(typeof name!=='string'||!name.toLowerCase().endsWith('.mp3')||name.length>200)throw Error('Choose an MP3 file with a name under 200 characters.');
       // Accept ID3-tagged files or an MPEG frame header.
       if(!Buffer.isBuffer(bytes)||bytes.length<4||bytes.length>50*1024*1024||!(bytes.subarray(0,3).toString()==='ID3'||(bytes[0]===255&&(bytes[1]&224)===224)))throw Error('Choose a valid MP3 file (maximum 50 MB).');
-      const library=await this.read(),track={id:randomUUID(),filename:name.replace(/[\x00-\x1f]/g,''),name:formatMusicName(name),durationSeconds:await durationOfBuffer(bytes),addedAt:new Date().toISOString()};
+      const library=await this.read(),track={id:randomUUID(),filename:name.replace(/[\x00-\x1f]/g,''),name:formatMusicName(name),artist:'Gallorin Studios',durationSeconds:await durationOfBuffer(bytes),addedAt:new Date().toISOString()};
       await mkdir(this.root,{recursive:true});await writeFile(join(this.root,track.id+'.mp3'),bytes);
       try{library.tracks.push(track);await this.write(library);}catch(error){await unlink(join(this.root,track.id+'.mp3'));throw error;}
       return library;
@@ -53,9 +50,37 @@ export class MusicLibrary {
       for(const [context,value] of Object.entries(input.assignments)){
         const ids=assignmentTracks(value);
         if(!contexts.includes(context)||(!Array.isArray(value)&&typeof value!=='string')||ids.length>500||ids.some(id=>typeof id!=='string'||(id!=='menu'&&!library.tracks.some(t=>t.id===id))))throw Error('Choose an existing song and location.');
-        if(Array.isArray(value)||ids.length)assignments[context]=[...new Set(ids.filter(id=>context==='default'||id!=='menu'))];
+        if(Array.isArray(value)||ids.length)assignments[context]=[...new Set(ids)];
       }
       await this.write({...library,assignments,fadeSeconds:input.fadeSeconds});return this.read();
+    });
+  }
+  async update(id,values){
+    return this.edit(async()=>{
+      const library=await this.read(),track=library.tracks.find(t=>t.id===id);
+      if(id!=='menu'&&!track)throw Error('Song not found.');
+      if(!values||Object.keys(values).some(key=>!['name','artist'].includes(key)))throw Error('Only the name and artist can be edited.');
+      const text=(key,max)=>{const value=values[key];if(typeof value!=='string'||!value.trim()||value.trim().length>max||/[\x00-\x1f]/.test(value))throw Error('Enter a valid '+key+' (maximum '+max+' characters).');return value.trim();};
+      const name=text('name',200),artist=text('artist',120);
+      if(id==='menu')library.builtinMetadata={name,artist};else Object.assign(track,{customName:name,name,artist});
+      await this.write(library);return this.read();
+    });
+  }
+  async assign(id,playlistIds,contexts){
+    return this.edit(async()=>{
+      const library=await this.read();
+      if(id!=='menu'&&!library.tracks.some(t=>t.id===id))throw Error('Song not found.');
+      if(!Array.isArray(playlistIds)||playlistIds.length>1000||playlistIds.some(key=>typeof key!=='string'||!contexts.includes(key)))throw Error('Choose existing playlists.');
+      const selected=new Set(playlistIds);
+      for(const context of contexts){
+        const old=assignmentTracks(library.assignments[context]);
+        if(selected.has(context)){
+          if(!old.includes(id)){if(old.length>=500)throw Error('A playlist can contain up to 500 songs.');library.assignments[context]=[...old,id];}
+        }else if(old.includes(id)||(id==='menu'&&context==='default'&&!Object.hasOwn(library.assignments,context))){
+          library.assignments[context]=old.filter(song=>song!==id);
+        }
+      }
+      await this.write(library);return this.read();
     });
   }
   async fade(value){

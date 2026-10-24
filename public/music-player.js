@@ -2,7 +2,7 @@ import {createAudioPreferenceStore} from './audio-preference-store.js';
 import {revealPlayingSong} from './music-navigation.js';
 import {createAudioSettings} from './audio-settings.js';
 import {audioPreferences as normalizeAudio} from './audio-preferences.js';
-import {musicContext,selectedPlaylist,playlistSource,defaultMusicTrack} from './music-context.js';
+import {musicContext,selectedPlaylist,playlistSource,defaultMusicTrack,musicTracks} from './music-context.js';
 import {musicManagerPage,bindMusicManager,updateMusicRows} from './music-manager.js';
 import {createMusicEngine} from './music-engine.js';
 
@@ -54,7 +54,7 @@ export function createMusicPlayer({notify,getLocations}){
  async function refreshLibrary(){if(!loading)loading=api('/api/music').then(value=>{library=value;loaded=true;return value;}).finally(()=>{loading=null;});return loading;}
  async function select(){
   if(!loaded)return;
-  const tracks=selectedPlaylist(library,context).map(id=>{const track=library.tracks.find(t=>t.id===id)||builtin;return {...track,url:location.origin+'/api/music/media/'+track.id};});
+  const tracks=selectedPlaylist(library,context).map(id=>{const track=musicTracks(library).find(t=>t.id===id)||builtin;return {...track,url:location.origin+'/api/music/media/'+track.id};});
   await transport.command({type:'playlist',key:playlistSource(library,context),tracks,fadeSeconds:library.fadeSeconds});
   if(!desktop&&!started){started=true;await setPreferences(preferences);await transport.command({type:'play'});}
   await refresh();
@@ -65,7 +65,7 @@ export function createMusicPlayer({notify,getLocations}){
    const preferenceVersion=preferenceStore.version();const state=await transport.state();if(!state)return;playback=state;updateMusicRows(document.querySelector('.music-manager'),state);
    preferenceStore.sync({volume:state.volume,muted:state.muted,soundEffectsVolume:state.soundEffectsVolume??preferences.soundEffectsVolume},preferenceVersion);
    q('[data-song]').textContent=state.track?.name||(state.playlist?.length===0?'No Music':builtin.name);q('[data-song]').title='Show '+q('[data-song]').textContent+' in All Songs';q('[data-song]').disabled=!state.track;q('[data-now-playing-link]').disabled=!state.track;
-   q('[data-context]').textContent='Gallorin Studios';
+   q('[data-context]').textContent=state.track?.artist??'Gallorin Studios';
    for(const direction of ['previous','next'])q('[data-music="'+direction+'"]').disabled=(state.playlist?.length||1)<2;
    const play=q('[data-music="toggle"]');play.disabled=state.playlist?.length===0;play.textContent=state.playing?'Ⅱ':'▶';play.setAttribute('aria-label',state.playing?'Pause music':'Play music');
    const seek=q('[data-seek]');if(document.activeElement!==seek){seek.max=state.duration;seek.value=state.currentTime;}seek.disabled=!state.duration;
@@ -105,11 +105,20 @@ export function createMusicPlayer({notify,getLocations}){
     notify(files.length+' song'+(files.length===1?'':'s')+' imported.');
    },
    async preview(id,playlistContext){
-    const ids=playlistContext?selectedPlaylist(library,playlistContext):[builtin,...library.tracks].map(t=>t.id);
-    const tracks=ids.map(songId=>{const track=[builtin,...library.tracks].find(t=>t.id===songId);return {...track,url:location.origin+'/api/music/media/'+track.id};});
+    const ids=playlistContext?selectedPlaylist(library,playlistContext):musicTracks(library).map(t=>t.id);
+    const tracks=ids.map(songId=>{const track=musicTracks(library).find(t=>t.id===songId);return {...track,url:location.origin+'/api/music/media/'+track.id};});
     if(playlistContext)context=playlistContext;
     await transport.command({type:'playlist',key:playlistContext||'library',startId:id,tracks,fadeSeconds:library.fadeSeconds});
     await transport.command({type:'play'});await refresh();
+   },
+   async updateSong(id,values){
+    library=await api('/api/music/update',{id,values});
+    const track=musicTracks(library).find(t=>t.id===id);
+    await transport.command({type:'metadata',id,name:track.name,artist:track.artist});await refresh();
+   },
+   async assignSong(id,playlistIds){
+    library=await api('/api/music/assign',{id,playlistIds});
+    const state=await transport.state();if(state.playlistKey!=='library')await select();
    },
    async deleteSong(id){library=await api('/api/music/delete',{id});await select();}
   });

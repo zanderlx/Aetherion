@@ -6,7 +6,7 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
  const apply=()=>players.forEach(a=>{a.volume=Math.max(0,Math.min(1,(gains.get(a)||0)*volume));a.muted=muted;});
  const clean=()=>{for(const a of players)if(a!==active){a.pause();a.removeAttribute('src');a.load();gains.delete(a);}players=[active];gains.set(active,1);apply();};
  async function select(next,seconds=2){
-  if(track?.id===next?.id&&track?.url===next?.url){active.loop=queue.length<=1;return snapshot();}
+  if(track?.id===next?.id&&track?.url===next?.url){track=next;active.loop=queue.length<=1;return snapshot();}
   const token=++revision,old=active,incoming=makeAudio();
   incoming.loop=queue.length<=1;incoming.volume=0;incoming.muted=muted;incoming.src=next.url;gains.set(incoming,0);players.push(incoming);
   incoming.onended=()=>{if(active===incoming&&playing&&queue.length>1)void advance(1);};
@@ -38,6 +38,7 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
   return select(queue[index],fadeSeconds);
  }
  async function command(input){
+  if(input.type==='metadata'){queue=queue.map(t=>t.id===input.id?{...t,name:input.name,artist:input.artist}:t);if(track?.id===input.id)track={...track,name:input.name,artist:input.artist};}
   if(input.type==='fade'&&Number.isFinite(input.value))fadeSeconds=Math.max(0,Math.min(10,input.value));
   if(input.type==='sfx-volume'&&Number.isFinite(input.value)){soundEffectsVolume=Math.max(0,Math.min(1,input.value));for(const effect of effects)effect.volume=soundEffectsVolume;}
   if(input.type==='effect'&&input.track?.url){
@@ -53,7 +54,7 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
    queue=input.tracks;queueKey=input.key;fadeSeconds=Number.isFinite(input.fadeSeconds)?Math.max(0,Math.min(10,input.fadeSeconds)):2;
    const requested=queue.findIndex(t=>t.id===input.startId);
    index=requested>=0?requested:current>=0?current:0;
-   if(same&&current>=0&&(requested<0||requested===current)){active.loop=queue.length<=1;return snapshot();}
+   if(same&&current>=0&&(requested<0||requested===current)){track=queue[index];active.loop=queue.length<=1;return snapshot();}
    return select(queue[index],fadeSeconds);
   }
   if(input.type==='select'){queue=[input.track];index=0;queueKey='preview';return select(input.track,input.fadeSeconds);}
@@ -67,6 +68,6 @@ export function createMusicEngine({audio=new Audio(),makeAudio=()=>new Audio(),c
   if(input.type==='mute')muted=input.value===true;
   apply();return snapshot();
  }
- function snapshot(){return {track,soundEffectsVolume:Math.round(soundEffectsVolume*100),playlist:queue.map(t=>t.id),index,transitioning:players.length>1,playing:playing&&!active.paused,volume:Math.round(volume*100),muted,currentTime:track?(active.currentTime||0):0,duration:track&&Number.isFinite(active.duration)?active.duration:0,error};}
+ function snapshot(){return {track,playlistKey:queueKey,soundEffectsVolume:Math.round(soundEffectsVolume*100),playlist:queue.map(t=>t.id),index,transitioning:players.length>1,playing:playing&&!active.paused,volume:Math.round(volume*100),muted,currentTime:track?(active.currentTime||0):0,duration:track&&Number.isFinite(active.duration)?active.duration:0,error};}
  return {command,snapshot};
 }

@@ -2,6 +2,10 @@ const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('gallorinMusic',{state:()=>ipcRenderer.invoke('music-state'),command:value=>ipcRenderer.invoke('music-command',value)});
 contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version'), changelog:()=>ipcRenderer.invoke('desktop-changelog'), audio:()=>ipcRenderer.invoke('audio-state'), setAudio:value=>ipcRenderer.invoke('audio-set',value),musicSettings:()=>ipcRenderer.invoke('music-settings'),setCrossfade:value=>ipcRenderer.invoke('music-fade',value)});
 ipcRenderer.on('desktop-pause',()=>{
+  const songDialog=document.querySelector('.music-song-dialog[open],.music-delete-dialog[open]');
+  if(songDialog){songDialog.close();return;}
+  if(document.querySelector('.music-options-menu')){document.dispatchEvent(new Event('gallorin-close-song-menu'));return;}
+  if(document.querySelector('.music-editing')){document.dispatchEvent(new Event('gallorin-finish-song-edit'));return;}
   const changelog=document.querySelector('#changelog-dialog');if(changelog?.open){changelog.close();return;}
   const audioDialog=document.querySelector('#desktop-audio');if(audioDialog?.open){audioDialog.close();return;}
   let modal=document.querySelector('#desktop-pause');

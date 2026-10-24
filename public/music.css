@@ -118,3 +118,32 @@ body.has-music-player{padding-bottom:100px}
 .music-delete-dialog .button.danger:hover{background:#984b56}
 @media(max-width:850px){.music-player .music-art{width:40px;height:40px}.music-player .music-track-link{font-size:13px}}
 @media(max-width:480px){.music-player .music-art{display:none}}
+/* Song library actions and searchable playlist assignments. */
+.music-row-options{opacity:0;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:0;background:transparent;color:var(--muted);border-radius:5px;cursor:pointer}
+.music-table tr:hover .music-row-options,.music-row-options:focus-visible,.music-row-options[aria-expanded=true]{opacity:1}
+.music-row-options:hover{background:var(--panel);color:var(--gold)}
+.music-options-menu{position:fixed;z-index:10000;min-width:180px;padding:6px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px #0006}
+.music-options-menu button{display:block;width:100%;padding:10px 14px;text-align:left;border:0;border-radius:4px;background:transparent;color:inherit;cursor:pointer}
+.music-options-menu button:hover,.music-options-menu button:focus-visible{background:var(--panel-deep);color:var(--gold)}
+.music-options-menu button:disabled{opacity:.4;cursor:not-allowed}
+.music-song-dialog{width:min(620px,calc(100vw - 32px));max-height:85dvh;overflow:auto;padding:24px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:12px}
+.music-song-dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
+.music-song-dialog header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.music-song-dialog h2{margin:0;font-size:24px}
+.music-dialog-close{flex:none;background:transparent;border:0;color:var(--text);font-size:26px;line-height:1;padding:4px 8px;cursor:pointer}
+.music-song-dialog p{margin:12px 0}
+.music-playlist-search{width:100%;margin:0 0 16px}
+.music-picker-table{max-height:48dvh;overflow:auto}
+.music-picker-table table{width:100%;border-collapse:collapse;margin:0}
+.music-picker-table th,.music-picker-table td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}
+.music-picker-table th:first-child{width:40px}
+.music-picker-table input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:var(--gold)}
+.music-picker-table tbody tr{cursor:pointer}
+.music-picker-table tbody tr:hover{background:var(--panel-deep)}
+.music-dialog-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:22px}
+.music-song-error:empty{display:none}
+.music-song-error{color:#ef8282}
+.music-editing td input{width:100%;min-width:0;height:38px;padding:6px 8px;font-size:14px;text-transform:none}
+.music-editing .music-artist{display:table-cell}
+.music-edit-confirm{width:min(440px,calc(100vw - 32px))}
+@media(hover:none){.music-row-options{opacity:1}}

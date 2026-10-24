@@ -344,3 +344,7 @@ nav summary{font-size:15px}
 .gold-change{position:fixed;z-index:1000;pointer-events:none;white-space:nowrap;padding:0;border:0;background:transparent;font-size:14px;font-weight:600;text-shadow:0 1px 3px var(--panel-deep)}
 .gold-change[data-direction="gain"]{color:#63D68A}
 .gold-change[data-direction="loss"]{color:#F17B7B}
+
+/* Hide the page scrollbar without changing its scrolling behavior. */
+html,body{scrollbar-width:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}

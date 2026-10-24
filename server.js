@@ -47,6 +47,8 @@ const server = createServer(async (req, res) => {
           const contexts=musicContexts([...store.getCatalog().locations,...(store.snapshot().customLocations||[])]).map(item=>item.id);
           return send(res,200,await music.settings(input,contexts));
         }
+        if(url.pathname==='/api/music/update')return send(res,200,await music.update(input.id,input.values));
+        if(url.pathname==='/api/music/assign'){const contexts=musicContexts([...store.getCatalog().locations,...(store.snapshot().customLocations||[])]).map(item=>item.id);return send(res,200,await music.assign(input.id,input.playlistIds,contexts));}
         if(url.pathname==='/api/music/fade')return send(res,200,await music.fade(input.fadeSeconds));
         if(url.pathname==='/api/music/delete')return send(res,200,await music.remove(input.id));
       }

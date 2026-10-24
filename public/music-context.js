@@ -1,4 +1,4 @@
-export const defaultMusicTrack={id:'menu',name:'Glades of Gallorin',filename:'main-menu.mp3',durationSeconds:178.104};
+export const defaultMusicTrack={id:'menu',name:'Glades of Gallorin',artist:'Gallorin Studios',filename:'main-menu.mp3',durationSeconds:178.104};
 export function formatMusicName(filename){
  return String(filename||'Untitled').replace(/\.mp3$/i,'').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([a-zA-Z])(\d)/g,'$1 $2').replace(/(\d)([a-zA-Z])/g,'$1 $2').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim().replace(/\b[a-z]/g,c=>c.toUpperCase());
 }
@@ -26,7 +26,7 @@ export function assignmentTracks(value){return Array.isArray(value)?value:typeof
 export function playlistSongs(library,context){
  const ids=assignmentTracks(library.assignments?.[context]);
  if(context==='default')return Object.hasOwn(library.assignments||{},context)?ids:['menu'];
- return ids.filter(id=>id!=='menu');
+ return ids;
 }
 export function playlistSource(library,context){return playlistSongs(library,context).length?context:'default';}
 export function selectedPlaylist(library,context){
@@ -44,3 +44,5 @@ export function musicContext(route,library={assignments:{}}){
 }
 
 export function formatMusicDuration(value){if(!Number.isFinite(value)||value<0)return '—';const seconds=Math.floor(value);return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');}
+
+export function musicTracks(library){const metadata=library.builtinMetadata||{};return [{...defaultMusicTrack,name:metadata.name??defaultMusicTrack.name,artist:metadata.artist??defaultMusicTrack.artist},...library.tracks.map(track=>({...track,artist:track.artist??'Gallorin Studios'}))];}

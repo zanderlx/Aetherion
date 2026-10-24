@@ -63,7 +63,7 @@ test('bundled songs seed once and deleted songs stay deleted after restarting',a
  const first=new MusicLibrary(directory,undefined,seeds);assert.equal((await first.read()).tracks.length,1);
  const second=new MusicLibrary(directory,undefined,seeds);assert.equal((await second.read()).tracks.length,1);
  await second.settings({assignments:{default:id,'main-menu':'menu'},fadeSeconds:2},['default','main-menu']);
- assert.equal(selectedMusic(await second.read(),'main-menu'),id);
+ assert.equal(selectedMusic(await second.read(),'main-menu'),'menu');
  assert.equal(selectedMusic(await second.read(),'stable'),id);
  await second.remove(id);
  const third=new MusicLibrary(directory,undefined,seeds);
@@ -113,15 +113,53 @@ test('clicking a playlist row selects that song while retaining next/previous or
 test('default fallback stays separate from displayed assignments',()=>{
  const library={assignments:{default:['custom'],'wilds/aetherion':[],'wilds/hallowhoof':['menu']}};
  assert.deepEqual(playlistSongs(library,'wilds/aetherion'),[]);assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['custom']);
- assert.deepEqual(playlistSongs(library,'wilds/hallowhoof'),[]);assert.deepEqual(selectedPlaylist(library,'wilds/hallowhoof'),['custom']);
+ assert.deepEqual(playlistSongs(library,'wilds/hallowhoof'),['menu']);assert.deepEqual(selectedPlaylist(library,'wilds/hallowhoof'),['menu']);
  assert.deepEqual(selectedPlaylist({assignments:{}},'town/gacha'),['menu']);
 });
 
-test('legacy default entries are removed from locations while Default is retained',async t=>{
+test('explicit default-song playlist assignments persist',async t=>{
  const dir=await mkdtemp(join(tmpdir(),'gallorin-default-cleanup-'));t.after(()=>rm(dir,{recursive:true,force:true}));
  await mkdir(join(dir,'music'),{recursive:true});
  await writeFile(join(dir,'music/library.json'),JSON.stringify({version:2,tracks:[],assignments:{default:['menu'],'wilds/aetherion':['menu']},fadeSeconds:2}));
  const library=await new MusicLibrary(dir).read();
- assert.deepEqual(library.assignments.default,['menu']);assert.deepEqual(library.assignments['wilds/aetherion'],[]);
- assert.deepEqual(playlistSongs(library,'wilds/aetherion'),[]);assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['menu']);
+ assert.deepEqual(library.assignments.default,['menu']);assert.deepEqual(library.assignments['wilds/aetherion'],['menu']);
+ assert.deepEqual(playlistSongs(library,'wilds/aetherion'),['menu']);assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['menu']);
+});
+
+test('song metadata and batch memberships persist without altering audio or duration',async t=>{
+ const directory=await mkdtemp(join(tmpdir(),'gallorin-song-edit-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ const store=new MusicLibrary(directory),first=await store.import('one.mp3',mp3),id=first.tracks[0].id;
+ const second=await store.import('two.mp3',mp3),other=second.tracks[1].id;
+ const contexts=['default','stable/all','wilds/aetherion','wilds/hallowhoof'];
+ await store.settings({assignments:{'stable/all':[other]},fadeSeconds:2},contexts);
+ const duration=(await store.read()).tracks[0].durationSeconds;
+ await store.update(id,{name:'My edited title',artist:'My artist'});
+ const reloaded=await new MusicLibrary(directory).read();
+ assert.equal(reloaded.tracks[0].name,'My edited title');assert.equal(reloaded.tracks[0].artist,'My artist');
+ assert.equal(reloaded.tracks[0].durationSeconds,duration);
+ assert.deepEqual(await readFile(join(directory,'music',id+'.mp3')),mp3);
+ await assert.rejects(store.update(id,{name:'x',artist:'y',durationSeconds:99}),/Only the name/);
+ await assert.rejects(store.update(id,{name:' ',artist:'y'}),/valid name/);
+ await store.assign(id,['stable/all','wilds/aetherion'],contexts);
+ assert.deepEqual((await store.read()).assignments['stable/all'],[other,id]);
+ await store.assign(id,['wilds/hallowhoof'],contexts);
+ const assigned=await store.read();assert.deepEqual(assigned.assignments['stable/all'],[other]);
+ assert.deepEqual(assigned.assignments['wilds/aetherion'],[]);assert.deepEqual(assigned.assignments['wilds/hallowhoof'],[id]);
+ const before=await readFile(join(directory,'music/library.json'),'utf8');
+ await assert.rejects(store.assign(id,['unknown'],contexts),/existing playlists/);
+ assert.equal(await readFile(join(directory,'music/library.json'),'utf8'),before);
+ await store.update('menu',{name:'Custom Default',artist:'Composer'});
+ assert.deepEqual((await store.read()).builtinMetadata,{name:'Custom Default',artist:'Composer'});
+ await assert.rejects(store.remove('menu'),/not found/);
+ await store.remove(id);assert.deepEqual((await store.read()).assignments['wilds/hallowhoof'],[]);
+ assert.equal((await store.read()).tracks.length,1);
+});
+
+test('live metadata updates preserve playback progress',async()=>{
+ const engine=createMusicEngine({audio:fakeAudio(),makeAudio:fakeAudio,frame:()=>{},clock:()=>0});
+ await engine.command({type:'playlist',key:'library',tracks:[{id:'a',url:'a',name:'Original',artist:'Old artist'}],fadeSeconds:0});
+ await engine.command({type:'play'});await engine.command({type:'seek',value:42});
+ await engine.command({type:'metadata',id:'a',name:'New title',artist:'New artist'});
+ const state=engine.snapshot();assert.equal(state.track.name,'New title');assert.equal(state.track.artist,'New artist');
+ assert.equal(state.currentTime,42);assert.equal(state.playing,true);assert.equal(state.playlistKey,'library');
 });

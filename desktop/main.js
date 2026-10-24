@@ -1,5 +1,5 @@
 import {audioPreferences as normalizeAudio} from '../public/audio-preferences.js';
-import {selectedPlaylist,defaultMusicTrack} from '../public/music-context.js';
+import {selectedPlaylist,defaultMusicTrack,musicTracks} from '../public/music-context.js';
 import {parseChangelog} from '../public/changelog.js';
 import {brandLogo} from '../public/brand-logo.js';
 import {desktopDataPath} from './data-paths.js';
@@ -94,14 +94,15 @@ async function start() {
   const updateAudio=async()=>{await audioCommand({type:'volume',value:audioPreferences.volume/100});await audioCommand({type:'mute',value:audioPreferences.muted});await audioCommand({type:'sfx-volume',value:audioPreferences.soundEffectsVolume/100});};
   ipcMain.handle('music-state',event=>event.sender===main.webContents?audioWindow.webContents.executeJavaScript('window.musicTransport.snapshot()'):null);
   ipcMain.handle('music-command',async(event,value)=>{
-    if(event.sender!==main.webContents||!value||!['select','effect','playlist','next','previous','play','pause','stop','seek','volume','sfx-volume','fade','mute'].includes(value.type))return null;
+    if(event.sender!==main.webContents||!value||!['select','effect','metadata','playlist','next','previous','play','pause','stop','seek','volume','sfx-volume','fade','mute'].includes(value.type))return null;
+    if(value.type==='metadata'){if(typeof value.id!=='string'||typeof value.name!=='string'||typeof value.artist!=='string'||value.name.length>200||value.artist.length>120)return null;value={type:'metadata',id:value.id,name:value.name,artist:value.artist};}
     if(value.type==='playlist'){
       if(!Array.isArray(value.tracks)||value.tracks.length>500||value.tracks.some(track=>!track||typeof track.url!=='string'||!track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(track.url)))return null;
-      value={type:'playlist',key:String(value.key).slice(0,150),startId:value.tracks.some(t=>t.id===value.startId)?value.startId:undefined,tracks:value.tracks.map(track=>({id:String(track.id),name:String(track.name),url:track.url})),fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
+      value={type:'playlist',key:String(value.key).slice(0,150),startId:value.tracks.some(t=>t.id===value.startId)?value.startId:undefined,tracks:value.tracks.map(track=>({id:String(track.id),name:String(track.name),artist:String(track.artist??'Gallorin Studios'),url:track.url})),fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
     }
     if(value.type==='select'||value.type==='effect'){
       if(!value.track||typeof value.track.url!=='string'||!value.track.url.startsWith(origin+'/api/music/media/')||!/^http:\/\/127\.0\.0\.1:\d+\/api\/music\/media\/(menu|[a-f0-9-]{36})$/.test(value.track.url))return null;
-      value={type:value.type,track:{id:String(value.track.id),name:String(value.track.name),url:value.track.url},fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
+      value={type:value.type,track:{id:String(value.track.id),name:String(value.track.name),artist:String(value.track.artist??'Gallorin Studios'),url:value.track.url},fadeSeconds:Math.max(0,Math.min(10,Number(value.fadeSeconds)||0))};
     }
     return audioCommand(value);
   });
@@ -124,7 +125,7 @@ async function start() {
   const fromGame = event => event.sender === main.webContents && event.senderFrame.url.startsWith(origin + '/');
   const playMenuMusic=async()=>{
     const library=await (await fetch(origin+'/api/music')).json();
-    const tracks=selectedPlaylist(library,'main-menu').map(id=>{const track=library.tracks.find(t=>t.id===id)||defaultMusicTrack;return {...track,url:origin+'/api/music/media/'+track.id};});
+    const tracks=selectedPlaylist(library,'main-menu').map(id=>{const track=musicTracks(library).find(t=>t.id===id)||defaultMusicTrack;return {...track,url:origin+'/api/music/media/'+track.id};});
     await audioCommand({type:'playlist',key:'main-menu',tracks,fadeSeconds:library.fadeSeconds});
   };
   ipcMain.on('pause-main-menu',event=>{if(fromGame(event)){void playMenuMusic().catch(log);void main.loadURL(menuURL);}});
@@ -305,8 +306,13 @@ async function start() {
     if(!await main.webContents.executeJavaScript("document.querySelector('.music-manager h1').textContent==='Background Music' && [...document.querySelectorAll('[data-playlist]')].every(d=>!d.open)"))throw Error('Background Music title or closed playlist defaults failed');
     await main.webContents.executeJavaScript("location.hash='stable/all'");await new Promise(resolve=>setTimeout(resolve,200));
     await main.webContents.executeJavaScript("document.querySelector('[data-now-playing-link]').click()");await waitForSong();
-    await main.webContents.executeJavaScript("document.querySelector('.music-library-table [data-delete-song]').click()");
-    const deleteStyled=await main.webContents.executeJavaScript("(()=>{const d=document.querySelector('.music-delete-dialog'),c=d.querySelector('[data-no]'),yes=d.querySelector('[data-yes]');return d.open&&c.classList.contains('secondary')&&Math.abs(c.getBoundingClientRect().height-yes.getBoundingClientRect().height)<1&&getComputedStyle(c).backgroundColor!=='rgba(0, 0, 0, 0)'&&getComputedStyle(yes).backgroundColor!==getComputedStyle(c).backgroundColor;})()");
+    await main.webContents.executeJavaScript("(async()=>{\n const openOptions=()=>document.querySelector('.music-library-table [data-song-options]:not([data-song-options=menu])').click();\n const wait=ms=>new Promise(r=>setTimeout(r,ms));\n openOptions();const id=document.querySelector('[data-song-options][aria-expanded=true]').dataset.songOptions;\n document.querySelector('[data-song-option=add]').click();\n const picker=document.querySelector('.music-playlist-picker');\n const search=picker.querySelector('input[type=search]');search.value='Hallowhoof';search.dispatchEvent(new Event('input'));\n if(![...picker.querySelectorAll('tbody tr')].some(r=>!r.hidden&&r.textContent.includes('Hallowhoof')))throw Error('Playlist search failed');\n search.value='';search.dispatchEvent(new Event('input'));\n picker.querySelector('[data-playlist-choice=\"wilds/aetherion\"]').checked=true;\n picker.querySelector('[data-playlist-choice=\"wilds/hallowhoof\"]').checked=true;\n picker.querySelector('[data-save-playlists]').click();\n for(let i=0;i<100&&picker.open;i++)await wait(30);\n let lib=await(await fetch('/api/music')).json();\n if(!lib.assignments['wilds/aetherion'].includes(id)||!lib.assignments['wilds/hallowhoof'].includes(id))throw Error('Multi-playlist assignment failed');\n openOptions();document.querySelector('[data-song-option=edit]').click();\n const name=document.querySelector('[data-song-edit-name]'),artist=document.querySelector('[data-song-edit-artist]');\n const old=lib.tracks.find(t=>t.id===id);name.value='Edited Smoke Song';artist.value='Smoke Artist';\n document.querySelector('.music-manager h1').click();await wait(30);\n if(!document.querySelector('.music-edit-confirm')?.open)throw Error('Click-out save prompt failed');\n document.querySelector('[data-save-song]').click();\n for(let i=0;i<100&&document.querySelector('.music-edit-confirm');i++)await wait(30);\n lib=await(await fetch('/api/music')).json();const updated=lib.tracks.find(t=>t.id===id);\n if(updated.name!=='Edited Smoke Song'||updated.artist!=='Smoke Artist'||updated.durationSeconds!==old.durationSeconds)throw Error('Inline metadata save failed');\n const row=[...document.querySelectorAll('.music-library-table [data-music-track]')].find(r=>r.dataset.musicTrack===id);\n if(!row.textContent.includes('Smoke Artist')||row.querySelector('input'))throw Error('Saved row did not restore text');\n openOptions();document.querySelector('[data-song-option=edit]').click();document.querySelector('[data-song-edit-name]').value='Discard me';\n document.querySelector('.music-manager h1').click();await wait(30);document.querySelector('[data-discard-song]').click();await wait(30);\n if(document.querySelector('[data-song-edit-name]'))throw Error('Discard did not close edit');\n if((await(await fetch('/api/music')).json()).tracks.find(t=>t.id===id).name!=='Edited Smoke Song')throw Error('Discard saved changes');\n})()");
+    await main.webContents.executeJavaScript("document.querySelector('.music-library-table [data-song-options]:not([data-song-options=menu])').click();document.querySelector('[data-song-option=delete]').click()");
+    await main.webContents.executeJavaScript("document.querySelector('.music-delete-dialog [data-no]').click();document.querySelector('.music-library-table [data-song-options]:not([data-song-options=menu])').click();document.querySelector('[data-song-option=add]').click()");
+    await new Promise(resolve=>setTimeout(resolve,180));
+    await writeFile(join(process.env.AETHERION_TEST_DATA,'music-playlist-picker-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    await main.webContents.executeJavaScript("document.querySelector('.music-playlist-picker [data-cancel-playlists]').click();document.querySelector('.music-library-table [data-song-options]:not([data-song-options=menu])').click();document.querySelector('[data-song-option=delete]').click()");
+    const deleteStyled=await main.webContents.executeJavaScript("(()=>{const d=document.querySelector('.music-delete-dialog'),c=d.querySelector('[data-no]'),yes=d.querySelector('[data-yes]');return d.open&&d.querySelector('p').textContent.includes('library and all playlists')&&c.classList.contains('secondary')&&Math.abs(c.getBoundingClientRect().height-yes.getBoundingClientRect().height)<1&&getComputedStyle(c).backgroundColor!=='rgba(0, 0, 0, 0)'&&getComputedStyle(yes).backgroundColor!==getComputedStyle(c).backgroundColor;})()");
     if(!deleteStyled)throw Error('Music delete/cancel button styling failed');
     await new Promise(resolve=>setTimeout(resolve,220));
     await writeFile(join(process.env.AETHERION_TEST_DATA,'music-delete-smoke.png'),(await main.webContents.capturePage()).toPNG());

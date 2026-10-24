@@ -71,3 +71,7 @@ was specific to this computer and is not an automatic app feature.
 - Fixed lost/rapid mute clicks with stable SVG hit targets, optimistic controls, and ordered preference writes.
 - Player song name/artwork now reveal the current track in All Songs.
 - Simplified crossfade readouts, aligned audio values left, matched playlist title sizing, and styled song-delete actions consistently.
+
+- Added All Songs options menus with searchable multi-playlist assignment, inline song/artist editing with save/discard confirmation, and library-wide delete confirmation.
+- Playlist trash buttons only remove that playlist membership; duration and MP3 files remain unchanged by metadata edits.
+- Hid the page scrollbar while preserving scrolling.
