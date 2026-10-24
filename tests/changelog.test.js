@@ -9,14 +9,14 @@ const baseline=parseChangelog(source).filter(e=>e.version==='1.0.0'||e.version.s
 test('changelog preserves 0.x history and keeps the next Gallorin release at 1.0.0',()=>{
   const entries=parseChangelog(source);
   assert.equal(entries[0].version,pkg.version);
-  assert.equal(entries.find(e=>e.version==='1.0.0').summary[0],'The Symphony of the Wilds');
+  assert.equal(entries.find(e=>e.version==='1.0.0').title,'The Symphony of the Wilds');
   assert.deepEqual(entries.filter(e=>e.version.startsWith('0.')).map(e=>e.version),['0.9.0','0.8.0','0.7.0','0.6.0','0.5.0','0.4.0','0.3.0','0.2.0','0.1.0']);
-  assert.ok(entries.filter(e=>e.version.startsWith('0.')).every(e=>e.summary[0].includes('Aetherion (Legacy)')));
+  assert.ok(entries.filter(e=>e.version.startsWith('0.')).every(e=>e.title==='Aetherion (Legacy)'));
 });
 test('single-release notes contain only the chosen release and its categories',()=>{
   const current=parseChangelog(source).find(e=>e.version==='1.0.0');
   const notes=releaseMarkdown(current,'2026-10-23');
-  assert.match(notes,/^## \[1\.0\.0\] - 2026-10-23/);
+  assert.match(notes,/^## \[1\.0\.0\] - The Symphony of the Wilds - 2026-10-23/);
   assert.match(notes,/### Added/);assert.match(notes,/### Changed/);assert.match(notes,/### Fixed/);
   assert.ok(!notes.includes('## [0.9.0]'));
   assert.equal(releaseTitle(current),'Gallorin v1.0.0 — The Symphony of the Wilds');
@@ -47,4 +47,14 @@ test('release checks fail when package, changelog, lockfile, README, or banner d
   ])await assert.rejects(check({...files,[file]:value}));
   assert.throws(()=>assertReleaseReady({date:'Unreleased'}),/Finalize/);
   assert.doesNotThrow(()=>assertReleaseReady({date:'2026-10-23'}));
+});
+
+test('named release headings keep legacy titles clean and retain old-format parsing support',()=>{
+  const entries=parseChangelog(source);
+  assert.equal(entries.find(e=>e.version==='1.0.0').title,'The Symphony of the Wilds');
+  assert.ok(entries.filter(e=>e.version.startsWith('0.')).every(e=>e.title==='Aetherion (Legacy)' && !e.summary.some(text=>text.includes('originally'))));
+  const first=entries.find(e=>e.version==='1.0.0');
+  assert.ok(first.sections.some(section=>section.items.some(text=>text.includes('Horse Updates (work in progress)'))));
+  const old=parseChangelog('## [0.1.0] - 2026-10-20\nAetherion (Legacy)\n### Added\n- Collection');
+  assert.equal(old[0].summary[0],'Aetherion (Legacy)');
 });

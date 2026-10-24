@@ -33,7 +33,7 @@ async function run(){
     if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date)throw new Error('Choose a valid YYYY-MM-DD release date.');
     if(current.date!=='Unreleased')throw new Error('This release already has a date.');
     const source=await read('CHANGELOG.md');
-    await writeFile(resolve(root,'CHANGELOG.md'),source.replace('## ['+current.version+'] - Unreleased','## ['+current.version+'] - '+date));
+    await writeFile(resolve(root,'CHANGELOG.md'),source.replace('## ['+current.version+'] - '+(current.title?current.title+' - ':'')+'Unreleased','## ['+current.version+'] - '+(current.title?current.title+' - ':'')+date));
     console.log('Finalized '+current.version+' for '+date);return;
   }
   if(args.includes('--release')||args.includes('--write'))assertReleaseReady(current);

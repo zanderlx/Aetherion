@@ -40,7 +40,7 @@ Previous milestones are logged as **0.1.0–0.9.0**. Their original Aetherion ve
 | **0.2.0 · Aetherion (Legacy)** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **0.1.0 · Aetherion (Legacy), initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **199 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **200 passing tests**; browser visual QA remains pending.
 
 ## In-Game Changelog
 

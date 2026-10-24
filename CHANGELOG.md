@@ -2,20 +2,18 @@
 
 All notable changes to Gallorin are documented here.
 Entries use Added, Changed, Fixed, Removed, and Security sections where relevant.
-Gallorin uses major.minor.patch versioning. The next release is 1.0.0.
-Legacy Aetherion milestones are archived as 0.1.0–0.9.0; original names remain in each entry for traceability.
+Gallorin uses major.minor.patch versioning. Gallorin begins at version 1.0.0.
+Legacy milestones are archived as 0.1.0–0.9.0 under Aetherion (Legacy).
 Dates for legacy entries come from their release commits.
 
-## [1.0.0] - Unreleased
-
-The Symphony of the Wilds
+## [1.0.0] - The Symphony of the Wilds - 2026-10-23
 
 The first Gallorin release brings forward the Aetherion collection game with new branding and tools for updating existing horses.
 
 ### Added
 - New Gallorin logo across the title screen, splash, sidebar, Escape menu, favicon, README, and desktop icons.
 - Versioned horse records with schema, generation, and revision metadata preserved through imports and exports.
-- Developer Settings → Horse Updates: keep, set, or reroll selected details for individual horses or batches of up to 100.
+- Developer Settings → Horse Updates (work in progress): keep, set, or reroll selected details for individual horses or batches of up to 100. Further refinements are planned.
 - Preview exact changes before applying, with automatic backups and protection against stale previews.
 - Species-aware trait regeneration, individual mutation-slot controls, Cosmic identity locks, and skill editing.
 - A shared Changelog popup beside the version in both the main menu and in-game sidebar, with the complete historical change log.
@@ -34,9 +32,7 @@ The first Gallorin release brings forward the Aetherion collection game with new
 - Protected Solar, Lunar, Heavenly, Void, and Astral mutations when rerolling existing horses.
 - Prevented legacy Aetherion releases from being offered as Gallorin updates.
 
-## [0.9.0] - 2026-10-23
-
-Aetherion (Legacy) — originally 2.0.0, The Symphony of the Wilds
+## [0.9.0] - Aetherion (Legacy) - 2026-10-23
 
 ### Added
 - Woodland title screen with Play, Settings, and Exit Game.
@@ -57,9 +53,7 @@ Aetherion (Legacy) — originally 2.0.0, The Symphony of the Wilds
 ### Security
 - Escaped mutation emoji content in card and editor HTML.
 
-## [0.8.0] - 2026-10-23
-
-Aetherion (Legacy) — originally 1.7.0
+## [0.8.0] - Aetherion (Legacy) - 2026-10-23
 
 ### Added
 - Windows desktop installer with a themed splash and application icon.
@@ -67,9 +61,7 @@ Aetherion (Legacy) — originally 1.7.0
 - GitHub Releases update checks with download and restart confirmation.
 - Packaged desktop smoke tests for startup, saves, export, and reload.
 
-## [0.7.0] - 2026-10-23
-
-Aetherion (Legacy) — originally 1.6.0
+## [0.7.0] - Aetherion (Legacy) - 2026-10-23
 
 ### Added
 - Global and per-palette color variation controls.
@@ -83,9 +75,7 @@ Aetherion (Legacy) — originally 1.6.0
 - Consolidated definition navigation under Compendium.
 - Updated economy defaults and streamlined numeric settings controls.
 
-## [0.6.0] - 2026-10-22
-
-Aetherion (Legacy) — originally 1.5.0
+## [0.6.0] - Aetherion (Legacy) - 2026-10-22
 
 ### Added
 - JSON import/export for palettes, eye colors, and mutations.
@@ -98,9 +88,7 @@ Aetherion (Legacy) — originally 1.5.0
 - Improved responsive manager controls and navigation.
 - Autosaved stable notes.
 
-## [0.5.0] - 2026-10-22
-
-Aetherion (Legacy) — originally 1.4.0
+## [0.5.0] - Aetherion (Legacy) - 2026-10-22
 
 ### Added
 - Two-tab horse profiles and full-horse artwork viewer.
@@ -112,9 +100,7 @@ Aetherion (Legacy) — originally 1.4.0
 ### Changed
 - Refreshed Wilds navigation and definition-manager forms.
 
-## [0.4.0] - 2026-10-21
-
-Aetherion (Legacy) — originally 1.3.0
+## [0.4.0] - Aetherion (Legacy) - 2026-10-21
 
 ### Added
 - Searchable Eye Color cards, rarity sections, and percentage controls.
@@ -123,9 +109,7 @@ Aetherion (Legacy) — originally 1.3.0
 - Separate Traits navigation.
 - Grouped horse traits and four mutation slots.
 
-## [0.3.0] - 2026-10-21
-
-Aetherion (Legacy) — originally 1.2.0
+## [0.3.0] - Aetherion (Legacy) - 2026-10-21
 
 ### Added
 - Five local JSON definition managers with complete CRUD.
@@ -134,9 +118,7 @@ Aetherion (Legacy) — originally 1.2.0
 - Nineteen standard mutation weights, duplicate lockout, and thresholds.
 - Weighted size generation and recoverable configuration transactions.
 
-## [0.2.0] - 2026-10-20
-
-Aetherion (Legacy) — originally 1.1.0
+## [0.2.0] - Aetherion (Legacy) - 2026-10-20
 
 ### Added
 - Catch-time naming and per-horse notes.
@@ -145,9 +127,7 @@ Aetherion (Legacy) — originally 1.1.0
 ### Changed
 - Updated species spawning, profiles, and navigation.
 
-## [0.1.0] - 2026-10-20
-
-Aetherion (Legacy) — originally 1.0.0, initial preview
+## [0.1.0] - Aetherion (Legacy) - 2026-10-20
 
 ### Added
 - Local horse collection and JSON saves.

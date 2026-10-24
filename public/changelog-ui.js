@@ -18,11 +18,11 @@ export function createChangelog({loadSource,getVersion}){
       const entries=parseChangelog(source);body.replaceChildren();
       for(const entry of entries){
         const section=document.createElement('section');section.className='changelog-release';
-        const heading=appendText(section,'h3','v'+entry.version);
+        const heading=appendText(section,'h3','v'+entry.version+' - '+(entry.title || entry.summary[0]));
         if(entry.version===version)appendText(heading,'span',entry.date==='Unreleased'?'Upcoming':'Current','changelog-badge');
         const date=appendText(section,entry.date==='Unreleased'?'span':'time',entry.date==='Unreleased'?'Unreleased':entry.date,'changelog-date');
         if(entry.date!=='Unreleased')date.dateTime=entry.date;
-        entry.summary.forEach(text=>appendText(section,'p',text));
+        (entry.title?entry.summary:entry.summary.slice(1)).forEach(text=>appendText(section,'p',text));
         for(const category of entry.sections){
           if(!category.items.length)continue;
           appendText(section,'h4',category.name);
