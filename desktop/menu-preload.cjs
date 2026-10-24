@@ -1,4 +1,5 @@
 const {contextBridge,ipcRenderer}=require('electron');
+contextBridge.exposeInMainWorld('gallorinMusic',{state:()=>ipcRenderer.invoke('music-state'),command:value=>ipcRenderer.invoke('music-command',value)});
 contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version'), changelog:()=>ipcRenderer.invoke('desktop-changelog'), audio:()=>ipcRenderer.invoke('audio-state'), setAudio:value=>ipcRenderer.invoke('audio-set',value)});
 ipcRenderer.on('desktop-pause',()=>{
   const changelog=document.querySelector('#changelog-dialog');if(changelog?.open){changelog.close();return;}
@@ -46,7 +47,7 @@ async function showAudioSettings(){
     slider.oninput=async()=>{output.textContent=slider.value+'%';const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,volume:Number(slider.value)});};
     const muteLabel=document.createElement('label');muteLabel.textContent='Mute Music';muteLabel.style.alignItems='center';
     const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.id='audio-muted';checkbox.style.cssText='width:auto;min-height:0;margin:0;accent-color:var(--gold,#d2b477)';
-    checkbox.onchange=async()=>{const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,muted:checkbox.checked});document.querySelector('#desktop-music-toggle').textContent=checkbox.checked?'♫ Music Off':'♫ Music On';};
+    checkbox.onchange=async()=>{const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,muted:checkbox.checked});const toggle=document.querySelector('#desktop-music-toggle');if(toggle)toggle.textContent=checkbox.checked?'♫ Music Off':'♫ Music On';};
     muteLabel.append(checkbox);modal.append(muteLabel);
     const done=document.createElement('button');done.textContent='Done';done.onclick=()=>modal.close();modal.append(done);document.body.append(modal);modal.addEventListener('click',event=>{if(event.target===modal){const r=modal.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)modal.close();}});
   }
@@ -72,9 +73,5 @@ window.addEventListener('DOMContentLoaded',async()=>{
       const fallback=setTimeout(()=>{observer.disconnect();void reveal();},5000);
     }
   }
-  const toggle=document.createElement('button');toggle.id='desktop-music-toggle';
-  toggle.style.cssText='position:fixed;bottom:42px;right:48px;z-index:40;background:#202b25;color:#e9d8b4;border:1px solid #d2b47755;border-radius:5px;padding:9px 15px;font:13px Segoe UI;cursor:pointer';
-  const refresh=async()=>{const state=await ipcRenderer.invoke('audio-state');toggle.textContent=state.muted?'♫ Music Off':'♫ Music On';toggle.title=state.muted?'Unmute music':'Mute music';};
-  toggle.onclick=async()=>{const state=await ipcRenderer.invoke('audio-state');await ipcRenderer.invoke('audio-set',{...state,muted:!state.muted});await refresh();};
-  document.body.append(toggle);await refresh();
+  // The full-width game player owns in-game playback controls.
 });

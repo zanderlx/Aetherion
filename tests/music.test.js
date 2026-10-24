@@ -1,0 +1,56 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm,readFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {MusicLibrary} from '../src/music-library.js';
+import {musicContext,selectedMusic} from '../public/music-context.js';
+import {createMusicEngine} from '../public/music-engine.js';
+const mp3=Buffer.from('ID3test audio');
+test('music imports persist, validate, assign independently, and delete without leaving assignments',async t=>{
+ const directory=await mkdtemp(join(tmpdir(),'gallorin-music-'));
+ t.after(()=>rm(directory,{recursive:true,force:true}));
+ const store=new MusicLibrary(directory);
+ await assert.rejects(store.import('bad.mp3',Buffer.from('invalid')),/valid MP3/);
+ await assert.rejects(store.import('bad.exe',mp3),/MP3/);
+ const first=await store.import('Song A.mp3',mp3),id=first.tracks[0].id;
+ const second=await store.import('Song B.mp3',mp3),id2=second.tracks[1].id;
+ assert.equal(second.tracks[0].name,'Song A');
+ assert.deepEqual(await readFile(join(directory,'music',id+'.mp3')),mp3);
+ const assignments={'wilds/aetherion':id,'wilds/hallowhoof':id2,stable:id2,default:'menu'};
+ await store.settings({assignments,fadeSeconds:2},Object.keys(assignments));
+ assert.deepEqual((await new MusicLibrary(directory).read()).assignments,assignments);
+ await assert.rejects(store.settings({assignments:{unknown:id},fadeSeconds:2},['default']),/existing song/);
+ await assert.rejects(store.settings({assignments:{default:'missing'},fadeSeconds:2},['default']),/existing song/);
+ await assert.rejects(store.settings({assignments:{},fadeSeconds:11},[]),/fade/);
+ const final=await store.remove(id);
+ assert.equal(final.tracks.length,1);assert.equal(final.assignments['wilds/aetherion'],undefined);
+ assert.equal(final.assignments['wilds/hallowhoof'],id2);
+ await assert.rejects(store.remove('../save'),/not found/);
+ assert.equal(selectedMusic(final,'wilds/aetherion'),'menu');
+});
+test('location music uses zone-specific choices and keeps music through configuration pages',()=>{
+ assert.equal(musicContext('wilds/hallowhoof'),'wilds/hallowhoof');
+ assert.equal(musicContext('stable/all'),'stable');assert.equal(musicContext('town/gacha'),'town');
+ assert.equal(musicContext('dev/music'),null);
+ assert.equal(selectedMusic({assignments:{default:'a',stable:'b'}},'stable'),'b');
+ assert.equal(selectedMusic({assignments:{default:'a'}},'town'),'a');
+});
+function fakeAudio(){return {volume:1,muted:false,paused:true,currentTime:0,duration:120,async play(){this.paused=false;},pause(){this.paused=true;},load(){},removeAttribute(){}};}
+test('audio crossfades smoothly, preserves pause intent, seeks and stops',async()=>{
+ let now=0,frames=[],players=[];
+ const original=fakeAudio();players.push(original);
+ const engine=createMusicEngine({audio:original,makeAudio:()=>{const a=fakeAudio();players.push(a);return a;},clock:()=>now,frame:fn=>frames.push(fn)});
+ const tick=value=>{now=value;const callbacks=frames;frames=[];callbacks.forEach(fn=>fn());};
+ await engine.command({type:'select',track:{id:'a',url:'a'},fadeSeconds:0});
+ await engine.command({type:'play'});await engine.command({type:'volume',value:.8});
+ const a=players[1];assert.equal(a.volume,.8);
+ await engine.command({type:'select',track:{id:'b',url:'b'},fadeSeconds:2});
+ tick(1000);assert.equal(a.volume,.4);assert.equal(players[2].volume,.4);
+ tick(2000);assert.equal(a.paused,true);assert.equal(players[2].volume,.8);
+ await engine.command({type:'seek',value:62});assert.equal(engine.snapshot().currentTime,62);
+ await engine.command({type:'pause'});assert.equal(engine.snapshot().playing,false);
+ await engine.command({type:'select',track:{id:'c',url:'c'},fadeSeconds:0});assert.equal(engine.snapshot().playing,false);
+ await engine.command({type:'play'});await engine.command({type:'mute',value:true});assert.equal(engine.snapshot().muted,true);
+ await engine.command({type:'stop'});assert.equal(engine.snapshot().currentTime,0);assert.equal(engine.snapshot().playing,false);
+});

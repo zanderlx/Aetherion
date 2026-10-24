@@ -24,3 +24,11 @@ was specific to this computer and is not an automatic app feature.
 
 - Imported 28 categorized palettes: 23 additions and 5 replacements, including
   updated Bisorse 1 colors and its supplied species links/global setting.
+
+## Next release — Music player (version pending)
+
+### Added
+
+- Full-width themed music player with play/pause, stop, restart, seeking, volume, and mute.
+- User Interface → Music: local MP3 import/deletion, per-zone/Stables/Town/default assignments, and configurable crossfades.
+- Shared desktop menu/game audio preferences and persistent playback across navigation.

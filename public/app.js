@@ -1,3 +1,4 @@
+import {createMusicPlayer} from './music-player.js';
 import {createChangelog} from './changelog-ui.js';
 import {horseUpdatesPage,bindHorseUpdates} from './horse-updates.js';
 import {createGoldFeedback} from './gold-feedback.js';
@@ -43,6 +44,7 @@ let routeVersion = 0, pendingDeletion;
 const openGroups = new Set();
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
+const musicPlayer=createMusicPlayer({notify,getLocations:()=>catalog&&state?locationsFor(catalog,state):[]});
 const openChangelog=createChangelog({loadSource:async()=>(await request('/api/changelog')).changelog,getVersion:()=>appVersion});
 document.addEventListener('click',event=>{if(event.target.closest('#sidebar-changelog'))void openChangelog();});
 watchMutationCardWidths(main);
@@ -126,6 +128,7 @@ function pageContent(pageRoute, pageState = state) {
   else if (route === 'dev/settings' || route === 'dev/economy') return settingsPage(state,catalog);
   else if (route === 'dev/saves') return savesPage(state);
   else if (route === 'dev/roadmap') return roadmapPage();
+  else if (route === 'dev/music') return musicPlayer.page();
   else if (route === 'dev/profile') return keeperPage(state);
   else if (route === 'dev/horse-updates') return horseUpdatesPage(state,catalog);
   else if (route === 'dev/edit-mode') return editModePage(state);
@@ -141,6 +144,8 @@ function pageContent(pageRoute, pageState = state) {
 function render() {
   renderChrome();
   main.innerHTML = pageContent(route);
+  if(route==='dev/music')musicPlayer.bind(main);
+  void musicPlayer.route(route).then(()=>{if(route==='dev/music'){main.innerHTML=musicPlayer.page();musicPlayer.bind(main);}});
   fitMutationDescriptions(main);
   if ($('#horse-grid-size')) {
     $('#horse-grid-size').value = String(stableGridColumns);
