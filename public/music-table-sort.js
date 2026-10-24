@@ -1,5 +1,11 @@
 const sortState=new Map();
 const columns=['number','title','artist','duration'];
+const defaultSort={key:'number',direction:'asc'};
+export function nextMusicSort(previous,key){
+ if(previous?.key!==key)return {key,direction:'asc'};
+ if(previous.direction==='asc')return {key,direction:'desc'};
+ return {key:null,direction:null};
+}
 export function compareMusicValues(a,b,direction='asc'){
  if(a===null||a===undefined)return b===null||b===undefined?0:1;
  if(b===null||b===undefined)return -1;
@@ -16,12 +22,12 @@ function value(row,key){
 const tableKey=table=>table.closest('[data-playlist]')?.dataset.playlist||'all-songs';
 function sort(table,state){
  const rows=[...table.tBodies[0].querySelectorAll('tr[data-music-track]')];
- rows.sort((a,b)=>compareMusicValues(value(a,state.key),value(b,state.key),state.direction)||value(a,'number')-value(b,'number'));
+ rows.sort((a,b)=>compareMusicValues(value(a,state.key||'number'),value(b,state.key||'number'),state.direction||'asc')||value(a,'number')-value(b,'number'));
  table.tBodies[0].append(...rows);
  for(const th of table.querySelectorAll('th[data-music-sort]')){
   const active=th.dataset.musicSort===state.key;
   th.setAttribute('aria-sort',active?(state.direction==='asc'?'ascending':'descending'):'none');
-  th.querySelector('.music-sort-indicator').textContent=active?(state.direction==='asc'?'↑':'↓'):'↕';
+  const indicator=th.querySelector('.music-sort-indicator');indicator.hidden=!active;indicator.textContent=active?(state.direction==='asc'?'↑':'↓'):'';
  }
 }
 export function bindMusicSorting(root,signal){
@@ -31,15 +37,15 @@ export function bindMusicSorting(root,signal){
    const label=th.textContent.trim();th.dataset.musicSort=columns[index];th.setAttribute('aria-sort','none');
    const button=document.createElement('button');button.type='button';button.className='music-sort-button';button.setAttribute('aria-label','Sort by '+(label==='#'?'number':label));
    const title=document.createElement('span');title.textContent=label;
-   const indicator=document.createElement('span');indicator.className='music-sort-indicator';indicator.setAttribute('aria-hidden','true');indicator.textContent='↕';
+   const indicator=document.createElement('span');indicator.className='music-sort-indicator';indicator.setAttribute('aria-hidden','true');indicator.hidden=true;
    button.append(title,indicator);th.replaceChildren(button);
   });
-  const previous=sortState.get(tableKey(table));if(previous)sort(table,previous);
+  sort(table,sortState.get(tableKey(table))||defaultSort);
  }
  root.addEventListener('click',event=>{
   const th=event.target.closest('th[data-music-sort]');if(!th||!root.contains(th))return;
-  const table=th.closest('table'),key=tableKey(table),previous=sortState.get(key);
-  const next={key:th.dataset.musicSort,direction:previous?.key===th.dataset.musicSort&&previous.direction==='asc'?'desc':'asc'};
+  const table=th.closest('table'),key=tableKey(table),previous=sortState.get(key)||defaultSort;
+  const next=nextMusicSort(previous,th.dataset.musicSort);
   sortState.set(key,next);sort(table,next);
  },{signal});
 }

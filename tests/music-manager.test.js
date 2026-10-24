@@ -34,3 +34,10 @@ test('empty playlists show no implicit default rows or reset controls and import
  assert.ok(!html.includes('Location Music'));assert.ok(!html.includes('data-playlist-reset'));
  assert.ok(html.indexOf('All Songs')<html.indexOf('Import Music'));assert.ok(!html.includes('(default)'));
 });
+
+test('music page exposes global folder and per-folder playlist bulk controls',()=>{
+ const html=musicManagerPage({tracks:[],assignments:{},fadeSeconds:2},[]);
+ assert.equal((html.match(/data-music-toggle-all/g)||[]).length,1);
+ assert.equal((html.match(/data-music-toggle-folder/g)||[]).length,8);
+ assert.ok(html.indexOf('data-music-toggle-all')<html.indexOf('data-music-group'));
+});

@@ -62,3 +62,8 @@ Click #, Title, Artist, or Duration to sort a table; click again to reverse.
 Sorting is per table and lasts for the session, including after edits. It changes
 the visible rows only; original row numbers, playlist playback, and deletion targets stay intact.
 Missing durations remain at the bottom in both directions.
+
+Tables begin in row-number ascending order. Headers cycle ascending → descending →
+no explicit sort (row-number ascending). Only the active column shows an adjacent arrow.
+The page Show All/Hide All controls folders; each folder has its own button for
+its playlists. These controls respect reduced-motion preferences.

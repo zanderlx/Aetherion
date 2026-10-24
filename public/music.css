@@ -95,3 +95,10 @@ body.has-music-player{padding-bottom:100px}
 .music-table th.music-order .music-sort-button{justify-content:center;gap:3px}
 .music-table th.music-duration{width:115px}
 @media(max-width:600px){.music-table th.music-duration{width:96px}}
+
+.music-sort-button{justify-content:flex-start}
+.music-sort-indicator[hidden]{display:none}
+.music-scope-toggle{padding:5px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:12px;white-space:nowrap}
+.music-scope-toggle:hover{color:var(--gold);border-color:var(--gold-soft)}
+.music-header-toggle{background:var(--panel);border:1px solid var(--border)}
+@media(max-width:600px){.music-group>summary{gap:10px}.music-scope-toggle{padding:4px 7px}}

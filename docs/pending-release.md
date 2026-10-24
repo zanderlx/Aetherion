@@ -59,3 +59,6 @@ was specific to this computer and is not an automatic app feature.
 - Removed the playlist/table gap and duplicate divider.
 
 - Added ascending/descending column sorting to playlist and All Songs tables without changing saved playback order.
+
+- Added three-state column sorting with default ascending row numbers and adjacent active-only arrows.
+- Added page-level folder and per-folder playlist Show All/Hide All controls.
