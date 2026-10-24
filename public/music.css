@@ -204,3 +204,4 @@ body.has-music-player.music-player-compact{--music-player-height:56px}
 .music-picker-table tr[aria-disabled=true]:hover{background:transparent}
 .music-group>summary h2{display:flex;align-items:center;gap:10px}
 .music-group>summary h2>.icon{width:22px;height:22px;flex-shrink:0;color:var(--gold)}
+.music-heading>h1,.music-all-heading>h2{font-family:var(--serif);font-size:44px;font-weight:400;line-height:1.18;letter-spacing:-1px}
