@@ -1,6 +1,6 @@
 import {soundEffectGroups,isSoundEffect} from '../public/music-effects.js';
 import {durationOfFile,durationOfBuffer} from './music-duration.js';
-import {assignmentTracks,formatMusicName} from '../public/music-context.js';
+import {assignmentTracks,formatMusicName,normalizePlaylistSelections} from '../public/music-context.js';
 import {mkdir,readFile,writeFile,rename,unlink,open,stat,copyFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -92,7 +92,7 @@ export class MusicLibrary {
       const track=library.tracks.find(t=>t.id===id),effect=isSoundEffect(track);
         const validContexts=effect?soundEffectGroups.flatMap(group=>group.items.map(item=>item.id)):contexts.filter(key=>!key.startsWith('effect/'));
         if(playlistIds.some(key=>!validContexts.includes(key)))throw Error('Choose a matching music playlist or sound effect event.');
-        const selected=new Set(playlistIds);
+        const selected=new Set(normalizePlaylistSelections(playlistIds));
       for(const context of validContexts){
         const old=assignmentTracks(library.assignments[context]);
         if(selected.has(context)){

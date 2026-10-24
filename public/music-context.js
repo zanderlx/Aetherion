@@ -28,9 +28,15 @@ export function playlistSongs(library,context){
  if(context==='default')return Object.hasOwn(library.assignments||{},context)?ids:['menu'];
  return ids;
 }
-export function playlistSource(library,context){return playlistSongs(library,context).length?context:'default';}
+export function playlistSource(library,context){
+ if(playlistSongs(library,context).length)return context;
+ const parent=musicParent(context);return parent&&playlistSongs(library,parent).length?parent:'default';
+}
+export function normalizePlaylistSelections(ids){
+ const selected=new Set(ids);return [...selected].filter(id=>!selected.has(musicParent(id)));
+}
 export function selectedPlaylist(library,context){
- const own=playlistSongs(library,context);if(own.length)return own;
+ const parent=musicParent(context),own=[...new Set([...(parent?playlistSongs(library,parent):[]),...playlistSongs(library,context)])];if(own.length)return own;
  const fallback=playlistSongs(library,'default');return fallback.length?fallback:['menu'];
 }
 export function selectedMusic(library,context){return selectedPlaylist(library,context)[0];}

@@ -1,3 +1,4 @@
+import {smokePlaylistSelection} from './music-playlist-selection-smoke.js';
 import {smokePlayerLayout} from './music-player-layout-smoke.js';
 import {smokeSoundEffects} from './music-effects-smoke.js';
 import {audioPreferences as normalizeAudio} from '../public/audio-preferences.js';
@@ -320,6 +321,7 @@ async function start() {
     await new Promise(resolve=>setTimeout(resolve,220));
     await writeFile(join(process.env.AETHERION_TEST_DATA,'music-delete-smoke.png'),(await main.webContents.capturePage()).toPNG());
     await main.webContents.executeJavaScript("document.querySelector('.music-delete-dialog [data-no]').click()");
+    await smokePlaylistSelection(main);
     await smokePlayerLayout(main,process.env.AETHERION_TEST_DATA);
     await smokeSoundEffects(main,audioWindow,process.env.AETHERION_TEST_DATA);
     const menuLibrary=await (await fetch(origin+'/api/music')).json();

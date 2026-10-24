@@ -1,3 +1,4 @@
+import {bindPlaylistSelection} from './music-playlist-selection.js';
 import {soundEffectGroups,isSoundEffect} from './music-effects.js';
 import {musicGroups,musicTracks,playlistSongs} from './music-context.js';
 import {escapeHTML as e,icon,groups as navigationGroups} from './ui.js';
@@ -81,18 +82,19 @@ export function bindSongActions(root,services,{signal,redraw}){
   const tableBox=document.createElement('div');tableBox.className='music-picker-table';
   tableBox.innerHTML='<table><thead><tr><th scope="col">Section</th><th scope="col">'+(effect?'Sound Event':'Playlist')+'</th></tr></thead><tbody>'+groups.flatMap(group=>group.items.map(item=>'<tr data-playlist-section="'+e(group.id)+'" data-playlist-search="'+e((item.name+' '+group.name).toLowerCase())+'"><td><label><input type="checkbox" data-playlist-choice="'+e(item.id)+'" aria-label="'+e(group.name+' / '+item.name)+'"'+(playlistSongs(library,item.id).includes(id)?' checked':'')+'><span>'+e(group.name)+'</span></label></td><td>'+e(item.name)+'</td></tr>')).join('')+'</tbody></table>';
   dialog.append(tableBox);
+  const refreshAvailability=bindPlaylistSelection(tableBox,groups);
   const empty=document.createElement('p');empty.className='music-search-empty';empty.textContent=effect?'No matching sound events.':'No matching playlists.';empty.hidden=true;dialog.append(empty);
   const filter=()=>{let visible=0;const term=search.value.trim().toLowerCase();tableBox.querySelectorAll('[data-playlist-search]').forEach(row=>{row.hidden=!row.dataset.playlistSearch.includes(term)||(section.value&&row.dataset.playlistSection!==section.value);if(!row.hidden)visible++;});empty.hidden=visible>0;};
   search.addEventListener('input',filter);section.addEventListener('change',filter);
-  tableBox.addEventListener('click',event=>{if(event.target.closest('label')||event.target.matches('input'))return;const checkbox=event.target.closest('tr')?.querySelector('input');if(checkbox)checkbox.checked=!checkbox.checked;});
+  tableBox.addEventListener('click',event=>{if(event.target.closest('label')||event.target.matches('input'))return;const checkbox=event.target.closest('tr')?.querySelector('input');if(checkbox&&!checkbox.disabled){checkbox.checked=!checkbox.checked;refreshAvailability();}});
   const error=document.createElement('p');error.className='music-song-error';error.setAttribute('role','alert');dialog.append(error);
   const actions=document.createElement('div');actions.className='music-dialog-actions';actions.innerHTML='<button type="button" class="button secondary" data-cancel-playlists>Cancel</button><button type="button" class="button primary" data-save-playlists>Save</button>';dialog.append(actions);
   actions.querySelector('[data-cancel-playlists]').onclick=()=>dialog.close();
   actions.querySelector('[data-save-playlists]').onclick=async()=>{
-   const selected=[...dialog.querySelectorAll('[data-playlist-choice]:checked')].map(input=>input.dataset.playlistChoice);
+   const selected=[...dialog.querySelectorAll('[data-playlist-choice]:checked:not(:disabled)')].map(input=>input.dataset.playlistChoice);
    dialog.querySelectorAll('button,input,select').forEach(el=>el.disabled=true);
    try{await services.assignSong(id,selected);dialog.close();redraw();}
-   catch(e){error.textContent=e.message;dialog.querySelectorAll('button,input,select').forEach(el=>el.disabled=false);}
+   catch(e){error.textContent=e.message;dialog.querySelectorAll('button,input,select').forEach(el=>el.disabled=false);refreshAvailability();}
   };
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();search.focus();
  };

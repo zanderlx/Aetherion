@@ -199,3 +199,6 @@ body.has-music-player.music-player-compact{--music-player-height:56px}
 @media(max-width:600px){.music-library-table th:last-child{width:48px}}
 
 .music-transport{width:100%;max-width:560px;min-width:0;justify-self:center}
+.music-picker-table tr[aria-disabled=true]{opacity:.42;cursor:not-allowed}
+.music-picker-table tr[aria-disabled=true] label{cursor:not-allowed}
+.music-picker-table tr[aria-disabled=true]:hover{background:transparent}

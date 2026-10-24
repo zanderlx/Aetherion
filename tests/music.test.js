@@ -70,10 +70,10 @@ test('bundled songs seed once and deleted songs stay deleted after restarting',a
  assert.equal((await third.read()).tracks.length,0);
 });
 
-test('assigned songs play directly and empty/unassigned pages use Default',()=>{
+test('section-wide songs apply alongside direct assignments with Default as fallback',()=>{
  const library={assignments:{default:['menu'],stable:['a','b'],'stable/all':['c','d']}};
- assert.deepEqual(selectedPlaylist(library,'stable/all'),['c','d']);
- assert.deepEqual(selectedPlaylist(library,'stable/breeding'),['menu']);
+ assert.deepEqual(selectedPlaylist(library,'stable/all'),['a','b','c','d']);
+ assert.deepEqual(selectedPlaylist(library,'stable/breeding'),['a','b']);
  assert.deepEqual(selectedPlaylist(library,'wilds/aetherion'),['menu']);
  assert.equal(formatMusicName('aetherion-wilds.mp3'),'Aetherion Wilds');
  assert.equal(formatMusicName('cyberspace2.mp3'),'Cyberspace 2');
@@ -162,4 +162,16 @@ test('live metadata updates preserve playback progress',async()=>{
  await engine.command({type:'metadata',id:'a',name:'New title',artist:'New artist'});
  const state=engine.snapshot();assert.equal(state.track.name,'New title');assert.equal(state.track.artist,'New artist');
  assert.equal(state.currentTime,42);assert.equal(state.playing,true);assert.equal(state.playlistKey,'library');
+});
+
+test('All assignments are deduplicated and apply to every child playlist',async t=>{
+ const {normalizePlaylistSelections,playlistSource}=await import('../public/music-context.js');
+ assert.deepEqual(normalizePlaylistSelections(['wilds','wilds/aetherion','stable/all']),['wilds','stable/all']);
+ const directory=await mkdtemp(join(tmpdir(),'gallorin-all-playlists-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ const store=new MusicLibrary(directory),library=await store.import('all.mp3',mp3),id=library.tracks[0].id;
+ await store.assign(id,['wilds','wilds/aetherion'],['wilds','wilds/aetherion','wilds/hallowhoof']);
+ const saved=await store.read();assert.deepEqual(saved.assignments.wilds,[id]);assert.deepEqual(saved.assignments['wilds/aetherion']||[],[]);
+ assert.deepEqual(selectedPlaylist(saved,'wilds/hallowhoof'),[id]);assert.deepEqual(selectedPlaylist(saved,'wilds/new-zone'),[id]);
+ assert.equal(playlistSource(saved,'wilds/hallowhoof'),'wilds');
+ assert.deepEqual(selectedPlaylist({assignments:{wilds:['a'],'wilds/aetherion':['a','b']}},'wilds/aetherion'),['a','b']);
 });
