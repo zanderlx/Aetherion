@@ -1,3 +1,4 @@
+import {bindMusicSorting} from './music-table-sort.js';
 import {bindMusicDisclosures} from './music-disclosures.js';
 import {escapeHTML as e,icon} from './ui.js';
 import {musicGroups,defaultMusicTrack,playlistSongs,formatMusicDuration} from './music-context.js';
@@ -8,7 +9,7 @@ const chevron='<span class="music-chevron" aria-hidden="true"><svg viewBox="0 0 
 const rowPlay=(track,index,context='')=>'<td class="music-order"><span class="music-index-control"><span class="music-row-number">'+(index+1)+'</span><button type="button" class="music-row-play" data-preview-song="'+e(track.id)+'"'+(context?' data-playlist-context="'+e(context)+'"':'')+' title="Play song" aria-label="Play '+e(track.name)+'">▶</button></span></td>';
 function songRows(library,context){
  const ids=playlistSongs(library,context);
- if(!ids.length)return '<tr><td colspan="5" class="music-empty-playlist">No songs in this playlist.</td></tr>';
+ if(!ids.length)return '<tr><td colspan="5" class="music-empty-playlist">No songs in this playlist. Using default song.</td></tr>';
  return ids.map((id,index)=>{
   const track=allTracks(library).find(t=>t.id===id);if(!track)return '';
   return '<tr data-music-track="'+e(id)+'">'+rowPlay(track,index,context)+'<td><strong>'+e(track.name)+'</strong></td><td class="music-artist">Gallorin Studios</td><td class="music-duration">'+formatMusicDuration(track.durationSeconds)+'</td><td class="music-row-actions"><button type="button" class="music-row-trash" data-playlist-remove="'+e(context)+'" data-index="'+index+'" title="Remove from playlist" aria-label="Remove '+e(track.name)+' from playlist">'+icon('trash')+'</button></td></tr>';
@@ -34,6 +35,7 @@ export function musicManagerPage(library,locations){
 export function bindMusicManager(root,services){
  bindings.get(root)?.abort();const controller=new AbortController();bindings.set(root,controller);const options={signal:controller.signal};
  bindMusicDisclosures(root,controller.signal);
+ bindMusicSorting(root,controller.signal);
  updateMusicRows(root,services.getPlaybackState?.());
  let busy=false;
  const redraw=()=>{

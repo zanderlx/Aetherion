@@ -57,3 +57,5 @@ was specific to this computer and is not an automatic app feature.
 
 - Added smooth, reversible expand/collapse animations to music folders and playlists, respecting reduced-motion preferences.
 - Removed the playlist/table gap and duplicate divider.
+
+- Added ascending/descending column sorting to playlist and All Songs tables without changing saved playback order.

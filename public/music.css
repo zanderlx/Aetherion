@@ -86,3 +86,12 @@ body.has-music-player{padding-bottom:100px}
 .music-manager details[data-disclosure-animating]{overflow:hidden;will-change:height}
 .music-manager details[data-expanding="false"]>summary>.music-chevron{transform:rotate(0deg)}
 @media(prefers-reduced-motion:reduce){.music-manager .music-chevron{transition:none}}
+
+.music-table th[data-music-sort]{cursor:pointer}
+.music-sort-button{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:inherit;white-space:nowrap}
+.music-sort-indicator{font:12px/1 var(--sans);opacity:.45}
+.music-table th[aria-sort=ascending],.music-table th[aria-sort=descending]{color:var(--gold)}
+.music-table th[aria-sort=ascending] .music-sort-indicator,.music-table th[aria-sort=descending] .music-sort-indicator{opacity:1}
+.music-table th.music-order .music-sort-button{justify-content:center;gap:3px}
+.music-table th.music-duration{width:115px}
+@media(max-width:600px){.music-table th.music-duration{width:96px}}

@@ -57,3 +57,8 @@ including existing libraries. Durations align left in the table.
 
 Import Music is in All Songs and uses the music-note icon. Playlist rows do not
 show a default suffix beside Glades of Gallorin.
+
+Click #, Title, Artist, or Duration to sort a table; click again to reverse.
+Sorting is per table and lasts for the session, including after edits. It changes
+the visible rows only; original row numbers, playlist playback, and deletion targets stay intact.
+Missing durations remain at the bottom in both directions.
