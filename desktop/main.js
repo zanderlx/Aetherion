@@ -1,3 +1,4 @@
+import {parseChangelog} from '../public/changelog.js';
 import {brandLogo} from '../public/brand-logo.js';
 import {desktopDataPath} from './data-paths.js';
 import updater from 'electron-updater';
@@ -93,6 +94,7 @@ async function start() {
   ipcMain.handle('audio-set',async(event,value)=>{if(event.sender!==main.webContents || !Number.isFinite(value.volume))return;audioPreferences={volume:Math.max(0,Math.min(100,value.volume)),muted:value.muted===true};await updateAudio();audioWrite=audioWrite.then(()=>writeFile(audioFile,JSON.stringify(audioPreferences))).catch(log);await audioWrite;return audioPreferences;});
   const menuURL = pathToFileURL(join(root,'desktop/menu.html')).href + '?game=' + encodeURIComponent(origin);
   ipcMain.handle('desktop-logo',event=>event.sender===main.webContents ? brandLogo('pause',72,'pause-logo') : '');
+  ipcMain.handle('desktop-changelog',event=>event.sender===main.webContents ? readFile(join(root,'CHANGELOG.md'),'utf8') : '');
   ipcMain.handle('desktop-version',event=>event.sender===main.webContents ? app.getVersion() : null);
   ipcMain.on('menu-exit',event=>{if(event.sender===main.webContents && event.senderFrame.url===menuURL)app.quit();});
   const fromGame = event => event.sender === main.webContents && event.senderFrame.url.startsWith(origin + '/');
@@ -112,6 +114,18 @@ async function start() {
   await audioWindow.webContents.executeJavaScript('document.querySelector("audio").play()');
   if (smoke) {
     await writeFile(join(process.env.AETHERION_TEST_DATA,'menu-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    const historyCount=parseChangelog(await readFile(join(root,'CHANGELOG.md'),'utf8')).length;
+    await main.webContents.executeJavaScript("document.querySelector('#open-changelog').click()");
+    for(let attempt=0;attempt<50;attempt++){
+      if(await main.webContents.executeJavaScript("document.querySelectorAll('.changelog-release').length==="+historyCount))break;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    if(!await main.webContents.executeJavaScript("document.querySelector('#changelog-dialog').open && document.querySelectorAll('.changelog-release').length==="+historyCount))throw new Error('Changelog history failed to load');
+    await writeFile(join(process.env.AETHERION_TEST_DATA,'changelog-smoke.png'),(await main.webContents.capturePage()).toPNG());
+    main.webContents.sendInputEvent({type:'keyDown',keyCode:'Escape'});
+    main.webContents.sendInputEvent({type:'keyUp',keyCode:'Escape'});
+    await new Promise(resolve=>setTimeout(resolve,100));
+    if(await main.webContents.executeJavaScript("document.querySelector('#changelog-dialog').open"))throw new Error('Escape did not close changelog');
     const menuTest=await main.webContents.executeJavaScript("(()=>{document.querySelector('#settings').click();const opened=document.querySelector('dialog').open;const slider=document.querySelector('#volume');slider.value=35;slider.dispatchEvent(new Event('input'));document.querySelector('#mute').click();const valid=opened && true;document.querySelector('dialog').close();return valid;})()");
     if(!menuTest)throw new Error('Menu audio controls failed');
     await main.webContents.executeJavaScript("document.querySelector('#play').click()");

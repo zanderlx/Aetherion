@@ -1,3 +1,4 @@
+import {bindChangelog} from './changelog.js';
 const mute=document.querySelector('#mute'),volume=document.querySelector('#volume'),value=document.querySelector('#volume-value'),settings=document.querySelector('#audio-settings');
 let preferences=await window.desktopMenu.audio();
 const audioMuted=document.querySelector('#audio-muted');
@@ -13,7 +14,8 @@ document.querySelector('#play').onclick=async()=>{
   location.href=new URLSearchParams(location.search).get('game');
 };
 document.querySelector('#exit').onclick=()=>window.desktopMenu.exit();
-window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='GALLORIN V'+version;});
+bindChangelog();
+window.desktopMenu.version().then(version=>{if(version)document.querySelector('#version').textContent='GALLORIN v'+version;});
 
 audioMuted.onchange=async()=>{preferences=await window.desktopMenu.setAudio({...preferences,muted:audioMuted.checked});display();};
 

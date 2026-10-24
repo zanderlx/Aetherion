@@ -1,5 +1,5 @@
 const {contextBridge,ipcRenderer}=require('electron');
-contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version'), audio:()=>ipcRenderer.invoke('audio-state'), setAudio:value=>ipcRenderer.invoke('audio-set',value)});
+contextBridge.exposeInMainWorld('desktopMenu',{exit:()=>ipcRenderer.send('menu-exit'), version:()=>ipcRenderer.invoke('desktop-version'), changelog:()=>ipcRenderer.invoke('desktop-changelog'), audio:()=>ipcRenderer.invoke('audio-state'), setAudio:value=>ipcRenderer.invoke('audio-set',value)});
 ipcRenderer.on('desktop-pause',()=>{
   const audioDialog=document.querySelector('#desktop-audio');if(audioDialog?.open){audioDialog.close();return;}
   let modal=document.querySelector('#desktop-pause');
