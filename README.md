@@ -1,8 +1,8 @@
 <div align="center">
 
-![Gallorin — A Horsekeeper's Chronicle, Version 1.0](docs/assets/gallorin-banner.svg)
+![Gallorin — A Horsekeeper's Chronicle, Version 1.1](docs/assets/gallorin-banner.svg)
 
-**Gallorin v1.0.0 · The Symphony of the Wilds**
+**Gallorin v1.1.0 · Music & Sound Effects — review draft**
 
 **A local fantasy horse sanctuary you can make your own.**
 
@@ -14,7 +14,7 @@ Explore woodland realms, collect companions, and customize your world through vi
 
 ---
 
-> **Gallorin v1.0.0 — The Symphony of the Wilds begins a fresh version series under the Gallorin name.** It includes the desktop title screen, continuous music and audio settings, versioned horse records, granular Horse Updates, and the existing collection game. Local saves, weighted spawning, horse profiles, skill tracking, and visual configuration editing work today. Skill training, breeding, equipment gameplay, and Town activities remain planned.
+> **Gallorin v1.1.0 — Music & Sound Effects** adds location playlists, a collapsible music player, separate sound-effect management, and cosmic-spawn audio. It also includes the storage-isolation fix and 28 palette updates. This version is prepared for personal review; validation and publishing follow approval. Skill training, breeding, equipment gameplay, and Town activities remain planned.
 
 ## Version History
 
@@ -22,11 +22,12 @@ Versions follow **major.minor.patch**: major for breaking changes, minor for com
 
 | Version | Changes |
 | --- | --- |
-| **Gallorin 1.0.0 — current** | The Symphony of the Wilds: fresh branding/version series; versioned horse records; preview-first developer horse updates; species-safe regeneration and Cosmic locks; corrected Friesian spelling; all existing desktop, audio, collection, and configuration features. |
+| **Gallorin 1.1.0 — review draft** | Location-aware music, sound-effect library and cosmic cues, compact player, playlist editing, portable audio defaults, storage isolation, and categorized palette updates. |
+| **Gallorin 1.0.0 — published** | The Symphony of the Wilds: fresh branding/version series; versioned horse records; preview-first developer horse updates; species-safe regeneration and Cosmic locks; corrected Friesian spelling; all existing desktop, audio, collection, and configuration features. |
 
 ### Aetherion (Legacy)
 
-The former 0.8.0 desktop and 0.9.0 music/menu changes are included in 1.0.0 in that order, ahead of Gallorin-specific changes. Earlier milestones are logged as **0.1.0–0.7.0**. Their original Aetherion version mappings and dated changes are preserved in [CHANGELOG.md](CHANGELOG.md). Gallorin v1.0.0 is the next release; existing saves remain compatible.
+The former 0.8.0 desktop and 0.9.0 music/menu changes are included in 1.0.0 in that order, ahead of Gallorin-specific changes. Earlier milestones are logged as **0.1.0–0.7.0**. Their original Aetherion version mappings and dated changes are preserved in [CHANGELOG.md](CHANGELOG.md). Gallorin v1.0.0 was the first Gallorin release; existing saves remain compatible.
 
 | Legacy version | Changes |
 | --- | --- |
@@ -38,15 +39,15 @@ The former 0.8.0 desktop and 0.9.0 music/menu changes are included in 1.0.0 in t
 | **0.2.0 · Aetherion (Legacy)** | Adds catch-time naming, per-horse notes and editable details, text deletion/restoration, independent equal-odds species spawning, and profile/navigation refinements. Includes gameplay/UI commits through `6aec655`. |
 | **0.1.0 · Aetherion (Legacy), initial preview** | Local collection and saves, editable definitions and zones, themes, website text editing, profiles, search, and backups. Baseline commit: `4b18fa7`. |
 
-Existing player saves migrate automatically with a dated backup. Breeding and executable gameplay effects remain planned. The current automated suite has **201 passing tests**; browser visual QA remains pending.
+Existing player saves migrate automatically with a dated backup. Breeding and mutation gameplay effects remain planned. Automated checks use isolated data; personal release review is required before post-preparation validation.
 
 ## In-Game Changelog
 
-The main menu and in-game sidebar show **Gallorin v1.0.0 | Changelog**. Open Changelog for a scrollable, offline history organized by version, date, Added, Changed, and Fixed. Escape, the close button, and clicking outside dismiss the popup. [CHANGELOG.md](CHANGELOG.md) also supplies the notes for each GitHub release. Before pushing, update the current entry and run npm run release:check; before publishing, finalize its date. The next push/release remains v1.0.0.
+The main menu and in-game sidebar show **Gallorin v1.1.0 | Changelog**. Open Changelog for a scrollable, offline history organized by version, date, Added, Changed, and Fixed. Escape, the close button, and clicking outside dismiss the popup. [CHANGELOG.md](CHANGELOG.md) also supplies the notes for each GitHub release. Before pushing, prepare the version and release documentation, stop for personal review, then run validation after approval. Before publishing a release, finalize its changelog date. Version 1.1.0 remains Unreleased during review.
 
 ## Desktop Release
 
-Download the installer from [GitHub Releases](https://github.com/zanderlx/Gallorin/releases/latest). No Node.js or Git is needed for the installed app. Music starts at the title screen and continues during gameplay, with saved mute/volume controls (35% default). Escape opens Back To Game, Settings, Main Menu, and Exit Game. Development uses separate saves. See the [desktop guide](desktop/README.md).
+Download the installer from [GitHub Releases](https://github.com/zanderlx/Gallorin/releases/latest). No Node.js or Git is needed for the installed app. Music starts at the title screen and continues during gameplay, with saved mute/volume controls. The v1.1.0 source uses a 25% default for fresh installations. Escape opens Back To Game, Settings, Main Menu, and Exit Game. Development uses separate saves. Source changes are currently preparing v1.1.0; the latest installer remains the latest published release until a new release is authorized. See the [desktop guide](desktop/README.md).
 
 ## Horse Updates
 
@@ -85,7 +86,9 @@ cd Gallorin
 
 ### 3. Start your sanctuary
 
-**Windows, no terminal needed:** double-click **Launch Gallorin.vbs** in the project folder. It starts the server in the background, waits until it is ready, then opens your default browser. Double-clicking again reuses the running server. Double-click **Stop Gallorin.vbs** when finished; closing the browser alone leaves the server running. Both shortcuts work from folders containing spaces.
+**First setup:** run `npm ci` once inside the project folder to install dependencies, including MP3 metadata support. Repeat it after pulling dependency changes.
+
+**Windows, no terminal needed after setup:** double-click **Launch Gallorin.vbs** in the project folder. It starts the server in the background, waits until it is ready, then opens your default browser. Double-clicking again reuses the running server. Double-click **Stop Gallorin.vbs** when finished; closing the browser alone leaves the server running. Both shortcuts work from folders containing spaces.
 
 Startup errors are shown in a dialog; server logs are in `data/desktop-launcher.log` (not committed). Node.js 22+ must be available on PATH. These shortcuts use Windows Script Host; managed computers may disable it.
 
@@ -97,7 +100,7 @@ npm start
 
 Open **[http://127.0.0.1:4173](http://127.0.0.1:4173)** in your browser.
 
-**Browser edition:** no `npm install` is needed; the browser server uses Node built-ins. **Desktop development:** run `npm ci`, then `npm run desktop`. See the [desktop guide](desktop/README.md) for Windows installers, save migration, and GitHub Releases updates.
+**Browser edition:** run `npm ci` once, then `npm start`. **Desktop development:** run `npm ci`, then `npm run desktop`. See the [desktop guide](desktop/README.md) for Windows installers, save migration, and GitHub Releases updates.
 
 Keep the terminal open while playing. Press **Ctrl+C** to stop the server. Start it again with `npm start`; your saved world is retained.
 
@@ -138,13 +141,24 @@ Then open `http://127.0.0.1:4174`. The server listens only on your computer's lo
 | Stable search, sorting, favorites, and preserved sale records | Maintain mutation, item, item-theme, and atmosphere definitions |
 | Nine-region color swatches and saved characteristics | Edit website wording without changing source code |
 | Current gold editor and transaction history | Nine website themes, plus custom theme editing |
-| Site-wide search with **Ctrl+K / Cmd+K** | Profile name, About Me, and twelve avatar color choices |
+| Location playlists, compact music player, and independent cosmic sound effects | Profile name, About Me, and twelve avatar color choices |
 | Automatic JSON saving, exports, and backups | Grouped, alphabetized navigation that retains its scroll position |
 
 Save and Cancel controls appear when a form has changes; horse Notes instead save when focus leaves the editor. Deletion requires confirmation. Existing horse snapshots are preserved when definitions change.
 
 
-### What's new in 1.5
+### Music & sound effects in v1.1.0
+
+- **Player:** play/pause, skip, previous, stop, restart, seeking, mute, and volume. Minimize it to keep the name, controls, and volume while hiding artwork, artist, and timeline. Audio continues through layout changes.
+- **Background Music:** navigation folders and collapsible playlists with song counts, duration columns, sortable headers, and page/folder Show All controls.
+- **All Songs:** import MP3s and use row options to Add, Edit, or Delete. Add opens searchable, section-filtered playlist checkboxes. Edit title/artist inline; Enter or the checkmark saves, while clicking away offers Save or Discard.
+- **All assignments:** apply a song throughout a section. Individual rows become disabled and unchecked under All; selecting every individual destination consolidates into All on save.
+- **All Sound Effects:** matching import/edit/delete controls. Add assigns a sound to Cosmic Horse Spawn; effects play over music using their own volume and do not replay when encounters reload.
+- **Fresh-install defaults:** Music 25%, Sound Effects 100%, unmuted, two-second crossfade; Aetherion Wilds in its zone, Halloween 1 → Halloween 2 in Hallowhoof, Town across Town, and Glades of Gallorin as fallback. Magic Twinkle is the initial cosmic cue. Existing preferences stay intact.
+- **Audio Settings:** shared between menu and game; Music, Sound Effects, and crossfade from 0–10 seconds in whole-second steps.
+- **Local libraries:** imports and assignments remain local; the bundled soundtrack and portable startup defaults ship with the repo. [Music guide](docs/music.md).
+
+### Definition managers & editing
 
 - **Matching managers:** Palettes now uses searchable cards, Type/Scope filters, compact dropdowns, direction controls, and create/edit modals like Eye Colors and Mutations. Shared import, export, and centered confirmed-delete buttons keep the editors consistent.
 - **Definition transfers:** export one palette, eye color, or mutation as versioned JSON and import the same file. Review and edit it before clicking **Import**; **Cancel Import** adds nothing. Invalid files are rejected and duplicate names receive a distinct imported name. Palette species links must exist in the target registry. Files preserve editable fields and regenerate local identifiers; full-world backups remain separate.
@@ -154,19 +168,19 @@ Save and Cancel controls appear when a form has changes; horse Notes instead sav
 - **Horse Notes:** stable Notes and wild descriptions fill their sections. Notes save on clicking away or pressing Esc without Save/Cancel buttons; clearing a note immediately restores the centered empty prompt.
 - **Navigation and controls:** refresh preserves the current page and opens only its navigation folder. Wilds text toggles its dropdown. Website & Profile is now **User Interface**. Dropdown arrows are inset consistently; manager search fields and filters are compact and responsive.
 
-### What's new in 1.4
+### Horse profiles & collection
 
 - **Horse profiles:** matching Info and Traits pages with external bookmark tabs. Info contains horse details, equipment placeholders, Notes for owned horses or Description for wild horses, and Skills. Traits contains a centered 3×3 Palette, grouped appearance traits, and four mutation slots with locks for unused slots. Click the headshot to open a padded full-horse artwork viewer.
 - **Skills:** each horse stores its own Agility, Strength, Jump, Bond, and Wing levels and XP. Colored bars fill by current XP divided by the requirement for that level, rounded down to whole percentages. Level 10 remains numbered until it reaches 34,000 XP, then displays MAX. Training gameplay is not implemented yet.
 - **My Horses:** compact headshot cards, colored gender icons, favorite hearts, rarity sorting, ascending/descending controls, and a live grid-size slider from 3 to 6 columns (default 5, reduced on small screens). Import is beside the heading; imports require confirmation before entering the stable.
-- **Wilds:** expandable zone navigation with Aetherion Wilds as its main link; no duplicate zone tabs or Event markers. Tame opens the optional rename prompt, then redirects to the new horse's stable profile.
+- **Wilds:** expandable zone navigation with Aetherion Wilds as its main link; no duplicate zone tabs or Event markers. Tame opens the optional rename prompt; saving or selling keeps you in the Wilds and replaces only that encounter.
 - **Rarities:** editable Common, Uncommon, Rare, Ultra Rare, and Cosmic border colors apply to preview cards and profile modals. Species Manager now offers Cosmic with a default weight of 10, below Ultra Rare's 40.
 - **Managers:** Mutations uses searchable cards, type groups, optional weights, direction controls, and CRUD modals. Eye Colors and Personalities retain their card/modal editors. Species hides internal IDs and base attributes, uses Description (optional), and shows rarity names without numbers. Hauntmare now has 105 exclusive appearance options.
-- **Game Settings:** larger title-case labels, right-aligned typed numbers without spinner arrows, responsive descriptions, right-aligned Save/Cancel, success popups, and red validation errors. Allow Duplicate Mutations applies to natural spawning only.
+- **Game Settings:** larger title-case labels, centered numeric values with steppers available while editing, responsive descriptions, right-aligned Save/Cancel, success popups, and red validation errors. Allow Duplicate Mutations applies to natural spawning only.
 
 ### Mutated palettes
 
-Available under **Horse Definitions → Palettes**:
+Available under **Compendium → Palettes**:
 
 | Solar | Lunar | Astral | Heavenly | Void |
 | --- | --- | --- | --- | --- |
@@ -176,7 +190,7 @@ Every supplied hex value is preserved. Cosmic mutations use the matching palette
 
 ### Data-driven spawning
 
-Horse Definitions has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, **Personalities**, and **Rarities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and skin metadata remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
+Compendium has separate **Species**, **Traits**, **Palettes**, **Eye Colors**, **Mutations**, **Personalities**, and **Rarities** pages. CRUD saves local JSON configuration files. Species expose rarity tiers and zone assignments; Traits edits species-linked appearance options separately. Palette scopes and per-palette variance overrides remain available. File paths appear in the top breadcrumb. Internal eye/personality identifiers and unused visual/behavior metadata stay hidden from their forms.
 
 Each search runs the **0.325% Cosmic / 99.675% Wild** split. Cosmic selects uniformly from all registered species in every zone, including Aetherion Wilds, ignoring zone species whitelists and rarity weights. Wild selects by zone ticket weights, initially **10 / 40 / 100 / 250 / 500** for Cosmic / Ultra Rare / Rare / Uncommon / Common. Chained mutation slots stop on failure; the nineteen standard mutations start with **10,101 tokens**. Gender is 50/50, size follows the eleven-step weighted ladder with mutation shifts, and colors/eyes/personality are selected from the current files. Repeated species are allowed.
 
@@ -184,7 +198,7 @@ See [Spawning & Configuration](docs/SPAWNING.md) for exact probabilities, file p
 
 Taming or selling a wild horse replaces only that horse's slot, preserving the other encounters. Taming keeps you in the Wilds. Browser reloads and navigation preserve encounters; only Search the Wilds replaces the whole group.
 
-Horse Definitions → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change species spawn weights or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
+Compendium → **Rarities** controls five display ranks: **Common → no border**, **Uncommon → green**, **Rare → blue**, **Ultra Rare → purple**, and **Cosmic → gold**. Edit each rank’s color or disable its border/glow, then save; Restore Default Colors fills the form without saving immediately. Ultra Rare has a stronger glow, and Cosmic is strongest. Solar, Lunar, Heavenly, Void, and Astral map to Cosmic. Event species remain borderless unless Cosmic. These color settings save in `data/config/rarities.json` and do not change species spawn weights or selling prices. Current species definitions govern ranks, with saved metadata as fallback for unknown/deleted species.
 
 Aetherion Wilds uses this **25-species whitelist** as its source of truth. Ordinary Wild encounters in Aetherion Wilds use the listed species. Cosmic encounters bypass this whitelist and can select any registered species equally, including the other 21 species and event species. The same unrestricted Cosmic rule applies to every zone.
 
@@ -214,13 +228,13 @@ The profile sale button and confirmation show the calculated price. Confirmation
 
 Edit Mode covers horse-profile headings, labels, and descriptive wording. The Wilds encounter heading and count sentence have been removed. Profile copy is shared across horses and can use `{horseName}`, `{species}`, `{gender}`, `{birthday}`, `{personality}`, `{personalityDescription}`, and `{specialSpawn}`. Editing these templates does not change the underlying horse record. Delete Text saves an empty override; Use Original Wording restores it. Deleted text stays reachable through its pencil while edit mode is enabled.
 
-Preview cards show a headshot, a name truncated after 13 characters, and a colored gender icon. Full names remain available in profiles. Owned cards also include a favorite heart. Palette swatches and detailed traits appear inside the two-tab profile rather than on preview cards. Horse IDs remain internal.
+Wilds preview cards show full-horse artwork; stable cards show a headshot. Both show a name truncated after 13 characters and a colored gender icon. Full names remain available in profiles. Owned cards also include a favorite heart. Palette swatches and detailed traits appear inside the two-tab profile rather than on preview cards. Horse IDs remain internal.
 
 In horse profiles, Birthday is the date the horse entered your stable (MM-DD-YYYY), and Age counts calendar days since that date. Existing horses use their saved catch timestamp; newly imported horses start at 0 days. Uncaught horses show Not caught yet. Editing Birthday updates the acquisition date used by Age. The life-stage value (Adult/Foal/Elder) remains internal for compatibility.
 
 ### Horse names, notes, and details
 
-Select Tame to review the prefilled name, optionally change it, and select Save to add the horse to My Horses and open its owned profile. The default name is grey until changed; the prompt has Save and Cancel with no X. Click an owned horse’s name to rename it; clicking outside or pressing Esc saves it. Owned profiles display editable Notes, with overflow scrolling. Wild profiles show the personality description in that space, and Tame without Sell or Notes.
+Select Tame to review the prefilled name, optionally change it, and select Save to add the horse to My Horses while remaining in the Wilds. A Sell option opens the sale confirmation instead. The default name is grey until changed; the prompt has Save and Cancel with no X. Click an owned horse’s name to rename it; clicking outside or pressing Esc saves it. Owned profiles display editable Notes, with overflow scrolling. Wild profiles show the personality description in that space, and Tame without Sell or Notes.
 
 Enable Edit Mode to change an individual horse's birthday, origin, size, personality, or eye color. Most choices are alphabetized; sizes run smallest to largest; Origin offers Wild plus origins already in saved horses. Birthdays display as MM-DD-YYYY. These controls save actual horse values, separately from shared page wording.
 
@@ -232,7 +246,7 @@ Stables contains My Horses and Breeding. Use the heart on a horse card to favori
 | --- | --- |
 | **Stables** | My Horses, Breeding; Favorites available in the sort menu |
 | **Developer Settings** | Edit Mode, Game Settings (including Economy), Save Management, Remaining Features |
-| **Horse Definitions** | Species, Traits, Palettes, Eye Colors, Mutations, Personalities, and Rarities with local files |
+| **Compendium** | Species, Traits, Palettes, Eye Colors, Mutations, Personalities, and Rarities with local files |
 | **World & Items** | Zones, Zone Atmospheres, Items & Potions, Item Themes |
 | **User Interface** | Appearance & Themes, My Profile |
 
@@ -298,7 +312,7 @@ See [the detailed open questions](docs/OPEN-QUESTIONS.md) and [development progr
 | `npm test` | Run isolated automated tests without touching your player save |
 | `npm run import:references` | Rebuild the baseline catalog from reference documents plus the supplied Mutated Horse palettes |
 
-The importer replaces the bootstrap catalog; preserve manual catalog edits first. Existing `data/config/` registries remain authoritative and are edited through Horse Definitions. It does not replace player saves.
+The importer replaces the bootstrap catalog; preserve manual catalog edits first. Existing `data/config/` registries remain authoritative and are edited through Compendium. It does not replace player saves.
 
 ```text
 Gallorin/

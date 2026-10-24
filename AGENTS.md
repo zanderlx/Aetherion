@@ -9,8 +9,15 @@
 # Changelog and release consistency
 
 - CHANGELOG.md is the canonical in-game history and GitHub release-note source. Before every requested push, update its current entry with meaningful changes and verify package.json, package-lock.json, README, banner, and runtime version agree.
-- The next Gallorin release is 1.0.0, The Symphony of the Wilds. Keep this version until that first Gallorin release is published; do not increment it merely because another pre-release snapshot is pushed.
+- Gallorin v1.0.0, The Symphony of the Wilds, is published. Subsequent releases follow major.minor.patch versioning; do not create a new release version for every small commit.
 - Legacy milestones use 0.1.0–0.7.0 in the changelog; original Aetherion version labels are retained only as historical mapping. Never rewrite old source tags or invent historical dates.
 - Before publishing, finalize the current Unreleased date with scripts/release-notes.js --finalize YYYY-MM-DD using the user's local date, then run npm run release:check. Generate release-specific notes from the changelog; do not hardcode or copy the full history into each release.
 - Gallorin release tags use gallorin-v followed by major.minor.patch. Never push or publish without explicit user authorization.
 - Before releases, verify both the main-menu footer and in-game sidebar footer show Gallorin v<current package version> | Changelog and both links open the same versioned history. The desktop smoke test checks these labels automatically.
+
+# Mandatory personal review checkpoint
+
+- For every requested push, use this sequence: (1) review pending commits and excluded local data; (2) select and update the semantic version; (3) update README features, banner, CHANGELOG.md, and version sources; (4) run release validation and tests; (5) commit any final preparation changes and push only with user authorization.
+- Always stop after step 3 for the user's personal review. Wait for explicit approval of the prepared version and documentation before step 4 or any push. A request to "push" starts preparation but does not waive this checkpoint.
+- Local preparation commits are allowed before review. Do not publish a tag, GitHub release, or installer unless the user explicitly requests a release.
+- Repeat the review checkpoint if later changes materially alter the approved version or release scope.

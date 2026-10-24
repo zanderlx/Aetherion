@@ -6,6 +6,45 @@ Gallorin uses major.minor.patch versioning. Gallorin begins at version 1.0.0.
 Legacy milestones are archived as 0.1.0–0.7.0 under Aetherion (Legacy).
 Dates for legacy entries come from their release commits.
 
+## [1.1.0] - Music & Sound Effects - Unreleased
+
+A location-aware soundtrack, independent sound effects, and a compact player bring music across Gallorin.
+
+### Added
+
+- Full-width music player with play/pause, previous/next, stop, restart, seeking, music volume, and mute.
+- Animated compact player that retains playback controls and remembers its layout preference.
+- User Interface → Music with navigation folders, collapsible playlists, section/page Show All controls, and matching navbar icons.
+- All Songs and All Sound Effects libraries with MP3 import, duration metadata, and independent table sorting.
+- Row options for searchable playlist/event assignment, inline title and artist editing, and confirmed deletion.
+- A checkmark or Enter saves both edited song fields; clicking away offers Save or Discard.
+- Ordered multi-song playlists for zones, navigation sections, individual pages, Default, and the main menu.
+- Ten bundled audio files alongside the protected original song, Glades of Gallorin.
+- Cosmic Horse Spawn sound event, initially assigned Universfield Magic Twinkle, playing over background music through the independent Sound Effects channel.
+
+### Changed
+
+- Fresh-install defaults now use 25% music volume, 100% Sound Effects volume, unmuted music, and a two-second crossfade.
+- Aetherion Wilds uses its own song, Hallowhoof uses Halloween 1 followed by Halloween 2, and every Town page uses Town. Unassigned locations use Default.
+- Existing users retain their saved audio preferences, library, and assignments when repo defaults change.
+- Unified Audio Settings across the title screen and gameplay, with separate Music/Sound Effects sliders and a snapped 0–10 second crossfade slider.
+- All-section assignments apply throughout a section. Individual choices are disabled and unchecked under All; selecting every individual playlist consolidates into All when saved.
+- Playlist removal preserves the library file; library deletion removes the file and all its assignments.
+- Play and trash controls appear on row hover/focus. Song playback highlights its row, and clicking the player title/artwork reveals it in All Songs.
+- Sorting cycles ascending, descending, and original row order without changing playlist playback order.
+- Imported 28 categorized palettes: 23 additions and five replacements, including the updated Bisorse 1 colors.
+- Added smooth sidebar/folder transitions, aligned music tables and controls, limited fullscreen progress width, and improved artwork transitions.
+- Moved notification toasts to the bottom right above the player, and hid the page scrollbar while retaining scrolling.
+
+### Fixed
+
+- Gallorin uses its own installed/development data folders rather than falling back to legacy Aetherion paths.
+- Missing MP3 durations are recovered from metadata, including existing libraries.
+- Rapid mute/volume changes persist in order without stale playback polling overwriting them.
+- Sound effects preserve background music playback and use their own live volume.
+- Cosmic spawn sounds trigger only for newly generated encounters and do not replay when saved encounters reload.
+- New-install playlist defaults use bundled track identifiers, including the reimported Town song.
+
 ## [1.0.0] - The Symphony of the Wilds - 2026-10-23
 
 The first Gallorin release brings forward the Aetherion legacy with new branding and a new platform to play on. Sit down and relax as you listen to the symphony of the wilds!

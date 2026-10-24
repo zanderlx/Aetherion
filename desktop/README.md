@@ -15,6 +15,8 @@ If a graphics driver causes problems, set `AETHERION_SOFTWARE_RENDERING=1` befor
 
 ## Gallorin version series
 
+Current source: **v1.1.0 — Music & Sound Effects (review draft)**. Post-preparation validation and publishing wait for personal review.
+
 Gallorin starts at **v1.0.0 — The Symphony of the Wilds**. Aetherion releases are legacy history. Gallorin tags use gallorin-v followed by major.minor.patch to avoid collisions with legacy tags. The updater accepts only this series. Legacy Aetherion users need a one-time manual Gallorin install because the version resets from 2.0.0 to 1.0.0; saves remain compatible.
 
 ## Saves and configuration
@@ -24,11 +26,13 @@ Windows data is stored independently of the installation:
 - `%APPDATA%\Gallorin\data\player\save.json`: horses, gold, encounters, and player settings.
 - `%APPDATA%\Gallorin\data\config\`: editable Compendium and spawning JSON.
 - `%APPDATA%\Gallorin\data\backups\`: save backups.
+- `%APPDATA%\Gallorin\data\music\`: song/effect MP3s and library/playlist JSON.
+- `%APPDATA%\Gallorin\audio-settings.json`: Music/Sound Effects volumes and music mute.
 - `%APPDATA%\Gallorin\desktop.log`: startup/update diagnostics.
 
 Development launches with npm run desktop use %APPDATA%\Gallorin Development instead, with independent saves and Chromium caches. You can copy existing data on first launch. Installed player data stays in %APPDATA%\Gallorin.
 
-Existing installations keep using their original Aetherion data folder when no Gallorin folder exists; no player files are moved or reset. New installations use the paths above. The Windows application ID, JSON format identifiers, and GitHub update repository retain their legacy identifiers for compatibility.
+Gallorin always uses its own folders and never falls back automatically to an Aetherion data folder. Existing data can be copied explicitly through the migration flow. The Windows application ID, JSON format identifiers, and GitHub update repository retain their legacy identifiers for compatibility.
 
 The Gallorin menu opens these folders. Updates replace application files only. Uninstalling retains app data.
 
@@ -38,9 +42,9 @@ On first launch, choose **Start New** or **Copy Existing Data**. For migration, 
 
 The repository is public, so players need no GitHub account or token.
 
-1. Before a release, increment package.json using major.minor.patch, update README features/version, run tests, and commit. The website footer uses that version automatically.
-2. When ready, push the approved changes to main.
-3. Create and push a matching tag, for example `gallorin-v1.0.0` for version `1.0.0`.
+1. Review pending changes and exclusions; update package/lockfile, README, banner, and changelog using major.minor.patch. Displayed versions inherit the package version.
+2. Stop for personal review. After explicit approval, run tests, desktop smoke checks, and version consistency checks, then push approved commits to main when authorized.
+3. Only when a release is explicitly requested, finalize its changelog date and create/push the matching tag, for example `gallorin-v1.1.0` for version `1.1.0`.
 4. **Actions → Windows Desktop Release** builds and tests the Windows installer, smoke-tests the packaged app before creating a GitHub Release using the workflow's built-in GITHUB_TOKEN. No personal token belongs in the app.
 5. After successful checks, the workflow uploads the installer, blockmap, and latest.yml, then publishes the release and explicitly marks it latest.
 6. Installed Gallorin apps can now discover it. A normal code push alone does not publish an app update.
@@ -67,7 +71,7 @@ After replacing the master, run npx electron scripts/build-desktop-icon.cjs. Thi
 
 ## Changelog and release notes
 
-CHANGELOG.md is the single source for the offline main-menu Changelog popup and GitHub release notes. Legacy milestones are displayed as 0.1.0–0.7.0, with their original Aetherion versions retained as context. Gallorin 1.0.0 remains the next release.
+CHANGELOG.md is the single source for the offline main-menu Changelog popup and GitHub release notes. Legacy milestones are displayed as 0.1.0–0.7.0, with their original Aetherion versions retained as context. Gallorin 1.0.0 is published; 1.1.0 is the current Unreleased review draft.
 
 Before every push, add meaningful changes to the current entry and run npm run release:check. Keep package.json, its lockfile, README, banner, and changelog consistent. Runtime version labels read the package automatically.
 
