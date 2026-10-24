@@ -9,9 +9,9 @@ async function verifySectionSelection(){
  const open=()=>{document.querySelector('[data-song-options="'+id+'"]').click();document.querySelector('[data-song-option=add]').click();return document.querySelector('.music-playlist-picker');};
  let modal=open(),all=modal.querySelector('[data-playlist-choice=wilds]'),child=modal.querySelector('[data-playlist-choice="wilds/aetherion"]'),prior=child.checked;
  all.checked=true;all.dispatchEvent(new Event('change',{bubbles:true}));
- const row=child.closest('tr');if(!child.disabled||!child.checked||Number(getComputedStyle(row).opacity)>.5)throw Error('All Wilds did not disable and gray its children');
+ const row=child.closest('tr');if(!child.disabled||child.checked||Number(getComputedStyle(row).opacity)>.5)throw Error('All Wilds did not disable and gray its children');
  if(modal.querySelector('[data-playlist-choice="stable/all"]').disabled)throw Error('All Wilds disabled another section');
- row.cells[1].click();if(!child.checked)throw Error('Disabled playlist row remained clickable');
+ row.cells[1].click();if(child.checked)throw Error('Disabled playlist row remained clickable');
  all.checked=false;all.dispatchEvent(new Event('change',{bubbles:true}));
  if(child.disabled||child.checked!==prior)throw Error('Unchecking All did not restore individual selection');
  all.checked=true;all.dispatchEvent(new Event('change',{bubbles:true}));modal.querySelector('[data-save-playlists]').click();
