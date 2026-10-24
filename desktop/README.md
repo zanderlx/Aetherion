@@ -6,7 +6,7 @@ The Electron build wraps the same local game/server. The browser launchers and `
 
 1. Install Node.js 22.12+ and run `npm ci`.
 2. `npm run desktop` opens the desktop app.
-3. `npm run desktop:build` creates `dist/Gallorin Setup <version>.exe`.
+3. `npm run desktop:build` creates `dist/Gallorin-Setup-<version>.exe`.
 4. Install that file. Players do not need Node, npm, Git, or the repository.
 
 The splash uses the existing gold horse emblem, dark woodland tones, and a 4.5-second minimum reveal. It does not claim a fake loading percentage. The game must finish loading before it appears. Reduced-motion preferences are respected.

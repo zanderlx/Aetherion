@@ -57,7 +57,6 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Could not generate release notes." }
           gh release create $tag --draft --title $releaseTitle --notes-file dist/release-notes.md
           if ($LASTEXITCODE -ne 0) { throw "Release creation failed." }
-          Get-ChildItem dist/*.exe,dist/*.blockmap | ForEach-Object { Rename-Item -LiteralPath $_.FullName -NewName ($_.Name.Replace(" ","-")) }
           $assets = @(Get-ChildItem dist/*.exe,dist/*.blockmap,dist/latest.yml | ForEach-Object FullName)
           gh release upload $tag @assets
           if ($LASTEXITCODE -ne 0) { throw "Upload failed; release remains draft." }

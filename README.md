@@ -12,16 +12,6 @@
 
 > v1.1.0 is a review draft. The download link offers the latest published release until this update is released.
 
-## Play — recommended
-
-1. Download the **Gallorin Setup .exe** from [Releases](https://github.com/zanderlx/Gallorin/releases/latest).
-2. Run the installer, then open Gallorin from its shortcut.
-3. Select **Play**.
-
-The installer includes everything needed. Players do not need Node.js, Git, npm, or the source folder.
-
-The installed app checks for published updates. You can also use **Gallorin → Check for Updates**, then download and restart to install. Saves and personal settings are retained.
-
 ## Features
 
 - Explore zones and tame, rename, favorite, sell, import, and export horses.
@@ -31,9 +21,17 @@ The installed app checks for published updates. You can also use **Gallorin → 
 - Adjust themes, page text, profiles, economy, and spawning settings.
 - Save locally with exports and automatic backups.
 
-**New defaults:** Music 25%, Sound Effects 100%, and a two-second crossfade. Aetherion Wilds, Hallowhoof, and Town have assigned music; cosmic spawns play Magic Twinkle. Existing saved choices are preserved.
-
 Breeding, Town activities, equipment gameplay, and skill training remain planned. Developer Horse Updates is a work in progress.
+
+## Play — recommended
+
+1. Download the **Gallorin Setup .exe** from [Releases](https://github.com/zanderlx/Gallorin/releases/latest).
+2. Run the installer, then open Gallorin from its shortcut.
+3. Select **Play**.
+
+The installer includes everything needed. Players do not need Node.js, Git, npm, or the source folder.
+
+**Future updates:** the installed app checks for published releases. Use **Gallorin → Check for Updates**, choose **Download**, then **Restart and Install**. You can update inside the app without downloading another installer manually. Saves and personal settings are retained.
 
 ## Local development
 

@@ -1,10 +1,46 @@
 {
   "appId": "com.aetherion.sanctuary",
   "productName": "Gallorin",
-  "directories": {"output": "dist"},
+  "directories": {
+    "output": "dist"
+  },
   "asar": true,
-  "files": ["desktop/**/*", "public/**/*", "src/**/*", "server.js", "CHANGELOG.md", "data/definitions/**/*", "data/defaults/**/*", "package.json"],
-  "win": {"target": [{"target": "nsis", "arch": ["x64"]}], "icon": "desktop/assets/icon.ico"},
-  "nsis": {"oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "deleteAppDataOnUninstall": false, "createDesktopShortcut": true},
-  "publish": [{"provider": "github", "owner": "zanderlx", "repo": "Gallorin", "tagNamePrefix": "gallorin-v", "releaseType": "draft"}]
+  "files": [
+    "desktop/**/*",
+    "public/**/*",
+    "src/**/*",
+    "server.js",
+    "CHANGELOG.md",
+    "data/definitions/**/*",
+    "data/defaults/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "icon": "desktop/assets/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": false,
+    "createDesktopShortcut": true
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "zanderlx",
+      "repo": "Gallorin",
+      "tagNamePrefix": "gallorin-v",
+      "releaseType": "draft"
+    }
+  ],
+  "artifactName": "Gallorin-Setup-${version}.${ext}"
 }

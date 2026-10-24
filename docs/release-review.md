@@ -46,3 +46,5 @@ A GitHub release/tag/installer publication requires a separate explicit release 
 Keep the changelog Unreleased until publication is authorized and its date is finalized.
 
 This review checkpoint is mandatory for future pushes and is recorded in AGENTS.md.
+
+Installer naming is configured before packaging as Gallorin-Setup-<version>.exe; the blockmap and generated latest.yml use that same artifact name. Packaging/updater validation remains pending review approval.
