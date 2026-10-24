@@ -1,3 +1,4 @@
+import {isSoundEffect,newCosmicEncounters} from './music-effects.js';
 import {createAudioPreferenceStore} from './audio-preference-store.js';
 import {revealPlayingSong} from './music-navigation.js';
 import {createAudioSettings} from './audio-settings.js';
@@ -91,21 +92,34 @@ export function createMusicPlayer({notify,getLocations}){
  q('[data-volume]').addEventListener('input',()=>{const volume=Number(q('[data-volume]').value);q('[data-volume-value]').textContent=volume+'%';void setPreferences({volume}).catch(error=>notify(error.message,true));});
  if(!desktop)void setPreferences(preferences).catch(error=>notify(error.message,true));
  setInterval(()=>void refresh(),350);
+ async function playEffect(id){
+  if(!loaded)await refreshLibrary();
+  const track=library.tracks.find(t=>t.id===id&&isSoundEffect(t));if(!track)return;
+  await transport.command({type:'effect',track:{...track,url:location.origin+'/api/music/media/'+track.id}});await refresh();
+ }
+ async function spawnEffects(previous,next,zone){
+  const cosmic=newCosmicEncounters(previous,next,zone);if(!cosmic.length)return;
+  if(!loaded)await refreshLibrary();
+  const ids=(library.assignments['effect/cosmic-spawn']||[]).filter(id=>library.tracks.some(t=>t.id===id&&isSoundEffect(t)));
+  if(!ids.length)return;
+  for(const horse of cosmic)await playEffect(ids[Math.floor(Math.random()*ids.length)]);
+ }
  function page(){return musicManagerPage(library,getLocations());}
  function bind(root){
   bindMusicManager(root,{
    getLibrary:()=>library,getPlaybackState:()=>playback,getLocations,notify,openAudioSettings:()=>audioSettings.open(),
    async saveSettings(assignments,fadeSeconds){library=await api('/api/music/settings',{assignments,fadeSeconds});context=musicContext(location.hash.slice(1),library)||context;await select();},
-   async importFiles(files){
+   async importFiles(files,kind='music'){
     for(const file of files){
      if(!file.name.toLowerCase().endsWith('.mp3')||file.size>50*1024*1024)throw Error('Choose MP3 files up to 50 MB each.');
-     const response=await fetch('/api/music/import',{method:'POST',headers:{'Content-Type':'audio/mpeg','X-File-Name':encodeURIComponent(file.name)},body:file});
+     const response=await fetch('/api/music/import?kind='+encodeURIComponent(kind),{method:'POST',headers:{'Content-Type':'audio/mpeg','X-File-Name':encodeURIComponent(file.name)},body:file});
      const result=await response.json();if(!response.ok)throw Error(result.error);library=result;
     }
-    notify(files.length+' song'+(files.length===1?'':'s')+' imported.');
+    notify(files.length+' '+(kind==='effect'?'sound effect':'song')+(files.length===1?'':'s')+' imported.');
    },
    async preview(id,playlistContext){
-    const ids=playlistContext?selectedPlaylist(library,playlistContext):musicTracks(library).map(t=>t.id);
+    if(isSoundEffect(library.tracks.find(t=>t.id===id))){await playEffect(id);return;}
+    const ids=playlistContext?selectedPlaylist(library,playlistContext):musicTracks(library).filter(t=>!isSoundEffect(t)).map(t=>t.id);
     const tracks=ids.map(songId=>{const track=musicTracks(library).find(t=>t.id===songId);return {...track,url:location.origin+'/api/music/media/'+track.id};});
     if(playlistContext)context=playlistContext;
     await transport.command({type:'playlist',key:playlistContext||'library',startId:id,tracks,fadeSeconds:library.fadeSeconds});
@@ -118,10 +132,10 @@ export function createMusicPlayer({notify,getLocations}){
    },
    async assignSong(id,playlistIds){
     library=await api('/api/music/assign',{id,playlistIds});
-    const state=await transport.state();if(state.playlistKey!=='library')await select();
+    const state=await transport.state();if(!isSoundEffect(library.tracks.find(t=>t.id===id))&&state.playlistKey!=='library')await select();
    },
-   async deleteSong(id){library=await api('/api/music/delete',{id});await select();}
+   async deleteSong(id){const effect=isSoundEffect(library.tracks.find(t=>t.id===id));library=await api('/api/music/delete',{id});if(!effect)await select();}
   });
  }
- return {page,bind,async route(route){try{if(!loaded)await refreshLibrary();context=musicContext(route,library)||context;await select();}catch(error){notify(error.message,true);}}};
+ return {page,bind,spawnEffects,async route(route){try{if(!loaded)await refreshLibrary();context=musicContext(route,library)||context;await select();}catch(error){notify(error.message,true);}}};
 }

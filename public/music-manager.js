@@ -1,3 +1,4 @@
+import {musicLibrarySections,rowPlay} from './music-library-table.js';
 import {bindSongActions} from './music-song-actions.js';
 import {bindMusicSorting} from './music-table-sort.js';
 import {bindMusicDisclosures} from './music-disclosures.js';
@@ -7,7 +8,7 @@ import {musicGroups,musicTracks,playlistSongs,formatMusicDuration} from './music
 const bindings=new WeakMap();
 const allTracks=musicTracks;
 const chevron='<span class="music-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
-const rowPlay=(track,index,context='')=>'<td class="music-order"><span class="music-index-control"><span class="music-row-number">'+(index+1)+'</span><button type="button" class="music-row-play" data-preview-song="'+e(track.id)+'"'+(context?' data-playlist-context="'+e(context)+'"':'')+' title="Play song" aria-label="Play '+e(track.name)+'">▶</button></span></td>';
+
 function songRows(library,context){
  const ids=playlistSongs(library,context);
  if(!ids.length)return '<tr><td colspan="5" class="music-empty-playlist">No songs in this playlist. Using default song.</td></tr>';
@@ -23,7 +24,7 @@ function playlistCard(library,item){
 export function updateMusicRows(root,state){
  if(!root)return;
  for(const row of root.querySelectorAll('[data-music-track]')){
-  const current=!!state?.track?.id&&row.dataset.musicTrack===state.track.id;
+  const current=row.hasAttribute('data-sound-effect')?(state?.activeEffectIds||[]).includes(row.dataset.musicTrack):!!state?.track?.id&&row.dataset.musicTrack===state.track.id;
   if(row.classList.contains('is-current')!==current){
    row.classList.toggle('is-current',current);
    if(current)row.setAttribute('aria-current','true');else row.removeAttribute('aria-current');
@@ -31,7 +32,8 @@ export function updateMusicRows(root,state){
  }
 }
 export function musicManagerPage(library,locations){
- return '<section class="music-manager"><header class="music-heading"><h1>Background Music</h1><button type="button" class="button music-header-toggle" data-music-toggle-all>Show All</button><button type="button" class="button music-audio-settings" data-audio-settings>'+icon('settings')+' Audio Settings</button></header><div class="music-playlist-groups">'+musicGroups(locations).map(group=>'<details class="music-group" data-music-group="'+e(group.id)+'"'+(group.id==='general'?' open':'')+'><summary><h2>'+e(group.name)+'</h2><button type="button" class="music-scope-toggle" data-music-toggle-folder>Show All</button><span class="music-group-count">'+group.items.length+' playlist'+(group.items.length===1?'':'s')+'</span>'+chevron+'</summary><div class="music-group-playlists">'+group.items.map(item=>playlistCard(library,item)).join('')+'</div></details>').join('')+'</div><section class="music-library"><header class="music-all-heading"><h2>All Songs</h2><label class="button primary music-import" role="button" tabindex="0">'+icon('music')+' Import Music<input type="file" data-music-import accept=".mp3,audio/mpeg" multiple hidden></label></header><div class="music-table-scroll"><table class="music-table music-library-table"><thead><tr><th scope="col" class="music-order">#</th><th scope="col">Title</th><th scope="col" class="music-artist">Artist</th><th scope="col" class="music-duration">Duration</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>'+allTracks(library).map((t,index)=>'<tr data-music-track="'+e(t.id)+'">'+rowPlay(t,index)+'<td><strong>'+e(t.name)+'</strong></td><td class="music-artist">'+e(t.artist)+'</td><td class="music-duration">'+formatMusicDuration(t.durationSeconds)+'</td><td class="music-row-actions">'+'<button type="button" class="music-row-options" data-song-options="'+e(t.id)+'" aria-haspopup="menu" aria-expanded="false" title="Song options" aria-label="Options for '+e(t.name)+'">'+icon('more')+'</button>'+'</td></tr>').join('')+'</tbody></table></div></section></section>';
+ return '<section class="music-manager"><header class="music-heading"><h1>Background Music</h1><button type="button" class="button music-header-toggle" data-music-toggle-all>Show All</button><button type="button" class="button music-audio-settings" data-audio-settings>'+icon('settings')+' Audio Settings</button></header><div class="music-playlist-groups">'+musicGroups(locations).map(group=>'<details class="music-group" data-music-group="'+e(group.id)+'"'+(group.id==='general'?' open':'')+'><summary><h2>'+e(group.name)+'</h2><button type="button" class="music-scope-toggle" data-music-toggle-folder>Show All</button><span class="music-group-count">'+group.items.length+' playlist'+(group.items.length===1?'':'s')+'</span>'+chevron+'</summary><div class="music-group-playlists">'+group.items.map(item=>playlistCard(library,item)).join('')+'</div></details>').join('')+'</div>'+musicLibrarySections(library)+'</section>';
+
 }
 export function bindMusicManager(root,services){
  bindings.get(root)?.abort();const controller=new AbortController();bindings.set(root,controller);const options={signal:controller.signal};
@@ -59,11 +61,11 @@ export function bindMusicManager(root,services){
   await services.saveSettings(assignments,library.fadeSeconds);
  };
  root.addEventListener('keydown',event=>{
-  if(event.target.closest('.music-import')&&(event.key==='Enter'||event.key===' ')){event.preventDefault();root.querySelector('[data-music-import]').click();}
+  if(event.target.closest('.music-import')&&(event.key==='Enter'||event.key===' ')){event.preventDefault();event.target.closest('.music-import').querySelector('[data-music-import]').click();}
  },options);
  root.addEventListener('change',event=>{
   const target=event.target;
-  if(target.matches('[data-music-import]'))void run(()=>services.importFiles([...target.files]));
+  if(target.matches('[data-music-import]'))void run(()=>services.importFiles([...target.files],target.dataset.musicImport));
 
  },options);
  root.addEventListener('click',event=>{

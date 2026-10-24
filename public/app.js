@@ -90,7 +90,9 @@ const showGoldChange = createGoldFeedback();
 async function action(type, payload) {
   const result = await request('/api/action', { type, payload });
   const goldChange = result.state.gold - state.gold;
+  const previousState=state;
   state = result.state;
+  if(route.startsWith('wilds/'))void musicPlayer.spawnEffects(previousState,state,route.split('/')[1]).catch(error=>notify(error.message,true));
   showGoldChange(goldChange);
   if (result.catalog) catalog = result.catalog;
   return state;

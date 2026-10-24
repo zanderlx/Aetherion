@@ -1,3 +1,4 @@
+import {soundEffectGroups,isSoundEffect} from '../public/music-effects.js';
 import {durationOfFile,durationOfBuffer} from './music-duration.js';
 import {assignmentTracks,formatMusicName} from '../public/music-context.js';
 import {mkdir,readFile,writeFile,rename,unlink,open,stat,copyFile} from 'node:fs/promises';
@@ -13,11 +14,26 @@ export class MusicLibrary {
       if(seen.has(track.id))continue;
       await mkdir(this.root,{recursive:true});
       await copyFile(track.source,join(this.root,track.id+'.mp3'));
-      library.tracks.push({id:track.id,name:track.name,addedAt:new Date().toISOString()});
+      library.tracks.push({id:track.id,name:track.name,kind:track.kind||'music',addedAt:new Date().toISOString()});
       seen.add(track.id);changed=true;
     }
     for(const track of seeds){const existing=library.tracks.find(t=>t.id===track.id);if(existing&&track.file&&existing.filename!==track.file){existing.filename=track.file;existing.name=formatMusicName(track.file);changed=true;}}
     for(const track of library.tracks){if(!Number.isFinite(track.durationSeconds)||track.durationSeconds<=0){const duration=await durationOfFile(join(this.root,track.id+'.mp3'));if(duration!==track.durationSeconds){track.durationSeconds=duration;changed=true;}}}
+    // One-time category migration preserves files/metadata and removes effects from music queues.
+    if(!library.soundEffectsMigrated){
+      const backup=join(this.root,'..','backups');await mkdir(backup,{recursive:true});
+      await copyFile(join(this.root,'library.json'),join(backup,'pre-sound-effects-'+randomUUID()+'.json')).catch(e=>{if(e.code!=='ENOENT')throw e;});
+      library.assignments||={};
+      for(const track of library.tracks){
+        if(seeds.find(seed=>seed.id===track.id)?.kind==='effect'||/universfield-magic-twinkle/i.test(track.filename||''))track.kind='effect';
+        else track.kind||='music';
+      }
+      const effects=new Set(library.tracks.filter(isSoundEffect).map(track=>track.id));
+      for(const key of Object.keys(library.assignments))if(!key.startsWith('effect/'))library.assignments[key]=assignmentTracks(library.assignments[key]).filter(id=>!effects.has(id));
+      const twinkle=library.tracks.find(track=>isSoundEffect(track)&&(/universfield-magic-twinkle/i.test(track.filename||'')||seeds.find(seed=>seed.id===track.id)?.file?.startsWith('universfield')));
+      if(twinkle&&!Object.hasOwn(library.assignments,'effect/cosmic-spawn'))library.assignments['effect/cosmic-spawn']=[twinkle.id];
+      library.soundEffectsMigrated=true;changed=true;
+    }
     if(changed){library.seededTrackIds=[...seen];await this.write(library);}
   }
   async read(){
@@ -31,12 +47,13 @@ export class MusicLibrary {
     await writeFile(temp,JSON.stringify(value,null,2)+'\n');await rename(temp,join(this.root,'library.json'));
   }
   edit(fn){const job=this.queue.then(fn);this.queue=job.catch(()=>{});return job;}
-  async import(name,bytes){
+  async import(name,bytes,kind='music'){
+    if(!['music','effect'].includes(kind))throw Error('Choose music or sound effect.');
     return this.edit(async()=>{
       if(typeof name!=='string'||!name.toLowerCase().endsWith('.mp3')||name.length>200)throw Error('Choose an MP3 file with a name under 200 characters.');
       // Accept ID3-tagged files or an MPEG frame header.
       if(!Buffer.isBuffer(bytes)||bytes.length<4||bytes.length>50*1024*1024||!(bytes.subarray(0,3).toString()==='ID3'||(bytes[0]===255&&(bytes[1]&224)===224)))throw Error('Choose a valid MP3 file (maximum 50 MB).');
-      const library=await this.read(),track={id:randomUUID(),filename:name.replace(/[\x00-\x1f]/g,''),name:formatMusicName(name),artist:'Gallorin Studios',durationSeconds:await durationOfBuffer(bytes),addedAt:new Date().toISOString()};
+      const library=await this.read(),track={id:randomUUID(),kind,filename:name.replace(/[\x00-\x1f]/g,''),name:formatMusicName(name),artist:'Gallorin Studios',durationSeconds:await durationOfBuffer(bytes),addedAt:new Date().toISOString()};
       await mkdir(this.root,{recursive:true});await writeFile(join(this.root,track.id+'.mp3'),bytes);
       try{library.tracks.push(track);await this.write(library);}catch(error){await unlink(join(this.root,track.id+'.mp3'));throw error;}
       return library;
@@ -49,7 +66,8 @@ export class MusicLibrary {
       const assignments={};
       for(const [context,value] of Object.entries(input.assignments)){
         const ids=assignmentTracks(value);
-        if(!contexts.includes(context)||(!Array.isArray(value)&&typeof value!=='string')||ids.length>500||ids.some(id=>typeof id!=='string'||(id!=='menu'&&!library.tracks.some(t=>t.id===id))))throw Error('Choose an existing song and location.');
+        if(![...contexts,...soundEffectGroups.flatMap(group=>group.items.map(item=>item.id))].includes(context)||(!Array.isArray(value)&&typeof value!=='string')||ids.length>500||ids.some(id=>typeof id!=='string'||(id!=='menu'&&!library.tracks.some(t=>t.id===id))))throw Error('Choose an existing song and location.');
+        if(ids.some(id=>context.startsWith('effect/')?!isSoundEffect(library.tracks.find(t=>t.id===id)):isSoundEffect(library.tracks.find(t=>t.id===id))))throw Error('Use sound effects only for events and songs only for music playlists.');
         if(Array.isArray(value)||ids.length)assignments[context]=[...new Set(ids)];
       }
       await this.write({...library,assignments,fadeSeconds:input.fadeSeconds});return this.read();
@@ -70,9 +88,12 @@ export class MusicLibrary {
     return this.edit(async()=>{
       const library=await this.read();
       if(id!=='menu'&&!library.tracks.some(t=>t.id===id))throw Error('Song not found.');
-      if(!Array.isArray(playlistIds)||playlistIds.length>1000||playlistIds.some(key=>typeof key!=='string'||!contexts.includes(key)))throw Error('Choose existing playlists.');
-      const selected=new Set(playlistIds);
-      for(const context of contexts){
+      if(!Array.isArray(playlistIds)||playlistIds.length>1000||playlistIds.some(key=>typeof key!=='string'||![...contexts,...soundEffectGroups.flatMap(group=>group.items.map(item=>item.id))].includes(key)))throw Error('Choose existing playlists.');
+      const track=library.tracks.find(t=>t.id===id),effect=isSoundEffect(track);
+        const validContexts=effect?soundEffectGroups.flatMap(group=>group.items.map(item=>item.id)):contexts.filter(key=>!key.startsWith('effect/'));
+        if(playlistIds.some(key=>!validContexts.includes(key)))throw Error('Choose a matching music playlist or sound effect event.');
+        const selected=new Set(playlistIds);
+      for(const context of validContexts){
         const old=assignmentTracks(library.assignments[context]);
         if(selected.has(context)){
           if(!old.includes(id)){if(old.length>=500)throw Error('A playlist can contain up to 500 songs.');library.assignments[context]=[...old,id];}

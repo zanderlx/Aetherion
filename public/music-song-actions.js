@@ -1,3 +1,4 @@
+import {soundEffectGroups,isSoundEffect} from './music-effects.js';
 import {musicGroups,musicTracks,playlistSongs} from './music-context.js';
 import {escapeHTML as e,icon,groups as navigationGroups} from './ui.js';
 
@@ -59,16 +60,18 @@ export function bindSongActions(root,services,{signal,redraw}){
  };
  const addToPlaylists=id=>{
   const library=services.getLibrary(),track=musicTracks(library).find(t=>t.id===id);
-  const dialog=modal('music-song-dialog music-playlist-picker','Add to Playlists');
+  const effect=isSoundEffect(track);
+  const dialog=modal('music-song-dialog music-playlist-picker',effect?'Add to Sound Events':'Add to Playlists');
   const subtitle=document.createElement('p');subtitle.textContent=track.name;dialog.append(subtitle);
   const controls=document.createElement('div');controls.className='music-picker-controls';
-  const search=document.createElement('input');search.type='search';search.placeholder='Search playlists…';search.setAttribute('aria-label','Search playlists');search.className='music-playlist-search';
+  const search=document.createElement('input');search.type='search';search.placeholder=effect?'Search events…':'Search playlists…';search.setAttribute('aria-label',effect?'Search sound events':'Search playlists');search.className='music-playlist-search';
   const section=document.createElement('select');section.setAttribute('aria-label','Filter by section');
   // General contains non-navigation destinations; the remaining sections follow the sidebar.
   const order=['General',...navigationGroups.map(group=>group.title)];
-  const groups=musicGroups(services.getLocations()).sort((a,b)=>order.indexOf(a.name)-order.indexOf(b.name));
+  const groups=(effect?structuredClone(soundEffectGroups):musicGroups(services.getLocations())).sort((a,b)=>order.indexOf(a.name)-order.indexOf(b.name));
   for(const group of groups){
    const navigation=navigationGroups.find(item=>item.title===group.name);
+   if(effect)continue;
    const all=group.items[0],items=group.items.slice(1);
    items.sort((a,b)=>group.id==='stable'?navigation.items.findIndex(item=>item[0]===a.id)-navigation.items.findIndex(item=>item[0]===b.id):a.name.localeCompare(b.name));
    group.items=[all,...items];
@@ -76,9 +79,9 @@ export function bindSongActions(root,services,{signal,redraw}){
   section.innerHTML='<option value="">All Sections</option>'+groups.map(group=>'<option value="'+e(group.id)+'">'+e(group.name)+'</option>').join('');
   controls.append(search,section);dialog.append(controls);
   const tableBox=document.createElement('div');tableBox.className='music-picker-table';
-  tableBox.innerHTML='<table><thead><tr><th scope="col">Section</th><th scope="col">Playlist</th></tr></thead><tbody>'+groups.flatMap(group=>group.items.map(item=>'<tr data-playlist-section="'+e(group.id)+'" data-playlist-search="'+e((item.name+' '+group.name).toLowerCase())+'"><td><label><input type="checkbox" data-playlist-choice="'+e(item.id)+'" aria-label="'+e(group.name+' / '+item.name)+'"'+(playlistSongs(library,item.id).includes(id)?' checked':'')+'><span>'+e(group.name)+'</span></label></td><td>'+e(item.name)+'</td></tr>')).join('')+'</tbody></table>';
+  tableBox.innerHTML='<table><thead><tr><th scope="col">Section</th><th scope="col">'+(effect?'Sound Event':'Playlist')+'</th></tr></thead><tbody>'+groups.flatMap(group=>group.items.map(item=>'<tr data-playlist-section="'+e(group.id)+'" data-playlist-search="'+e((item.name+' '+group.name).toLowerCase())+'"><td><label><input type="checkbox" data-playlist-choice="'+e(item.id)+'" aria-label="'+e(group.name+' / '+item.name)+'"'+(playlistSongs(library,item.id).includes(id)?' checked':'')+'><span>'+e(group.name)+'</span></label></td><td>'+e(item.name)+'</td></tr>')).join('')+'</tbody></table>';
   dialog.append(tableBox);
-  const empty=document.createElement('p');empty.className='music-search-empty';empty.textContent='No matching playlists.';empty.hidden=true;dialog.append(empty);
+  const empty=document.createElement('p');empty.className='music-search-empty';empty.textContent=effect?'No matching sound events.':'No matching playlists.';empty.hidden=true;dialog.append(empty);
   const filter=()=>{let visible=0;const term=search.value.trim().toLowerCase();tableBox.querySelectorAll('[data-playlist-search]').forEach(row=>{row.hidden=!row.dataset.playlistSearch.includes(term)||(section.value&&row.dataset.playlistSection!==section.value);if(!row.hidden)visible++;});empty.hidden=visible>0;};
   search.addEventListener('input',filter);section.addEventListener('change',filter);
   tableBox.addEventListener('click',event=>{if(event.target.closest('label')||event.target.matches('input'))return;const checkbox=event.target.closest('tr')?.querySelector('input');if(checkbox)checkbox.checked=!checkbox.checked;});
@@ -96,8 +99,8 @@ export function bindSongActions(root,services,{signal,redraw}){
  const deleteSong=id=>{
   const track=musicTracks(services.getLibrary()).find(track=>track.id===id);if(id==='menu')return;
   const dialog=document.createElement('dialog');dialog.className='music-delete-dialog';
-  dialog.innerHTML='<h2>Delete Song?</h2><p></p><div><button type="button" class="button secondary" data-no>Cancel</button><button type="button" class="button danger" data-yes>Delete</button></div>';
-  dialog.querySelector('p').textContent='Delete “'+track.name+'” from the library and all playlists?';
+  dialog.innerHTML='<h2>'+ (isSoundEffect(track)?'Delete Sound Effect?':'Delete Song?')+'</h2><p></p><div><button type="button" class="button secondary" data-no>Cancel</button><button type="button" class="button danger" data-yes>Delete</button></div>';
+  dialog.querySelector('p').textContent='Delete “'+track.name+'” from the library and all '+(isSoundEffect(track)?'sound events':'playlists')+'?';
   document.body.append(dialog);dialogs.add(dialog);dialog.addEventListener('close',()=>dialogs.delete(dialog),{once:true});closeOutside(dialog);dialog.querySelector('[data-no]').onclick=()=>dialog.close();
   dialog.querySelector('[data-yes]').onclick=async()=>{
    dialog.querySelectorAll('button').forEach(b=>b.disabled=true);

@@ -41,7 +41,7 @@ const server = createServer(async (req, res) => {
         const chunks=[];let size=0;
         for await(const chunk of req){size+=chunk.length;if(size>(upload?50*1024*1024:65536))return send(res,413,{error:'File is too large (maximum 50 MB).'});chunks.push(chunk);}
         const bytes=Buffer.concat(chunks);
-        if(upload)return send(res,200,await music.import(decodeURIComponent(req.headers['x-file-name']||''),bytes));
+        if(upload)return send(res,200,await music.import(decodeURIComponent(req.headers['x-file-name']||''),bytes,url.searchParams.get('kind')||'music'));
         const input=JSON.parse(bytes.toString());
         if(url.pathname==='/api/music/settings'){
           const contexts=musicContexts([...store.getCatalog().locations,...(store.snapshot().customLocations||[])]).map(item=>item.id);

@@ -19,7 +19,7 @@ function value(row,key){
  const parts=row.querySelector('.music-duration')?.textContent.trim().match(/^(\d+):(\d{2})$/);
  return parts?Number(parts[1])*60+Number(parts[2]):null;
 }
-const tableKey=table=>table.closest('[data-playlist]')?.dataset.playlist||'all-songs';
+const tableKey=table=>table.closest('[data-playlist]')?.dataset.playlist||(table.dataset.libraryTable||'all-songs');
 function sort(table,state){
  const rows=[...table.tBodies[0].querySelectorAll('tr[data-music-track]')];
  rows.sort((a,b)=>compareMusicValues(value(a,state.key||'number'),value(b,state.key||'number'),state.direction||'asc')||value(a,'number')-value(b,'number'));

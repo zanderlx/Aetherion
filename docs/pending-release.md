@@ -78,3 +78,4 @@ was specific to this computer and is not an automatic app feature.
 - Refined playlist assignment with sidebar ordering, section filtering, centered actions, and a hover-only edge scrollbar; added a row checkmark to save all edited song metadata together.
 - Added smooth, reversible sidebar dropdown transitions with reduced-motion support and preserved navigation state.
 - Enter now saves both song metadata fields directly; playlist trash icons align vertically with their row text.
+- Added All Sound Effects with the same import, sorting, inline metadata editing, and row options as All Songs. Magic Twinkle migrates safely into this library and defaults to Cosmic Horse Spawn. Sound events overlay background music using independent Sound Effects volume, trigger only for newly generated cosmic encounters, and do not replay on reload. Increased spacing between music library sections.
