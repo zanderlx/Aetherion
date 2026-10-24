@@ -122,7 +122,7 @@ body.has-music-player{padding-bottom:100px}
 .music-row-options{opacity:0;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:0;background:transparent;color:var(--muted);border-radius:5px;cursor:pointer}
 .music-table tr:hover .music-row-options,.music-row-options:focus-visible,.music-row-options[aria-expanded=true]{opacity:1}
 .music-row-options:hover{background:var(--panel);color:var(--gold)}
-.music-options-menu{position:fixed;z-index:10000;min-width:180px;padding:6px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px #0006}
+.music-options-menu{position:fixed;z-index:10000;min-width:112px;width:max-content;padding:6px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px #0006}
 .music-options-menu button{display:block;width:100%;padding:10px 14px;text-align:left;border:0;border-radius:4px;background:transparent;color:inherit;cursor:pointer}
 .music-options-menu button:hover,.music-options-menu button:focus-visible{background:var(--panel-deep);color:var(--gold)}
 .music-options-menu button:disabled{opacity:.4;cursor:not-allowed}
@@ -143,7 +143,7 @@ body.has-music-player{padding-bottom:100px}
 .music-dialog-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:22px}
 .music-song-error:empty{display:none}
 .music-song-error{color:#ef8282}
-.music-editing td input{width:100%;min-width:0;height:38px;padding:6px 8px;font-size:14px;text-transform:none}
+.music-editing td input{width:100%;min-width:0;height:44px;padding:6px 8px;font-size:14px;text-transform:none}
 .music-editing .music-artist{display:table-cell}
 .music-edit-confirm{width:min(440px,calc(100vw - 32px))}
 @media(hover:none){.music-row-options{opacity:1}}
@@ -159,6 +159,8 @@ body.has-music-player{padding-bottom:100px}
 .music-picker-table th:first-child{width:48%}
 .music-picker-table label{display:flex;align-items:center;gap:14px;cursor:pointer;margin:0}
 .music-playlist-picker .music-dialog-actions{justify-content:center}
-.music-table .music-order .music-row-save{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--gold-soft);border-radius:5px;background:var(--panel-deep);color:var(--gold);font-size:20px;cursor:pointer}
+.music-table .music-order .music-row-save{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;line-height:1;padding:0;border:1px solid var(--gold-soft);border-radius:5px;background:var(--panel-deep);color:var(--gold);font-size:20px;cursor:pointer}
 .music-row-save:disabled{opacity:.5;cursor:wait}
 @media(max-width:480px){.music-picker-controls{gap:8px}.music-picker-controls select{max-width:50%}}
+
+.music-row-save .icon{display:block;width:20px;height:20px;flex:none}

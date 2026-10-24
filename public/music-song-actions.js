@@ -1,5 +1,5 @@
 import {musicGroups,musicTracks,playlistSongs} from './music-context.js';
-import {escapeHTML as e,groups as navigationGroups} from './ui.js';
+import {escapeHTML as e,icon,groups as navigationGroups} from './ui.js';
 
 export function bindSongActions(root,services,{signal,redraw}){
  let menu,menuAbort,edit,confirmation;
@@ -52,7 +52,7 @@ export function bindSongActions(root,services,{signal,redraw}){
   name.dataset.songEditName='';artist.dataset.songEditArtist='';
   edit={row,track,titleCell,artistCell,name,artist,orderCell:row.cells[0],oldOrder:row.cells[0].innerHTML,oldTitle:titleCell.innerHTML,oldArtist:artistCell.innerHTML,buttons:[...row.querySelectorAll('button')]};
   edit.buttons.forEach(button=>button.disabled=true);
-  edit.orderCell.innerHTML='<button type="button" class="music-row-save" data-save-song-row title="Save song" aria-label="Save song name and artist">✓</button>';
+  edit.orderCell.innerHTML='<button type="button" class="music-row-save" data-save-song-row title="Save song" aria-label="Save song name and artist">'+icon('check')+'</button>';
   edit.orderCell.querySelector('button').onclick=()=>saveEdit();
   titleCell.replaceChildren(name);artistCell.replaceChildren(artist);row.classList.add('music-editing');name.focus();name.select();
   row.addEventListener('focusout',()=>setTimeout(()=>{if(edit?.row===row&&!row.contains(document.activeElement)&&!confirmation?.open)finishEdit();},0),{signal});
