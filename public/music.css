@@ -164,3 +164,6 @@ body.has-music-player{padding-bottom:100px}
 @media(max-width:480px){.music-picker-controls{gap:8px}.music-picker-controls select{max-width:50%}}
 
 .music-row-save .icon{display:block;width:20px;height:20px;flex:none}
+
+.music-row-actions .music-row-trash{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.music-row-actions .music-row-trash .icon{display:block;flex:none}

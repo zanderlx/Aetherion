@@ -127,7 +127,7 @@ export function bindSongActions(root,services,{signal,redraw}){
   event.preventDefault();event.stopImmediatePropagation();finishEdit();
  },{capture:true,signal});
  document.addEventListener('keydown',event=>{
-  if(edit&&!confirmation?.open&&['Escape','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();finishEdit();}
+  if(edit&&!confirmation?.open&&!event.isComposing&&['Escape','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();if(event.key==='Enter')void saveEdit();else finishEdit();}
  },{capture:true,signal});
  document.addEventListener('gallorin-close-song-menu',()=>closeMenu(true),{signal});
  document.addEventListener('gallorin-finish-song-edit',finishEdit,{signal});

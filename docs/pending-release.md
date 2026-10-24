@@ -77,3 +77,4 @@ was specific to this computer and is not an automatic app feature.
 - Hid the page scrollbar while preserving scrolling.
 - Refined playlist assignment with sidebar ordering, section filtering, centered actions, and a hover-only edge scrollbar; added a row checkmark to save all edited song metadata together.
 - Added smooth, reversible sidebar dropdown transitions with reduced-motion support and preserved navigation state.
+- Enter now saves both song metadata fields directly; playlist trash icons align vertically with their row text.
