@@ -41,3 +41,9 @@ test('music page exposes global folder and per-folder playlist bulk controls',()
  assert.equal((html.match(/data-music-toggle-folder/g)||[]).length,8);
  assert.ok(html.indexOf('data-music-toggle-all')<html.indexOf('data-music-group'));
 });
+
+test('Background Music starts with closed playlists',()=>{
+ const html=musicManagerPage({tracks:[],assignments:{},fadeSeconds:2},[]);
+ assert.ok(html.includes('<h1>Background Music</h1>'));
+ assert.ok(!/<details class="music-playlist"[^>]*\sopen(?:>|\s)/.test(html));
+});

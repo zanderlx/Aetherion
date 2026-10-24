@@ -68,5 +68,11 @@ no explicit sort (row-number ascending). Only the active column shows an adjacen
 The page Show All/Hide All controls folders; each folder has its own button for
 its playlists. These controls respect reduced-motion preferences.
 
-Crossfade uses a 0–10 second slider in one-second steps, with tick marks and a live
-seconds value. Older fractional settings round to the nearest second when Audio Settings opens.
+Crossfade uses a 0–10 second slider in one-second steps, with a live
+seconds value and no tick/end labels. Older fractional settings round to the nearest second when Audio Settings opens.
+
+The Background Music page starts with collapsed playlists. Click the player song
+name or artwork to reveal/focus its entry in All Songs. Mute and volume changes
+are saved in order; playback polling cannot overwrite pending clicks.
+Crossfade stays in whole seconds without tick labels, and all Audio Settings
+readouts align left. Playlist titles match the song-row text size.
